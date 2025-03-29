@@ -134,8 +134,8 @@ export default function DevicesPage() {
               Devices Overview
             </h1>
 
-            <div className="flex space-x-4 mb-6">
-              <div className="flex-1 relative" ref={locationDropdownRef}>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="relative" ref={locationDropdownRef}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Select Location
                 </label>
@@ -174,7 +174,7 @@ export default function DevicesPage() {
                 )}
               </div>
 
-              <div className="flex-1 relative" ref={companyDropdownRef}>
+              <div className="relative" ref={companyDropdownRef}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                   Select Company
                 </label>
@@ -214,7 +214,7 @@ export default function DevicesPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               {devices.map((device, index) => (
                 <Card
                   key={index}

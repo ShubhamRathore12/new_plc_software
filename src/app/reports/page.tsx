@@ -4,14 +4,14 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 
-import { Card } from "@/components/ui/card"; // Assuming you have a Card component
+import { Card } from "@/components/ui/card";
 import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { PlusCircle } from "lucide-react";
 
 export default function ReportsPage() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State for sidebar visibility
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   useEffect(() => {
@@ -48,20 +48,24 @@ export default function ReportsPage() {
 
   return (
     <DashboardLayout>
-      <div className="flex h-screen bg-gray-50 dark:bg-black">
-        {/* Sidebar for larger screens */}
-        <div ref={containerRef} className="flex-1 p-6">
-          <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-            Reports
-          </h1>
+      <div className="min-h-screen bg-gradient-to-tr from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black p-6">
+        <div ref={containerRef} className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-between mb-8">
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
+              Reports
+            </h1>
+            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
+              <PlusCircle className="w-5 h-5" /> Add Report
+            </button>
+          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {reports.map((report) => (
               <Card
                 key={report.id}
-                className="report-card p-4 hover:shadow-xl transition-shadow bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700"
+                className="report-card p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-shadow duration-300"
               >
-                <h2 className="text-lg font-semibold text-black dark:text-white">
+                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
                   {report.title}
                 </h2>
                 <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -70,10 +74,6 @@ export default function ReportsPage() {
               </Card>
             ))}
           </div>
-
-          <button className="mt-6 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition">
-            <PlusCircle className="w-4 h-4 inline" /> Add Report
-          </button>
         </div>
       </div>
     </DashboardLayout>

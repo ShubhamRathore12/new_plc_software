@@ -1,5 +1,6 @@
 import ActivityPanel from "@/components/layout/activity-panel";
 import DashboardLayout from "@/components/layout/dashboard-layout";
+import MapView from "@/components/layout/mapview";
 import StatsPanel from "@/components/layout/stats-panel";
 
 export default function Dashboard() {
@@ -8,7 +9,7 @@ export default function Dashboard() {
       <div className="space-y-4 md:space-y-6">
         {/* Map Card */}
         <div className="p-4 rounded-lg shadow bg-white dark:bg-gray-800 text-black dark:text-white">
-          {/* <MapView /> */}
+          <MapView />
         </div>
         {/* Activity Panel Card */}
         <div className="p-4 rounded-lg shadow bg-white dark:bg-gray-800 text-black dark:text-white">
