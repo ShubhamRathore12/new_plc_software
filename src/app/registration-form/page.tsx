@@ -107,20 +107,6 @@ export default function RegistrationForm() {
     }
   }
 
-  // Handle window resize to close sidebar on larger screens
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsSidebarOpen(false); // Close sidebar on larger screens
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
-
   return (
     <DashboardLayout>
       <div className={`flex h-screen bg-gray-50 dark:bg-black`}>

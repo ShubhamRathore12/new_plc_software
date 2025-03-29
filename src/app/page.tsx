@@ -33,14 +33,10 @@ export default function Dashboard() {
       <div className="flex-1 lg:ml-16">
         <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-white dark:bg-black px-4 md:px-6">
           <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <ArrowLeft className="h-5 w-5 text-black dark:text-white" />
-              <div className="flex items-center gap-4">
-                <Link href="/dashboard">
-                  <Button variant="outline">Dashboard</Button>
-                </Link>
-              </div>
-            </Link>
+            <ArrowLeft className="h-5 w-5 text-black dark:text-white" />
+            <div className="flex items-center gap-4">
+              <Button variant="outline">Dashboard</Button>
+            </div>
           </div>
 
           <div className="ml-auto flex items-center gap-2">

@@ -1,7 +1,18 @@
-import ActivityPanel from "@/components/layout/activity-panel";
-import DashboardLayout from "@/components/layout/dashboard-layout";
-import MapView from "@/components/layout/mapview";
-import StatsPanel from "@/components/layout/stats-panel";
+"use client";
+
+import dynamic from "next/dynamic";
+
+// 🔁 Dynamically import components to avoid SSR issues
+const MapView = dynamic(() => import("@/components/layout/mapview"), {
+  ssr: false,
+});
+const ActivityPanel = dynamic(
+  () => import("@/components/layout/activity-panel"),
+  { ssr: false }
+);
+const StatsPanel = dynamic(() => import("@/components/layout/stats-panel"), {
+  ssr: false,
+});
 
 export default function Dashboard() {
   return (
