@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+
 import {
   Fan,
   Timer,
@@ -14,16 +14,12 @@ import {
   Thermometer,
   Wind,
 } from "lucide-react";
-
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-
-import Image from "next/image";
-import { motion } from "framer-motion";
 import { GrainMonitorData } from "../types/grain-monitor";
-import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useMediaQuery } from "../hooks/use-media-query";
 import { Modal } from "@/components/ui/modal";
 import { Label } from "@/components/ui/label";
+import DashboardLayout from "@/components/layout/dashboard-layout";
+import { Input } from "@headlessui/react";
 
 // Simulated API data for Grain Monitor
 const mockData = {
