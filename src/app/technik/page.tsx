@@ -41,7 +41,7 @@ const Technik: React.FC = () => {
                 </div>
                 <div className="flex space-x-2">
                   <Button
-                    variant="success"
+         
                     className="bg-green-500 hover:bg-green-600 text-white"
                   >
                     AUTO START
