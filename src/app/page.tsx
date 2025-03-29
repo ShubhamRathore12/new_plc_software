@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+
 import { motion } from "framer-motion";
-import { useTheme } from "@/providers/theme-provider";
+
 import { useEffect, useState } from "react";
+import { useTheme } from "@/providers/theme-provider";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const { theme } = useTheme();

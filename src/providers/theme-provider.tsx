@@ -1,5 +1,6 @@
 "use client";
 
+import { useThemeStore } from "@/lib/store";
 import {
   createContext,
   useContext,
@@ -7,7 +8,6 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { useThemeStore } from "@/lib/store";
 
 type Theme = "dark" | "light" | "system";
 
