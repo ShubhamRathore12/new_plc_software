@@ -115,7 +115,7 @@ export default function DevicesPage() {
 
   // Function to handle navigation to the Aeration page
   const handleViewMore = (deviceName: string) => {
-    router.push("/aeration");
+    router.push("/menu");
   };
 
   return (

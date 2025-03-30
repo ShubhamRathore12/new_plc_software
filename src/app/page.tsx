@@ -1,541 +1,349 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { ArrowLeft, Settings, Plus, Moon, Sun } from "lucide-react";
+import { useState } from "react";
+import {
+  ArrowLeft,
+  Settings,
+  Moon,
+  Sun,
+  ChevronDown,
+  Thermometer,
+  Gauge,
+  Flame,
+  Activity,
+  BarChart3,
+  ToggleRight,
+  ToggleLeft,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useTheme } from "@/providers/theme-provider";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-export default function Dashboard() {
-  const [mounted, setMounted] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [splineApp, setSplineApp] = useState<any>(null);
-  const { theme, setTheme } = useTheme();
+import Dashboard3D from "@/components/Dashbaord3d";
+import PressureChart from "@/components/charts/PressureChart";
+import TemperatureChart from "@/components/charts/TemperatureChart";
+import HeatChart from "@/components/charts/HeatChart";
+import BoilerChart from "@/components/charts/BoilerChart";
+import MetricsPanel from "@/components/MetriPanel";
+import RadarChart from "@/components/charts/RadarChart";
+import DashboardLayout from "@/components/layout/dashboard-layout";
+import { useRouter } from "next/navigation";
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+const Index = () => {
+  const [theme, setTheme] = useState<"dark" | "light">("light");
+  const [selectedChart, setSelectedChart] = useState<string | null>(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
-  if (!mounted) return null;
+  const router = useRouter();
+  const [is3D, setIs3D] = useState(true); // toggle state
 
-  const onLoad = (splineApp: any) => {
-    setSplineApp(splineApp);
-    setLoading(false);
+  const handleToggle = () => {
+    if (!is3D) {
+      setIs3D(true);
+      // navigate to 3D screen
+    } else {
+      setIs3D(false);
+      router.push("/menu");
+      // staying on 2D (menu) view
+    }
+  };
+
+  const handleChartClick = (chartType: string) => {
+    setSelectedChart(chartType);
+    setOpenDialog(true);
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-blue-50 dark:bg-black">
-      {/* Left Sidebar */}
-
-      {/* Main Content */}
-      {/* Use responsive margin: no left margin on small screens, add it on large screens */}
-      <div className="flex-1 lg:ml-16">
-        <header className="sticky top-0 z-10 flex h-16 items-center gap-4 border-b bg-white dark:bg-black px-4 md:px-6">
-          <div className="flex items-center">
-            <Link href="/" className="flex items-center gap-2">
-              <ArrowLeft className="h-5 w-5 text-black dark:text-white" />
-              <div className="flex items-center gap-4">
-                <Link href="/dashboard">
-                  <Button variant="outline">Dashboard</Button>
-                </Link>
-              </div>
-            </Link>
-          </div>
-
-          <div className="ml-auto flex items-center gap-2">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    <DashboardLayout>
+      <div
+        className={`min-h-screen flex flex-col bg-blue-50 dark:bg-gray-900 transition-colors duration-200 ${
+          theme === "dark" ? "dark" : ""
+        }`}
+      >
+        {/* Header */}
+        <div className="absolute right-0 top-0 flex items-center space-x-2 mb-10">
+          <span className="text-sm font-medium text-muted-foreground">
+            {is3D ? "3D" : "2D"}
+          </span>
+          <button onClick={handleToggle} className="p-2 hover:opacity-75">
+            {is3D ? (
+              <ToggleRight className="h-6 w-6 text-primary" />
+            ) : (
+              <ToggleLeft className="h-6 w-6 text-primary" />
+            )}
+          </button>
+        </div>
+        <main className="flex-1 p-4 md:p-6 mt-10">
+          {/* Main Dashboard Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Pressure Chart */}
+            <Card
+              className="bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800 cursor-pointer transform transition-all hover:scale-[1.02] hover:shadow-lg"
+              onClick={() => handleChartClick("pressure")}
             >
-              {theme === "dark" ? <Sun size={20} /> : <Moon size={20} />}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="text-black dark:text-white border-blue-200"
-            >
-              Full
-            </Button>
-          </div>
-        </header>
-
-        <main className="p-4 md:p-6">
-          {/* Responsive grid: 1 column on small screens, 4 columns on large screens */}
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            {/* Left Column */}
-            <div className="flex flex-col gap-4">
-              {/* Sessions By Device */}
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Sessions By Device
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3">
-                    {/* ... your sessions content ... */}
-                    <div className="space-y-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <div className="h-3 w-3 bg-blue-500 rounded-sm"></div>
-                          <span className="text-xs">66.6%</span>
-                        </div>
-                        <span className="text-xs text-green-500">+2%</span>
-                      </div>
-                      <div className="h-1 w-full rounded-full bg-blue-100 dark:bg-blue-800">
-                        <div className="h-full w-[66.6%] rounded-full bg-blue-500"></div>
-                      </div>
-                    </div>
-                    {/* ... additional sessions bars ... */}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Traffic Monitor */}
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Traffic Monitor
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div>
-                      <div className="text-xs text-blue-400 mb-1">INBOUND</div>
-                      <div className="text-lg font-bold">180GB</div>
-                    </div>
-                    <div>
-                      <div className="text-xs text-orange-400 mb-1">
-                        OUTBOUND
-                      </div>
-                      <div className="text-lg font-bold text-orange-500">
-                        597.1GB
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex gap-1 h-16">
-                    {/* Blue bars for inbound */}
-                    <div className="flex-1 flex items-end gap-0.5">
-                      {Array.from({ length: 12 }).map((_, i) => {
-                        const height = 30 + Math.random() * 70;
-                        return (
-                          <div
-                            key={i}
-                            className="flex-1 bg-blue-500 rounded-sm"
-                            style={{ height: `${height}%` }}
-                          ></div>
-                        );
-                      })}
-                    </div>
-                    {/* Orange bars for outbound */}
-                    <div className="flex-1 flex items-end gap-0.5">
-                      {Array.from({ length: 12 }).map((_, i) => {
-                        const height = 30 + Math.random() * 70;
-                        return (
-                          <div
-                            key={i}
-                            className="flex-1 bg-orange-500 rounded-sm"
-                            style={{ height: `${height}%` }}
-                          ></div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* USD/GBP */}
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">
-                      USD/GBP
-                    </CardTitle>
-                    <div className="text-xs text-green-500">+ 0.00%</div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-lg font-bold mb-2">17.685</div>
-                  <div className="relative h-16">
-                    <svg
-                      viewBox="0 0 100 30"
-                      className="w-full h-full"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M0,15 Q10,10 20,15 T40,20 T60,10 T80,15 T100,5"
-                        fill="none"
-                        stroke="rgb(59, 130, 246)"
-                        strokeWidth="1"
-                      />
-                      <circle cx="95" cy="5" r="1" fill="rgb(59, 130, 246)" />
-                    </svg>
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500">
-                    <div>0</div>
-                    <div>5</div>
-                    <div>10</div>
-                    <div>15</div>
-                    <div>20</div>
-                    <div>25</div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Middle Column (Globe) */}
-            {/* On small screens, span full width; on large screens, span 2 columns */}
-            <div className="col-span-1 lg:col-span-2">
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800 h-full">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Visitors Stats
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0 relative">
-                  <div className="relative aspect-[4/3] w-full overflow-hidden rounded-b-lg">
-                    {loading && (
-                      <div className="absolute inset-0 flex items-center justify-center bg-background/50">
-                        <div className="text-center">
-                          <div className="mb-2 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-                          <p className="text-sm text-muted-foreground">
-                            Loading visualization...
-                          </p>
-                        </div>
-                      </div>
-                    )}
-                    {/* Visualization component can be inserted here */}
-                    {/* City markers */}
-                    <div className="absolute top-1/4 left-1/4 z-10">
-                      <div className="bg-yellow-500 w-3 h-3 rounded-full relative">
-                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-black/70 text-white text-xs px-2 py-0.5 rounded whitespace-nowrap">
-                          Mexico City
-                        </div>
-                      </div>
-                    </div>
-                    {/* Other markers… */}
-                    <div className="absolute bottom-4 right-4 z-10 text-xs text-white/70">
-                      BETWEEN SEP 9 - 27
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            {/* Right Column */}
-            <div className="flex flex-col gap-4">
-              {/* Pressure */}
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Pressure
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="mb-3">
-                    <div className="flex justify-between mb-1">
-                      <div className="text-xs text-gray-500">MODERATE</div>
-                      <div className="text-lg font-bold">75%</div>
-                    </div>
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 15 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={`h-1.5 flex-1 rounded-sm ${
-                            i < 11
-                              ? "bg-teal-500"
-                              : "bg-gray-200 dark:bg-gray-700"
-                          }`}
-                        ></div>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between mb-1">
-                      <div className="text-xs text-gray-500">MODERATE</div>
-                      <div className="text-lg font-bold">60%</div>
-                    </div>
-                    <div className="flex gap-0.5">
-                      {Array.from({ length: 15 }).map((_, i) => (
-                        <div
-                          key={i}
-                          className={`h-1.5 flex-1 rounded-sm ${
-                            i < 9
-                              ? "bg-teal-500"
-                              : "bg-gray-200 dark:bg-gray-700"
-                          }`}
-                        ></div>
-                      ))}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Recommendation Score */}
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium">
-                    Recommendation score
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex justify-between mb-3">
-                    <div>
-                      <div className="flex items-center gap-1 mb-1">
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                        <span className="text-xs text-gray-500">POSITIVE</span>
-                      </div>
-                      <div className="text-sm font-medium">66.6%</div>
-                    </div>
-                    <div className="relative w-16 h-16">
-                      <svg className="w-full h-full" viewBox="0 0 36 36">
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15"
-                          fill="none"
-                          stroke="#e2e8f0"
-                          strokeWidth="3"
-                        />
-                        <circle
-                          cx="18"
-                          cy="18"
-                          r="15"
-                          fill="none"
-                          stroke="#3b82f6"
-                          strokeWidth="3"
-                          strokeDasharray="94.2"
-                          strokeDashoffset="31.4"
-                          transform="rotate(-90 18 18)"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1 mb-1">
-                      <div className="w-2 h-2 rounded-full bg-teal-500"></div>
-                      <span className="text-xs text-gray-500">NEGATIVE</span>
-                    </div>
-                    <div className="text-sm font-medium">29.7%</div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Visitors Stats */}
-              <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">
-                      Visitors stats
-                    </CardTitle>
-                    <div className="text-xs text-gray-500">
-                      BETWEEN SEP 9 - 27
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-lg font-bold mb-2">186k</div>
-                  <div className="flex items-end gap-0.5 h-20">
-                    {Array.from({ length: 20 }).map((_, i) => {
-                      const height = 20 + Math.random() * 80;
-                      const color =
-                        i % 3 === 0 ? "bg-red-500" : "bg-orange-400";
-                      return (
-                        <div
-                          key={i}
-                          className={`flex-1 ${color} rounded-sm`}
-                          style={{ height: `${height}%` }}
-                        ></div>
-                      );
-                    })}
-                  </div>
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                    <div>0</div>
-                    <div>5</div>
-                    <div>10</div>
-                    <div>15</div>
-                    <div>20</div>
-                    <div>25</div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-
-          {/* Bottom Bar */}
-          <div className="mt-4">
-            <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800">
               <CardHeader className="pb-2">
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-sm font-medium">
-                    Visitors Stats
-                  </CardTitle>
-                  <div className="text-xs text-gray-500">
-                    BETWEEN SEP 9 - 27
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="flex items-end gap-1 h-16">
-                  {Array.from({ length: 30 }).map((_, i) => {
-                    const height = Math.max(
-                      10,
-                      100 - i * 3 - Math.random() * 10
-                    );
-                    return (
-                      <div
-                        key={i}
-                        className="flex-1 bg-teal-500 rounded-sm"
-                        style={{ height: `${height}%` }}
-                      ></div>
-                    );
-                  })}
-                </div>
-                <div className="flex justify-between text-xs text-gray-500 mt-1">
-                  <div>D1</div>
-                  <div>SH</div>
-                  <div>C2</div>
-                  <div>J1</div>
-                  <div>K2</div>
-                  <div>L1</div>
-                  <div>M2</div>
-                  <div>N1</div>
-                  <div>O2</div>
-                  <div>P1</div>
-                  <div>Q2</div>
-                  <div>R1</div>
-                  <div>S2</div>
-                  <div>T1</div>
-                  <div>U2</div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Radar Chart (Floating) */}
-          <div className="fixed bottom-6 right-6 z-10">
-            <Card className="bg-white/90 dark:bg-black/90 border-blue-200 dark:border-blue-800 w-48">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-sm font-medium">
-                  Visitors Stats
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Gauge className="w-4 h-4 mr-2" />
+                  Pressure
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-xs text-gray-500 mb-1">DIAGNOSTICS</div>
-                <div className="relative h-32 w-full">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <svg viewBox="0 0 100 100" className="w-full h-full">
-                      {/* Background hexagon */}
-                      <polygon
-                        points="50,10 90,30 90,70 50,90 10,70 10,30"
-                        fill="none"
-                        stroke="#e2e8f0"
-                        strokeWidth="0.5"
-                      />
-                      <polygon
-                        points="50,20 80,35 80,65 50,80 20,65 20,35"
-                        fill="none"
-                        stroke="#e2e8f0"
-                        strokeWidth="0.5"
-                      />
-                      <polygon
-                        points="50,30 70,40 70,60 50,70 30,60 30,40"
-                        fill="none"
-                        stroke="#e2e8f0"
-                        strokeWidth="0.5"
-                      />
-                      {/* Data polygon */}
-                      <polygon
-                        points="50,15 85,40 70,75 30,75 15,40"
-                        fill="rgba(56, 189, 248, 0.2)"
-                        stroke="#38bdf8"
-                        strokeWidth="1"
-                      />
-                      {/* Axes */}
-                      <line
-                        x1="50"
-                        y1="10"
-                        x2="50"
-                        y2="90"
-                        stroke="#e2e8f0"
-                        strokeWidth="0.5"
-                      />
-                      <line
-                        x1="10"
-                        y1="30"
-                        x2="90"
-                        y2="70"
-                        stroke="#e2e8f0"
-                        strokeWidth="0.5"
-                      />
-                      <line
-                        x1="10"
-                        y1="70"
-                        x2="90"
-                        y2="30"
-                        stroke="#e2e8f0"
-                        strokeWidth="0.5"
-                      />
-                      {/* Labels */}
-                      <text
-                        x="50"
-                        y="5"
-                        textAnchor="middle"
-                        fontSize="6"
-                        fill="currentColor"
-                      >
-                        COLD
-                      </text>
-                      <text
-                        x="95"
-                        y="30"
-                        textAnchor="start"
-                        fontSize="6"
-                        fill="currentColor"
-                      >
-                        TESTS
-                      </text>
-                      <text
-                        x="95"
-                        y="75"
-                        textAnchor="start"
-                        fontSize="6"
-                        fill="currentColor"
-                      >
-                        CONSULTATION
-                      </text>
-                      <text
-                        x="50"
-                        y="98"
-                        textAnchor="middle"
-                        fontSize="6"
-                        fill="currentColor"
-                      >
-                        INJURY
-                      </text>
-                      <text
-                        x="5"
-                        y="75"
-                        textAnchor="end"
-                        fontSize="6"
-                        fill="currentColor"
-                      >
-                        VIRUSES
-                      </text>
-                    </svg>
-                  </div>
-                  <div className="absolute bottom-0 right-0 flex items-center gap-1">
-                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <span className="text-xs">Index A</span>
-                  </div>
-                </div>
+                <PressureChart />
+              </CardContent>
+            </Card>
+
+            {/* Temperature Chart */}
+            <Card
+              className="bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800 cursor-pointer transform transition-all hover:scale-[1.02] hover:shadow-lg"
+              onClick={() => handleChartClick("temperature")}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Thermometer className="w-4 h-4 mr-2" />
+                  Temperature
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <TemperatureChart />
+              </CardContent>
+            </Card>
+
+            {/* Heat Chart */}
+            <Card
+              className="bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800 cursor-pointer transform transition-all hover:scale-[1.02] hover:shadow-lg"
+              onClick={() => handleChartClick("heat")}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Flame className="w-4 h-4 mr-2" />
+                  Heat
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <HeatChart />
+              </CardContent>
+            </Card>
+
+            {/* Boiler Chart */}
+            <Card
+              className="bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800 cursor-pointer transform transition-all hover:scale-[1.02] hover:shadow-lg"
+              onClick={() => handleChartClick("boiler")}
+            >
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <Activity className="w-4 h-4 mr-2" />
+                  Boiler
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <BoilerChart />
+              </CardContent>
+            </Card>
+
+            {/* 3D Dashboard Visualization - spans 2 columns on larger screens */}
+            <Card className="col-span-1 md:col-span-2 lg:col-span-2 bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium">
+                  System Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                <Dashboard3D />
+              </CardContent>
+            </Card>
+
+            {/* Metrics Panel */}
+            <Card className="col-span-1 md:col-span-2 lg:col-span-2 bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-medium flex items-center">
+                  <BarChart3 className="w-4 h-4 mr-2" />
+                  System Metrics
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <MetricsPanel />
               </CardContent>
             </Card>
           </div>
+
+          {/* Bottom bar with Radar Chart */}
+          <div className="mt-4">
+            <Card className="bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800">
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-center">
+                  <CardTitle className="text-sm font-medium">
+                    System Diagnostics
+                  </CardTitle>
+                  <div className="text-xs text-gray-500 dark:text-gray-400">
+                    LAST 24 HOURS
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="h-[200px]">
+                <RadarChart />
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Detail Dialog */}
+          <Dialog open={openDialog} onOpenChange={setOpenDialog}>
+            <DialogContent className="sm:max-w-[600px] bg-white dark:bg-gray-800">
+              <DialogHeader>
+                <DialogTitle>
+                  {selectedChart === "pressure" && "Pressure Details"}
+                  {selectedChart === "temperature" && "Temperature Details"}
+                  {selectedChart === "heat" && "Heat Details"}
+                  {selectedChart === "boiler" && "Boiler Details"}
+                </DialogTitle>
+              </DialogHeader>
+              <Tabs defaultValue="overview" className="w-full">
+                <TabsList className="grid grid-cols-3 mb-4">
+                  <TabsTrigger value="overview">Overview</TabsTrigger>
+                  <TabsTrigger value="analytics">Analytics</TabsTrigger>
+                  <TabsTrigger value="history">History</TabsTrigger>
+                </TabsList>
+                <TabsContent value="overview">
+                  <div className="h-[300px]">
+                    {selectedChart === "pressure" && <PressureChart detailed />}
+                    {selectedChart === "temperature" && (
+                      <TemperatureChart detailed />
+                    )}
+                    {selectedChart === "heat" && <HeatChart detailed />}
+                    {selectedChart === "boiler" && <BoilerChart detailed />}
+                  </div>
+                  <div className="mt-4 grid grid-cols-3 gap-4">
+                    <div className="bg-blue-50 dark:bg-gray-700 p-3 rounded-lg">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        CURRENT
+                      </div>
+                      <div className="text-lg font-bold">
+                        {selectedChart === "pressure" && "75%"}
+                        {selectedChart === "temperature" && "72°C"}
+                        {selectedChart === "heat" && "85%"}
+                        {selectedChart === "boiler" && "Active"}
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-gray-700 p-3 rounded-lg">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        AVERAGE
+                      </div>
+                      <div className="text-lg font-bold">
+                        {selectedChart === "pressure" && "68%"}
+                        {selectedChart === "temperature" && "68°C"}
+                        {selectedChart === "heat" && "76%"}
+                        {selectedChart === "boiler" && "92%"}
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-gray-700 p-3 rounded-lg">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        STATUS
+                      </div>
+                      <div className="text-lg font-bold text-green-500">
+                        Normal
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="analytics">
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
+                        <h3 className="text-sm font-medium mb-2">
+                          Performance Analysis
+                        </h3>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          System is performing within optimal parameters with no
+                          significant outliers.
+                        </p>
+                      </div>
+                      <div className="p-4 bg-blue-50 dark:bg-gray-700 rounded-lg">
+                        <h3 className="text-sm font-medium mb-2">
+                          Efficiency Rating
+                        </h3>
+                        <div className="flex items-center">
+                          <div className="w-full bg-gray-200 dark:bg-gray-600 h-2 rounded-full">
+                            <div
+                              className="bg-green-500 h-2 rounded-full"
+                              style={{ width: "87%" }}
+                            ></div>
+                          </div>
+                          <span className="ml-2 text-sm font-medium">87%</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-blue-50 dark:bg-gray-700 p-4 rounded-lg">
+                      <h3 className="text-sm font-medium mb-2">
+                        Recommendations
+                      </h3>
+                      <ul className="list-disc list-inside text-sm text-gray-500 dark:text-gray-400">
+                        <li>Routine maintenance scheduled for next week</li>
+                        <li>Consider optimizing afternoon heat cycle</li>
+                        <li>Sensor calibration due in 14 days</li>
+                      </ul>
+                    </div>
+                  </div>
+                </TabsContent>
+                <TabsContent value="history">
+                  <div className="space-y-4">
+                    <div className="flex justify-between">
+                      <h3 className="text-sm font-medium">Historical Data</h3>
+                      <div className="flex space-x-2">
+                        <Button variant="outline" size="sm">
+                          Day
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          Week
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          Month
+                        </Button>
+                      </div>
+                    </div>
+                    <div className="h-[200px]">
+                      {/* For simplicity, we'll reuse the same charts */}
+                      {selectedChart === "pressure" && (
+                        <PressureChart detailed />
+                      )}
+                      {selectedChart === "temperature" && (
+                        <TemperatureChart detailed />
+                      )}
+                      {selectedChart === "heat" && <HeatChart detailed />}
+                      {selectedChart === "boiler" && <BoilerChart detailed />}
+                    </div>
+                    <div className="bg-blue-50 dark:bg-gray-700 p-3 rounded-lg">
+                      <div className="text-xs text-gray-500 dark:text-gray-400">
+                        KEY EVENTS
+                      </div>
+                      <div className="text-sm">
+                        <div className="flex justify-between border-b border-gray-200 dark:border-gray-600 py-2">
+                          <span>Maintenance</span>
+                          <span>2023-09-15</span>
+                        </div>
+                        <div className="flex justify-between border-b border-gray-200 dark:border-gray-600 py-2">
+                          <span>Calibration</span>
+                          <span>2023-08-22</span>
+                        </div>
+                        <div className="flex justify-between py-2">
+                          <span>System Upgrade</span>
+                          <span>2023-07-03</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabsContent>
+              </Tabs>
+            </DialogContent>
+          </Dialog>
         </main>
       </div>
-    </div>
+    </DashboardLayout>
   );
-}
+};
+
+export default Index;
