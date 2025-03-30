@@ -1,21 +1,9 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { gsap } from "gsap";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
-}
-
-export function useAnimateInView(options = {}) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, {
-    once: true,
-    ...options,
-  });
-
-  return { ref, isInView };
 }
 
 export function animateElement(element: HTMLElement, props: any, options = {}) {

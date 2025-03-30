@@ -31,6 +31,7 @@ const menuItems = [
   { icon: Layers, label: "Clusters", href: "/clusters" },
   { icon: FileText, label: "Reports", href: "/reports" },
   { icon: LayoutDashboard, label: "Registration", href: "/registration-form" },
+  { icon: LayoutDashboard, label: "Menu", href: "/menu" },
 ];
 
 export default function Sidebar() {
