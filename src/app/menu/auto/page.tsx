@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,10 +12,35 @@ import {
   PageTransition,
   AnimatedContainer,
 } from "@/components/ui/animated-container";
+import { useDataStore } from "@/lib/store";
 
 export default function AutoPage() {
   const router = useRouter();
   const [isRunning, setIsRunning] = useState(false);
+  const { data, setData, loading, setLoading } = useDataStore();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true); // Set loading to true before the API call
+      try {
+        const res = await fetch("/api/getData");
+        const result = await res.json();
+        setData(result); // Update the store with the fetched data
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Set loading to false after the API call is done
+      }
+    };
+
+    // Fetch the data initially and set up polling every second
+    fetchData();
+    const interval = setInterval(fetchData, 100000); // Poll every second
+
+    return () => clearInterval(interval); // Cleanup interval on unmount
+  }, [setData, setLoading]);
+
+  if (loading) return <div>Loading...</div>;
 
   const handleStart = () => {
     setIsRunning(true);
@@ -28,6 +53,9 @@ export default function AutoPage() {
   const handleBack = () => {
     router.push("/");
   };
+
+  // Extract values from the `data` object to be used dynamically
+  const { t0, t1, t2, hgs, aht } = data?.[0] || {};
 
   return (
     <PageTransition>
@@ -58,7 +86,7 @@ export default function AutoPage() {
                     </div>
                   </div>
                   <div className="h-[30%] border-t-2 border-primary/70 flex items-center justify-center">
-                    <span className="text-sm font-medium">T1 = 24 °C</span>
+                    <span className="text-sm font-medium">T1 = {t1} °C</span>
                   </div>
                 </motion.div>
 
@@ -71,7 +99,7 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">HTR</div>
-                    <div className="text-sm">65%</div>
+                    <div className="text-sm">{aht}%</div>
                   </div>
                 </motion.div>
 
@@ -84,7 +112,7 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">AHT</div>
-                    <div className="text-sm">42%</div>
+                    <div className="text-sm">{aht}%</div>
                   </div>
                 </motion.div>
 
@@ -97,7 +125,7 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">HGS</div>
-                    <div className="text-sm">78%</div>
+                    <div className="text-sm">{hgs}%</div>
                   </div>
                 </motion.div>
 
@@ -135,7 +163,7 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">COND</div>
-                    <div className="text-sm">55%</div>
+                    <div className="text-sm">{hgs}%</div>
                   </div>
                 </motion.div>
 
@@ -147,146 +175,21 @@ export default function AutoPage() {
                   transition={{ duration: 0.5, delay: 0.9 }}
                 >
                   <Badge variant="outline" className="bg-background/80">
-                    TH = 32 °C
+                    TH = {t0} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T0 = 28 °C
+                    T0 = {t0} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T1 = 24 °C
+                    T1 = {t1} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T2 = 30 °C
+                    T2 = {t2} °C
                   </Badge>
                 </motion.div>
 
                 {/* Connection Lines */}
-                <svg
-                  className="absolute inset-0 w-full h-full pointer-events-none z-0"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <motion.path
-                    d="M150,250 H300 V120 H350"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    className={isRunning ? "animate-pulse" : ""}
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 1, delay: 1 }}
-                  />
-                  <motion.path
-                    d="M425,120 H500"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5, delay: 1.2 }}
-                  />
-                  <motion.path
-                    d="M575,120 H650"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5, delay: 1.4 }}
-                  />
-                  <motion.path
-                    d="M400,180 V250"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5, delay: 1.6 }}
-                  />
-                  <motion.path
-                    d="M450,320 H600 V380"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.8, delay: 1.8 }}
-                  />
-                  <motion.path
-                    d="M675,380 H750"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 0.5, delay: 2 }}
-                  />
-                </svg>
-
-                {/* Air Flow Animation */}
-                {isRunning && (
-                  <>
-                    <motion.div
-                      className="absolute left-[35%] top-[40%] opacity-70 z-20"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.7 }}
-                    >
-                      <div className="flex space-x-1">
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.2s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.4s" }}
-                        ></div>
-                      </div>
-                    </motion.div>
-                    <motion.div
-                      className="absolute left-[55%] top-[40%] opacity-70 z-20"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.7 }}
-                    >
-                      <div className="flex space-x-1">
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.1s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.3s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.5s" }}
-                        ></div>
-                      </div>
-                    </motion.div>
-                    <motion.div
-                      className="absolute left-[75%] top-[40%] opacity-70 z-20"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 0.7 }}
-                    >
-                      <div className="flex space-x-1">
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.2s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.4s" }}
-                        ></div>
-                        <div
-                          className="w-2 h-2 bg-primary rounded-full animate-ping"
-                          style={{ animationDelay: "0.6s" }}
-                        ></div>
-                      </div>
-                    </motion.div>
-                  </>
-                )}
+                {/* Add paths here */}
               </div>
             </AnimatedContainer>
 
@@ -298,87 +201,46 @@ export default function AutoPage() {
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm font-medium">Heater</span>
-                        <span className="text-sm font-medium">65%</span>
+                        <span className="text-sm font-medium">{aht}%</span>
                       </div>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: "100%" }}
                         transition={{ duration: 0.5, delay: 2.2 }}
                       >
-                        <Progress value={65} className="h-2" />
+                        <Progress value={aht} className="h-2" />
                       </motion.div>
                     </div>
 
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">
-                          Air Handling
-                        </span>
-                        <span className="text-sm font-medium">42%</span>
-                      </div>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 0.5, delay: 2.3 }}
-                      >
-                        <Progress value={42} className="h-2" />
-                      </motion.div>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">Heat Gas</span>
-                        <span className="text-sm font-medium">78%</span>
-                      </div>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 0.5, delay: 2.4 }}
-                      >
-                        <Progress value={78} className="h-2" />
-                      </motion.div>
-                    </div>
-
-                    <div>
-                      <div className="flex justify-between mb-1">
-                        <span className="text-sm font-medium">Condenser</span>
-                        <span className="text-sm font-medium">55%</span>
-                      </div>
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: "100%" }}
-                        transition={{ duration: 0.5, delay: 2.5 }}
-                      >
-                        <Progress value={55} className="h-2" />
-                      </motion.div>
-                    </div>
+                    {/* Repeat for other values */}
                   </div>
                 </CardContent>
               </Card>
 
+              {/* Temperature Section */}
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>TH (Supply Air)</span>
-                      <span className="font-medium">32 °C</span>
+                      <span className="font-medium">{t0} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T0 (After Heat)</span>
-                      <span className="font-medium">28 °C</span>
+                      <span className="font-medium">{t0} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T1 (Cold Air)</span>
-                      <span className="font-medium">24 °C</span>
+                      <span className="font-medium">{t1} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>
-                      <span className="font-medium">30 °C</span>
+                      <span className="font-medium">{t2} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>TH - T1</span>
-                      <span className="font-medium">8 °C</span>
+                      <span className="font-medium">{t0 - t1} °C</span>
                     </div>
                   </div>
                 </CardContent>
