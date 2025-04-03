@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-// import Dashboard3D from "@/components/Dashbaord3d";
+import Dashboard3D from "@/components/Dashbaord3d";
 import PressureChart from "@/components/charts/PressureChart";
 import TemperatureChart from "@/components/charts/TemperatureChart";
 import HeatChart from "@/components/charts/HeatChart";
@@ -142,7 +142,7 @@ const Index = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[300px]">
-                {/* <Dashboard3D /> */}
+                <Dashboard3D />
               </CardContent>
             </div>
 

@@ -9,7 +9,7 @@ import { MonitoringProvider } from "@/app/context/monitoring-context";
 import Sidebar from "@/components/layout/sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Header from "@/components/layout/header";
- // Import the Header component
+// Import the Header component
 
 export default function DashboardLayout({
   children,
@@ -85,7 +85,7 @@ export default function DashboardLayout({
           >
             {children}
             <footer className="mt-6 text-center text-sm text-muted-foreground">
-              © 2023, powered by Faction Labs
+              © 2023, powered by Grain Technik
             </footer>
           </div>
         </main>

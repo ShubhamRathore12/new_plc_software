@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "./sidebar";
 import StatsPanel from "./stats-panel";
 import ActivityPanel from "./activity-panel";
@@ -9,22 +9,29 @@ import { Menu, Plus, Minus } from "lucide-react";
 import { useMediaQuery } from "@/app/hooks/use-media-query";
 import { MonitoringProvider } from "@/app/context/monitoring-context";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import Header from "./header"; // Import the Header component
+import Header from "./header";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const [mounted, setMounted] = useState(false);
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [zoomLevel, setZoomLevel] = useState(1);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const SidebarContent = (
     <div className="relative h-full bg-gray-100 dark:bg-gray-900 text-black dark:text-white">
       <Sidebar />
     </div>
   );
+
+  if (!mounted) return null; // Prevent hydration mismatch
 
   return (
     <MonitoringProvider>
@@ -51,9 +58,8 @@ export default function DashboardLayout({
 
         {/* Main Content */}
         <main className="flex-1 p-4 md:p-2 overflow-auto relative h-screen">
-          {/* Header Component */}
-          <Header /> {/* Add the Header component here */}
-          {/* Zoom Controls - Responsive & Always on Top */}
+          <Header />
+          {/* Zoom Controls */}
           <div
             className={`fixed flex flex-col items-center space-y-2 p-3 rounded-lg z-50 shadow-lg ${
               isMobile
@@ -74,7 +80,8 @@ export default function DashboardLayout({
               <Minus className="h-5 w-5" />
             </button>
           </div>
-          {/* Content with Zoom Effect */}
+
+          {/* Zoomable Content */}
           <div
             className="relative transform transition-transform origin-top-left"
             style={{
@@ -85,7 +92,7 @@ export default function DashboardLayout({
           >
             {children}
             <footer className="mt-6 text-center text-sm text-muted-foreground">
-              © 2023, powered by Faction Labs
+              © 2023, powered by Grain Technik
             </footer>
           </div>
         </main>

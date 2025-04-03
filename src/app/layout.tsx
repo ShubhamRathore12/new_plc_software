@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Modern Dashboard",
+  title: "Grain Technik",
   description: "Next.js 15 dashboard with modern technologies",
 };
 

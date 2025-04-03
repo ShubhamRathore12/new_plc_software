@@ -15,6 +15,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useSidebarStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
+import Img from "../../../public/logo.jpeg";
 
 const menuItems = [
   { icon: MonitorIcon, label: "Overview", href: "/" },
@@ -53,8 +55,8 @@ export default function Sidebar() {
     <div className="w-64 bg-[#1e293b] text-white min-h-screen dark:bg-gray-800 dark:text-white relative">
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center space-x-2">
-          <MonitorIcon className="h-6 w-6" />
-          <span className="font-semibold">Faction IO Sense</span>
+          <Image src={Img} alt="logo" width={100} height={100} />
+          <span className="font-semibold">Grain Technik</span>
         </div>
       </div>
       <div className="p-4">
@@ -81,8 +83,8 @@ export default function Sidebar() {
           })}
         </nav>
       </div>
-      <div className="absolute bottom-4 left-4 text-xs text-gray-400">
-        Faction Labs
+      <div className="absolute bottom-4 left-0 text-xs text-gray-400">
+        <Image src={Img} alt="logo" width={500} height={100} />
       </div>
     </div>
   );
