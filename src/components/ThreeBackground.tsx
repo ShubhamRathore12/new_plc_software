@@ -15,7 +15,6 @@ function BlinkingStars() {
       fade
       saturation={0}
       speed={2}
-      toneMapped={false}
     />
   );
 }
