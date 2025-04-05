@@ -5,9 +5,16 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { MonitorIcon } from "lucide-react";
+import ThreeBackground from "@/components/ThreeBackground";
+// ✅ Add this
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,14 +51,19 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <Card className="w-full max-w-md mx-4">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+      <ThreeBackground /> {/* ✅ Renders animated stars */}
+      <div className="absolute inset-0 bg-black/70 z-10" />{" "}
+      {/* ✅ Optional overlay for contrast */}
+      <Card className="w-full max-w-md mx-4 z-20">
         <CardHeader className="space-y-2 text-center">
           <div className="flex justify-center">
             <MonitorIcon className="h-12 w-12 text-blue-600" />
           </div>
           <h2 className="text-2xl font-bold">Faction IO Sense</h2>
-          <p className="text-sm text-muted-foreground">Enter your credentials to access the dashboard</p>
+          <p className="text-sm text-muted-foreground">
+            Enter your credentials to access the dashboard
+          </p>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
@@ -83,11 +95,7 @@ export default function LoginPage() {
             </div>
           </CardContent>
           <CardFooter>
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={isLoading}
-            >
+            <Button type="submit" className="w-full mt-10" disabled={isLoading}>
               {isLoading ? "Signing in..." : "Sign in"}
             </Button>
           </CardFooter>

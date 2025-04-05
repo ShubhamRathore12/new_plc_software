@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
+import Select from "react-select";
+
 import {
   Form,
   FormControl,
@@ -16,9 +18,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layout/dashboard-layout";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // ✅ Shadcn Tabs
 
-// Extend your form schema to include "monitorAccess" (array of strings).
-// We'll require monitorAccess only if accountType is "manufactura".
+// Zod Schema
 const formSchema = z
   .object({
     accountType: z.enum(["manufactura", "customer"], {
@@ -33,11 +35,7 @@ const formSchema = z
     username: z.string().min(3, {
       message: "Username must be at least 3 characters.",
     }),
-    // Email is required only for manufactura account type
-    email: z
-      .string()
-      .email({ message: "Please enter a valid email address." })
-      .optional(),
+    email: z.string().email().optional(),
     phoneNumber: z.string().min(10, {
       message: "Phone number must be at least 10 digits.",
     }),
@@ -48,24 +46,22 @@ const formSchema = z
       message: "Password must be at least 8 characters.",
     }),
     confirmPassword: z.string(),
-    // "monitorAccess" will be an array of strings (card identifiers)
     monitorAccess: z.string().array().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
   })
-  // Custom refinement: if accountType is manufactura, email is required
   .refine(
     (data) => {
-      if (data.accountType === "manufactura") {
-        return !!data.email;
-      }
+      if (data.accountType === "manufactura") return !!data.email;
       return true;
     },
-    { message: "Email is required for manufactura accounts", path: ["email"] }
+    {
+      message: "Email is required for manufactura accounts",
+      path: ["email"],
+    }
   )
-  // If user is "manufactura," require at least one monitorAccess selection
   .refine(
     (data) => {
       if (data.accountType === "manufactura") {
@@ -100,46 +96,28 @@ export default function RegistrationForm() {
     },
   });
 
-  // Watch accountType for conditional rendering
   const accountType = form.watch("accountType");
 
   async function onSubmit(values: FormSchemaType) {
     setIsLoading(true);
-
     try {
-      // Build the payload
       const payload: any = {
-        accountType: values.accountType,
-        firstName: values.firstName,
-        lastName: values.lastName,
-        username: values.username,
-        phoneNumber: values.phoneNumber,
-        company: values.company,
-        password: values.password,
+        ...values,
+        email: values.accountType === "manufactura" ? values.email : undefined,
         monitorAccess: values.monitorAccess || [],
       };
 
-      // Include email only if manufactura
-      if (values.accountType === "manufactura") {
-        payload.email = values.email;
-      }
-
       const response = await fetch("/api/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
 
       const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.message || "Registration failed");
-      }
+      if (!response.ok) throw new Error(data.message || "Registration failed");
 
       toast.success("Registration successful", {
-        description:
-          "Account created successfully. Check your email for details.",
+        description: "Account created successfully. Check your email.",
       });
 
       form.reset();
@@ -153,11 +131,30 @@ export default function RegistrationForm() {
     }
   }
 
+  const monitorOptions = [
+    { value: "overview", label: "Overview" },
+    { value: "monitoring-locations", label: "Monitoring Locations" },
+    { value: "dashboards", label: "Dashboards" },
+    { value: "devices", label: "Devices" },
+    { value: "notifications", label: "Notifications" },
+    { value: "contacts", label: "Contacts" },
+    { value: "clusters", label: "Clusters" },
+    { value: "reports", label: "Reports" },
+    { value: "triggers", label: "Triggers" },
+    { value: "auto", label: "Auto" },
+    { value: "aeration", label: "Aeration" },
+    { value: "fault", label: "Fault" },
+    { value: "settings", label: "Settings" },
+    { value: "inputs", label: "Inputs" },
+    { value: "outputs", label: "Outputs" },
+    { value: "test", label: "Test" },
+    { value: "screen-brightness", label: "Screen Brightness" },
+  ];
+
   return (
     <DashboardLayout>
-      <div className="flex h-screen bg-gray-50 dark:bg-black">
-        {/* Main Content: Registration Form */}
-        <div className="flex-1 p-6">
+      <div className="flex h-[52rem] bg-gray-50 dark:bg-black -mt-10">
+        <div className="flex-1 p-6 h-screen mb-10">
           <div className="w-full max-w-md mx-auto p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <div className="text-center">
               <h1 className="text-2xl font-bold text-black dark:text-white">
@@ -168,46 +165,33 @@ export default function RegistrationForm() {
               </p>
             </div>
 
-            {/* Toggle for Account Type */}
-            <div className="flex justify-center space-x-4 mb-4">
-              <button
-                type="button"
-                onClick={() =>
-                  form.setValue("accountType", "manufactura", {
+            {/* Account Type Tabs */}
+            <Tabs
+              value={accountType}
+              onValueChange={(value) =>
+                form.setValue(
+                  "accountType",
+                  value as "manufactura" | "customer",
+                  {
                     shouldValidate: true,
-                  })
-                }
-                className={`px-4 py-2 rounded ${
-                  accountType === "manufactura"
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-black"
-                }`}
-              >
-                Manufactura
-              </button>
-              <button
-                type="button"
-                onClick={() =>
-                  form.setValue("accountType", "customer", {
-                    shouldValidate: true,
-                  })
-                }
-                className={`px-4 py-2 rounded ${
-                  accountType === "customer"
-                    ? "bg-blue-600 text-white"
-                    : "bg-gray-200 text-black"
-                }`}
-              >
-                Customer
-              </button>
-            </div>
+                  }
+                )
+              }
+              className="w-full mb-4"
+            >
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="manufactura">Manufactura</TabsTrigger>
+                <TabsTrigger value="customer">Customer</TabsTrigger>
+              </TabsList>
+            </Tabs>
 
+            {/* Form */}
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
               >
-                {/* First/Last Name */}
+                {/* First & Last Name */}
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -217,7 +201,6 @@ export default function RegistrationForm() {
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="John"
                             {...field}
                             className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                           />
@@ -234,7 +217,6 @@ export default function RegistrationForm() {
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
                           <Input
-                            placeholder="Doe"
                             {...field}
                             className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                           />
@@ -254,7 +236,6 @@ export default function RegistrationForm() {
                       <FormLabel>Username</FormLabel>
                       <FormControl>
                         <Input
-                          placeholder="johndoe"
                           {...field}
                           className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                         />
@@ -264,7 +245,7 @@ export default function RegistrationForm() {
                   )}
                 />
 
-                {/* Conditionally render Email field only for Manufactura */}
+                {/* Email (Only for manufactura) */}
                 {accountType === "manufactura" && (
                   <FormField
                     control={form.control}
@@ -275,7 +256,6 @@ export default function RegistrationForm() {
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="john.doe@example.com"
                             {...field}
                             className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                           />
@@ -286,7 +266,7 @@ export default function RegistrationForm() {
                   />
                 )}
 
-                {/* Phone Number */}
+                {/* Phone */}
                 <FormField
                   control={form.control}
                   name="phoneNumber"
@@ -296,7 +276,6 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="tel"
-                          placeholder="(123) 456-7890"
                           {...field}
                           className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                         />
@@ -329,33 +308,27 @@ export default function RegistrationForm() {
                   )}
                 />
 
-                {/* Monitor Access as a Multi-select Dropdown for Manufactura */}
+                {/* Monitor Access (Only for manufactura) */}
                 {accountType === "manufactura" && (
                   <FormField
                     control={form.control}
                     name="monitorAccess"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Monitor Access (Select Cards)</FormLabel>
+                        <FormLabel>Monitor Access</FormLabel>
                         <FormControl>
-                          <select
-                            multiple
-                            value={field.value}
-                            onChange={(e) => {
-                              // Get all selected options as an array of values
-                              const selected = Array.from(
-                                e.target.selectedOptions,
-                                (option) => option.value
-                              );
-                              field.onChange(selected);
-                            }}
-                            className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 text-black dark:text-white border border-gray-300 rounded"
-                          >
-                            <option value="pressure">Pressure</option>
-                            <option value="temperature">Temperature</option>
-                            <option value="heat">Heat</option>
-                            <option value="boiler">Boiler</option>
-                          </select>
+                          <Select
+                            isMulti
+                            options={monitorOptions}
+                            value={monitorOptions.filter((opt) =>
+                              field.value?.includes(opt.value)
+                            )}
+                            onChange={(selected) =>
+                              field.onChange(selected.map((s) => s.value))
+                            }
+                            className="text-black"
+                            classNamePrefix="react-select"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -373,7 +346,6 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="********"
                           {...field}
                           className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                         />
@@ -393,7 +365,6 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="password"
-                          placeholder="********"
                           {...field}
                           className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                         />
@@ -403,6 +374,7 @@ export default function RegistrationForm() {
                   )}
                 />
 
+                {/* Submit */}
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? "Registering..." : "Register"}
                 </Button>

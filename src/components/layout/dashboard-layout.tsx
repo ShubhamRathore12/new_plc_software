@@ -57,7 +57,7 @@ export default function DashboardLayout({
         )}
 
         {/* Main Content */}
-        <main className="flex-1 p-4 md:p-2 overflow-auto relative h-screen">
+        <main className="flex-1 p-4 md:p-2 overflow-auto relative h-screen -mt-2">
           <Header />
           {/* Zoom Controls */}
           <div
@@ -83,7 +83,7 @@ export default function DashboardLayout({
 
           {/* Zoomable Content */}
           <div
-            className="relative transform transition-transform origin-top-left"
+            className="relative transform transition-transform origin-top-left h-full"
             style={{
               transform: `scale(${zoomLevel}) translateX(${
                 (zoomLevel - 1) * 256
@@ -91,7 +91,7 @@ export default function DashboardLayout({
             }}
           >
             {children}
-            <footer className="mt-6 text-center text-sm text-muted-foreground">
+            <footer className="mt-6 text-center text-sm text-muted-foreground  bg-gray-50 dark:bg-black">
               © 2023, powered by Grain Technik
             </footer>
           </div>
