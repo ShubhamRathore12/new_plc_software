@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   // Set headers for SSE
   writer.write(
     encoder.encode(
-      "retry: 5000\n" + // Try to reconnect every 10s if disconnected
+      "retry: 100\n" + // Try to reconnect every 10s if disconnected
         "event: connected\ndata: connected\n\n"
     )
   );
@@ -36,7 +36,7 @@ export async function GET(req: Request) {
         )
       );
     }
-  }, 5000); // Check every 5 seconds
+  }, 100); // Check every 5 seconds
 
   const close = () => {
     clearInterval(interval);
