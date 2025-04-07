@@ -38,7 +38,7 @@ export default function AutoPage() {
     return () => {
       eventSource.close();
     };
-  }, [setData, setLoading]);
+  }, [data, setLoading]);
 
   const handleStart = () => {
     setIsRunning(true);
