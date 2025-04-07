@@ -17,7 +17,9 @@ export async function GET(req: Request) {
 
   const interval = setInterval(async () => {
     try {
-      const [rows]: any = await pool.query("SELECT * FROM kabumachinedata");
+      const [rows]: any = await pool.query(
+        "SELECT * FROM kabumachinedata ORDER BY id DESC LIMIT 1"
+      );
       const latest = rows[0];
 
       if (latest && latest.id > lastInsertedId) {
