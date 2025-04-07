@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   // Set headers for SSE
   writer.write(
     encoder.encode(
-      "retry: 30000\n" + // Try to reconnect every 10s if disconnected
+      "retry: 5000\n" + // Try to reconnect every 10s if disconnected
         "event: connected\ndata: connected\n\n"
     )
   );
