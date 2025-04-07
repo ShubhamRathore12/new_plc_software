@@ -18,29 +18,27 @@ import { io } from "socket.io-client";
 export default function AutoPage() {
   const router = useRouter();
   const [isRunning, setIsRunning] = useState(false);
-  const { data, setData, loading, setLoading } = useDataStore();
+  // const { data, setData, loading, setLoading } = useDataStore();
+  const [data, setData] = useState<any>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true); // Set loading to true before the API call
-      try {
-        const res = await fetch("/api/getData");
-        const result = await res.json();
-        setData(result); // Update the store with the fetched data
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false); // Set loading to false after the API call is done
-      }
+    const eventSource = new EventSource("/api/getData");
+
+    eventSource.onmessage = (event) => {
+      const newRow = JSON.parse(event.data);
+      setData([newRow]);
     };
 
-    fetchData();
-    const interval = setInterval(fetchData, 10000);
+    eventSource.onerror = (err) => {
+      console.error("SSE error:", err);
+      eventSource.close();
+    };
 
-    return () => clearInterval(interval);
+    return () => {
+      eventSource.close();
+    };
   }, [setData, setLoading]);
-
-  if (loading) return <div>Loading...</div>;
 
   const handleStart = () => {
     setIsRunning(true);
@@ -258,15 +256,15 @@ export default function AutoPage() {
   } = data?.[0] || {};
 
   const systemData = {
-    t0: data?.[0]?.t0 || 1, // AI_TH_Act value: "1"
+    t0: data?.[0]?.t0 || 0, // AI_TH_Act value: "1"
     t1: data?.[0]?.t1 || 0, // AI_COLD_AIR_TEMP value: "0"
-    t2: data?.[0]?.t2 || 1, // AI_AMBIANT_TEMP value: "1"
-    hgs: data?.[0]?.hgs || 1, // HOT_GAS_VALVE value: "1"
+    t2: data?.[0]?.t2 || 0, // AI_AMBIANT_TEMP value: "1"
+    hgs: data?.[0]?.hgs || 0, // HOT_GAS_VALVE value: "1"
     aht: data?.[0]?.aht || 0, // AHT_PID_Output value: "0"
-    heater: data?.[0]?.heater || 1, // Heater_Output value: "1"
-    blower: data?.[0]?.blower || 1, // BLOWER_PID_Output value: "1"
-    condenser: data?.[0]?.condenser || 1, // COND_PID_Output value: "1"
-    compressor: data?.[0]?.compressor || 1, // Compressor_ON value: "1"
+    heater: data?.[0]?.heater || 0, // Heater_Output value: "1"
+    blower: data?.[0]?.blower || 0, // BLOWER_PID_Output value: "1"
+    condenser: data?.[0]?.condenser || 0, // COND_PID_Output value: "1"
+    compressor: data?.[0]?.compressor || 0, // Compressor_ON value: "1"
   };
 
   return (
@@ -389,7 +387,7 @@ export default function AutoPage() {
                   transition={{ duration: 0.5, delay: 0.9 }}
                 >
                   <Badge variant="outline" className="bg-background/80">
-                    TH = {systemData?.t0} °C
+                    TH = {AHT_PID_Config_OutputLowerLimit} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
                     T0 = {systemData?.t0} °C
@@ -440,10 +438,12 @@ export default function AutoPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>TH (Supply Air)</span>
-                      <span className="font-medium">{systemData?.t0} °C</span>
+                      <span className="font-medium">
+                        {AHT_PID_Config_OutputLowerLimit} °C
+                      </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>SYSTEMDATA?.T0 (After Heat)</span>
+                      <span>T0 (After Heat)</span>
                       <span className="font-medium">{systemData?.t0} °C</span>
                     </div>
                     <div className="flex justify-between">
@@ -457,7 +457,7 @@ export default function AutoPage() {
                     <div className="flex justify-between">
                       <span>TH - T1</span>
                       <span className="font-medium">
-                        {systemData?.t0 - systemData?.t1} °C
+                        {AHT_PID_Config_OutputLowerLimit - systemData?.t1} °C
                       </span>
                     </div>
                   </div>
