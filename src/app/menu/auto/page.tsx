@@ -390,7 +390,7 @@ export default function AutoPage() {
                     TH = {AHT_PID_Config_OutputLowerLimit} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T0 = {systemData?.t0} °C
+                    T0 = {AMBIENT_AIR_TEMPERATURE} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
                     T1 = {systemData?.t1} °C
@@ -444,7 +444,7 @@ export default function AutoPage() {
                     </div>
                     <div className="flex justify-between">
                       <span>T0 (After Heat)</span>
-                      <span className="font-medium">{systemData?.t0} °C</span>
+                      <span className="font-medium">{AMBIENT_AIR_TEMPERATURE} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T1 (Cold Air)</span>
