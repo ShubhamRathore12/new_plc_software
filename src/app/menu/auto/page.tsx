@@ -27,7 +27,7 @@ export default function AutoPage() {
 
     eventSource.onmessage = (event) => {
       const newRow = JSON.parse(event.data);
-      setData([newRow]);
+      setData(() => [newRow]);
     };
 
     eventSource.onerror = (err) => {
