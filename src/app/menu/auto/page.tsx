@@ -253,6 +253,11 @@ export default function AutoPage() {
     SETTINGS_comp_reset_q0_5_from_hmi,
     SET_POINT,
     SET_TIME_Date_Time,
+    Value_to_Display_HEATER,
+    Value_to_Display_AHT_VALE_OPEN,
+    Value_to_Display_HOT_GAS_VALVE_OPEN,
+    Value_to_Display_COND_ACT_SPEED,
+    Value_to_Display_EVAP_ACT_SPEED,
   } = data?.[0] || {};
 
   const systemData = {
@@ -276,7 +281,8 @@ export default function AutoPage() {
               SELECT AUTO
             </h1>
             <p className="text-muted-foreground">
-              SR. NO. GTPL-075 | 45% RH | 1200 Pa
+              SR. NO. GTPL-075 | {AI_RH_Analog_Scale}% RH | {AI_Pa_Analog_Scale}{" "}
+              Pa
             </p>
           </AnimatedContainer>
 
@@ -311,7 +317,7 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">HTR</div>
-                    <div className="text-sm">{systemData?.aht}%</div>
+                    <div className="text-sm">{Value_to_Display_HEATER}%</div>
                   </div>
                 </motion.div>
 
@@ -324,7 +330,9 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">AHT</div>
-                    <div className="text-sm">{systemData?.aht}%</div>
+                    <div className="text-sm">
+                      {Value_to_Display_AHT_VALE_OPEN}%
+                    </div>
                   </div>
                 </motion.div>
 
@@ -337,7 +345,9 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">HGS</div>
-                    <div className="text-sm">{systemData?.hgs}%</div>
+                    <div className="text-sm">
+                      {Value_to_Display_HOT_GAS_VALVE_OPEN}%
+                    </div>
                   </div>
                 </motion.div>
 
@@ -350,6 +360,9 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">BLOWER</div>
+                    <div className="text-sm">
+                      {Value_to_Display_EVAP_ACT_SPEED}
+                    </div>
                   </div>
                 </motion.div>
 
@@ -362,7 +375,9 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">COMP</div>
-                    <div className="text-sm">HP 220 LP 40</div>
+                    <div className="text-sm">
+                      HP {AI_COND_PRESSURE} LP {AI_SUC_PRESSURE}
+                    </div>
                   </div>
                 </motion.div>
 
@@ -375,7 +390,9 @@ export default function AutoPage() {
                 >
                   <div className="text-center">
                     <div className="font-bold">COND</div>
-                    <div className="text-sm">{systemData?.hgs}%</div>
+                    <div className="text-sm">
+                      {Value_to_Display_COND_ACT_SPEED}%
+                    </div>
                   </div>
                 </motion.div>
 
@@ -387,16 +404,16 @@ export default function AutoPage() {
                   transition={{ duration: 0.5, delay: 0.9 }}
                 >
                   <Badge variant="outline" className="bg-background/80">
-                    TH = {AHT_PID_Config_OutputLowerLimit} °C
+                    TH = {AI_TH_Act} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T0 = {AMBIENT_AIR_TEMPERATURE} °C
+                    T0 = {AI_AIR_OUTLET_TEMP} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
                     T1 = {systemData?.t1} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T2 = {systemData?.t2} °C
+                    T2 = {AI_AMBIANT_TEMP} °C
                   </Badge>
                 </motion.div>
 
@@ -438,27 +455,25 @@ export default function AutoPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>TH (Supply Air)</span>
-                      <span className="font-medium">
-                        {AHT_PID_Config_OutputLowerLimit} °C
-                      </span>
+                      <span className="font-medium">{AI_TH_Act} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T0 (After Heat)</span>
-                      <span className="font-medium">{AMBIENT_AIR_TEMPERATURE} °C</span>
+                      <span className="font-medium">
+                        {AI_AIR_OUTLET_TEMP} °C
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>T1 (Cold Air)</span>
-                      <span className="font-medium">{systemData?.t1} °C</span>
+                      <span className="font-medium">{AI_COLD_AIR_TEMP} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>
-                      <span className="font-medium">{systemData?.t2} °C</span>
+                      <span className="font-medium">{AI_AMBIANT_TEMP} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>TH - T1</span>
-                      <span className="font-medium">
-                        {AHT_PID_Config_OutputLowerLimit - systemData?.t1} °C
-                      </span>
+                      <span className="font-medium">{AI_TH_Act} °C</span>
                     </div>
                   </div>
                 </CardContent>
