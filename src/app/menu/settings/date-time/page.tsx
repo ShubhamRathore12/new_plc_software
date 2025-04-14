@@ -282,7 +282,7 @@ export default function DateTimePage() {
                     <Input
                       id="year"
                       type="number"
-                      value={SET_TIME_SET_YEAR}
+                      value={READ_TIME_Date_Time_YEAR}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -296,7 +296,7 @@ export default function DateTimePage() {
                     <Input
                       id="month"
                       type="number"
-                      value={SET_TIME_SET_MONTH}
+                      value={READ_TIME_Date_Time_MONTH}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -312,7 +312,7 @@ export default function DateTimePage() {
                     <Input
                       id="day"
                       type="number"
-                      value={SET_TIME_SET_DAY}
+                      value={READ_TIME_Date_Time_DAY}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -334,7 +334,7 @@ export default function DateTimePage() {
                     <Input
                       id="hours"
                       type="number"
-                      value={SET_TIME_SET_HOUR}
+                      value={READ_TIME_Date_Time_HOUR}
                       onChange={(e) =>
                         setTime({
                           ...time,
@@ -350,7 +350,7 @@ export default function DateTimePage() {
                     <Input
                       id="minutes"
                       type="number"
-                      value={SET_TIME_SET_MINUTE}
+                      value={READ_TIME_Date_Time_MINUTE}
                       onChange={(e) =>
                         setTime({
                           ...time,
@@ -366,7 +366,7 @@ export default function DateTimePage() {
                     <Input
                       id="seconds"
                       type="number"
-                      value={SET_TIME_SET_SEC}
+                      value={READ_TIME_Date_Time_SECOND}
                       onChange={(e) =>
                         setTime({
                           ...time,

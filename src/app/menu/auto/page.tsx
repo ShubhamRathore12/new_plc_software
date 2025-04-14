@@ -12,13 +12,11 @@ import {
   PageTransition,
   AnimatedContainer,
 } from "@/components/ui/animated-container";
-import { useDataStore } from "@/lib/store";
-import { io } from "socket.io-client";
 
 export default function AutoPage() {
   const router = useRouter();
   const [isRunning, setIsRunning] = useState(false);
-  // const { data, setData, loading, setLoading } = useDataStore();
+
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +29,6 @@ export default function AutoPage() {
     };
 
     eventSource.onerror = (err) => {
-      console.error("SSE error:", err);
       eventSource.close();
     };
 
@@ -260,18 +257,6 @@ export default function AutoPage() {
     Value_to_Display_EVAP_ACT_SPEED,
   } = data?.[0] || {};
 
-  const systemData = {
-    t0: data?.[0]?.t0 || 0, // AI_TH_Act value: "1"
-    t1: data?.[0]?.t1 || 0, // AI_COLD_AIR_TEMP value: "0"
-    t2: data?.[0]?.t2 || 0, // AI_AMBIANT_TEMP value: "1"
-    hgs: data?.[0]?.hgs || 0, // HOT_GAS_VALVE value: "1"
-    aht: data?.[0]?.aht || 0, // AHT_PID_Output value: "0"
-    heater: data?.[0]?.heater || 0, // Heater_Output value: "1"
-    blower: data?.[0]?.blower || 0, // BLOWER_PID_Output value: "1"
-    condenser: data?.[0]?.condenser || 0, // COND_PID_Output value: "1"
-    compressor: data?.[0]?.compressor || 0, // Compressor_ON value: "1"
-  };
-
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -430,16 +415,14 @@ export default function AutoPage() {
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm font-medium">Heater</span>
-                        <span className="text-sm font-medium">
-                          {systemData?.aht}%
-                        </span>
+                        <span className="text-sm font-medium">%</span>
                       </div>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: "100%" }}
                         transition={{ duration: 0.5, delay: 2.2 }}
                       >
-                        <Progress value={systemData?.aht} className="h-2" />
+                        <Progress value={90} className="h-2" />
                       </motion.div>
                     </div>
 

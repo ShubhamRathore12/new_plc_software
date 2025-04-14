@@ -58,7 +58,7 @@ export default function DashboardLayout({
             className={`fixed flex flex-col items-center space-y-2 p-3 rounded-lg z-50 shadow-lg ${
               isMobile
                 ? "bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-700"
-                : "top-4 right-4 bg-gray-800"
+                : "bottom-4 right-4 bg-gray-800"
             }`}
           >
             <button
