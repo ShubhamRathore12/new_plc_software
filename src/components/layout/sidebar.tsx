@@ -22,15 +22,15 @@ const menuItems = [
   { icon: LayoutDashboard, label: "Overview", href: "/dashboard" },
 
   // { icon: MonitorIcon, label: "Overview", href: "/" },
-  {
-    icon: MapPin,
-    label: "Monitoring Locations",
-    href: "/monitoring-locations",
-  },
+  // {
+  //   icon: MapPin,
+  //   label: "Monitoring Locations",
+  //   href: "/monitoring-locations",
+  // },
   // { icon: LayoutDashboard, label: "Dashboards", href: "/dashboard" },
   { icon: MonitorIcon, label: "Devices", href: "/devices" },
   // { icon: Bell, label: "Notifications", href: "/notifications" },
-  { icon: Users, label: "Contacts", href: "/contacts" },
+  { icon: Users, label: "Contact Us", href: "/contacts" },
   // { icon: Zap, label: "Triggers", href: "/triggers" },
   // { icon: Layers, label: "Clusters", href: "/clusters" },
   // { icon: FileText, label: "Reports", href: "/reports" },

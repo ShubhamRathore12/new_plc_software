@@ -38,7 +38,7 @@ export default function PidPage() {
   };
 
   const handleBack = () => {
-    router.push("/settings");
+    router.push("/menu/settings");
   };
 
   return (

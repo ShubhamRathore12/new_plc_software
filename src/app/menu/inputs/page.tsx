@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function InputsPage() {
   const inputs = [
@@ -33,6 +34,7 @@ export default function InputsPage() {
     { id: "12.4", description: "Heater RCCB fault", status: false },
     { id: "12.5", description: "Condenser fan door open", status: false },
   ];
+  const router = useRouter();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -78,6 +80,9 @@ export default function InputsPage() {
               </Link>
             </div>
           </CardContent>
+          <Button variant="outline" onClick={() => router.push("/menu")}>
+            BACK
+          </Button>
         </Card>
       </main>
     </div>

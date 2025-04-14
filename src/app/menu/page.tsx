@@ -43,7 +43,7 @@ export default function Home() {
     { icon: ToggleLeft, title: "INPUTS", href: "menu/inputs" },
     { icon: ToggleRight, title: "OUTPUTS", href: "menu/outputs" },
     { icon: TestTube, title: "TEST", href: "menu/test" },
-    { icon: Sun, title: "SCREEN BRIGHTNESS", href: "menu/brightness" },
+    // { icon: Sun, title: "SCREEN BRIGHTNESS", href: "menu/brightness" },
   ];
 
   const container = {

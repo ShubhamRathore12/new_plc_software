@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
@@ -10,6 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useRouter } from "next/navigation";
 
 export default function FaultPage() {
   const faultCodes = [
@@ -63,6 +65,8 @@ export default function FaultPage() {
     { code: 45, description: "Delta value not achieved in aeration mode" },
   ];
 
+  const router = useRouter();
+
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 container py-8">
@@ -96,6 +100,9 @@ export default function FaultPage() {
               </Table>
             </ScrollArea>
           </CardContent>
+          <Button variant="outline" onClick={() => router.push("/menu")}>
+            BACK
+          </Button>
         </Card>
       </main>
     </div>

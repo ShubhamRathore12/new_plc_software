@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function OutputsPage() {
   const outputs = [
@@ -20,6 +21,8 @@ export default function OutputsPage() {
     { id: "Q2.1", description: "Collective Trouble Signal", status: false },
     { id: "Q2.2", description: "Buzzer on", status: false },
   ];
+
+  const router = useRouter();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -65,6 +68,9 @@ export default function OutputsPage() {
               </Link>
             </div>
           </CardContent>
+          <Button variant="outline" onClick={() => router.push("/menu")}>
+            BACK
+          </Button>
         </Card>
       </main>
     </div>
