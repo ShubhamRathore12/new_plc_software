@@ -13,10 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUserStore } from "@/lib/store";
 import { Sun, Moon, User, LogOut } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const { user } = useUserStore();
+
+  const router = useRouter();
 
   return (
     <header className="border-b sticky top-0 z-30 bg-background mb-4 md:p-0">
@@ -44,7 +47,10 @@ export default function Header() {
                 <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <LogOut className="mr-2 h-4 w-4" />
+                <LogOut
+                  className="mr-2 h-4 w-4"
+                  onClick={() => router.push("/")}
+                />
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
