@@ -17,6 +17,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { useRouter } from "next/navigation";
 
 export default function OperatingHoursPage() {
   const [hours, setHours] = useState(1234);
@@ -24,6 +25,8 @@ export default function OperatingHoursPage() {
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
 
   useEffect(() => {
     const eventSource = new EventSource("/api/getData");
@@ -301,7 +304,9 @@ export default function OperatingHoursPage() {
               </div>
 
               <div className="flex justify-between pt-4">
-                <Button variant="outline">BACK</Button>
+                <Button variant="outline" onClick={() => router.push("/menu")}>
+                  BACK
+                </Button>
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
