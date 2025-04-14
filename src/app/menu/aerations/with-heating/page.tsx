@@ -299,7 +299,7 @@ export default function AerationWithHeatingPage() {
   };
 
   const handleBack = () => {
-    router.push("/aeration");
+    router.push("/menu");
   };
 
   return (

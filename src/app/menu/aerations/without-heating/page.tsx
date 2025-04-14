@@ -14,6 +14,7 @@ import {
   PageTransition,
   AnimatedContainer,
 } from "@/components/ui/animated-container";
+import { useRouter } from "next/navigation";
 
 export default function AerationWithoutHeatingPage() {
   const [isRunning, setIsRunning] = useState(false);
@@ -23,6 +24,7 @@ export default function AerationWithoutHeatingPage() {
 
   const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const eventSource = new EventSource("/api/getData");
@@ -280,6 +282,10 @@ export default function AerationWithoutHeatingPage() {
     setRunningTime({ hours: 0, minutes: 0 });
   };
 
+  const handleBack = () => {
+    router.push("/menu");
+  };
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -487,6 +493,19 @@ export default function AerationWithoutHeatingPage() {
                     AERATION STOP
                   </Button>
                 )}
+              </motion.div>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 2.3 }}
+              >
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleBack}
+                >
+                  BACK
+                </Button>
               </motion.div>
             </AnimatedContainer>
           </div>

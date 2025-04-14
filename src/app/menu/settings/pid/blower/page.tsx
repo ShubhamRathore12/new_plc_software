@@ -30,7 +30,7 @@ export default function BlowerPidPage() {
   };
 
   const handleBack = () => {
-    router.push("/settings/pid");
+    router.push("/menu/settings/pid");
   };
 
   return (

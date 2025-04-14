@@ -10,6 +10,7 @@ import { useMediaQuery } from "@/app/hooks/use-media-query";
 import { MonitoringProvider } from "@/app/context/monitoring-context";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import Header from "./header";
+import ProtectedRoute from "../auth/ProtectedRoute";
 
 export default function DashboardLayout({
   children,

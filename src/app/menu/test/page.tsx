@@ -586,7 +586,7 @@ export default function TestPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 2 }}
           >
-            <Button variant="outline" onClick={() => router.push("/")}>
+            <Button variant="outline" onClick={() => router.push("/menu")}>
               BACK
             </Button>
             <Button onClick={() => router.push("/auto")}>NEXT</Button>

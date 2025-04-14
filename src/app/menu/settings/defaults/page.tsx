@@ -43,7 +43,7 @@ export default function DefaultsPage() {
   }, [data, setLoading]);
 
   const handleBack = () => {
-    router.push("/");
+    router.push("/menu");
   };
 
   const {
@@ -380,7 +380,7 @@ export default function DefaultsPage() {
                   >
                     <Button
                       variant="outline"
-                      onClick={() => router.push("/settings")}
+                      onClick={() => router.push("/menu")}
                     >
                       BACK
                     </Button>

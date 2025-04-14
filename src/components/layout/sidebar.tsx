@@ -19,19 +19,21 @@ import Image from "next/image";
 import Img from "../../../public/logo.jpeg";
 
 const menuItems = [
-  { icon: MonitorIcon, label: "Overview", href: "/" },
+  { icon: LayoutDashboard, label: "Overview", href: "/dashboard" },
+
+  // { icon: MonitorIcon, label: "Overview", href: "/" },
   {
     icon: MapPin,
     label: "Monitoring Locations",
     href: "/monitoring-locations",
   },
-  { icon: LayoutDashboard, label: "Dashboards", href: "/dashboard" },
+  // { icon: LayoutDashboard, label: "Dashboards", href: "/dashboard" },
   { icon: MonitorIcon, label: "Devices", href: "/devices" },
-  { icon: Bell, label: "Notifications", href: "/notifications" },
+  // { icon: Bell, label: "Notifications", href: "/notifications" },
   { icon: Users, label: "Contacts", href: "/contacts" },
-  { icon: Zap, label: "Triggers", href: "/triggers" },
-  { icon: Layers, label: "Clusters", href: "/clusters" },
-  { icon: FileText, label: "Reports", href: "/reports" },
+  // { icon: Zap, label: "Triggers", href: "/triggers" },
+  // { icon: Layers, label: "Clusters", href: "/clusters" },
+  // { icon: FileText, label: "Reports", href: "/reports" },
   { icon: LayoutDashboard, label: "Registration", href: "/registration-form" },
 ];
 

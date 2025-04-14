@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Check } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function DateTimePage() {
   const [date, setDate] = useState({
@@ -41,6 +42,8 @@ export default function DateTimePage() {
       eventSource.close();
     };
   }, [data, setLoading]);
+
+  const router = useRouter();
 
   const {
     AHT_PID_Config_OutputLowerLimit,
@@ -378,7 +381,9 @@ export default function DateTimePage() {
               </div>
 
               <div className="flex justify-between">
-                <Button variant="outline">BACK</Button>
+                <Button variant="outline" onClick={() => router.push("/menu")}>
+                  BACK
+                </Button>
                 <Button>
                   <Check className="mr-2 h-4 w-4" />
                   SET

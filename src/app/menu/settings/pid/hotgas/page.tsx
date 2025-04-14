@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useRouter } from "next/navigation";
 
-export default function AfterheatPidPage() {
+export default function AfterhotPage() {
   const [params, setParams] = useState({
     th: 32.5,
     set: 30.0,
@@ -30,7 +30,7 @@ export default function AfterheatPidPage() {
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
-            AFTERHEAT PID TUNING
+            AFTER HOT GAS
           </h1>
         </div>
 

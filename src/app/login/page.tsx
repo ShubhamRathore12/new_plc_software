@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,12 +13,12 @@ import {
 import { Label } from "@/components/ui/label";
 import { MonitorIcon } from "lucide-react";
 import ThreeBackground from "@/components/ThreeBackground";
-// ✅ Add this
+import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("shub@gmail.com");
-  const [password, setPassword] = useState("1234");
+  const [username, setUsername] = useState("Narayan12");
+  const [password, setPassword] = useState("Naruto@12");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -29,21 +28,23 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const result = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
       });
 
-      if (result?.error) {
-        setError("Invalid credentials");
-        return;
-      }
+      const data = await response.json();
 
       router.push("/dashboard");
-      router.refresh();
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Login error:", error);
       setError("An error occurred during sign in");
     } finally {
       setIsLoading(false);
@@ -52,9 +53,8 @@ export default function LoginPage() {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
-      <ThreeBackground /> {/* ✅ Renders animated stars */}
-      <div className="absolute inset-0 bg-black/70 z-10" />{" "}
-      {/* ✅ Optional overlay for contrast */}
+      <ThreeBackground />
+      <div className="absolute inset-0 bg-black/70 z-10" />
       <Card className="w-full max-w-md mx-4 z-20">
         <CardHeader className="space-y-2 text-center">
           <div className="flex justify-center">
@@ -73,13 +73,13 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>

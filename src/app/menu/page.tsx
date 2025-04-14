@@ -28,7 +28,7 @@ export default function Home() {
   const handleToggle = () => {
     if (!is3D) {
       setIs3D(true);
-      router.push("/"); // navigate to 3D screen
+      router.push("/dashbaord"); // navigate to 3D screen
     } else {
       setIs3D(false);
       // staying on 2D (menu) view
@@ -81,7 +81,7 @@ export default function Home() {
             </p>
 
             {/* Toggle switch at top-right */}
-            <div className="absolute right-0 top-0 flex items-center space-x-2">
+            {/* <div className="absolute right-0 top-0 flex items-center space-x-2">
               <span className="text-sm font-medium text-muted-foreground">
                 {is3D ? "3D" : "2D"}
               </span>
@@ -92,7 +92,7 @@ export default function Home() {
                   <ToggleLeft className="h-6 w-6 text-primary" />
                 )}
               </button>
-            </div>
+            </div> */}
           </motion.div>
 
           {/* 2D Menu Grid */}

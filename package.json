@@ -49,6 +49,8 @@
     "framer-motion": "^12.6.2",
     "gsap": "^3.12.7",
     "input-otp": "^1.4.2",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.485.0",
     "mysql": "^2.18.1",
@@ -79,6 +81,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/leaflet": "^1.9.17",
     "@types/node": "^20",
     "@types/nodemailer": "^6.4.17",

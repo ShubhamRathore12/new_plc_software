@@ -114,15 +114,17 @@ export default function RegistrationForm() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Registration failed");
 
-      toast.success("Registration successful", {
-        description: "Account created successfully. Check your email.",
-      });
-
-      form.reset();
+      if (response.status === 200 || response.status === 201) {
+        toast.success("🎉 User created successfully!", {
+          description: "The account has been registered.",
+        });
+        form.reset();
+      } else {
+        throw new Error(data.message || "Registration failed");
+      }
     } catch (error) {
-      toast.error("Registration failed", {
+      toast.error("❌ Registration failed", {
         description:
           error instanceof Error ? error.message : "Something went wrong",
       });

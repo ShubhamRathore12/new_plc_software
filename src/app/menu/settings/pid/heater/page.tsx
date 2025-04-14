@@ -31,7 +31,7 @@ export default function HeaterPidPage() {
   };
 
   const handleBack = () => {
-    router.push("/settings/pid");
+    router.push("/menu/settings/pid");
   };
 
   return (

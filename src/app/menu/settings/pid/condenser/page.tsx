@@ -33,7 +33,7 @@ export default function CondenserPidPage() {
   };
 
   const handleBack = () => {
-    router.push("/settings/pid");
+    router.push("/menu/settings/pid");
   };
 
   // GSAP entry + pulse animation

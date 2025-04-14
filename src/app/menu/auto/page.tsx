@@ -49,7 +49,7 @@ export default function AutoPage() {
   };
 
   const handleBack = () => {
-    router.push("/");
+    router.push("/menu");
   };
 
   const {
