@@ -33,7 +33,7 @@ export default function ContactPage() {
     try {
       await emailjs.send(
         "service_1wiy0cf", // Replace with your EmailJS Service ID
-        "template_alcl8qs", // Replace with your EmailJS Template ID
+        "template_ddett7w", // Replace with your EmailJS Template ID
         formData,
         "6v7DsclIUJSPDIIyp" // Replace with your EmailJS Public Key
       );
