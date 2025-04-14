@@ -410,7 +410,7 @@ export default function AutoPage() {
                     T0 = {AI_AIR_OUTLET_TEMP} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T1 = {systemData?.t1} °C
+                    T1 = {AHT_PID_Config_OutputLowerLimit} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
                     T2 = {AI_AMBIANT_TEMP} °C

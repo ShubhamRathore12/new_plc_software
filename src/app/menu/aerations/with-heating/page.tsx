@@ -328,7 +328,7 @@ export default function AerationWithHeatingPage() {
                     </div>
                   </div>
                   <div className="h-[30%] border-t-2 border-primary/70 flex items-center justify-center">
-                    <span className="text-sm font-medium">T1 = 24 °C</span>
+                    <span className="text-sm font-medium">T1 = {AHT_PID_Config_OutputLowerLimit} °C</span>
                   </div>
                 </motion.div>
 
@@ -356,7 +356,7 @@ export default function AerationWithHeatingPage() {
                     TH = {AI_TH_Act} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T2 = 30 °C
+                    T2 = {AI_AMBIANT_TEMP} °C
                   </Badge>
                 </motion.div>
 

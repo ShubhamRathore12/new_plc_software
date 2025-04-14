@@ -339,10 +339,10 @@ export default function AerationWithoutHeatingPage() {
                   transition={{ duration: 0.5, delay: 0.4 }}
                 >
                   <Badge variant="outline" className="bg-background/80">
-                    T1 = 24 °C
+                    T1 = {AHT_PID_Config_OutputLowerLimit} °C
                   </Badge>
                   <Badge variant="outline" className="bg-background/80">
-                    T2 = 30 °C
+                    T2 = {AI_AMBIANT_TEMP} °C
                   </Badge>
                 </motion.div>
 
@@ -462,7 +462,7 @@ export default function AerationWithoutHeatingPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>T1 (Cold Air)</span>
-                      <span className="font-medium">24 °C</span>
+                      <span className="font-medium">{AI_COLD_AIR_TEMP} °C</span>
                     </div>
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>

@@ -47,11 +47,8 @@ export default function Header() {
                 <span>Profile</span>
               </DropdownMenuItem>
               <DropdownMenuItem>
-                <LogOut
-                  className="mr-2 h-4 w-4"
-                  onClick={() => router.push("/")}
-                />
-                <span>Log out</span>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span onClick={() => router.push("/login")}>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

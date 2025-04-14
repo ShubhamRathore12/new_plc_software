@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
-import { useSidebarStore } from "@/lib/store";
+import { useDataStore, useSidebarStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
@@ -42,6 +42,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { isOpen, toggleSidebar } = useSidebarStore();
   const [mounted, setMounted] = useState(false);
+  const { data } = useDataStore();
 
   useEffect(() => {
     setMounted(true);
@@ -63,9 +64,12 @@ export default function Sidebar() {
       </div>
       <div className="p-4">
         <div className="flex items-center space-x-2 mb-6">
-          <div className="h-8 w-8 rounded-full bg-gray-400" />
-          <span className="text-sm">Deepak Madan</span>
+          <div className="h-8 w-8 rounded-full bg-gray-400 text-white flex items-center justify-center font-medium text-sm">
+            {data?.user?.firstName?.charAt(0).toUpperCase() ?? "?"}
+          </div>
+          <span className="text-sm">{data?.user?.firstName}</span>
         </div>
+
         <nav className="space-y-1">
           {menuItems.map((item, index) => {
             const active = pathname === item.href;

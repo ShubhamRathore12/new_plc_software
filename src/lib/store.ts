@@ -58,15 +58,23 @@ export const useUserStore = create<UserState>()(
 
 // Data Store (for fetching data)
 interface DataStore {
-  data: any[]; // Store the fetched data
+  data: any; // Store the fetched data
   setData: (data: any[]) => void; // Function to update the data
   loading: boolean; // Store the loading state
   setLoading: (loading: boolean) => void; // Function to update the loading state
 }
 
-export const useDataStore = create<DataStore>((set) => ({
-  data: [], // Initialize with an empty array
-  setData: (data: any[]) => set({ data }), // Update data in the store
-  loading: true, // Initial loading state
-  setLoading: (loading: boolean) => set({ loading }), // Update loading state
-}));
+export const useDataStore = create<DataStore>()(
+  persist(
+    (set) => ({
+      data: [],
+      setData: (data: any[]) => set({ data }),
+      loading: true,
+      setLoading: (loading: boolean) => set({ loading }),
+    }),
+    {
+      name: "data-storage", // 📝 key in localStorage
+      partialize: (state) => ({ data: state.data }), // optionally persist only `data`, not `loading`
+    }
+  )
+);

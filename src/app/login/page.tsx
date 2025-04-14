@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label";
 import { MonitorIcon } from "lucide-react";
 import ThreeBackground from "@/components/ThreeBackground";
 import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated";
+import { useDataStore } from "@/lib/store";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("Naruto@12");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const { data, setData, loading, setLoading } = useDataStore();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,11 +40,12 @@ export default function LoginPage() {
 
       const data = await response.json();
 
-      router.push("/dashboard");
       if (!response.ok) {
         setError(data.message || "Login failed");
         return;
       }
+      setData(data);
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       setError("An error occurred during sign in");
