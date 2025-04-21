@@ -28,7 +28,7 @@ export default function Home() {
   const handleToggle = () => {
     if (!is3D) {
       setIs3D(true);
-      router.push("/3doverview"); // navigate to 3D screen
+      router.push("/3d"); // navigate to 3D screen
     } else {
       setIs3D(false);
       // staying on 2D (menu) view
