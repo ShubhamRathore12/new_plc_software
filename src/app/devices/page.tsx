@@ -10,6 +10,8 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, ChevronDown, Plus, Minus, Sun, Moon } from "lucide-react";
 import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
+import Im from "../../../public/images/1200.jpg";
+import Im1 from "../../../public/images/200.jpg";
 
 export default function DevicesPage() {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
@@ -29,91 +31,38 @@ export default function DevicesPage() {
   const locations = [
     {
       name: "Location 1",
-      image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e",
+      image: "/images/1200.jpg",
     },
     {
       name: "Location 2",
-      image: "https://images.unsplash.com/photo-1506260408121-e353d10b87c7",
-    },
-    {
-      name: "Location 3",
-      image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b",
+      image: "/images/200.jpg",
     },
   ];
 
   const companies = [
     {
       name: "Company A",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
+      image: "/images/1200.jpg",
     },
     {
       name: "Company B",
-      image: "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9",
-    },
-    {
-      name: "Company C",
-      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
+      image: "/images/200.jpg",
     },
   ];
 
   const devices = [
     {
-      name: "gT-40E",
+      name: "S7-1200",
       status: "Device status",
-      image: "https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0",
+      image: "/images/1200.jpg",
     },
     {
-      name: "gT-80E",
+      name: "S7-200",
       status: "Device status",
-      image: "https://images.unsplash.com/photo-1519125323398-675f1f8d0d07",
-    },
-    {
-      name: "gT-180E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1522202176988-66273c697b20",
-    },
-    {
-      name: "gT-200E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1531266752426-a1d7a0e2f16a",
-    },
-    {
-      name: "gT-300E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
-    },
-    {
-      name: "gT-400E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3",
-    },
-    {
-      name: "gT-500E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1504384308090-c894fdcc538d",
-    },
-    {
-      name: "gT-600E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c",
-    },
-    {
-      name: "gT-700E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1593642634315-48f5414c3ad9",
-    },
-    {
-      name: "gT-800E",
-      status: "Device status",
-      image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
+      image: "/images/200.jpg",
     },
   ];
 
-  // useEffect(() => {
-  //   router.push("/aeration");
-  // }, [router]);
-
-  // Function to handle navigation to the Aeration page
   const handleViewMore = (deviceName: string) => {
     router.push("/menu");
   };
