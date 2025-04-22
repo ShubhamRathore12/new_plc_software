@@ -180,7 +180,7 @@ export default function DevicesPage() {
                   <p className="text-sm text-gray-500 dark:text-gray-400">
                     {device.status}
                   </p>
-                  <div className="mt-4 flex justify-end space-x-3">
+                  <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <Button
                       variant="outline"
                       size="sm"
