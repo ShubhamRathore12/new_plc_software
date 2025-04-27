@@ -46,6 +46,7 @@ export default function LoginPage() {
       }
       setData(data);
       router.push("/dashboard");
+      setLoading(false);
     } catch (error) {
       console.error("Login error:", error);
       setError("An error occurred during sign in");
