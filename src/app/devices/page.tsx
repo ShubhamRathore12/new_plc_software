@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation"; // Import useRouter for navigation
+import { useRouter } from "next/navigation"; 
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -64,7 +64,7 @@ export default function DevicesPage() {
   ];
 
   const handleViewMore = (deviceName: string) => {
-    router.push("/menu");
+    router.push(`/menu/${deviceName}`);
   };
 
   return (

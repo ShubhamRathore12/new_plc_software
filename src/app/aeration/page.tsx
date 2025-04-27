@@ -20,6 +20,8 @@ import { Modal } from "@/components/ui/modal";
 import { Label } from "@/components/ui/label";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Input } from "@headlessui/react";
+import Im from "../../../public/images/1200auto-Photoroom.png";
+import Im1 from "../../../public/images/200.jpg";
 
 // Simulated API data for Grain Monitor
 const mockData = {
@@ -159,7 +161,7 @@ export default function AerationPage() {
               </div>
             </div>
 
-            {/* Tab Content */}
+           
             <div className="p-6">
               {activeTab === "aeration" && (
                 <div>
