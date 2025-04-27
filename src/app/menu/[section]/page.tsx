@@ -25,10 +25,10 @@ export default function Home() {
   const router = useRouter();
   const [is3D, setIs3D] = useState(false); // toggle state
 
-  const handleToggle = () => {
+  const handleToggle = (section: any) => {
     if (!is3D) {
       setIs3D(true);
-      router.push("/3d"); // navigate to 3D screen
+      router.push(`/3d/${section}`); // navigate to 3D screen
     } else {
       setIs3D(false);
       // staying on 2D (menu) view
@@ -88,7 +88,10 @@ export default function Home() {
               <span className="text-sm font-medium text-muted-foreground">
                 {is3D ? "3D" : "2D"}
               </span>
-              <button onClick={handleToggle} className="p-2 hover:opacity-75">
+              <button
+                onClick={() => handleToggle(section)}
+                className="p-2 hover:opacity-75"
+              >
                 {is3D ? (
                   <ToggleRight className="h-6 w-6 text-primary" />
                 ) : (

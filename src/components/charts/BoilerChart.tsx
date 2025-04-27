@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import {
   ResponsiveContainer,
@@ -11,6 +12,8 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import Im from "../../../public/images/new2.png";
+import Im1 from "../../../public/images/4.png";
 
 // Generate data for the boiler chart
 const generateBoilerData = () => {
@@ -49,9 +52,10 @@ const generateBoilerData = () => {
 
 interface BoilerChartProps {
   detailed?: boolean;
+  param?: any;
 }
 
-const BoilerChart = ({ detailed = false }: BoilerChartProps) => {
+const BoilerChart = ({ detailed = false, param }: BoilerChartProps) => {
   const data = useRef(generateBoilerData());
   const [status, setStatus] = useState("Active");
 
@@ -72,77 +76,12 @@ const BoilerChart = ({ detailed = false }: BoilerChartProps) => {
 
   return (
     <div className="h-full w-full">
-      <ResponsiveContainer width="100%" height={detailed ? 300 : 100}>
-        <ComposedChart
-          data={
-            detailed
-              ? data.current
-              : data.current.slice(data.current.length - 8)
-          }
-          margin={{
-            top: 5,
-            right: 5,
-            left: detailed ? 0 : -30,
-            bottom: detailed ? 5 : -10,
-          }}
-        >
-          {detailed && <CartesianGrid strokeDasharray="3 3" />}
-          {detailed && <XAxis dataKey="name" tick={{ fontSize: 10 }} />}
-          {detailed && <YAxis tick={{ fontSize: 10 }} />}
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "rgba(255, 255, 255, 0.9)",
-              borderRadius: "4px",
-              fontSize: "12px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            }}
-          />
-          {detailed && <Legend />}
-          <Bar
-            dataKey="pressure"
-            fill="#3b82f6"
-            animationDuration={1000}
-            barSize={detailed ? 10 : 4}
-          />
-          <Line
-            type="monotone"
-            dataKey="efficiency"
-            stroke="#10b981"
-            strokeWidth={2}
-            dot={false}
-            activeDot={{ r: 6 }}
-          />
-          {detailed && (
-            <Line
-              type="monotone"
-              dataKey="temperature"
-              stroke="#ef4444"
-              strokeWidth={2}
-              dot={false}
-            />
-          )}
-        </ComposedChart>
-      </ResponsiveContainer>
-
-      {!detailed && (
-        <div className="mt-2 flex justify-between items-center">
-          <div>
-            <div className="text-xs text-gray-500">EFFICIENCY</div>
-            <div className="text-lg font-bold">{currentEfficiency}%</div>
-          </div>
-          <div
-            className={`px-2 py-1 rounded text-sm ${
-              status === "Active"
-                ? "bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100"
-                : status === "Standby"
-                ? "bg-yellow-100 text-yellow-800 dark:bg-yellow-800 dark:text-yellow-100"
-                : "bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100"
-            }`}
-          >
-            {status}
-          </div>
-        </div>
-      )}
+      <Image
+        src={param == "S7-1200" ? Im : Im1}
+        alt="Image"
+        width={1000}
+        height={1000}
+      />
     </div>
   );
 };

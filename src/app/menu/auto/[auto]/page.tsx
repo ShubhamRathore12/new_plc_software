@@ -14,8 +14,8 @@ import {
   AnimatedContainer,
 } from "@/components/ui/animated-container";
 import { format } from "@/lib/utils";
-import Im from "../../../../../public/images/1200auto-Photoroom.png";
-import Im1 from "../../../../../public/images/autos200-Photoroom.png";
+import Im from "../../../../../public/images/1200auto-Photoroom new 1.png";
+import Im1 from "../../../../../public/images/5.png";
 import { Switch } from "@/components/ui/switch";
 
 export default function AutoPage() {
@@ -285,13 +285,122 @@ export default function AutoPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
-              <div className="relative bg-muted rounded-lg p-6 h-[500px] overflow-hidden">
-                <Image
-                  src={auto == "S7-1200" ? Im : Im1}
-                  alt="Image"
-                  width={1000}
-                  height={1000}
-                />
+              <div className="relative w-full h-full">
+                <div className="relative bg-muted rounded-lg p-6 h-[500px] overflow-hidden">
+                  <Image
+                    src={auto == "S7-1200" ? Im : Im1}
+                    alt="Image"
+                    width={1000}
+                    height={1000}
+                  />
+
+                  {/* Temperature and Pressure Values Overlay */}
+                  {auto == "S7-1200" && (
+                    <>
+                      {" "}
+                      <div className="absolute inset-0 top-16 left-72 flex flex-col justify-between p-4">
+                        {/* Top Row */}
+                        <div className="flex gap-2 w-full">
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            RH: {format(AI_RH_Analog_Scale)}%
+                          </Badge>
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            PA: {format(AI_Pa_Analog_Scale)} Pa
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-25 left-50 flex flex-col justify-between p-4">
+                        <div className="flex gap-2 items-start w-full">
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            {format(Value_to_Display_HEATER)}°C
+                          </Badge>
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            {format(Value_to_Display_AHT_VALE_OPEN)}°C
+                          </Badge>
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            {format(Value_to_Display_HOT_GAS_VALVE_OPEN)}°C
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-26 left-[60%] flex flex-col justify-between p-4">
+                        <div className="flex gap-2 w-full">
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            T1: {format(AI_COLD_AIR_TEMP)}°C
+                          </Badge>
+                          <br></br>
+                          <Badge
+                            variant="outline"
+                            className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                          >
+                            TH-T1: {format(AI_TH_Act - AI_COLD_AIR_TEMP)}°C
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-[48%] left-[21%] flex flex-col justify-between p-1">
+                        <div className="flex gap-4 items-start w-full">
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(AI_TH_Act)}°C
+                          </Badge>
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(AI_AIR_OUTLET_TEMP)}°C
+                          </Badge>
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(AI_COLD_AIR_TEMP)}°C
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-[48%] left-[64%] flex flex-col justify-between p-1">
+                        <div className="flex gap-5 items-start w-full">
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(AI_AMBIANT_TEMP)}°C
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-[36%] left-[83%] flex flex-col justify-between p-1">
+                        <div className="flex gap-5 items-start w-full">
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(Value_to_Display_COND_ACT_SPEED)}%
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-[75%] left-[58%] flex flex-col justify-between p-1">
+                        <div className="flex gap-5 items-start w-full">
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(Value_to_Display_EVAP_ACT_SPEED)}
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="absolute inset-0 top-[93%] left-[73%] flex flex-col justify-between p-1">
+                        <div className="flex gap-10 items-start w-full">
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(AI_COND_PRESSURE)}
+                          </Badge>
+                          <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                            {format(AI_SUC_PRESSURE)}
+                          </Badge>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
                 {/* Silo */}
 
                 {/* Heater */}

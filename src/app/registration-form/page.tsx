@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import Select from "react-select";
+import { useLanguage } from "@/providers/language-provider";
 
 import {
   Form,
@@ -18,12 +19,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layout/dashboard-layout";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // ✅ Shadcn Tabs
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Zod Schema
 const formSchema = z
   .object({
-    accountType: z.enum(["manufactura", "customer"], {
+    accountType: z.enum(["manufacture", "customer"], {
       required_error: "Please select an account type.",
     }),
     firstName: z.string().min(2, {
@@ -35,18 +36,25 @@ const formSchema = z
     username: z.string().min(3, {
       message: "Username must be at least 3 characters.",
     }),
-    email: z.string().email().optional(),
+    email: z.string().email({
+      message: "Please enter a valid email address.",
+    }),
     phoneNumber: z.string().min(10, {
       message: "Phone number must be at least 10 digits.",
     }),
     company: z.string().min(1, {
       message: "Please select a company.",
     }),
+    locations: z.array(z.string()).min(1, {
+      message: "Please select at least one location.",
+    }),
     password: z.string().min(8, {
       message: "Password must be at least 8 characters.",
     }),
     confirmPassword: z.string(),
-    monitorAccess: z.string().array().optional(),
+    monitorAccess: z.array(z.string()).min(1, {
+      message: "Please select at least one monitor access option.",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
@@ -54,42 +62,106 @@ const formSchema = z
   })
   .refine(
     (data) => {
-      if (data.accountType === "manufactura") return !!data.email;
+      if (
+        data.accountType === "manufacture" ||
+        data.accountType === "customer"
+      ) {
+        return !!data.email;
+      }
       return true;
     },
     {
-      message: "Email is required for manufactura accounts",
+      message: "Email is required",
       path: ["email"],
     }
   )
   .refine(
     (data) => {
-      if (data.accountType === "manufactura") {
+      if (
+        data.accountType === "manufacture" ||
+        data.accountType === "customer"
+      ) {
         return data.monitorAccess && data.monitorAccess.length > 0;
       }
       return true;
     },
     {
-      message: "Select at least one monitor access option for manufactura",
+      message: "Select at least one monitor access option",
       path: ["monitorAccess"],
+    }
+  )
+  .refine(
+    (data) => {
+      if (
+        data.accountType === "manufacture" ||
+        data.accountType === "customer"
+      ) {
+        return data.locations && data.locations.length > 0;
+      }
+      return true;
+    },
+    {
+      message: "Select at least one location",
+      path: ["locations"],
     }
   );
 
 type FormSchemaType = z.infer<typeof formSchema>;
 
+interface UserData {
+  id: number;
+  accountType: "manufacture" | "customer";
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  phoneNumber: string;
+  company: string;
+  monitorAccess: number;
+  created_at: string;
+}
+
+const formatText = (text: string) => {
+  return text
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+
 export default function RegistrationForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const [userData, setUserData] = useState<UserData | null>(null);
+  const { t } = useLanguage();
+
+  // Example user data - in real app, this would come from an API
+  useEffect(() => {
+    // Simulate fetching user data
+    const mockUserData: UserData = {
+      id: 1,
+      accountType: "manufacture",
+      firstName: "Narayan",
+      lastName: "Singh",
+      username: "Narayan12",
+      email: "narayan@gmail.com",
+      phoneNumber: "9999999999",
+      company: "companyA",
+      monitorAccess: 0,
+      created_at: "2025-04-10T10:37:51.000Z",
+    };
+    setUserData(mockUserData);
+  }, []);
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      accountType: "manufactura",
-      firstName: "",
-      lastName: "",
-      username: "",
-      email: "",
-      phoneNumber: "",
-      company: "",
+      accountType: userData?.accountType || "manufacture",
+      firstName: userData?.firstName || "",
+      lastName: userData?.lastName || "",
+      username: userData?.username || "",
+      email: userData?.email || "",
+      phoneNumber: userData?.phoneNumber || "",
+      company: userData?.company || "",
+      locations: [],
       password: "",
       confirmPassword: "",
       monitorAccess: [],
@@ -103,7 +175,7 @@ export default function RegistrationForm() {
     try {
       const payload: any = {
         ...values,
-        email: values.accountType === "manufactura" ? values.email : undefined,
+        email: values.accountType === "manufacture" ? values.email : undefined,
         monitorAccess: values.monitorAccess || [],
       };
 
@@ -134,24 +206,80 @@ export default function RegistrationForm() {
   }
 
   const monitorOptions = [
-    { value: "overview", label: "Overview" },
-    { value: "monitoring-locations", label: "Monitoring Locations" },
-    { value: "dashboards", label: "Dashboards" },
-    { value: "devices", label: "Devices" },
-    { value: "notifications", label: "Notifications" },
-    { value: "contacts", label: "Contacts" },
-    { value: "clusters", label: "Clusters" },
-    { value: "reports", label: "Reports" },
-    { value: "triggers", label: "Triggers" },
-    { value: "auto", label: "Auto" },
-    { value: "aeration", label: "Aeration" },
-    { value: "fault", label: "Fault" },
-    { value: "settings", label: "Settings" },
-    { value: "inputs", label: "Inputs" },
-    { value: "outputs", label: "Outputs" },
-    { value: "test", label: "Test" },
-    { value: "screen-brightness", label: "Screen Brightness" },
+    { value: "overview", label: formatText(t("overview")) },
+    {
+      value: "monitoring-locations",
+      label: formatText(t("monitoring_locations")),
+    },
+    { value: "dashboards", label: formatText(t("dashboards")) },
+    { value: "devices", label: formatText(t("devices")) },
+    { value: "notifications", label: formatText(t("notifications")) },
+    { value: "contacts", label: formatText(t("contacts")) },
+    { value: "clusters", label: formatText(t("clusters")) },
+    { value: "reports", label: formatText(t("reports")) },
+    { value: "triggers", label: formatText(t("triggers")) },
+    { value: "auto", label: formatText(t("auto")) },
+    { value: "aeration", label: formatText(t("aeration")) },
+    { value: "fault", label: formatText(t("fault")) },
+    { value: "settings", label: formatText(t("settings")) },
+    { value: "inputs", label: formatText(t("inputs")) },
+    { value: "outputs", label: formatText(t("outputs")) },
+    { value: "test", label: formatText(t("test")) },
+    { value: "screen-brightness", label: formatText(t("screen_brightness")) },
   ];
+
+  // Dynamic company and location options
+  const [companyOptions, setCompanyOptions] = useState([
+    { value: "company1", label: "Company 1" },
+    { value: "company2", label: "Company 2" },
+    { value: "company3", label: "Company 3" },
+  ]);
+
+  const [locationOptions, setLocationOptions] = useState([
+    { value: "location1", label: "Location 1" },
+    { value: "location2", label: "Location 2" },
+    { value: "location3", label: "Location 3" },
+  ]);
+
+  // Update monitor options based on selected company and locations
+  const getMonitorOptions = () => {
+    const selectedCompany = form.watch("company");
+    const selectedLocations = form.watch("locations") || [];
+
+    const companySpecificOptions = selectedCompany
+      ? [
+          {
+            value: `${selectedCompany}-overview`,
+            label: `${selectedCompany} Overview`,
+          },
+          {
+            value: `${selectedCompany}-devices`,
+            label: `${selectedCompany} Devices`,
+          },
+          {
+            value: `${selectedCompany}-reports`,
+            label: `${selectedCompany} Reports`,
+          },
+        ]
+      : [];
+
+    const locationSpecificOptions = selectedLocations
+      .map((location) => [
+        { value: `${location}-monitoring`, label: `${location} Monitoring` },
+        { value: `${location}-dashboards`, label: `${location} Dashboards` },
+        {
+          value: `${location}-notifications`,
+          label: `${location} Notifications`,
+        },
+      ])
+      .flat();
+
+    return [
+      ...monitorOptions,
+      ...companySpecificOptions,
+      ...locationSpecificOptions,
+    ];
+  };
 
   return (
     <DashboardLayout>
@@ -160,10 +288,10 @@ export default function RegistrationForm() {
           <div className="w-full max-w-md mx-auto p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
             <div className="text-center">
               <h1 className="text-2xl font-bold text-black dark:text-white">
-                Create Account
+                {formatText(t("create_account"))}
               </h1>
               <p className="text-sm text-gray-500 dark:text-gray-300">
-                Fill in your details to register
+                {formatText(t("fill_details_to_register"))}
               </p>
             </div>
 
@@ -173,7 +301,7 @@ export default function RegistrationForm() {
               onValueChange={(value) =>
                 form.setValue(
                   "accountType",
-                  value as "manufactura" | "customer",
+                  value as "manufacture" | "customer",
                   {
                     shouldValidate: true,
                   }
@@ -182,8 +310,12 @@ export default function RegistrationForm() {
               className="w-full mb-4"
             >
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="manufactura">Manufactura</TabsTrigger>
-                <TabsTrigger value="customer">Customer</TabsTrigger>
+                <TabsTrigger value="manufacture">
+                  {formatText(t("manufacture"))}
+                </TabsTrigger>
+                <TabsTrigger value="customer">
+                  {formatText(t("customer"))}
+                </TabsTrigger>
               </TabsList>
             </Tabs>
 
@@ -200,7 +332,7 @@ export default function RegistrationForm() {
                     name="firstName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                        <FormLabel>{formatText(t("first_name"))}</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -216,7 +348,7 @@ export default function RegistrationForm() {
                     name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel>{formatText(t("last_name"))}</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
@@ -235,7 +367,7 @@ export default function RegistrationForm() {
                   name="username"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Username</FormLabel>
+                      <FormLabel>{formatText(t("username"))}</FormLabel>
                       <FormControl>
                         <Input
                           {...field}
@@ -247,26 +379,24 @@ export default function RegistrationForm() {
                   )}
                 />
 
-                {/* Email (Only for manufactura) */}
-                {accountType === "manufactura" && (
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="email"
-                            {...field}
-                            className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+                {/* Email */}
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{formatText(t("email"))}</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          {...field}
+                          className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 {/* Phone */}
                 <FormField
@@ -274,7 +404,7 @@ export default function RegistrationForm() {
                   name="phoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
+                      <FormLabel>{formatText(t("phone_number"))}</FormLabel>
                       <FormControl>
                         <Input
                           type="tel"
@@ -293,50 +423,76 @@ export default function RegistrationForm() {
                   name="company"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Company</FormLabel>
+                      <FormLabel>{formatText(t("company"))}</FormLabel>
                       <FormControl>
-                        <select
-                          {...field}
-                          className="w-full px-3 py-2 bg-gray-100 dark:bg-gray-700 text-black dark:text-white border border-gray-300 rounded"
-                        >
-                          <option value="">Select Company</option>
-                          <option value="companyA">Company A</option>
-                          <option value="companyB">Company B</option>
-                          <option value="companyC">Company C</option>
-                        </select>
+                        <Select
+                          options={companyOptions}
+                          value={companyOptions.find(
+                            (opt) => opt.value === field.value
+                          )}
+                          onChange={(selected) =>
+                            field.onChange(selected?.value)
+                          }
+                          className="text-black"
+                          classNamePrefix="react-select"
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
 
-                {/* Monitor Access (Only for manufactura) */}
-                {accountType === "manufactura" && (
-                  <FormField
-                    control={form.control}
-                    name="monitorAccess"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Monitor Access</FormLabel>
-                        <FormControl>
-                          <Select
-                            isMulti
-                            options={monitorOptions}
-                            value={monitorOptions.filter((opt) =>
-                              field.value?.includes(opt.value)
-                            )}
-                            onChange={(selected) =>
-                              field.onChange(selected.map((s) => s.value))
-                            }
-                            className="text-black"
-                            classNamePrefix="react-select"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+                {/* Locations */}
+                <FormField
+                  control={form.control}
+                  name="locations"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{formatText(t("locations"))}</FormLabel>
+                      <FormControl>
+                        <Select
+                          isMulti
+                          options={locationOptions}
+                          value={locationOptions.filter((opt) =>
+                            field.value?.includes(opt.value)
+                          )}
+                          onChange={(selected) =>
+                            field.onChange(selected.map((s) => s.value))
+                          }
+                          className="text-black"
+                          classNamePrefix="react-select"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Monitor Access */}
+                <FormField
+                  control={form.control}
+                  name="monitorAccess"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{formatText(t("monitor_access"))}</FormLabel>
+                      <FormControl>
+                        <Select
+                          isMulti
+                          options={getMonitorOptions()}
+                          value={getMonitorOptions().filter((opt) =>
+                            field.value?.includes(opt.value)
+                          )}
+                          onChange={(selected) =>
+                            field.onChange(selected.map((s) => s.value))
+                          }
+                          className="text-black"
+                          classNamePrefix="react-select"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 {/* Password */}
                 <FormField
@@ -344,7 +500,7 @@ export default function RegistrationForm() {
                   name="password"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Password</FormLabel>
+                      <FormLabel>{formatText(t("password"))}</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
@@ -363,7 +519,7 @@ export default function RegistrationForm() {
                   name="confirmPassword"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Confirm Password</FormLabel>
+                      <FormLabel>{formatText(t("confirm_password"))}</FormLabel>
                       <FormControl>
                         <Input
                           type="password"
@@ -378,7 +534,9 @@ export default function RegistrationForm() {
 
                 {/* Submit */}
                 <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? "Registering..." : "Register"}
+                  {isLoading
+                    ? formatText(t("registering"))
+                    : formatText(t("register"))}
                 </Button>
               </form>
             </Form>

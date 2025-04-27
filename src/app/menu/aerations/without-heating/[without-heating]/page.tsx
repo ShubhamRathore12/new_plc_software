@@ -15,9 +15,10 @@ import {
   AnimatedContainer,
 } from "@/components/ui/animated-container";
 import { useParams, useRouter } from "next/navigation";
-import Im from "../../../../../../public/images/1200aerationwihtout-Photoroom.png";
-import Im1 from "../../../../../../public/images/aerationwithheating-Photoroom.png";
+import Im from "../../../../../../public/images/new1.png";
+import Im1 from "../../../../../../public/images/3.png";
 import Image from "next/image";
+import { format } from "@/lib/utils";
 
 export default function AerationWithoutHeatingPage() {
   const [isRunning, setIsRunning] = useState(false);
@@ -315,6 +316,97 @@ export default function AerationWithoutHeatingPage() {
                   width={1000}
                   height={1000}
                 />
+
+                {devices == "S7-1200" && (
+                  <>
+                    {" "}
+                    <div className="absolute inset-0 top-[30%] left-[10%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Badge
+                          variant="outline"
+                          className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                        >
+                          TH: {format(AI_RH_Analog_Scale)}%
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[60%] left-[70%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Badge
+                          variant="outline"
+                          className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                        >
+                          <Badge variant="outline" className="bg-background/80">
+                            T2 = {format(AI_AMBIANT_TEMP)} °C
+                          </Badge>
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[40%] left-[67%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Label className="mb-2 block">Set Duration</Label>
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="number"
+                            value={HEATING_MODE_Continuous_Mode}
+                            onChange={(e) =>
+                              setDuration(Number.parseInt(e.target.value) || 0)
+                            }
+                            className="w-16"
+                            min={1}
+                            max={24}
+                          />
+                          <span>h</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[80%] left-[20%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Label className="mb-2 block">Running Time</Label>
+                        <div className="flex items-center space-x-4">
+                          {/* Hours */}
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={runningHours}
+                              onChange={(e) =>
+                                setRunningHours(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={0}
+                              max={23}
+                            />
+                            <span>h</span>
+                          </div>
+
+                          {/* Minutes */}
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={runningMinutes}
+                              onChange={(e) =>
+                                setRunningMinutes(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={0}
+                              max={59}
+                            />
+                            <span>min</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                )}
+
                 {/* Silo */}
                 {/* <motion.div
                   className="absolute left-[10%] top-[10%] bottom-[20%] w-[20%] border-2 border-primary/70 rounded-lg flex flex-col"
@@ -348,19 +440,6 @@ export default function AerationWithoutHeatingPage() {
                 </motion.div> */}
 
                 {/* Temperature Readings */}
-                <motion.div
-                  className="absolute right-[10%] top-[10%] flex flex-col gap-2 z-10"
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  <Badge variant="outline" className="bg-background/80">
-                    T1 = {AHT_PID_Config_OutputLowerLimit} °C
-                  </Badge>
-                  <Badge variant="outline" className="bg-background/80">
-                    T2 = {AI_AMBIANT_TEMP} °C
-                  </Badge>
-                </motion.div>
 
                 {/* Connection Lines */}
                 {/* <svg

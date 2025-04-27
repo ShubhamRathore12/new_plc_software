@@ -3,6 +3,7 @@
 import { type ReactNode } from "react";
 import QueryProvider from "./query-provider";
 import { ThemeProvider } from "./theme-provider";
+import { LanguageProvider } from "./language-provider";
 
 interface ProvidersProps {
   children: ReactNode;
@@ -11,7 +12,9 @@ interface ProvidersProps {
 export default function Providers({ children }: ProvidersProps) {
   return (
     <QueryProvider>
-      <ThemeProvider>{children}</ThemeProvider>
+      <LanguageProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+      </LanguageProvider>
     </QueryProvider>
   );
 }

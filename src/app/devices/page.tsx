@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -12,6 +12,9 @@ import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import Im from "../../../public/images/1200.jpg";
 import Im1 from "../../../public/images/200.jpg";
+import { useFieldVisibility } from "@/hooks/useFieldVisibility";
+import { useDataStore } from "@/lib/store";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function DevicesPage() {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
@@ -22,6 +25,7 @@ export default function DevicesPage() {
   const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [zoomLevel, setZoomLevel] = useState(1);
+  const { t } = useLanguage();
 
   const router = useRouter();
 
@@ -53,12 +57,12 @@ export default function DevicesPage() {
   const devices = [
     {
       name: "S7-1200",
-      status: "Device status",
+      status: "device_status",
       image: "/images/1200.jpg",
     },
     {
       name: "S7-200",
-      status: "Device status",
+      status: "device_status",
       image: "/images/200.jpg",
     },
   ];
@@ -66,7 +70,8 @@ export default function DevicesPage() {
   const handleViewMore = (deviceName: string) => {
     router.push(`/menu/${deviceName}`);
   };
-
+  const { data, setData, loading, setLoading } = useDataStore();
+  const { showCompanyField } = useFieldVisibility(data);
   return (
     <DashboardLayout>
       <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -80,13 +85,13 @@ export default function DevicesPage() {
         >
           <div className="flex-1 p-6">
             <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-              Devices Overview
+              {t("devices_overview")}
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="relative" ref={locationDropdownRef}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Select Location
+                  {t("select_location")}
                 </label>
                 <Button
                   variant="outline"
@@ -95,7 +100,7 @@ export default function DevicesPage() {
                     setIsLocationDropdownOpen(!isLocationDropdownOpen)
                   }
                 >
-                  {selectedLocation || "Select a location"}
+                  {selectedLocation || t("select_a_location")}
                   <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
                 {isLocationDropdownOpen && (
@@ -125,7 +130,7 @@ export default function DevicesPage() {
 
               <div className="relative" ref={companyDropdownRef}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  Select Company
+                  {t("select_company")}
                 </label>
                 <Button
                   variant="outline"
@@ -134,30 +139,34 @@ export default function DevicesPage() {
                     setIsCompanyDropdownOpen(!isCompanyDropdownOpen)
                   }
                 >
-                  {selectedCompany || "Select a company"}
+                  {selectedCompany || t("select_a_company")}
                   <ChevronDown className="h-4 w-4 ml-2" />
                 </Button>
                 {isCompanyDropdownOpen && (
                   <Card className="absolute z-10 w-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-gray-800 shadow-lg">
-                    {companies.map((company) => (
-                      <Card
-                        key={company.name}
-                        className="flex items-center p-2 m-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {
-                          setSelectedCompany(company.name);
-                          setIsCompanyDropdownOpen(false);
-                        }}
-                      >
-                        <img
-                          src={company.image}
-                          alt={company.name}
-                          className="w-10 h-10 object-cover rounded mr-3"
-                        />
-                        <span className="text-sm text-gray-800 dark:text-gray-100">
-                          {company.name}
-                        </span>
-                      </Card>
-                    ))}
+                    {companies
+                      .filter((company) => {
+                        return company.name !== showCompanyField;
+                      })
+                      .map((company) => (
+                        <Card
+                          key={company.name}
+                          className="flex items-center p-2 m-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => {
+                            setSelectedCompany(company.name);
+                            setIsCompanyDropdownOpen(false);
+                          }}
+                        >
+                          <img
+                            src={company.image}
+                            alt={company.name}
+                            className="w-10 h-10 object-cover rounded mr-3"
+                          />
+                          <span className="text-sm text-gray-800 dark:text-gray-100">
+                            {company.name}
+                          </span>
+                        </Card>
+                      ))}
                   </Card>
                 )}
               </div>
@@ -178,7 +187,7 @@ export default function DevicesPage() {
                     {device.name}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {device.status}
+                    {t(device.status)}
                   </p>
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <Button
@@ -186,10 +195,10 @@ export default function DevicesPage() {
                       size="sm"
                       onClick={() => handleViewMore(device.name)}
                     >
-                      View More
+                      {t("view_more")}
                     </Button>
                     <Button variant="outline" size="sm">
-                      Download Files
+                      {t("download_files")}
                     </Button>
                   </div>
                 </Card>

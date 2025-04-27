@@ -92,7 +92,7 @@ export default function DashboardLayout({
             }}
           >
             {children}
-            <footer className="mt-6 text-center text-sm text-muted-foreground  bg-gray-50 dark:bg-black">
+            <footer className="mt-6 text-center text-sm text-muted-foreground mt-[10%]  bg-gray-50 dark:bg-black">
               © 2023, powered by Grain Technik
             </footer>
           </div>

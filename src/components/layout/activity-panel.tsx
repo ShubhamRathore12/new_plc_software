@@ -1,21 +1,24 @@
 "use client";
 
 import { Activity, Circle } from "lucide-react";
+import { useLanguage } from "@/providers/language-provider";
 
 const recentActivities = [
   {
-    type: "Report Vibration Report",
-    status: "completed successfully",
+    type: "report_vibration_report",
+    status: "completed_successfully",
     timestamp: "17/08/23 @ 06:05:08 am",
   },
   {
-    type: "Device FLVA_A196 configuration",
-    status: "updated successfully",
+    type: "device_configuration",
+    device: "FLVA_A196",
+    status: "updated_successfully",
     timestamp: "17/08/23 @ 11:26:11 am",
   },
   {
-    type: "Device FLVA_A197 configuration",
-    status: "updated successfully",
+    type: "device_configuration",
+    device: "FLVA_A197",
+    status: "updated_successfully",
     timestamp: "17/08/23 @ 11:26:04 am",
   },
 ];
@@ -49,6 +52,8 @@ const devices = [
 ];
 
 export default function ActivityPanel() {
+  const { t } = useLanguage();
+
   return (
     <div className="grid grid-cols-2 gap-6">
       {/* Trigger/Report Activity Card */}
@@ -56,16 +61,16 @@ export default function ActivityPanel() {
         <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
           <Activity className="h-5 w-5 text-emerald-500" />
           <h2 className="text-sm font-medium text-black dark:text-white">
-            Trigger/Report Activity
+            {t("trigger_report_activity")}
           </h2>
         </div>
         <div className="p-4">
           <div className="bg-gray-50 dark:bg-gray-700 rounded p-3">
             <div className="text-xs font-medium text-black dark:text-white mb-1">
-              ACTIVE TRIGGER
+              {t("active_trigger")}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-300">
-              No Active Triggers Found!
+              {t("no_active_triggers")}
             </div>
           </div>
         </div>
@@ -76,7 +81,7 @@ export default function ActivityPanel() {
         <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
           <Circle className="h-5 w-5 text-emerald-500" />
           <h2 className="text-sm font-medium text-black dark:text-white">
-            Device Activity
+            {t("device_activity")}
           </h2>
         </div>
         <div className="p-4 space-y-3">
@@ -88,7 +93,7 @@ export default function ActivityPanel() {
                   {device.name}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-300">
-                  Last Activity: {device.lastActivity}
+                  {t("last_activity")}: {device.lastActivity}
                 </div>
               </div>
             </div>

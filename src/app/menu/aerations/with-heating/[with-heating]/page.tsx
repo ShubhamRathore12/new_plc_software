@@ -15,9 +15,10 @@ import {
   PageTransition,
   AnimatedContainer,
 } from "@/components/ui/animated-container";
-import Im from "../../../../../../public/images/1200aerationheating-Photoroom.png";
-import Im1 from "../../../../../../public/images/aerationheating-Photoroom.png";
+import Im from "../../../../../../public/images/new2.png";
+import Im1 from "../../../../../../public/images/4.png";
 import Image from "next/image";
+import { format } from "@/lib/utils";
 
 export default function AerationWithHeatingPage() {
   const router = useRouter();
@@ -330,6 +331,128 @@ export default function AerationWithHeatingPage() {
                   width={1000}
                   height={1000}
                 />
+
+                {devices == "S7-1200" && (
+                  <>
+                    {" "}
+                    <div className="absolute inset-0 top-[10%] left-[10%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Badge
+                          variant="outline"
+                          className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                        >
+                          TH: {format(AI_RH_Analog_Scale)}%
+                        </Badge>
+                        <Badge
+                          variant="outline"
+                          className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                        >
+                          HTR: {format(AI_RH_Analog_Scale)}%
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[30%] left-[70%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Badge
+                          variant="outline"
+                          className="bg-background/80 backdrop-blur-sm text-black font-bold text-lg"
+                        >
+                          <Badge variant="outline" className="bg-background/80">
+                            T2 = {format(AI_AMBIANT_TEMP)} °C
+                          </Badge>
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[10%] left-[67%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Label className="mb-2 block">Delta(A)</Label>
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="number"
+                            value={HEATING_MODE_SET_TH_FOR_HEATING_MODE}
+                            onChange={(e) =>
+                              setDeltaTemp(Number.parseInt(e.target.value) || 0)
+                            }
+                            className="w-16"
+                            min={1}
+                            max={15}
+                          />
+                          <span>°C</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[20%] left-[67%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Label className="mb-2 block">Set Duration</Label>
+                        <div className="flex items-center space-x-2">
+                          <Input
+                            type="number"
+                            value={HEATING_MODE_Continuous_Mode}
+                            onChange={(e) =>
+                              setDuration(Number.parseInt(e.target.value) || 0)
+                            }
+                            className="w-16"
+                            min={1}
+                            max={24}
+                          />
+                          <span>h</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[45%] left-[20%] flex flex-col justify-between p-4">
+                      {/* Top Row */}
+                      <div className="flex gap-2 w-full">
+                        <Label className="mb-2 block">Running Time</Label>
+                        <div className="flex items-center space-x-4">
+                          {/* Hours */}
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={runningHours}
+                              onChange={(e) =>
+                                setRunningHours(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={0}
+                              max={23}
+                            />
+                            <span>h</span>
+                          </div>
+
+                          {/* Minutes */}
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={runningMinutes}
+                              onChange={(e) =>
+                                setRunningMinutes(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={0}
+                              max={59}
+                            />
+                            <span>min</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute inset-0 top-[50%] left-[65%] flex flex-col justify-between p-1">
+                      <div className="flex gap-5 items-start w-full">
+                        <Badge className="bg-transparent text-black font-bold text-sm border-0 shadow-none">
+                          {format(Value_to_Display_EVAP_ACT_SPEED)}
+                        </Badge>
+                      </div>
+                    </div>
+                  </>
+                )}
                 {/* Silo */}
                 {/* <motion.div
                   className="absolute left-[10%] top-[10%] bottom-[20%] w-[20%] border-2 border-primary/70 rounded-lg flex flex-col z-10"
