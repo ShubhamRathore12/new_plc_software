@@ -106,25 +106,29 @@ export default function DevicesPage() {
                 </Button>
                 {isLocationDropdownOpen && (
                   <Card className="absolute z-10 w-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-gray-800 shadow-lg">
-                    {locations.map((location) => (
-                      <Card
-                        key={location.name}
-                        className="flex items-center p-2 m-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
-                        onClick={() => {
-                          setSelectedLocation(location.name);
-                          setIsLocationDropdownOpen(false);
-                        }}
-                      >
-                        <img
-                          src={location.image}
-                          alt={location.name}
-                          className="w-10 h-10 object-cover rounded mr-3"
-                        />
-                        <span className="text-sm text-gray-800 dark:text-gray-100">
-                          {location.name}
-                        </span>
-                      </Card>
-                    ))}
+                    {locations
+                      .filter((company) => {
+                        return company.name !== data?.user?.location;
+                      })
+                      .map((location) => (
+                        <Card
+                          key={location.name}
+                          className="flex items-center p-2 m-2 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                          onClick={() => {
+                            setSelectedLocation(location.name);
+                            setIsLocationDropdownOpen(false);
+                          }}
+                        >
+                          <img
+                            src={location.image}
+                            alt={location.name}
+                            className="w-10 h-10 object-cover rounded mr-3"
+                          />
+                          <span className="text-sm text-gray-800 dark:text-gray-100">
+                            {location.name}
+                          </span>
+                        </Card>
+                      ))}
                   </Card>
                 )}
               </div>

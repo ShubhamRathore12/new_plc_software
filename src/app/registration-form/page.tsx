@@ -232,13 +232,12 @@ export default function RegistrationForm() {
   const [companyOptions, setCompanyOptions] = useState([
     { value: "Company A", label: "Company A" },
     { value: "Company B", label: "Company B" },
-
   ]);
 
   const [locationOptions, setLocationOptions] = useState([
-    { value: "location1", label: "Location 1" },
-    { value: "location2", label: "Location 2" },
-    { value: "location3", label: "Location 3" },
+    { value: "Location 1", label: "Location 1" },
+    { value: "Location 2", label: "Location 2" },
+    // { value: "location3", label: "Location 3" },
   ]);
 
   // Update monitor options based on selected company and locations
