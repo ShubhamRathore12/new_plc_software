@@ -73,6 +73,8 @@ export default function DevicesPage() {
   const { data } = useDataStore();
   const { showCompanyField } = useFieldVisibility(data);
   // console.log(data?.user?.company, "ji");
+  const isMachineRunning = false; // your condition
+  const isInternetConnected = false; // your condition
   return (
     <DashboardLayout>
       <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -191,9 +193,37 @@ export default function DevicesPage() {
                   <h3 className="text-xl font-bold text-black dark:text-white">
                     {device.name}
                   </h3>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    {t(device.status)}
-                  </p>
+                  <div className="flex flex-col gap-2">
+                    {/* Machine Status */}
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Machine Status
+                      </p>
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full ${
+                          isMachineRunning ? "bg-green-500" : "bg-red-500"
+                        }`}
+                        aria-label={isMachineRunning ? "Running" : "Stopped"}
+                        role="status"
+                      />
+                    </div>
+
+                    {/* Internet Status */}
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Internet Status
+                      </p>
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full ${
+                          isInternetConnected ? "bg-green-500" : "bg-red-500"
+                        }`}
+                        aria-label={
+                          isInternetConnected ? "Connected" : "Disconnected"
+                        }
+                        role="status"
+                      />
+                    </div>
+                  </div>
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <Button
                       variant="outline"
