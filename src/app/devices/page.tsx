@@ -70,8 +70,9 @@ export default function DevicesPage() {
   const handleViewMore = (deviceName: string) => {
     router.push(`/menu/${deviceName}`);
   };
-  const { data, setData, loading, setLoading } = useDataStore();
+  const { data } = useDataStore();
   const { showCompanyField } = useFieldVisibility(data);
+  // console.log(data?.user?.company, "ji");
   return (
     <DashboardLayout>
       <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
@@ -85,13 +86,13 @@ export default function DevicesPage() {
         >
           <div className="flex-1 p-6">
             <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-              {t("devices_overview")}
+              {t("Devices Overview")}
             </h1>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
               <div className="relative" ref={locationDropdownRef}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t("select_location")}
+                  {t("Select Location")}
                 </label>
                 <Button
                   variant="outline"
@@ -130,7 +131,7 @@ export default function DevicesPage() {
 
               <div className="relative" ref={companyDropdownRef}>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                  {t("select_company")}
+                  {t("Select Company")}
                 </label>
                 <Button
                   variant="outline"
@@ -146,7 +147,7 @@ export default function DevicesPage() {
                   <Card className="absolute z-10 w-full mt-2 max-h-60 overflow-y-auto bg-white dark:bg-gray-800 shadow-lg">
                     {companies
                       .filter((company) => {
-                        return company.name !== showCompanyField;
+                        return company.name !== data?.user?.company;
                       })
                       .map((company) => (
                         <Card
