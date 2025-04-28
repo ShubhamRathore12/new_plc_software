@@ -5,12 +5,12 @@ import { useLanguage } from "@/providers/language-provider";
 
 const stats = [
   { label: "sms", value: "0/50" },
-  { label: "email", value: "346/1000" },
-  { label: "device", value: "45/50" },
-  { label: "contact", value: "4/10" },
-  { label: "trigger", value: "480/500" },
-  { label: "dashboard_widget", value: "3/10" },
-  { label: "report", value: "17/70" },
+  { label: "email", value: "0/1000" },
+  { label: "device", value: "2/50" },
+  { label: "contact", value: "0/10" },
+  { label: "trigger", value: "0/500" },
+  { label: "dashboard_widget", value: "0/10" },
+  { label: "report", value: "0/70" },
 ];
 
 export default function StatsPanel() {
