@@ -298,7 +298,7 @@ export default function AutoPage() {
                   {auto == "S7-1200" && (
                     <>
                       {" "}
-                      <div className="absolute inset-0 top-16 left-72 flex flex-col justify-between p-4">
+                      <div className="absolute inset-0 lg:top-16 lg:left-72 md:top-[10%] md:left[10%]  flex flex-col justify-between p-4">
                         {/* Top Row */}
                         <div className="flex gap-2 w-full">
                           <Badge

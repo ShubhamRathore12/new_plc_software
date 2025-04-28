@@ -24,7 +24,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 // Zod Schema
 const formSchema = z
   .object({
-    accountType: z.enum(["manufacture", "customer"], {
+    accountType: z.enum(["manufacturer", "customer"], {
       required_error: "Please select an account type.",
     }),
     firstName: z.string().min(2, {
@@ -63,7 +63,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (
-        data.accountType === "manufacture" ||
+        data.accountType === "manufacturer" ||
         data.accountType === "customer"
       ) {
         return !!data.email;
@@ -78,7 +78,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (
-        data.accountType === "manufacture" ||
+        data.accountType === "manufacturer" ||
         data.accountType === "customer"
       ) {
         return data.monitorAccess && data.monitorAccess.length > 0;
@@ -93,7 +93,7 @@ const formSchema = z
   .refine(
     (data) => {
       if (
-        data.accountType === "manufacture" ||
+        data.accountType === "manufacturer" ||
         data.accountType === "customer"
       ) {
         return data.locations && data.locations.length > 0;
@@ -110,7 +110,7 @@ type FormSchemaType = z.infer<typeof formSchema>;
 
 interface UserData {
   id: number;
-  accountType: "manufacture" | "customer";
+  accountType: "manufacturer" | "customer";
   firstName: string;
   lastName: string;
   username: string;
@@ -138,7 +138,7 @@ export default function RegistrationForm() {
     // Simulate fetching user data
     const mockUserData: UserData = {
       id: 1,
-      accountType: "manufacture",
+      accountType: "manufacturer",
       firstName: "Narayan",
       lastName: "Singh",
       username: "Narayan12",
@@ -154,7 +154,7 @@ export default function RegistrationForm() {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      accountType: userData?.accountType || "manufacture",
+      accountType: userData?.accountType || "manufacturer",
       firstName: userData?.firstName || "",
       lastName: userData?.lastName || "",
       username: userData?.username || "",
@@ -175,7 +175,7 @@ export default function RegistrationForm() {
     try {
       const payload: any = {
         ...values,
-        email: values.accountType === "manufacture" ? values.email : undefined,
+        email: values.accountType === "manufacturer" ? values.email : undefined,
         monitorAccess: values.monitorAccess || [],
       };
 
@@ -300,7 +300,7 @@ export default function RegistrationForm() {
               onValueChange={(value) =>
                 form.setValue(
                   "accountType",
-                  value as "manufacture" | "customer",
+                  value as "manufacturer" | "customer",
                   {
                     shouldValidate: true,
                   }
@@ -309,8 +309,8 @@ export default function RegistrationForm() {
               className="w-full mb-4"
             >
               <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="manufacture">
-                  {formatText(t("manufacture"))}
+                <TabsTrigger value="manufacturer">
+                  {formatText(t("manufacturer"))}
                 </TabsTrigger>
                 <TabsTrigger value="customer">
                   {formatText(t("customer"))}
