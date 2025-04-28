@@ -223,6 +223,20 @@ export default function DevicesPage() {
                         role="status"
                       />
                     </div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Cooling Status
+                      </p>
+                      <span
+                        className={`h-2.5 w-2.5 rounded-full ${
+                          isInternetConnected ? "bg-green-500" : "bg-red-500"
+                        }`}
+                        aria-label={
+                          isInternetConnected ? "Connected" : "Disconnected"
+                        }
+                        role="status"
+                      />
+                    </div>
                   </div>
                   <div className="mt-4 flex flex-wrap justify-center gap-2">
                     <Button
