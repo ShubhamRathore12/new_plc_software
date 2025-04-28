@@ -1,79 +1,113 @@
-// app/reports/page.tsx
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "gsap";
+import { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
-import { Card } from "@/components/ui/card";
-import { useMediaQuery } from "../hooks/use-media-query";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"; // shadcn table
 import DashboardLayout from "@/components/layout/dashboard-layout";
-import { PlusCircle } from "lucide-react";
 
-export default function ReportsPage() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+export default function TableWithDownload() {
+  const [data, setData] = useState<Record<string, any>[]>([]);
 
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      gsap.from(".report-card", {
-        duration: 0.8,
-        y: 20,
-        opacity: 0,
-        stagger: 0.1,
-        ease: "power2.out",
-      });
-    }, containerRef);
-
-    return () => ctx.revert();
+    async function fetchData() {
+      const res = await fetch("/api/getAllData");
+      const json = await res.json();
+      setData(json);
+    }
+    fetchData();
   }, []);
 
-  const reports = [
-    {
-      id: 1,
-      title: "Monthly Sales Report",
-      description: "Sales data for the month of January.",
-    },
-    {
-      id: 2,
-      title: "User Engagement Report",
-      description: "Analysis of user engagement metrics.",
-    },
-    {
-      id: 3,
-      title: "System Performance Report",
-      description: "Performance metrics for the last quarter.",
-    },
-  ];
+  const downloadExcel = () => {
+    if (!data.length) return;
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+    XLSX.writeFile(workbook, "data.xlsx");
+  };
+
+  const downloadPDF = async () => {
+    const input = document.getElementById("table-container");
+    if (!input) return;
+
+    const canvas = await html2canvas(input);
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF();
+    const imgProps = pdf.getImageProperties(imgData);
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("data.pdf");
+  };
+
+  if (!data.length) {
+    return <p>Loading data...</p>;
+  }
+
+  const keys = Object.keys(data[0]);
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-gradient-to-tr from-gray-50 to-gray-100 dark:from-gray-900 dark:to-black p-6">
-        <div ref={containerRef} className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white">
-              Reports
-            </h1>
-            <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
-              <PlusCircle className="w-5 h-5" /> Add Report
-            </button>
-          </div>
+      <div className="p-4">
+        {/* Download Buttons */}
+        <div className="flex gap-4 mb-4">
+          <button
+            onClick={downloadExcel}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            Download Excel
+          </button>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {reports.map((report) => (
-              <Card
-                key={report.id}
-                className="report-card p-6 bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 shadow-sm hover:shadow-lg transition-shadow duration-300"
-              >
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white mb-2">
-                  {report.title}
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {report.description}
-                </p>
-              </Card>
-            ))}
-          </div>
+        {/* Table */}
+        <div id="table-container" className="border rounded-md overflow-x-auto">
+          <Table className="min-w-full border border-gray-300">
+            <TableHeader>
+              <TableRow className="border-b border-gray-300">
+                {keys.map((key) => (
+                  <TableHead
+                    key={key}
+                    className="border border-gray-300 bg-gray-100 text-center font-semibold text-sm p-2 whitespace-nowrap"
+                  >
+                    {key}
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {data.map((row, rowIndex) => (
+                <TableRow
+                  key={rowIndex}
+                  className="border-b border-gray-200 hover:bg-gray-50"
+                >
+                  {keys.map((key) => (
+                    <TableCell
+                      key={key}
+                      className="border border-gray-300 text-center text-sm p-2 whitespace-nowrap overflow-hidden text-ellipsis"
+                      title={String(row[key])}
+                    >
+                      {typeof row[key] === "boolean"
+                        ? row[key]
+                          ? "True"
+                          : "False"
+                        : String(row[key])}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       </div>
     </DashboardLayout>

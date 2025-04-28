@@ -24,6 +24,7 @@ const menuItems = [
   { icon: MonitorIcon, label: "devices", href: "/devices" },
   { icon: Users, label: "contacts", href: "/contacts" },
   { icon: LayoutDashboard, label: "registration", href: "/registration-form" },
+  { icon: LayoutDashboard, label: "reports", href: "/reports" },
 ];
 
 export default function Sidebar() {

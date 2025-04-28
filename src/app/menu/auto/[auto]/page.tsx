@@ -28,7 +28,9 @@ export default function AutoPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const eventSource = new EventSource("/api/getData");
+    const eventSource = new EventSource(
+      auto == "S7-1200" ? "/api/getData" : "/api/getDataSmart"
+    );
 
     eventSource.onmessage = (event) => {
       const newRow = JSON.parse(event.data);
