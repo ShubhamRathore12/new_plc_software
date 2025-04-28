@@ -38,7 +38,10 @@ export default function MapView() {
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         {noidaLocations.map((location, index) => (
-          <Marker key={index} position={location.position}>
+          <Marker
+            key={index}
+            position={location.position as L.LatLngExpression}
+          >
             <Popup>{location.name}</Popup>
           </Marker>
         ))}
