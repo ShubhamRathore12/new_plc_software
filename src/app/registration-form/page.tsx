@@ -230,9 +230,9 @@ export default function RegistrationForm() {
 
   // Dynamic company and location options
   const [companyOptions, setCompanyOptions] = useState([
-    { value: "company1", label: "Company 1" },
-    { value: "company2", label: "Company 2" },
-    { value: "company3", label: "Company 3" },
+    { value: "Company A", label: "Company A" },
+    { value: "Company B", label: "Company B" },
+
   ]);
 
   const [locationOptions, setLocationOptions] = useState([
