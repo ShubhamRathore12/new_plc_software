@@ -189,7 +189,7 @@ export default function RegistrationForm() {
       );
 
       const data = await response.json();
-
+      toast.success("🎉 User created successfully!");
       if (response.status === 200 || response.status === 201) {
         toast.success("🎉 User created successfully!", {
           description: "The account has been registered.",
