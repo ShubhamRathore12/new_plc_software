@@ -92,9 +92,7 @@ export default function AutoPage() {
                     >
                       <Progress value={90} className="h-2" />
                     </motion.div>
-                    <Badge variant={isRunning ? "success" : "secondary"}>
-                      {isRunning ? "Running" : "Stopped"}
-                    </Badge>
+                    <Badge>{isRunning ? "Running" : "Stopped"}</Badge>
                   </div>
                 </CardContent>
               </Card>
