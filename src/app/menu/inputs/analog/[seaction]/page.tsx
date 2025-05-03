@@ -3,8 +3,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import Link from "next/link";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useAutoData } from "@/hooks/useAutoData";
+import { useParams, useRouter } from "next/navigation";
 
 export default function AnalogPage() {
   const analogInputs = [
@@ -105,9 +105,33 @@ export default function AnalogPage() {
     { id: "AQW84", description: "Heater drive", value: "65", unit: "%" },
   ];
 
+  const analogInputValueMap: Record<string, string> = {
+    AIW72: "LP",
+    AIW74: "HP",
+    AIW112: "AIR_OUTLET_TEMP",
+    AIW114: "AIR_OUTLET_TEMP",
+    AIW116: "COLD_AIR_TEMP_T1",
+    AIW118: "COLD_AIR_TEMP_T1",
+    AIW120: "AMBIENT_AIR_TEMP_T2",
+    AIW122: "AMBIENT_AIR_TEMP_T2",
+    AIW124: "AFTER_HEATER_TEMP_Th",
+    AIW126: "AFTER_HEATER_TEMP_Th",
+  };
+
+  const analogOutputValueMap: Record<string, string> = {
+    AQW72: "BLOWER_RPM",
+    AQW74: "CONDENSER_RPM",
+    AQW80: "HOT_GAS_VALVE_RPM",
+    AQW82: "AFTER_HEAT_VALVE_RPM",
+    AQW84: "HEATER_DRIVE",
+  };
+
   const router = useRouter();
   const { seaction } = useParams();
   const device = seaction?.toString();
+  const { data, isConnected, error, formatValue } = useAutoData(
+    device as string
+  );
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -121,11 +145,43 @@ export default function AnalogPage() {
           <CardContent className="p-6">
             <ScrollArea className="h-[600px] pr-4">
               <div className="space-y-8">
+                {/* Analog Inputs */}
                 {analogInputs.map((section) => (
                   <div key={section.section} className="space-y-4">
                     <h2 className="text-lg font-semibold">{section.section}</h2>
                     <div className="space-y-2 pl-4">
-                      {section.items.map((item) => (
+                      {section.items.map((item) => {
+                        const liveKey = analogInputValueMap[item.id];
+                        const liveValue = liveKey ? data?.[liveKey] : undefined;
+
+                        return (
+                          <div
+                            key={item.id}
+                            className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
+                          >
+                            <div className="font-mono text-sm w-16">
+                              {item.id}
+                            </div>
+                            <div className="flex-1">{item.description}</div>
+                            <div className="font-medium text-right w-20">
+                              {formatValue(liveValue) ?? item.value} {item.unit}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+
+                {/* Analog Outputs */}
+                <div className="space-y-4">
+                  <h2 className="text-lg font-semibold">Analog Output</h2>
+                  <div className="space-y-2 pl-4">
+                    {analogOutputs.map((item) => {
+                      const liveKey = analogOutputValueMap[item.id];
+                      const liveValue = liveKey ? data?.[liveKey] : undefined;
+
+                      return (
                         <div
                           key={item.id}
                           className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
@@ -135,34 +191,17 @@ export default function AnalogPage() {
                           </div>
                           <div className="flex-1">{item.description}</div>
                           <div className="font-medium text-right w-20">
-                            {item.value} {item.unit}
+                            {formatValue(liveValue) ?? item.value} {item.unit}
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">Analog Output</h2>
-                  <div className="space-y-2 pl-4">
-                    {analogOutputs.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
-                      >
-                        <div className="font-mono text-sm w-16">{item.id}</div>
-                        <div className="flex-1">{item.description}</div>
-                        <div className="font-medium text-right w-20">
-                          {item.value} {item.unit}
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>
             </ScrollArea>
 
+            {/* Navigation Buttons */}
             <div className="flex gap-4 mt-6">
               <Button
                 variant="outline"
@@ -171,7 +210,6 @@ export default function AnalogPage() {
               >
                 INPUTS
               </Button>
-
               <Button
                 variant="outline"
                 className="flex-1"

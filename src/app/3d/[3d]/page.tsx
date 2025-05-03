@@ -36,12 +36,12 @@ import RadarChart from "@/components/charts/RadarChart";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import { useAutoData } from "@/hooks/useAutoData";
 
 const Index = () => {
   const [theme, setTheme] = useState<"dark" | "light">("light");
   const [selectedChart, setSelectedChart] = useState<string | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [data, setData] = useState<any>([]);
 
   const router = useRouter();
   const [is3D, setIs3D] = useState(true); // toggle state
@@ -49,22 +49,9 @@ const Index = () => {
   const devices = useParams();
   const param = devices["3d"];
 
-  useEffect(() => {
-    const eventSource = new EventSource("/api/getData");
-
-    eventSource.onmessage = (event) => {
-      const newRow = JSON.parse(event.data);
-      setData(() => [newRow]);
-    };
-
-    eventSource.onerror = (err) => {
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, []);
+  const { data, isConnected, error, formatValue } = useAutoData(
+    param as string
+  );
 
   const {
     AI_TH_Act,
@@ -79,7 +66,7 @@ const Index = () => {
     Value_to_Display_EVAP_ACT_SPEED,
     Value_to_Display_COND_ACT_SPEED,
     SETTINGS_Delta_T: deltaTemp,
-  } = data?.[0] || {};
+  } = data || {};
 
   const handleToggle = (param: any) => {
     if (!is3D) {
@@ -267,25 +254,37 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">TH (Supply Air)</span>
                               <span className="font-medium">
-                                {AI_TH_Act} °C
+                                {formatValue(
+                                  AI_TH_Act || data?.AFTER_HEATER_TEMP_Th
+                                )}{" "}
+                                °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">T0 (After Heat)</span>
                               <span className="font-medium">
-                                {AI_AIR_OUTLET_TEMP} °C
+                                {formatValue(
+                                  AI_AIR_OUTLET_TEMP || data?.AIR_OUTLET_TEMP
+                                )}{" "}
+                                °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">T1 (Cold Air)</span>
                               <span className="font-medium">
-                                {AI_COLD_AIR_TEMP} °C
+                                {formatValue(
+                                  AI_COLD_AIR_TEMP || data?.AIR_OUTLET_TEMP
+                                )}{" "}
+                                °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">T2 (Ambient)</span>
                               <span className="font-medium">
-                                {AI_AMBIANT_TEMP} °C
+                                {formatValue(
+                                  AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2
+                                )}{" "}
+                                °C
                               </span>
                             </div>
                           </div>
@@ -293,25 +292,36 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">TH - T1</span>
                               <span className="font-medium">
-                                {AI_TH_Act - AI_COLD_AIR_TEMP} °C
+                                {formatValue(
+                                  AI_TH_Act - AI_COLD_AIR_TEMP || data?.Th_T1
+                                )}{" "}
+                                °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">HTR</span>
                               <span className="font-medium">
-                                {Value_to_Display_HEATER}%
+                                {formatValue(Value_to_Display_HEATER)}%
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">AHT</span>
                               <span className="font-medium">
-                                {Value_to_Display_AHT_VALE_OPEN}%
+                                {formatValue(
+                                  Value_to_Display_AHT_VALE_OPEN ||
+                                    data?.AFTER_HEAT_VALVE_RPM
+                                )}
+                                %
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">HGS</span>
                               <span className="font-medium">
-                                {Value_to_Display_HOT_GAS_VALVE_OPEN}%
+                                {formatValue(
+                                  Value_to_Display_HOT_GAS_VALVE_OPEN ||
+                                    data?.HOT_GAS_VALVE_RPM
+                                )}
+                                %
                               </span>
                             </div>
                           </div>
@@ -330,13 +340,21 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">BLOWER</span>
                               <span className="font-medium">
-                                {Value_to_Display_EVAP_ACT_SPEED}%
+                                {formatValue(
+                                  Value_to_Display_EVAP_ACT_SPEED ||
+                                    data?.BLOWER_RPM
+                                )}
+                                %
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">COND</span>
                               <span className="font-medium">
-                                {Value_to_Display_COND_ACT_SPEED}%
+                                {formatValue(
+                                  Value_to_Display_COND_ACT_SPEED ||
+                                    data?.CONDENSER_RPM
+                                )}
+                                %
                               </span>
                             </div>
                           </div>
@@ -344,8 +362,8 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">COMP</span>
                               <span className="font-medium">
-                                HP {format(AI_COND_PRESSURE)} LP{" "}
-                                {format(AI_SUC_PRESSURE)}
+                                HP {format(AI_COND_PRESSURE || data?.HP)} LP{" "}
+                                {format(AI_SUC_PRESSURE || data?.LP)}
                               </span>
                             </div>
                           </div>
@@ -385,7 +403,8 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">T2 (Ambient)</span>
                               <span className="font-medium">
-                                {AI_AMBIANT_TEMP} °C
+                                {AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2}{" "}
+                                °C
                               </span>
                             </div>
                           </div>
@@ -393,13 +412,15 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">TH</span>
                               <span className="font-medium">
-                                {AI_TH_Act} °C
+                                {AI_TH_Act || data?.AFTER_HEATER_TEMP_Th} °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">BLOWER</span>
                               <span className="font-medium">
-                                {Value_to_Display_EVAP_ACT_SPEED}%
+                                {Value_to_Display_EVAP_ACT_SPEED ||
+                                  data?.BLOWER_RPM}
+                                %
                               </span>
                             </div>
                           </div>
@@ -458,19 +479,20 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">TH (Supply Air)</span>
                               <span className="font-medium">
-                                {AI_TH_Act} °C
+                                {AI_TH_Act || data?.AFTER_HEATER_TEMP_Th} °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">T2 (Ambient)</span>
                               <span className="font-medium">
-                                {AI_AMBIANT_TEMP} °C
+                                {AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2}{" "}
+                                °C
                               </span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-sm">Delta(A) Set</span>
                               <span className="font-medium">
-                                {deltaTemp} °C
+                                {deltaTemp || data?.DELTA_SET} °C
                               </span>
                             </div>
                           </div>
@@ -478,7 +500,9 @@ const Index = () => {
                             <div className="flex justify-between">
                               <span className="text-sm">BLOWER</span>
                               <span className="font-medium">
-                                {Value_to_Display_EVAP_ACT_SPEED}%
+                                {Value_to_Display_EVAP_ACT_SPEED ||
+                                  data?.BLOWER_RPM}
+                                %
                               </span>
                             </div>
                             <div className="flex justify-between">

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Check } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useAutoData } from "@/hooks/useAutoData";
 
 export default function DateTimePage() {
   const [date, setDate] = useState({
@@ -22,28 +23,13 @@ export default function DateTimePage() {
     seconds: new Date().getSeconds(),
   });
 
-  const [data, setData] = useState<any>([]);
   const [loading, setLoading] = useState(false);
   const dates = useParams();
   const defaults = dates["date-time"];
 
-  useEffect(() => {
-    const eventSource = new EventSource("/api/getData");
-
-    eventSource.onmessage = (event) => {
-      const newRow = JSON.parse(event.data);
-      setData(() => [newRow]);
-    };
-
-    eventSource.onerror = (err) => {
-      console.error("SSE error:", err);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [data, setLoading]);
+  const { data, isConnected, error, formatValue } = useAutoData(
+    defaults as string
+  );
 
   const router = useRouter();
 
@@ -259,7 +245,7 @@ export default function DateTimePage() {
     SET_TIME_SET_HOUR,
     SET_TIME_SET_MINUTE,
     SET_TIME_SET_SEC,
-  } = data?.[0] || {};
+  } = data || {};
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -284,7 +270,7 @@ export default function DateTimePage() {
                     <Input
                       id="year"
                       type="number"
-                      value={READ_TIME_Date_Time_YEAR}
+                      value={READ_TIME_Date_Time_YEAR || data?.W_YY}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -298,7 +284,7 @@ export default function DateTimePage() {
                     <Input
                       id="month"
                       type="number"
-                      value={READ_TIME_Date_Time_MONTH}
+                      value={READ_TIME_Date_Time_MONTH || data?.W_MM}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -314,7 +300,7 @@ export default function DateTimePage() {
                     <Input
                       id="day"
                       type="number"
-                      value={READ_TIME_Date_Time_DAY}
+                      value={READ_TIME_Date_Time_DAY || data?.W_DD}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -336,7 +322,7 @@ export default function DateTimePage() {
                     <Input
                       id="hours"
                       type="number"
-                      value={READ_TIME_Date_Time_HOUR}
+                      value={READ_TIME_Date_Time_HOUR || data?.W_HR}
                       onChange={(e) =>
                         setTime({
                           ...time,
@@ -352,7 +338,7 @@ export default function DateTimePage() {
                     <Input
                       id="minutes"
                       type="number"
-                      value={READ_TIME_Date_Time_MINUTE}
+                      value={READ_TIME_Date_Time_MINUTE || data?.W_MIN}
                       onChange={(e) =>
                         setTime({
                           ...time,
@@ -368,7 +354,7 @@ export default function DateTimePage() {
                     <Input
                       id="seconds"
                       type="number"
-                      value={READ_TIME_Date_Time_SECOND}
+                      value={READ_TIME_Date_Time_SECOND || data?.W_SEC}
                       onChange={(e) =>
                         setTime({
                           ...time,

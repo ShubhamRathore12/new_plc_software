@@ -67,7 +67,7 @@ export default function LoginPage() {
           <div className="flex justify-center">
             <MonitorIcon className="h-12 w-12 text-blue-600" />
           </div>
-          <h2 className="text-2xl font-bold">Faction IO Sense</h2>
+          <h2 className="text-2xl font-bold">Grain Technik</h2>
           <p className="text-sm text-muted-foreground">
             Enter your credentials to access the dashboard
           </p>

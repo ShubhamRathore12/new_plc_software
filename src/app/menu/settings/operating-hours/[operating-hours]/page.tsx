@@ -18,35 +18,20 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useParams, useRouter } from "next/navigation";
+import { useAutoData } from "@/hooks/useAutoData";
 
 export default function OperatingHoursPage() {
   const [hours, setHours] = useState(1234);
   const [minutes, setMinutes] = useState(45);
 
-  const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
   const dates = useParams();
   const defaults = dates["operating-hours"];
 
   const router = useRouter();
 
-  useEffect(() => {
-    const eventSource = new EventSource("/api/getData");
-
-    eventSource.onmessage = (event) => {
-      const newRow = JSON.parse(event.data);
-      setData(() => [newRow]);
-    };
-
-    eventSource.onerror = (err) => {
-      console.error("SSE error:", err);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [data, setLoading]);
+  const { data, isConnected, error, formatValue } = useAutoData(
+    defaults as string
+  );
 
   const {
     AHT_PID_Config_OutputLowerLimit,
@@ -256,7 +241,7 @@ export default function OperatingHoursPage() {
     Value_to_Display_EVAP_ACT_SPEED,
     SET_TIME_SET_MINUTE,
     SET_TIME_SET_HOUR,
-  } = data?.[0] || {};
+  } = data || {};
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -278,7 +263,7 @@ export default function OperatingHoursPage() {
                 <Input
                   id="hours"
                   type="number"
-                  value={SET_TIME_SET_HOUR}
+                  value={SET_TIME_SET_HOUR || data?.RUNNING_HOUR}
                   onChange={(e) =>
                     setHours(Number.parseInt(e.target.value) || 0)
                   }
@@ -296,7 +281,7 @@ export default function OperatingHoursPage() {
                   <Input
                     id="minutes"
                     type="number"
-                    value={SET_TIME_SET_MINUTE}
+                    value={SET_TIME_SET_MINUTE || data?.RUNNING_MINUTE}
                     onChange={(e) =>
                       setMinutes(Number.parseInt(e.target.value) || 0)
                     }

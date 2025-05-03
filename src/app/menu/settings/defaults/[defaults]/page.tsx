@@ -12,36 +12,15 @@ import {
   PageTransition,
   AnimatedContainer,
 } from "@/components/ui/animated-container";
+import { useAutoData } from "../../../../../hooks/useAutoData";
 
 export default function DefaultsPage() {
   const router = useRouter();
   const { defaults } = useParams();
-  const [t1, setT1] = useState(24);
-  const [thT1, setThT1] = useState(8);
-  const [deltaA, setDeltaA] = useState(10);
-  const [hp, setHp] = useState(220);
-  const [lp, setLp] = useState(40);
 
-  const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const eventSource = new EventSource("/api/getData");
-
-    eventSource.onmessage = (event) => {
-      const newRow = JSON.parse(event.data);
-      setData(() => [newRow]);
-    };
-
-    eventSource.onerror = (err) => {
-      console.error("SSE error:", err);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [data, setLoading]);
+  const { data, isConnected, error, formatValue } = useAutoData(
+    defaults as string
+  );
 
   const handleBack = () => {
     router.push("/menu");
@@ -253,7 +232,7 @@ export default function DefaultsPage() {
     Value_to_Display_HOT_GAS_VALVE_OPEN,
     Value_to_Display_COND_ACT_SPEED,
     Value_to_Display_EVAP_ACT_SPEED,
-  } = data?.[0] || {};
+  } = data || {};
 
   return (
     <PageTransition>
@@ -280,10 +259,7 @@ export default function DefaultsPage() {
                     <Input
                       id="t1"
                       type="number"
-                      value={SETTINGS_T1_REF_FR_T0}
-                      onChange={(e) =>
-                        setT1(Number.parseInt(e.target.value) || 0)
-                      }
+                      value={SETTINGS_T1_REF_FR_T0 || data?.T1_SET_POINT}
                       className="col-span-1"
                     />
                     <div>°C</div>
@@ -301,10 +277,10 @@ export default function DefaultsPage() {
                     <Input
                       id="th-t1"
                       type="number"
-                      value={SETTINGS_Delta_T}
-                      onChange={(e) =>
-                        setThT1(Number.parseInt(e.target.value) || 0)
-                      }
+                      value={SETTINGS_Delta_T || data?.Th_T1}
+                      // onChange={(e) =>
+                      //   setThT1(Number.parseInt(e.target.value) || 0)
+                      // }
                       className="col-span-1"
                     />
                     <div>°C</div>
@@ -322,10 +298,12 @@ export default function DefaultsPage() {
                     <Input
                       id="delta-a"
                       type="number"
-                      value={HEATING_MODE_SET_TH_FOR_HEATING_MODE}
-                      onChange={(e) =>
-                        setDeltaA(Number.parseInt(e.target.value) || 0)
+                      value={
+                        HEATING_MODE_SET_TH_FOR_HEATING_MODE || data?.DELTA_SET
                       }
+                      // onChange={(e) =>
+                      //   setDeltaA(Number.parseInt(e.target.value) || 0)
+                      // }
                       className="col-span-1"
                     />
                     <div>°C</div>
@@ -343,35 +321,60 @@ export default function DefaultsPage() {
                     <Input
                       id="hp"
                       type="number"
-                      value={PID_SETTINGS_HP_SET_FROM_HMI}
-                      onChange={(e) =>
-                        setHp(Number.parseInt(e.target.value) || 0)
-                      }
+                      value={PID_SETTINGS_HP_SET_FROM_HMI || data?.HP_SET_POINT}
+                      // onChange={(e) =>
+                      //   setHp(Number.parseInt(e.target.value) || 0)
+                      // }
                       className="col-span-1"
                     />
                     <div>psi</div>
                   </motion.div>
 
-                  <motion.div
-                    className="grid grid-cols-3 items-center gap-4"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                  >
-                    <Label htmlFor="lp" className="text-right font-medium">
-                      LP
-                    </Label>
-                    <Input
-                      id="lp"
-                      type="number"
-                      value={PID_SETTINGS_LP_SET_FROM_HMI}
-                      onChange={(e) =>
-                        setLp(Number.parseInt(e.target.value) || 0)
-                      }
-                      className="col-span-1"
-                    />
-                    <div>psi</div>
-                  </motion.div>
+                  {defaults !== "S7-200" && (
+                    <motion.div
+                      className="grid grid-cols-3 items-center gap-4"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                    >
+                      <Label htmlFor="lp" className="text-right font-medium">
+                        LP
+                      </Label>
+                      <Input
+                        id="lp"
+                        type="number"
+                        value={PID_SETTINGS_LP_SET_FROM_HMI}
+                        // onChange={(e) =>
+                        //   setLp(Number.parseInt(e.target.value) || 0)
+                        // }
+                        className="col-span-1"
+                      />
+                      <div>psi</div>
+                    </motion.div>
+                  )}
+
+                  {defaults == "S7-200" && (
+                    <motion.div
+                      className="grid grid-cols-3 items-center gap-4"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.6 }}
+                    >
+                      <Label htmlFor="lp" className="text-right font-medium">
+                        Auto Aeration
+                      </Label>
+                      <Input
+                        id="lp"
+                        type="number"
+                        value={data?.AUTO_AEARATIO_TIME}
+                        // onChange={(e) =>
+                        //   setLp(Number.parseInt(e.target.value) || 0)
+                        // }
+                        className="col-span-1"
+                      />
+                      <div>psi</div>
+                    </motion.div>
+                  )}
 
                   <motion.div
                     className="flex justify-between pt-4"

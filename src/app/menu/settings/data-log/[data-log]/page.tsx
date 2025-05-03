@@ -9,15 +9,19 @@ import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { useParams, useRouter } from "next/navigation";
 import { Download } from "lucide-react";
+import { useAutoData } from "@/hooks/useAutoData";
 export default function DataLogPage() {
-  const [logInterval, setLogInterval] = useState(15);
-  const [data, setData] = useState<any>([]);
-  const [loading, setLoading] = useState(false);
   const dates = useParams();
   const router = useRouter();
   const defaults = dates["data-log"];
+  const { data, isConnected, error, formatValue } = useAutoData(
+    defaults as string
+  );
   const [downloading, setDownloading] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [logInterval, setLogInterval] = useState(
+    data?.LOGDB_CSV_LOG_TIME || data?.Data_Logg_Timer
+  );
   const handleDownload = () => {
     setDownloading(true);
     setProgress(0);
@@ -34,24 +38,6 @@ export default function DataLogPage() {
       });
     }, 200);
   };
-
-  useEffect(() => {
-    const eventSource = new EventSource("/api/getData");
-
-    eventSource.onmessage = (event) => {
-      const newRow = JSON.parse(event.data);
-      setData(() => [newRow]);
-    };
-
-    eventSource.onerror = (err) => {
-      console.error("SSE error:", err);
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, [data, setLoading]);
 
   const {
     AHT_PID_Config_OutputLowerLimit,
@@ -261,7 +247,7 @@ export default function DataLogPage() {
     Value_to_Display_EVAP_ACT_SPEED,
     SET_TIME_SET_MINUTE,
     SET_TIME_SET_HOUR,
-  } = data?.[0] || {};
+  } = data || {};
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -296,7 +282,7 @@ export default function DataLogPage() {
                   <Input
                     id="log-interval"
                     type="number"
-                    value={LOGDB_CSV_LOG_TIME}
+                    value={LOGDB_CSV_LOG_TIME || data?.Data_Logg_Timer}
                     onChange={(e) => {
                       const value = Number.parseInt(e.target.value) || 1;
                       setLogInterval(Math.min(Math.max(value, 1), 60));
