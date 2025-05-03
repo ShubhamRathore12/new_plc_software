@@ -104,36 +104,67 @@ export default function AutoPage() {
                     {[
                       [
                         "TH (Supply Air)",
-                        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                        formatValue(
+                          data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                          "°C"
+                        ),
                       ],
                       [
                         "T0 (After Heat)",
-                        data?.AI_AIR_OUTLET_TEMP || data?.AIR_OUTLET_TEMP,
+                        formatValue(
+                          data?.AI_AIR_OUTLET_TEMP || data?.AIR_OUTLET_TEMP,
+                          "°C"
+                        ),
                       ],
                       [
                         "T1 (Cold Air)",
-                        data?.AI_COLD_AIR_TEMP || data?.T1_SET_POINT,
+                        formatValue(
+                          data?.AI_COLD_AIR_TEMP || data?.T1_SET_POINT,
+                          "°C"
+                        ),
                       ],
                       [
                         "T2 (Ambient)",
-                        data?.AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2,
+                        formatValue(
+                          data?.AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2,
+                          "°C"
+                        ),
                       ],
-                      ["TH - T1", data?.AI_TH_Act || data?.Th_T1],
+                      [
+                        "TH - T1",
+                        formatValue(
+                          (data?.AI_TH_Act || 0) -
+                            (data?.AI_COLD_AIR_TEMP || 0),
+                          "°C"
+                        ),
+                      ],
                       [
                         "HTR",
-                        data?.Value_to_Display_HEATER ||
-                          data?.AFTER_HEAT_VALVE_RPM,
+                        formatValue(
+                          data?.Value_to_Display_HEATER ||
+                            data?.AFTER_HEAT_VALVE_RPM,
+                          "%"
+                        ),
                       ],
-                      ["AHT", data?.Value_to_Display_AHT_VALE_OPEN],
+                      [
+                        "AHT",
+                        formatValue(data?.Value_to_Display_AHT_VALE_OPEN, "%"),
+                      ],
                       [
                         "HGS",
-                        data?.Value_to_Display_HOT_GAS_VALVE_OPEN ||
-                          data?.HOT_GAS_VALVE_RPM,
+                        formatValue(
+                          data?.Value_to_Display_HOT_GAS_VALVE_OPEN ||
+                            data?.HOT_GAS_VALVE_RPM,
+                          "%"
+                        ),
                       ],
                       [
                         "BLOWER",
-                        data?.Value_to_Display_EVAP_ACT_SPEED ||
-                          data?.BLOWER_RPM,
+                        formatValue(
+                          data?.Value_to_Display_EVAP_ACT_SPEED ||
+                            data?.BLOWER_RPM,
+                          "%"
+                        ),
                       ],
                       [
                         "COMP",
@@ -147,20 +178,16 @@ export default function AutoPage() {
                       ],
                       [
                         "COND",
-                        data?.Value_to_Display_COND_ACT_SPEED ||
-                          data?.CONDENSER_RPM,
+                        formatValue(
+                          data?.Value_to_Display_COND_ACT_SPEED ||
+                            data?.CONDENSER_RPM,
+                          "%"
+                        ),
                       ],
                     ].map(([label, val]) => (
                       <div key={label} className="flex justify-between">
                         <span>{label}</span>
-                        <span className="font-medium">
-                          {typeof val === "string"
-                            ? val
-                            : formatValue(
-                                val,
-                                label.includes("°C") ? "°C" : "%"
-                              )}
-                        </span>
+                        <span className="font-medium">{val}</span>
                       </div>
                     ))}
                   </div>
