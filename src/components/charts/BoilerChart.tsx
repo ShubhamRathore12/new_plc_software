@@ -1,89 +1,282 @@
 "use client";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import {
-  ResponsiveContainer,
-  ComposedChart,
-  Line,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-} from "recharts";
-import Im from "../../../public/images/new2.png";
-import Im1 from "../../../public/images/4.png";
 
-// Generate data for the boiler chart
-const generateBoilerData = () => {
-  const data = [];
-  const baseEfficiency = 75 + Math.random() * 10;
-  const basePressure = 60 + Math.random() * 15;
+import { Suspense, useRef } from "react";
+import { Canvas } from "@react-three/fiber";
+import { OrbitControls, Text, Grid, Line, RoundedBox } from "@react-three/drei";
+import * as THREE from "three";
 
-  for (let i = 0; i < 24; i++) {
-    const hour = i % 12 === 0 ? 12 : i % 12;
-    const ampm = i < 12 ? "AM" : "PM";
-    const timeOfDay = i;
-
-    // Add some cyclical variation
-    const timeEffect = Math.sin((timeOfDay / 24) * Math.PI * 2);
-    const randomVariation = Math.random() * 5;
-
-    data.push({
-      name: `${hour}${ampm}`,
-      efficiency: Math.min(
-        100,
-        Math.max(50, baseEfficiency + timeEffect * 10 + randomVariation)
-      ),
-      pressure: Math.min(
-        100,
-        Math.max(30, basePressure + timeEffect * 8 + randomVariation)
-      ),
-      temperature: Math.min(
-        95,
-        Math.max(60, 75 + timeEffect * 15 + randomVariation)
-      ),
-    });
-  }
-
-  return data;
-};
-
-interface BoilerChartProps {
-  detailed?: boolean;
-  param?: any;
+// Props for 3D Box Components
+interface ComponentProps {
+  position: [number, number, number];
+  geometry: any;
+  color: string;
+  label?: string;
+  labelPosition?: [number, number, number];
 }
 
-const BoilerChart = ({ detailed = false, param }: BoilerChartProps) => {
-  const data = useRef(generateBoilerData());
-  const [status, setStatus] = useState("Active");
+// Props for TextBox Panels
+interface TextBoxProps {
+  position: [number, number, number];
+  width: number;
+  height: number;
+  title: string;
+  values: string[];
+  units: string[];
+  colors: string[];
+}
 
-  // Change status periodically
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const statuses = ["Active", "Standby", "Active", "Active"];
-      setStatus(statuses[Math.floor(Math.random() * statuses.length)]);
-    }, 30000);
+// Props for Flow Lines
+interface FlowLineProps {
+  points: [number, number, number][];
+}
 
-    return () => clearInterval(interval);
-  }, []);
-
-  // Get the current efficiency value from the last data point
-  const currentEfficiency = Math.round(
-    data.current[data.current.length - 1].efficiency
-  );
-
+export default function BoilerChart() {
   return (
-    <div className="h-full w-full">
-      <Image
-        src={param == "S7-1200" ? Im : Im1}
-        alt="Image"
-        width={1000}
-        height={1000}
-      />
+    <div className="w-full h-screen bg-[#e6f0fa]">
+      <Canvas camera={{ position: [10, 10, 10], fov: 60 }}>
+        <SceneContent />
+      </Canvas>
     </div>
   );
-};
+}
 
-export default BoilerChart;
+function SceneContent() {
+  return (
+    <>
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[5, 5, 5]} intensity={1} />
+      <Grid
+        position={[0, -1, 0]}
+        args={[20, 20]}
+        cellColor="#00f"
+        sectionColor="#00f"
+        fadeDistance={50}
+        infiniteGrid
+      />
+      <ComponentGroup />
+      <FlowLines />
+      <OrbitControls enablePan enableZoom enableRotate />
+    </>
+  );
+}
+
+function Component({
+  position,
+  geometry,
+  color,
+  label,
+  labelPosition,
+}: ComponentProps) {
+  const ref = useRef<THREE.Mesh>(null);
+
+  return (
+    <>
+      <mesh ref={ref} position={position}>
+        {geometry}
+        <meshStandardMaterial
+          color={color}
+          wireframe
+          opacity={0.8}
+          transparent
+        />
+      </mesh>
+      {label && (
+        <Text
+          position={
+            labelPosition || [position[0], position[1] + 1, position[2]]
+          }
+          fontSize={0.5}
+          color="#000"
+          anchorX="center"
+          anchorY="middle"
+        >
+          {label}
+        </Text>
+      )}
+    </>
+  );
+}
+
+function TextBox({
+  position,
+  width,
+  height,
+  title,
+  values,
+  units,
+  colors,
+}: TextBoxProps) {
+  return (
+    <group position={position}>
+      <RoundedBox args={[width, height, 0.1]} radius={0.1}>
+        <meshStandardMaterial color="#fff" opacity={0.9} transparent />
+      </RoundedBox>
+      <Text
+        position={[0, height / 2 - 0.3, 0.1]}
+        fontSize={0.3}
+        color="#000"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {title}
+      </Text>
+      {values.map((value, index) => (
+        <group
+          key={index}
+          position={[index === 0 ? -width / 4 : width / 4, 0, 0.1]}
+        >
+          <RoundedBox args={[width / 3, height / 3, 0.1]} radius={0.05}>
+            <meshStandardMaterial
+              color={colors[index]}
+              opacity={0.9}
+              transparent
+            />
+          </RoundedBox>
+          <Text
+            position={[0, 0, 0.2]}
+            fontSize={0.3}
+            color="#000"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {value}
+          </Text>
+          <Text
+            position={[0, -height / 3 - 0.2, 0.1]}
+            fontSize={0.2}
+            color="#000"
+            anchorX="center"
+            anchorY="middle"
+          >
+            {units[index]}
+          </Text>
+        </group>
+      ))}
+    </group>
+  );
+}
+
+function ComponentGroup() {
+  return (
+    <>
+      <Text
+        position={[-6, 4, 0]}
+        fontSize={0.4}
+        color="#000"
+        anchorX="left"
+        anchorY="middle"
+      >
+        SR.NO:NGTPL-100
+      </Text>
+
+      {/* SILO */}
+      <Component
+        position={[-5, 0, 0]}
+        geometry={<cylinderGeometry args={[1, 1, 4, 32]} />}
+        color="#00f"
+        label="SILO"
+        labelPosition={[-5, 3, 0]}
+      />
+      <Component
+        position={[-5, 2, 0]}
+        geometry={<coneGeometry args={[1, 1, 32]} />}
+        color="#00f"
+      />
+
+      {/* TH */}
+      <TextBox
+        position={[-5, 1.5, 0]}
+        width={1.5}
+        height={0.8}
+        title="TH"
+        values={["5.0"]}
+        units={["°C"]}
+        colors={["#87CEEB"]}
+      />
+
+      {/* Running Time */}
+      <TextBox
+        position={[-2, -2, 0]}
+        width={2.5}
+        height={1}
+        title="Running Time"
+        values={["0", "0"]}
+        units={["HOURS", "MINUTES"]}
+        colors={["#87CEEB", "#87CEEB"]}
+      />
+
+      {/* BLOWER */}
+      <Component
+        position={[2, -3, 0]}
+        geometry={<sphereGeometry args={[0.5, 32, 32]} />}
+        color="#f00"
+        label="BLOWER"
+        labelPosition={[2, -4, 0]}
+      />
+      <TextBox
+        position={[2, -2, 0]}
+        width={1.5}
+        height={0.8}
+        title=""
+        values={["0"]}
+        units={["%"]}
+        colors={["#87CEEB"]}
+      />
+
+      {/* Set Duration */}
+      <TextBox
+        position={[5, 2, 0]}
+        width={1.5}
+        height={0.8}
+        title="Set Duration"
+        values={["0"]}
+        units={["h"]}
+        colors={["#000"]}
+      />
+
+      {/* T2 Reading */}
+      <TextBox
+        position={[5, 0, 0]}
+        width={1.5}
+        height={0.8}
+        title="T2"
+        values={["3.0"]}
+        units={["°C"]}
+        colors={["#87CEEB"]}
+      />
+    </>
+  );
+}
+
+function FlowLine({ points }: FlowLineProps) {
+  return (
+    <Line
+      points={points}
+      color="#00f"
+      lineWidth={2}
+      dashed
+      dashSize={0.2}
+      gapSize={0.1}
+    />
+  );
+}
+
+function FlowLines() {
+  return (
+    <>
+      <FlowLine
+        points={[
+          [-5, 0, 0],
+          [5, 0, 0],
+        ]}
+      />
+      <FlowLine
+        points={[
+          [5, 0, 0],
+          [5, -3, 0],
+          [2, -3, 0],
+        ]}
+      />
+    </>
+  );
+}

@@ -125,7 +125,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <PressureChart param={param} />
+                  <PressureChart />
                 </CardContent>
               </Card>
 
@@ -141,7 +141,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <TemperatureChart param={param} />
+                  <TemperatureChart />
                 </CardContent>
               </Card>
 
@@ -188,7 +188,7 @@ const Index = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <BoilerChart param={param} />
+                  <BoilerChart />
                 </CardContent>
               </Card>
 
