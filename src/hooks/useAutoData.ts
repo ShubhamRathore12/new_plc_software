@@ -19,7 +19,7 @@ export const useAutoData = (autoType: string) => {
       eventSourceRef.current.close(); // Cleanup old connection
     }
 
-    const url = autoType === "S7-1200" ? "/api/getData" : "/api/getDataSmart";
+    const url = autoType === "S7-1200" ? "/api/getData" :autoType == "S7-200"? "/api/getDataSmart" : "/api/getTestData";
     const eventSource = new EventSource(url);
     eventSourceRef.current = eventSource;
 
