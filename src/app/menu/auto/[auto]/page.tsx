@@ -184,6 +184,20 @@ export default function AutoPage() {
                           "%"
                         ),
                       ],
+                      [
+                        "Mode Status",
+                        formatValue(
+                          data?.mode_status || data?.mode_status,
+                          "%"
+                        ),
+                      ],
+                      [
+                        "Water Pressure",
+                        formatValue(
+                          data?.water_pressure || data?.water_pressure,
+                          "%"
+                        ),
+                      ],
                     ].map(([label, val]) => (
                       <div key={label} className="flex justify-between">
                         <span>{label}</span>

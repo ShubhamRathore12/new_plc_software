@@ -6,8 +6,6 @@ interface AutoData {
 }
 
 export const useAutoData = (autoType: string) => {
-  
-  
   const [data, setData] = useState<AutoData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -19,7 +17,12 @@ export const useAutoData = (autoType: string) => {
       eventSourceRef.current.close(); // Cleanup old connection
     }
 
-    const url = autoType === "S7-1200" ? "/api/getData" :autoType == "S7-200"? "/api/getDataSmart" : "/api/getTestData";
+    const url =
+      autoType === "S7-1200"
+        ? "/api/getData"
+        : autoType == "S7-200"
+        ? "/api/getDataSmart"
+        : "/api/latest-data";
     const eventSource = new EventSource(url);
     eventSourceRef.current = eventSource;
 
