@@ -19,7 +19,7 @@ export const useAutoData = (autoType: string) => {
 
     const url =
       autoType === "S7-1200"
-        ? "/api/allData"
+        ? "/api/getData"
         : autoType == "S7-200"
         ? "/api/getDataSmart"
         : "/api/latest-data";
