@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useDataStore } from "@/lib/store";
 
 // Zod Schema
 const formSchema = z
@@ -117,9 +118,15 @@ interface UserData {
   email: string;
   phoneNumber: string;
   company: string;
-  monitorAccess: number;
+ 
   created_at: string;
+  monitorAccess?: string |any;
 }
+
+interface StoreData {
+  user?: UserData;
+}
+
 
 const formatText = (text: string) => {
   return text
@@ -132,6 +139,22 @@ export default function RegistrationForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState<UserData | null>(null);
   const { t } = useLanguage();
+  const { data } = useDataStore() as { data: StoreData };
+
+  const [monitorAccessItems, setMonitorAccessItems] = useState<string[]>([]);
+
+useEffect(() => {
+  if (typeof data?.user?.monitorAccess === "string") {
+    const parsed = data.user.monitorAccess
+      .split(",")
+      .map((item) => item.trim().toLowerCase());
+    setMonitorAccessItems(parsed);
+  } else {
+    setMonitorAccessItems([]);
+  }
+}, [data?.user?.monitorAccess]);
+
+
 
   // Example user data - in real app, this would come from an API
   useEffect(() => {
@@ -312,14 +335,19 @@ export default function RegistrationForm() {
               }
               className="w-full mb-4"
             >
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="manufacturer">
-                  {formatText(t("manufacturer"))}
-                </TabsTrigger>
-                <TabsTrigger value="customer">
-                  {formatText(t("customer"))}
-                </TabsTrigger>
-              </TabsList>
+             <TabsList className="grid w-full grid-cols-2">
+  {!monitorAccessItems.includes("manufacturer") && (
+    <TabsTrigger value="manufacturer">
+      {formatText(t("manufacturer"))}
+    </TabsTrigger>
+  )}
+  {!monitorAccessItems.includes("customer") && (
+    <TabsTrigger value="customer">
+      {formatText(t("customer"))}
+    </TabsTrigger>
+  )}
+</TabsList>
+
             </Tabs>
 
             {/* Form */}
