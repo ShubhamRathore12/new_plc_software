@@ -209,12 +209,9 @@ export default function RegistrationForm() {
   }
 
   const monitorOptions = [
-    { value: "overview", label: formatText(t("overview")) },
-    {
-      value: "monitoring-locations",
-      label: formatText(t("monitoring_locations")),
-    },
-    { value: "dashboards", label: formatText(t("dashboards")) },
+  
+    
+
     { value: "devices", label: formatText(t("devices")) },
     { value: "notifications", label: formatText(t("notifications")) },
     { value: "contacts", label: formatText(t("contacts")) },
@@ -229,6 +226,10 @@ export default function RegistrationForm() {
     { value: "outputs", label: formatText(t("outputs")) },
     { value: "test", label: formatText(t("test")) },
     { value: "screen-brightness", label: formatText(t("screen_brightness")) },
+    { value: "reports", label: formatText(t("reports")) },
+    { value: "manufacture", label: formatText(t("manufacture")) },
+    { value: "customer", label: formatText(t("customer")) },
+
   ];
 
   // Dynamic company and location options
