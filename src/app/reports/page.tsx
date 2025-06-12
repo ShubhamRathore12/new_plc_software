@@ -18,23 +18,15 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 export default function TableWithDownload() {
   const [data, setData] = useState<Record<string, any>[]>([]);
   const [selectedDevice, setSelectedDevice] = useState("S7-1200");
-  const [loading, setLoading] = useState(false);
 
   const fetchData = async (deviceType: string) => {
-    setLoading(true);
     const endpoint =
       deviceType === "S7-1200"
-        ? "/api/getAllData"
-        : "/api/getAllDataSmart200";
-    try {
-      const res = await fetch(endpoint);
-      const json = await res.json();
-      setData(json);
-    } catch (err) {
-      console.error("Failed to fetch:", err);
-      setData([]);
-    }
-    setLoading(false);
+        ? "https://grain-backend.onrender.com/api/getAllData"
+        : "https://grain-backend.onrender.com/api/getAllDataSmart200";
+    const res = await fetch(endpoint);
+    const json = await res.json();
+    setData(json);
   };
 
   useEffect(() => {
@@ -75,7 +67,6 @@ export default function TableWithDownload() {
           <select
             value={selectedDevice}
             onChange={(e) => setSelectedDevice(e.target.value)}
-            disabled={loading}
             className="border px-4 py-2 rounded-md"
           >
             <option value="S7-1200">S7-1200</option>
@@ -84,19 +75,16 @@ export default function TableWithDownload() {
 
           <button
             onClick={downloadExcel}
-            disabled={loading || !data.length}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:opacity-50"
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
           >
             Download Excel
           </button>
 
-      
+        
         </div>
 
-        {/* Loading indicator */}
-        {loading ? (
-          <p className="text-center text-gray-600 mt-10">Loading data...</p>
-        ) : data.length ? (
+        {/* Table */}
+        {data.length ? (
           <div
             id="table-container"
             className="border rounded-md overflow-x-auto"
@@ -139,7 +127,7 @@ export default function TableWithDownload() {
             </Table>
           </div>
         ) : (
-          <p className="text-center text-gray-600 mt-10">No data found.</p>
+          <p>Loading data...</p>
         )}
       </div>
     </DashboardLayout>
