@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { format } from "@/lib/utils";
 
 interface AutoData {
@@ -10,65 +10,53 @@ export const useAutoData = (autoType: string) => {
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  const eventSourceRef = useRef<EventSource | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const connectToEventSource = useCallback(() => {
-    if (eventSourceRef.current) {
-      eventSourceRef.current.close(); // Cleanup old connection
+  const fetchData = async () => {
+    let url = "";
+
+    if (autoType === "S7-1200") {
+      url = "https://grain-backend.onrender.com/api/ws/current-data";
+    } else if (autoType === "S7-200") {
+      url = "https://grain-backend.onrender.com/api/alldata/alldata";
+    } else {
+      url = "/api/latest-data";
     }
 
-    const url =
-      autoType === "S7-1200"
-        ? "/api/getData"
-        : autoType == "S7-200"
-        ? "/api/getDataSmart"
-        : "/api/latest-data";
-    const eventSource = new EventSource(url);
-    eventSourceRef.current = eventSource;
+    try {
+      const response = await fetch(url);
+      if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
+      const result = await response.json();
 
-    eventSource.onopen = () => {
-      setIsConnected(true);
-      setError(null);
-      setRetryCount(0);
-    };
+    // Full structure
 
-    eventSource.onmessage = (event) => {
-      const newRow = JSON.parse(event.data);
-      setData([newRow]);
-    };
-
-    eventSource.onerror = () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
+      if (result.success) {
+        setData([result.data]);
+        setIsConnected(true);
+        setError(null);
+        setRetryCount(0);
+      } else {
+        throw new Error("Invalid response structure");
       }
+    } catch (err: any) {
       setIsConnected(false);
-      setError("Connection lost. Attempting to reconnect...");
+      setError("Failed to fetch data");
       setRetryCount((prev) => prev + 1);
-    };
-  }, [autoType, data]);
+      console.error("❌ Polling error:", err.message || err);
+    }
+  };
 
-  // Initial connection
+
+  
+
   useEffect(() => {
-    connectToEventSource();
+    fetchData(); // fetch immediately on mount
+    intervalRef.current = setInterval(fetchData, 5000); // poll every 5s
 
     return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-      }
+      if (intervalRef.current) clearInterval(intervalRef.current);
     };
-  }, [connectToEventSource, data]);
-
-  // Reconnect only if disconnected
-  useEffect(() => {
-    if (!isConnected && retryCount > 0) {
-      const timer = setTimeout(() => {
-        connectToEventSource();
-      }, 5000); // Reconnect after 5 seconds
-
-      return () => clearTimeout(timer);
-    }
-  }, [isConnected, retryCount, connectToEventSource, data]);
+  }, [autoType]);
 
   const formatValue = (value: any, unit: string = "") => {
     if (value === undefined || value === null) return "--";
@@ -79,7 +67,7 @@ export const useAutoData = (autoType: string) => {
     data: data[0] || {},
     isConnected,
     error,
-    formatValue,
     retryCount,
+    formatValue,
   };
 };
