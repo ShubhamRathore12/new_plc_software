@@ -65,11 +65,7 @@ export default function DevicesPage() {
       status: "device_status",
       image: "/images/200.jpg",
     },
-    {
-      name: "Test",
-      status: "device_status",
-      image: "/images/1200.jpg",
-    },
+  
     
     
   ];
