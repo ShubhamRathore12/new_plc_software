@@ -19,9 +19,9 @@ export const useAutoData = (autoType: string) => {
 
     const url =
       autoType === "S7-1200"
-        ? "https://grain-backend.onrender.com/api/ws/current-data"
+        ? "/api/allData"
         : autoType == "S7-200"
-        ? "https://grain-backend.onrender.com/api/alldata/alldata"
+        ? "/api/getDataSmart"
         : "/api/latest-data";
     const eventSource = new EventSource(url);
     eventSourceRef.current = eventSource;
