@@ -24,8 +24,8 @@ export default function TableWithDownload() {
     setLoading(true);
     const endpoint =
       deviceType === "S7-1200"
-        ? "/api/getAllData"
-        : "/api/getAllDataSmart200";
+        ? "https://grain-backend.onrender.com/api/all700data/getAllData"
+        : "https://grain-backend.onrender.com/api/all700data/getAllDataSmart200";
     try {
       const res = await fetch(endpoint);
       const json = await res.json();
