@@ -26,7 +26,7 @@ interface StoreData {
 }
 
 type MenuItem = {
-  icon: React.ElementType;
+  icon: React.ElementType | any;
   title: string;
   path: string;
 };
