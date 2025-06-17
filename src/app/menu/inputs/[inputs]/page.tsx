@@ -65,7 +65,7 @@ export default function InputsPage() {
             key={item.id}
             className="flex items-center gap-4 p-3 rounded-md hover:bg-muted/50"
           >
-                    <div className="font-mono text-sm">#{item.id}</div>
+                    <div className="font-mono text-sm">{item.id}</div>
             <div className="flex-1">{item.description}</div>
     
             <div
