@@ -21,7 +21,7 @@ export default function AutoPage() {
   const { auto } = useParams();
   const { data, isConnected, error, formatValue } = useAutoData(auto as string);
 
-  console.log(data?.data?.[0]);
+
   
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
