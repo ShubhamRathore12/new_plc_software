@@ -236,7 +236,7 @@ export default function FaultPage() {
                       </TableHeader>
                       <TableBody>
                         {s7_200_tags
-                          .filter(tag => tag.value === true) // Only show tags with true values
+                          .filter(tag => tag.value == 'tr') // Only show tags with true values
                           .map((tag, index) => (
                             <TableRow key={index}>
                               <TableCell className="font-mono text-sm">
@@ -252,7 +252,7 @@ export default function FaultPage() {
                               </TableCell>
                             </TableRow>
                           ))}
-                        {s7_200_tags.filter(tag => tag.value === true).length === 0 && (
+                        {s7_200_tags.filter(tag => tag.value == 'tr').length === 0 && (
                           <TableRow>
                             <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
                               No active tags found
@@ -303,11 +303,13 @@ export default function FaultPage() {
                       <TableHead className="w-32">Value</TableHead>
                       <TableHead className="w-32">Created At</TableHead>
                     </TableRow>
+     
                   </TableHeader>
                   <TableBody>
                     {s7_200_tags
-                      .filter(tag => tag.value == true) // Only show tags with true values
-                      .map((tag, index) => (
+                      .filter(tag => tag.value == 'tr') // Only show tags with true values
+                      
+                      .map((tag:any, index) => (
                         <TableRow key={index}>
                           <TableCell className="font-mono text-sm">
                             {tag.tag}
@@ -321,11 +323,12 @@ export default function FaultPage() {
                             TRUE
                           </TableCell>
                           <TableCell className="font-medium">
-                            {tag.tag}
+                          {tag.tag === 'created_at' ? tag.value : 
+           s7_200_tags.find(t => t.tag === 'created_at')?.value || 'N/A'}
                           </TableCell>
                         </TableRow>
                       ))}
-                    {s7_200_tags.filter(tag => tag.value === true).length === 0 && (
+                    {s7_200_tags.filter(tag => tag.value == "tr").length === 0 && (
                       <TableRow>
                         <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
                           No active tags found
