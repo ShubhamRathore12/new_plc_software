@@ -138,7 +138,7 @@ export default function Home() {
                   >
                     <CardContent className="p-6 flex flex-col items-center text-center">
                       
-                 <span className="h-12 w-12 mb-4 text-primary"> <item.icon  /></span> 
+                  <item.icon className="h-12 w-12 mb-4 text-primary" />
                       <h2 className="text-xl font-semibold">{item.title}</h2>
                     </CardContent>
                   </Card>
