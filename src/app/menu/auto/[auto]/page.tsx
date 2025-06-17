@@ -171,7 +171,10 @@ export default function AutoPage() {
                       ],
                       [
                         "COMP",
-                        `HP ${formatValue(
+                    
+                        `COMP ${formatValue(
+                          data?.COMPRESSOR_TIME
+                        )}HP ${formatValue(
                           data?.AI_COND_PRESSURE || data?.HP
                         )} LP ${formatValue(
                           data?.AI_SUC_PRESSURE ||
