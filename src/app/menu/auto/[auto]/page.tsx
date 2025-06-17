@@ -178,8 +178,7 @@ export default function AutoPage() {
                           data?.AI_COND_PRESSURE || data?.HP
                         )} LP ${formatValue(
                           data?.AI_SUC_PRESSURE ||
-                            data?.LP ||
-                            data?.COMPRESSOR_TIME
+                            data?.LP 
                         )}`,
                       ],
                       [
