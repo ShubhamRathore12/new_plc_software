@@ -330,7 +330,7 @@ export default function DefaultsPage() {
                     <div>psi</div>
                   </motion.div>
 
-                  {defaults !== "S7-200" && (
+                  {defaults !== "GT80E" && (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -344,16 +344,13 @@ export default function DefaultsPage() {
                         id="lp"
                         type="number"
                         value={PID_SETTINGS_LP_SET_FROM_HMI}
-                        // onChange={(e) =>
-                        //   setLp(Number.parseInt(e.target.value) || 0)
-                        // }
                         className="col-span-1"
                       />
                       <div>psi</div>
                     </motion.div>
                   )}
 
-                  {defaults == "S7-200" && (
+                  {defaults === "GT80E" && (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -367,9 +364,6 @@ export default function DefaultsPage() {
                         id="lp"
                         type="number"
                         value={data?.AUTO_AEARATIO_TIME}
-                        // onChange={(e) =>
-                        //   setLp(Number.parseInt(e.target.value) || 0)
-                        // }
                         className="col-span-1"
                       />
                       <div>psi</div>

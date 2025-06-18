@@ -15,10 +15,12 @@ export const useAutoData = (autoType: string) => {
   const fetchData = async () => {
     let url = "";
 
-    if (autoType === "S7-1200") {
+    if (autoType === "Gtpl-122") {
       url = "https://grain-backend.onrender.com/api/ws/current-data";
-    } else if (autoType === "S7-200") {
+    } else if (autoType === "GT80E") {
       url = "https://grain-backend.onrender.com/api/alldata/alldata";
+    } else if (autoType === "Gtol-1023") {
+      url = "https://grain-backend.onrender.com/api/ws/current-data";
     } else {
       url = "/api/latest-data";
     }
@@ -28,7 +30,7 @@ export const useAutoData = (autoType: string) => {
       if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
       const result = await response.json();
 
-    // Full structure
+      // Full structure
 
       if (result.success) {
         setData([result.data]);
@@ -45,9 +47,6 @@ export const useAutoData = (autoType: string) => {
       console.error("❌ Polling error:", err.message || err);
     }
   };
-
-
-  
 
   useEffect(() => {
     fetchData(); // fetch immediately on mount

@@ -21,11 +21,79 @@ export default function AutoPage() {
   const { auto } = useParams();
   const { data, isConnected, error, formatValue } = useAutoData(auto as string);
 
-
-  
-
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
+
+  // Configuration for different machines
+  const machineConfig = {
+    "Gtpl-122": {
+      serialNumber: "GTPL-075",
+      temperatureSensors: {
+        TH: { key: "AI_TH_Act", label: "Supply Air" },
+        T0: { key: "AI_AIR_OUTLET_TEMP", label: "After Heat" },
+        T1: { key: "AI_COLD_AIR_TEMP", label: "Cold Air" },
+        T2: { key: "AI_AMBIANT_TEMP", label: "Ambient" },
+      },
+      controls: {
+        HTR: { key: "Value_to_Display_HEATER", label: "Heater" },
+        AHT: { key: "Value_to_Display_AHT_VALE_OPEN", label: "After Heat" },
+        HGS: { key: "Value_to_Display_HOT_GAS_VALVE_OPEN", label: "Hot Gas" },
+        BLOWER: { key: "Value_to_Display_EVAP_ACT_SPEED", label: "Blower" },
+        COND: { key: "Value_to_Display_COND_ACT_SPEED", label: "Condenser" },
+      },
+      compressor: {
+        time: "COMPRESSOR_TIME",
+        hp: "AI_COND_PRESSURE",
+        lp: "AI_SUC_PRESSURE",
+      },
+    },
+    GT80E: {
+      serialNumber: "GTPL-109",
+      temperatureSensors: {
+        TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air" },
+        T0: { key: "AIR_OUTLET_TEMP", label: "After Heat" },
+        T1: { key: "T1_SET_POINT", label: "Cold Air" },
+        T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient" },
+      },
+      controls: {
+        HTR: { key: "AFTER_HEAT_VALVE_RPM", label: "Heater" },
+        AHT: { key: "AFTER_HEAT_VALVE_RPM", label: "After Heat" },
+        HGS: { key: "HOT_GAS_VALVE_RPM", label: "Hot Gas" },
+        BLOWER: { key: "BLOWER_RPM", label: "Blower" },
+        COND: { key: "CONDENSER_RPM", label: "Condenser" },
+      },
+      compressor: {
+        time: "COMPRESSOR_TIME",
+        hp: "HP",
+        lp: "LP",
+      },
+    },
+    "Gtol-1023": {
+      serialNumber: "GTOL-1023",
+      temperatureSensors: {
+        TH: { key: "AI_TH_Act", label: "Supply Air" },
+        T0: { key: "AI_AIR_OUTLET_TEMP", label: "After Heat" },
+        T1: { key: "AI_COLD_AIR_TEMP", label: "Cold Air" },
+        T2: { key: "AI_AMBIANT_TEMP", label: "Ambient" },
+      },
+      controls: {
+        HTR: { key: "Value_to_Display_HEATER", label: "Heater" },
+        AHT: { key: "Value_to_Display_AHT_VALE_OPEN", label: "After Heat" },
+        HGS: { key: "Value_to_Display_HOT_GAS_VALVE_OPEN", label: "Hot Gas" },
+        BLOWER: { key: "Value_to_Display_EVAP_ACT_SPEED", label: "Blower" },
+        COND: { key: "Value_to_Display_COND_ACT_SPEED", label: "Condenser" },
+      },
+      compressor: {
+        time: "COMPRESSOR_TIME",
+        hp: "AI_COND_PRESSURE",
+        lp: "AI_SUC_PRESSURE",
+      },
+    },
+  };
+
+  const currentConfig =
+    machineConfig[auto as keyof typeof machineConfig] ||
+    machineConfig["Gtpl-122"];
 
   const handleBack = () => router.push(`/menu/${auto}`);
 
@@ -66,7 +134,7 @@ export default function AutoPage() {
               SELECT AUTO
             </h1>
             <p className="text-muted-foreground">
-              SR. NO. GTPL-{auto == "S7-1200" ? "075" : "109"} |{" "}
+              SR. NO. {currentConfig.serialNumber} |{" "}
               {formatValue(data?.AI_RH_Analog_Scale, "%")} RH |{" "}
               {formatValue(data?.AI_Pa_Analog_Scale, " Pa")}
             </p>
@@ -104,111 +172,62 @@ export default function AutoPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    {[
-                      [
-                        "TH (Supply Air)",
-                        formatValue(
-                          data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                    {Object.entries(currentConfig.temperatureSensors).map(
+                      ([key, sensor]) => (
+                        <div key={key} className="flex justify-between">
+                          <span>{sensor.label}</span>
+                          <span className="font-medium">
+                            {formatValue(data?.[sensor.key], "°C")}
+                          </span>
+                        </div>
+                      )
+                    )}
+                    <div className="flex justify-between">
+                      <span>TH - T1</span>
+                      <span className="font-medium">
+                        {formatValue(
+                          (data?.[currentConfig.temperatureSensors.TH.key] ||
+                            0) -
+                            (data?.[currentConfig.temperatureSensors.T1.key] ||
+                              0),
                           "°C"
-                        ),
-                      ],
-                      [
-                        "T0 (After Heat)",
-                        formatValue(
-                          data?.AI_AIR_OUTLET_TEMP || data?.AIR_OUTLET_TEMP,
-                          "°C"
-                        ),
-                      ],
-                      [
-                        "T1 (Cold Air)",
-                        formatValue(
-                          data?.AI_COLD_AIR_TEMP || data?.T1_SET_POINT,
-                          "°C"
-                        ),
-                      ],
-                      [
-                        "T2 (Ambient)",
-                        formatValue(
-                          data?.AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2,
-                          "°C"
-                        ),
-                      ],
-                      [
-                        "TH - T1",
-                        formatValue(
-                          (data?.AI_TH_Act || 0) -
-                            (data?.AI_COLD_AIR_TEMP || 0),
-                          "°C"
-                        ),
-                      ],
-                      [
-                        "HTR",
-                        formatValue(
-                          data?.Value_to_Display_HEATER ||
-                            data?.AFTER_HEAT_VALVE_RPM,
-                          "%"
-                        ),
-                      ],
-                      [
-                        "AHT",
-                        formatValue(data?.Value_to_Display_AHT_VALE_OPEN, "%"),
-                      ],
-                      [
-                        "HGS",
-                        formatValue(
-                          data?.Value_to_Display_HOT_GAS_VALVE_OPEN ||
-                            data?.HOT_GAS_VALVE_RPM,
-                          "%"
-                        ),
-                      ],
-                      [
-                        "BLOWER",
-                        formatValue(
-                          data?.Value_to_Display_EVAP_ACT_SPEED ||
-                            data?.BLOWER_RPM,
-                          "%"
-                        ),
-                      ],
-                      [
-                        "COMP",
-                    
-                        `COMP ${formatValue(
-                          data?.COMPRESSOR_TIME
+                        )}
+                      </span>
+                    </div>
+                    {Object.entries(currentConfig.controls).map(
+                      ([key, control]) => (
+                        <div key={key} className="flex justify-between">
+                          <span>{control.label}</span>
+                          <span className="font-medium">
+                            {formatValue(data?.[control.key], "%")}
+                          </span>
+                        </div>
+                      )
+                    )}
+                    <div className="flex justify-between">
+                      <span>COMP</span>
+                      <span className="font-medium">
+                        {`COMP ${formatValue(
+                          data?.[currentConfig.compressor.time]
                         )}HP ${formatValue(
-                          data?.AI_COND_PRESSURE || data?.HP
+                          data?.[currentConfig.compressor.hp]
                         )} LP ${formatValue(
-                          data?.AI_SUC_PRESSURE ||
-                            data?.LP 
-                        )}`,
-                      ],
-                      [
-                        "COND",
-                        formatValue(
-                          data?.Value_to_Display_COND_ACT_SPEED ||
-                            data?.CONDENSER_RPM,
-                          "%"
-                        ),
-                      ],
-                      [
-                        "Mode Status",
-                        formatValue(
-                          data?.mode_status || data?.mode_status,
-                          "%"
-                        ),
-                      ],
-                      [
-                        "Water Pressure",
-                        formatValue(
-                          data?.water_pressure || data?.water_pressure,
-                          "%"
-                        ),
-                      ],
-                    ].map(([label, val]) => (
-                      <div key={label} className="flex justify-between">
-                        <span>{label}</span>
-                        <span className="font-medium">{val}</span>
-                      </div>
-                    ))}
+                          data?.[currentConfig.compressor.lp]
+                        )}`}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Mode Status</span>
+                      <span className="font-medium">
+                        {formatValue(data?.mode_status, "%")}
+                      </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Water Pressure</span>
+                      <span className="font-medium">
+                        {formatValue(data?.water_pressure, "%")}
+                      </span>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -233,7 +252,7 @@ export default function AutoPage() {
                   </Button>
                 )}
 
-                {auto === "S7-700" && (
+                {auto === "Gtol-1023" && (
                   <div className="flex items-center gap-2">
                     <Switch
                       id="auto-aeration"
