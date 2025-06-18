@@ -330,7 +330,7 @@ export default function DefaultsPage() {
                     <div>psi</div>
                   </motion.div>
 
-                  {defaults !== "GT80E" && (
+                  {defaults !== "GT80E-S7-200-smart1" && (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -350,7 +350,7 @@ export default function DefaultsPage() {
                     </motion.div>
                   )}
 
-                  {defaults === "GT80E" && (
+                  {defaults === "GT80E-S7-200-smart1" && (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}

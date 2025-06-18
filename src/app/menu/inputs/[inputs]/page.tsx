@@ -10,9 +10,9 @@ export default function InputsPage() {
   const { inputs } = useParams();
   const device = inputs?.toString();
 
-  const isGT80E = device === "GT80E";
-  const isGtpl122 = device === "Gtpl-122";
-  const isGtol1023 = device === "Gtol-1023";
+  const isGT80E = device === "GT80E-S7-200-smart1";
+  const isGtpl122 = device === "Gtpl-122 S7-1200-01";
+  const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
 
   const { data, isConnected, error, formatValue } = useAutoData(
     device as string
@@ -148,7 +148,7 @@ export default function InputsPage() {
       });
     }
 
-    if (isGtpl122 || isGtol1023) {
+    if (isGtpl122 || isGtpl1200_02) {
       return s7_1200_inputsData.map((input) => (
         <div
           key={input.id}

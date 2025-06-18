@@ -263,9 +263,14 @@ export default function FaultPage() {
   }
 
   // Determine which fault codes to use based on the fault parameter
-  const isGT80E = fault && fault.toString().toLowerCase().includes("gt80e");
+  const isGT80E =
+    fault && fault.toString().toLowerCase().includes("gt80e-s7-200-smart1");
   const faultCodes = isGT80E ? s7_200_faultCodes : s7_1200_faultCodes;
-  const modelType = isGT80E ? "GT80E " : "Gtpl-122";
+  const modelType = isGT80E
+    ? "GT80E-S7-200-smart1"
+    : fault?.toString().toLowerCase().includes("s7-1200-02")
+    ? "Gtpl-S7-1200-02"
+    : "Gtpl-122 S7-1200-01";
 
   const handleViewFaultCode = (faultItem: any) => {
     setSelectedFault(faultItem);

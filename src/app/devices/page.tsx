@@ -56,17 +56,17 @@ export default function DevicesPage() {
 
   const devices = [
     {
-      name: "Gtpl-122",
+      name: "Gtpl-122 S7-1200-01",
       status: "device_status",
       image: "/images/1200.jpg",
     },
     {
-      name: "GT80E",
+      name: "GT80E-S7-200-smart1",
       status: "device_status",
       image: "/images/200.jpg",
     },
     {
-      name: "Gtol-1023",
+      name: "Gtpl-S7-1200-02",
       status: "device_status",
       image: "/images/1200.jpg",
     },

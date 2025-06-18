@@ -65,9 +65,9 @@ export default function Home({ data, devices, heat, title, formatValue }: any) {
             {/* Serial Number */}
             <text x="40" y="30" fontSize="16" fontWeight="700" fill="#1F2937">
               SR. NO:{" "}
-              {devices === "Gtpl-122"
+              {devices === "Gtpl-122 S7-1200-01"
                 ? "GTPL-085"
-                : devices === "GT80E"
+                : devices === "GT80E-S7-200-smart1"
                 ? "GTPL-109"
                 : "GTOL-1023"}
             </text>

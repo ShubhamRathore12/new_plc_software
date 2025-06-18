@@ -26,7 +26,7 @@ export default function AutoPage() {
 
   // Configuration for different machines
   const machineConfig = {
-    "Gtpl-122": {
+    "Gtpl-122 S7-1200-01": {
       serialNumber: "GTPL-075",
       temperatureSensors: {
         TH: { key: "AI_TH_Act", label: "Supply Air" },
@@ -47,7 +47,7 @@ export default function AutoPage() {
         lp: "AI_SUC_PRESSURE",
       },
     },
-    GT80E: {
+    "GT80E-S7-200-smart1": {
       serialNumber: "GTPL-109",
       temperatureSensors: {
         TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air" },
@@ -68,7 +68,7 @@ export default function AutoPage() {
         lp: "LP",
       },
     },
-    "Gtol-1023": {
+    "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
       temperatureSensors: {
         TH: { key: "AI_TH_Act", label: "Supply Air" },
@@ -93,7 +93,7 @@ export default function AutoPage() {
 
   const currentConfig =
     machineConfig[auto as keyof typeof machineConfig] ||
-    machineConfig["Gtpl-122"];
+    machineConfig["Gtpl-122 S7-1200-01"];
 
   const handleBack = () => router.push(`/menu/${auto}`);
 
@@ -252,7 +252,7 @@ export default function AutoPage() {
                   </Button>
                 )}
 
-                {auto === "Gtol-1023" && (
+                {auto === "Gtpl-S7-1200-02" && (
                   <div className="flex items-center gap-2">
                     <Switch
                       id="auto-aeration"

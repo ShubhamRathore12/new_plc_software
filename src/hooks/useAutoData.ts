@@ -15,11 +15,11 @@ export const useAutoData = (autoType: string) => {
   const fetchData = async () => {
     let url = "";
 
-    if (autoType === "Gtpl-122") {
+    if (autoType === "Gtpl-122 S7-1200-01") {
       url = "https://grain-backend.onrender.com/api/ws/current-data";
-    } else if (autoType === "GT80E") {
+    } else if (autoType === "GT80E-S7-200-smart1") {
       url = "https://grain-backend.onrender.com/api/alldata/alldata";
-    } else if (autoType === "Gtol-1023") {
+    } else if (autoType === "Gtpl-S7-1200-02") {
       url = "https://grain-backend.onrender.com/api/ws/current-data";
     } else {
       url = "/api/latest-data";
