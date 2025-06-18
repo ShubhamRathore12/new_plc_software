@@ -11,7 +11,7 @@ export default function InputsPage() {
   const device = inputs?.toString();
 
   const isGT80E = device === "GT80E-S7-200-smart1";
-  const isGtpl122 = device === "Gtpl-122 S7-1200-01";
+  const isGtpl122 = device === "Gtpl-122-S7-1200-01";
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
 
   const { data, isConnected, error, formatValue } = useAutoData(

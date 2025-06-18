@@ -270,7 +270,7 @@ export default function FaultPage() {
     ? "GT80E-S7-200-smart1"
     : fault?.toString().toLowerCase().includes("s7-1200-02")
     ? "Gtpl-S7-1200-02"
-    : "Gtpl-122 S7-1200-01";
+    : "Gtpl-122-S7-1200-01";
 
   const handleViewFaultCode = (faultItem: any) => {
     setSelectedFault(faultItem);

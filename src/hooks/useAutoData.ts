@@ -15,7 +15,7 @@ export const useAutoData = (autoType: string) => {
   const fetchData = async () => {
     let url = "";
 
-    if (autoType === "Gtpl-122 S7-1200-01") {
+    if (autoType === "Gtpl-122-S7-1200-01") {
       url = "https://grain-backend.onrender.com/api/ws/current-data";
     } else if (autoType === "GT80E-S7-200-smart1") {
       url = "https://grain-backend.onrender.com/api/alldata/alldata";
