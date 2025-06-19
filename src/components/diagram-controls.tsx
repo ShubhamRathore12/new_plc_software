@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 
-export default function Home({ data, formatValue }: any) {
+export default function 
+Home({ data, formatValue }: any) {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
@@ -105,7 +106,7 @@ export default function Home({ data, formatValue }: any) {
               T1
             </text>
             <text x="375" y="250" fontSize="12" textAnchor="middle">
-              {formatValue(data.T1_SET_POINT || data?.AI_COLD_AIR_TEMP, "°C")}
+              {formatValue(data?.AI_COLD_AIR_TEMP, "°C")}
             </text>
 
             {/* T2 Block */}
@@ -130,7 +131,7 @@ export default function Home({ data, formatValue }: any) {
             <rect x="600" y="50" width="100" height="40" fill="orange" />
             <text x="650" y="75" fontSize="12" textAnchor="middle">
               T1 ={" "}
-              {formatValue(data.AI_COLD_AIR_TEMP || data?.T1_SET_POINT, "°C")}
+              {formatValue( data?.T1_SET_POINT, "°C")}
             </text>
 
             {/* TH - T1 = ### °C Box */}
