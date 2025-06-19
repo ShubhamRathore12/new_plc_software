@@ -126,7 +126,7 @@ export default function AerationWithHeatingPage() {
                         <div className="flex items-center space-x-2">
                           <Input
                             type="number"
-                            value={ HEATING_MODE_Continuous_Mode}
+                            value={data?.SET_DURATION}
                             onChange={(e) =>
                               setDuration(Number.parseInt(e.target.value) || 0)
                             }
@@ -144,7 +144,7 @@ export default function AerationWithHeatingPage() {
                       <div className="flex items-center space-x-2">
                         <Input
                           type="number"
-                          value={HEATING_MODE_SET_TH_FOR_HEATING_MODE}
+                          value={data?.DELTA_SET}
                           onChange={(e) =>
                             setDeltaTemp(Number.parseInt(e.target.value) || 0)
                           }
