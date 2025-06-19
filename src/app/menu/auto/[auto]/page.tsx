@@ -185,13 +185,7 @@ export default function AutoPage() {
                     <div className="flex justify-between">
                       <span>TH - T1</span>
                       <span className="font-medium">
-                        {formatValue(
-                          (data?.[currentConfig.temperatureSensors.TH.key] ||
-                            0) -
-                            (data?.[currentConfig.temperatureSensors.T1.key] ||
-                              0),
-                          "°C"
-                        )}
+                      {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
                       </span>
                     </div>
                     {Object.entries(currentConfig.controls).map(
