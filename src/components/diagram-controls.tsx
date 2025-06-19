@@ -106,7 +106,7 @@ Home({ data, formatValue }: any) {
               T1
             </text>
             <text x="375" y="250" fontSize="12" textAnchor="middle">
-              {formatValue(data?.AI_COLD_AIR_TEMP, "°C")}
+              {formatValue(data?.COLD_AIR_TEMP_T1, "°C")}
             </text>
 
             {/* T2 Block */}
