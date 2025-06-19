@@ -16,7 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 
 export default function FaultPage() {
-  const [currentView, setCurrentView] = useState("faultCodes"); // 'faultCodes', 'faultLogs', 'viewFaultCode'
+  const [currentView, setCurrentView] = useState("faultLogs"); // 'faultCodes', 'faultLogs', 'viewFaultCode'
   const [selectedFault, setSelectedFault] = useState<any>(null);
   const router = useRouter();
   const { fault } = useParams();
@@ -389,6 +389,16 @@ export default function FaultPage() {
             <p className="text-muted-foreground">
               Historical fault log entries
             </p>
+          </div>
+
+          {/* Add button to switch to Fault Codes view */}
+          <div className="mb-4 flex justify-end">
+            <Button
+              variant="secondary"
+              onClick={() => setCurrentView("faultCodes")}
+            >
+              View Fault Codes
+            </Button>
           </div>
 
           <Card>
