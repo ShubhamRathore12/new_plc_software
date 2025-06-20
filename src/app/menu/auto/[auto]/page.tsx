@@ -207,27 +207,14 @@ export default function AutoPage() {
                     <div className="flex justify-between">
                       <span>COMP</span>
                       <span className="font-medium">
-                        {`COMP ${formatValue(
-                          data?.[currentConfig.compressor.time]
-                        )}HP ${formatValue(
+                        HP ${formatValue(
                           data?.[currentConfig.compressor.hp]
                         )} LP ${formatValue(
                           data?.[currentConfig.compressor.lp]
-                        )}`}
+                        )}
                       </span>
                     </div>
-                        <div className="flex justify-between">
-                      <span>COMP</span>
-                      <span className="font-medium">
-                        {`COMP ${formatValue(
-                          data?.[currentConfig.compressor.time]
-                        )}HP ${formatValue(
-                          data?.[currentConfig.compressor.hp]
-                        )} LP ${formatValue(
-                          data?.[currentConfig.compressor.lp]
-                        )}`}
-                      </span>
-                    </div>
+                      
                     {/* <div className="flex justify-between">
                       <span>Mode Status</span>
                       <span className="font-medium">
