@@ -1,9 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import React from "react";
 
-export default function 
-Home({ data, formatValue }: any) {
+export default function Home({ data, formatValue, machineName }: any) {
+  // Lamp state
+  const greenOn = data?.GREEN_LIGHT === "tr" || data?.GREEN_LIGHT === "tr";
+  const redOn = data?.RED_LIGHT === "tr" || data?.RED_LIGHT === "tr";
+  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.YELLOW_LIGHT === "tr";
+
+  // Helper for lamp color
+  const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db"); // gray-300
+
+  // Hide RH and Pa blocks for GT80E-S7-200-smart1
+  const showTopBlocks =
+    machineName !== "GT80E-S7-200-smart1" &&
+    machineName !== "gt80e-s7-200-smart1";
+
+  console.log(machineName);
+
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-4xl">
@@ -50,7 +64,7 @@ Home({ data, formatValue }: any) {
               HTR {formatValue(data.Value_to_Display_HEATER, "%")}
             </text>
 
-            {/* AHT Block with Zigzag */}
+            {/* AHT Block with Zigzag (now lightgray, no label/value) */}
             <rect x="250" y="100" width="50" height="100" fill="lightgray" />
             <path
               d="M250 120 H260 L265 130 H275 L280 120 H290 L295 130 H300 V180 H250 Z"
@@ -58,16 +72,8 @@ Home({ data, formatValue }: any) {
               stroke="black"
               strokeWidth="1"
             />
-            <text x="275" y="90" fontSize="12" textAnchor="middle">
-              AHT{" "}
-              {formatValue(
-                data.Value_to_Display_AHT_VALE_OPEN ||
-                  data.AFTER_HEAT_VALVE_RPM,
-                "%"
-              )}
-            </text>
 
-            {/* HGS Block with Zigzag */}
+            {/* HGS Block with Zigzag (now lightgray, no label/value) */}
             <rect x="350" y="100" width="50" height="100" fill="lightgray" />
             <path
               d="M350 120 H360 L365 130 H375 L380 120 H390 L395 130 H400 V180 H350 Z"
@@ -75,14 +81,6 @@ Home({ data, formatValue }: any) {
               stroke="black"
               strokeWidth="1"
             />
-            <text x="375" y="90" fontSize="12" textAnchor="middle">
-              HGS{" "}
-              {formatValue(
-                data.Value_to_Display_HOT_GAS_VALVE_OPEN ||
-                  data?.HOT_GAS_VALVE_RPM,
-                "%"
-              )}
-            </text>
 
             {/* TH, T0, T1 Labels */}
             <text x="175" y="230" fontSize="12" textAnchor="middle">
@@ -130,8 +128,7 @@ Home({ data, formatValue }: any) {
             {/* T1 = ### °C Box */}
             <rect x="600" y="50" width="100" height="40" fill="orange" />
             <text x="650" y="75" fontSize="12" textAnchor="middle">
-              T1 ={" "}
-              {formatValue( data?.T1_SET_POINT, "°C")}
+              T1 = {formatValue(data?.T1_SET_POINT, "°C")}
             </text>
 
             {/* TH - T1 = ### °C Box */}
@@ -146,11 +143,34 @@ Home({ data, formatValue }: any) {
               {data?.COND_PID_Output_PER || data?.CONDENSER_RPM || "N/A"}%
             </text>
 
-            {/* Blower Blocks */}
+            {/* Blower Blocks (now show AHT and HGS values in the first two red blocks) */}
+            {/* AHT label above first red block */}
+            <text x="175" y="345" fontSize="12" textAnchor="middle" fill="#111">
+              AHT
+            </text>
+            {/* HGS label above second red block */}
+            <text x="275" y="345" fontSize="12" textAnchor="middle" fill="#111">
+              HGS
+            </text>
             <rect x="150" y="350" width="50" height="50" fill="red" />
             <rect x="250" y="350" width="50" height="50" fill="red" />
             <rect x="450" y="350" width="100" height="50" fill="red" />
-
+            {/* AHT value in first red block */}
+            <text x="175" y="380" fontSize="16" textAnchor="middle" fill="#111">
+              {formatValue(
+                data.Value_to_Display_AHT_VALE_OPEN ||
+                  data.AFTER_HEAT_VALVE_RPM,
+                "%"
+              )}
+            </text>
+            {/* HGS value in second red block */}
+            <text x="275" y="380" fontSize="16" textAnchor="middle" fill="#111">
+              {formatValue(
+                data.Value_to_Display_HOT_GAS_VALVE_OPEN ||
+                  data?.HOT_GAS_VALVE_RPM,
+                "%"
+              )}
+            </text>
             <text x="500" y="375" fontSize="12" textAnchor="middle">
               BLOWER
             </text>
@@ -167,156 +187,119 @@ Home({ data, formatValue }: any) {
             <text x="640" y="200" fontSize="12" textAnchor="middle">
               COND
             </text>
-
-            {/* Text Value After Condenser */}
             <text x="640" y="380" fontSize="12" textAnchor="middle">
               {formatValue(data.Value_to_Display_COND_ACT_SPEED, "%")}
             </text>
 
-            {/* Compressor */}
-            <rect x="600" y="510" width="80" height="40" fill="red" />
-            <text x="640" y="535" fontSize="12" textAnchor="middle">
+            {/* Compressor Value Block */}
+            <rect x="600" y="410" width="80" height="40" fill="red" />
+            <text x="640" y="435" fontSize="12" textAnchor="middle">
               COMP*
             </text>
+            <text x="640" y="425" fontSize="12" textAnchor="middle">
+              {formatValue(data?.COMPRESSOR_TIME, "%")}
+            </text>
 
-            {/* HP and LP Boxes */}
-            <rect x="600" y="560" width="100" height="40" fill="white" />
-            <text x="600" y="585" fontSize="12" textAnchor="middle">
-              HP{" "}
+            {/* HP and LP Separate Yellow Blocks */}
+            <rect
+              x="600"
+              y="500"
+              width="70"
+              height="40"
+              fill="#fde047"
+              stroke="black"
+              strokeWidth="1"
+            />
+            <text x="635" y="520" fontSize="14" textAnchor="middle" fill="#111">
+              HP
+            </text>
+            <text x="635" y="530" fontSize="12" textAnchor="middle" fill="#111">
               {formatValue(
                 data.AI_COND_PRESSURE || data?.HP || data?.COMPRESSOR_TIME
               )}
             </text>
-
-            <rect x="640" y="560" width="50" height="40" fill="white" />
-            <text x="700" y="585" fontSize="12" textAnchor="middle">
-              LP {formatValue(data.AI_SUC_PRESSURE || data?.LP)}
-            </text>
-
-            {/* Connecting Lines with Arrowheads */}
-            <line
-              x1="80"
-              y1="200"
-              x2="150"
-              y2="150"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="200"
-              y1="150"
-              x2="250"
-              y2="150"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="300"
-              y1="150"
-              x2="350"
-              y2="150"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="400"
-              y1="150"
-              x2="450"
-              y2="150"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="530"
-              y1="225"
-              x2="600"
-              y2="225"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="640"
-              y1="225"
-              x2="640"
-              y2="300"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-
-            <line
-              x1="150"
-              y1="200"
-              x2="150"
-              y2="350"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="200"
-              y1="350"
-              x2="250"
-              y2="350"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="300"
-              y1="350"
-              x2="450"
-              y2="350"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-            <line
-              x1="680"
-              y1="350"
-              x2="680"
-              y2="510"
-              stroke="black"
-              strokeWidth="2"
-              markerEnd="url(#arrowhead)"
-            />
-
-            {/* Top Data Boxes with Dashed Border */}
-
             <rect
-              x="250"
-              y="20"
-              width="80"
+              x="680"
+              y="500"
+              width="70"
               height="40"
-              fill="lightgray"
+              fill="#fde047"
               stroke="black"
               strokeWidth="1"
-              strokeDasharray="4,4"
             />
-            <text x="290" y="45" fontSize="12" textAnchor="middle">
-              RH {data?.AI_RH_Analog_Scale || "N/A"}%
+            <text x="715" y="520" fontSize="14" textAnchor="middle" fill="#111">
+              LP
+            </text>
+            <text x="715" y="530" fontSize="12" textAnchor="middle" fill="#111">
+              {formatValue(data.AI_SUC_PRESSURE || data?.LP)}
             </text>
 
-            <rect
-              x="350"
-              y="20"
-              width="80"
-              height="40"
-              fill="lightgray"
-              stroke="black"
-              strokeWidth="1"
-              strokeDasharray="4,4"
-            />
-            <text x="390" y="45" fontSize="12" textAnchor="middle">
-              {data?.AI_Pa_Analog_Scale || "N/A"} Pa
-            </text>
+            {/* Top Data Boxes with Dashed Border (conditionally rendered) */}
+            {showTopBlocks && (
+              <>
+                <rect
+                  x="250"
+                  y="20"
+                  width="80"
+                  height="40"
+                  fill="lightgray"
+                  stroke="black"
+                  strokeWidth="1"
+                  strokeDasharray="4,4"
+                />
+                <text x="290" y="45" fontSize="12" textAnchor="middle">
+                  RH {data?.AI_RH_Analog_Scale || "N/A"}%
+                </text>
+                <rect
+                  x="350"
+                  y="20"
+                  width="80"
+                  height="40"
+                  fill="lightgray"
+                  stroke="black"
+                  strokeWidth="1"
+                  strokeDasharray="4,4"
+                />
+                <text x="390" y="45" fontSize="12" textAnchor="middle">
+                  {data?.AI_Pa_Analog_Scale || "N/A"} Pa
+                </text>
+              </>
+            )}
 
-            {/* SR. NO. GTPL-075 */}
+            {/* Three Lamps at Left Bottom Corner */}
+            <circle
+              cx="60"
+              cy="570"
+              r="15"
+              fill={lampColor(greenOn, "#22c55e")}
+              stroke="#222"
+              strokeWidth="2"
+            />
+            <circle
+              cx="100"
+              cy="570"
+              r="15"
+              fill={lampColor(redOn, "#ef4444")}
+              stroke="#222"
+              strokeWidth="2"
+            />
+            <circle
+              cx="140"
+              cy="570"
+              r="15"
+              fill={lampColor(yellowOn, "#eab308")}
+              stroke="#222"
+              strokeWidth="2"
+            />
+            <text x="60" y="595" fontSize="10" textAnchor="middle" fill="#222">
+              Green
+            </text>
+            <text x="100" y="595" fontSize="10" textAnchor="middle" fill="#222">
+              Red
+            </text>
+            <text x="140" y="595" fontSize="10" textAnchor="middle" fill="#222">
+              Yellow
+            </text>
           </svg>
         </div>
       </div>

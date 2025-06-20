@@ -58,7 +58,7 @@ export default function AutoPage() {
       temperatureSensors: {
         TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
         T0: { key: "AIR_OUTLET_TEMP", label: "After Heat(T0)" },
-        T1: { key: "T1_SET_POINT", label: "Cold Air(T1)" },
+        T1: { key: "COLD_AIR_TEMP_T1", label: "Cold Air(T1)" },
         T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient(T2)" },
       },
       controls: {
@@ -149,7 +149,11 @@ export default function AutoPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
               <div className="relative w-full h-full">
-                <Home data={data} formatValue={formatValue} />
+                <Home
+                  data={data}
+                  formatValue={formatValue}
+                  machineName={auto}
+                />
               </div>
             </AnimatedContainer>
 
@@ -207,14 +211,11 @@ export default function AutoPage() {
                     <div className="flex justify-between">
                       <span>COMP</span>
                       <span className="font-medium">
-                        HP ${formatValue(
-                          data?.[currentConfig.compressor.hp]
-                        )} LP ${formatValue(
-                          data?.[currentConfig.compressor.lp]
-                        )}
+                        HP {formatValue(data?.[currentConfig.compressor.hp])} LP{" "}
+                        {formatValue(data?.[currentConfig.compressor.lp])}
                       </span>
                     </div>
-                      
+
                     {/* <div className="flex justify-between">
                       <span>Mode Status</span>
                       <span className="font-medium">

@@ -66,7 +66,7 @@ export const useAutoData = (autoType: string) => {
 
     // If decimal part is zero, show integer only
     const isWholeNumber = numericValue % 1 === 0;
-    return `${isWholeNumber ? Math.floor(numericValue) : numericValue}${unit}`;
+    return `${isWholeNumber ? Math.floor(numericValue) : numericValue.toFixed(2)}${unit}`;
   };
 
   return {

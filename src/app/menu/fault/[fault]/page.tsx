@@ -270,8 +270,8 @@ export default function FaultPage() {
   const modelType = isGT80E
     ? "GT80E-S7-200-smart1"
     : fault?.toString().toLowerCase().includes("s7-1200-02")
-    ? "Gtpl-S7-1200-02"
-    : "Gtpl-122-S7-1200-01";
+      ? "Gtpl-S7-1200-02"
+      : "Gtpl-122-S7-1200-01";
 
   const handleViewFaultCode = (faultItem: any) => {
     setSelectedFault(faultItem);
@@ -367,7 +367,7 @@ export default function FaultPage() {
             <div className="p-6 pt-0">
               <Button
                 variant="outline"
-                onClick={() => setCurrentView("faultCodes")}
+                onClick={() => router.push(`/menu/${fault}`)}
               >
                 BACK TO FAULT CODES
               </Button>
@@ -404,7 +404,7 @@ export default function FaultPage() {
         <main className="flex-1 container py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              FAULT LOGS
+              Active Alarms
             </h1>
             <p className="text-muted-foreground">
               Historical fault log entries
@@ -417,13 +417,13 @@ export default function FaultPage() {
               variant="secondary"
               onClick={() => setCurrentView("faultCodes")}
             >
-              View Fault Codes
+              Fault Codes
             </Button>
             <Button
               variant="secondary"
               onClick={() => setCurrentView("allPaginatedLogs")}
             >
-              View All Paginated Logs
+              Alarm History
             </Button>
           </div>
 
@@ -477,15 +477,6 @@ export default function FaultPage() {
                 </Table>
               </ScrollArea>
             </CardContent>
-
-            <div className="p-6 pt-0">
-              <Button
-                variant="outline"
-                onClick={() => setCurrentView("faultCodes")}
-              >
-                BACK TO FAULT CODES
-              </Button>
-            </div>
           </Card>
         </main>
       </div>
