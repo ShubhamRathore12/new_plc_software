@@ -36,8 +36,14 @@ export default function AutoPage() {
       },
       controls: {
         HTR: { key: "Value_to_Display_HEATER", label: "Heater" },
-        AHT: { key: "Value_to_Display_AHT_VALE_OPEN", label: "After Heat" },
-        HGS: { key: "Value_to_Display_HOT_GAS_VALVE_OPEN", label: "Hot Gas" },
+        AHT: {
+          key: "Value_to_Display_AHT_VALE_OPEN",
+          label: "After Heat(AHT)",
+        },
+        HGS: {
+          key: "Value_to_Display_HOT_GAS_VALVE_OPEN",
+          label: "Hot Gas(HGS)",
+        },
         BLOWER: { key: "Value_to_Display_EVAP_ACT_SPEED", label: "Blower" },
         COND: { key: "Value_to_Display_COND_ACT_SPEED", label: "Condenser" },
       },
@@ -57,8 +63,8 @@ export default function AutoPage() {
       },
       controls: {
         HTR: { key: "AFTER_HEAT_VALVE_RPM", label: "Heater" },
-        AHT: { key: "AFTER_HEAT_VALVE_RPM", label: "After Heat" },
-        HGS: { key: "HOT_GAS_VALVE_RPM", label: "Hot Gas" },
+        AHT: { key: "AFTER_HEAT_VALVE_RPM", label: "After Heat(AHT)" },
+        HGS: { key: "HOT_GAS_VALVE_RPM", label: "Hot Gas(HGS)" },
         BLOWER: { key: "BLOWER_RPM", label: "Blower" },
         COND: { key: "CONDENSER_RPM", label: "Condenser" },
       },

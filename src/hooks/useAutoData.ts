@@ -61,15 +61,12 @@ export const useAutoData = (autoType: string) => {
     if (value === undefined || value === null) return "--";
 
     const numericValue = parseFloat(value);
-
     if (isNaN(numericValue)) return `${value}${unit}`;
-
     if (numericValue === 0) return `0${unit}`;
 
-    const str = String(numericValue).replace(/[^0-9.]/g, ""); // clean any stray chars
-    const firstTwoDigits = str.replace(".", "").slice(0, 2);
-
-    return `${firstTwoDigits}${unit}`;
+    // If decimal part is zero, show integer only
+    const isWholeNumber = numericValue % 1 === 0;
+    return `${isWholeNumber ? Math.floor(numericValue) : numericValue}${unit}`;
   };
 
   return {
