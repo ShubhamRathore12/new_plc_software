@@ -383,7 +383,7 @@ export default function FaultPage() {
     return (
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
-          <FaultLogsPaginated />
+          <FaultLogsPaginated machineName={modelType} />
           <div className="mt-6">
             <Button
               variant="outline"

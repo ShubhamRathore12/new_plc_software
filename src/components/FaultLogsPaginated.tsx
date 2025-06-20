@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import FaultNotifier from "./FaultNotifier";
 
 const PAGE_SIZE = 10; // Changed to match your requirement
 
@@ -348,7 +349,11 @@ function LoadingIndicator() {
 }
 
 // Main component with button-based pagination
-export default function FaultLogsPaginated() {
+export default function FaultLogsPaginated({
+  machineName,
+}: {
+  machineName: string;
+}) {
   const [activeTags, setActiveTags] = useState<
     Array<{ tag: string; value: boolean; createdAt: string }>
   >([]);
@@ -368,6 +373,9 @@ export default function FaultLogsPaginated() {
     currentPage: 1,
     totalPages: 0,
   });
+  const [faultsForNotifier, setFaultsForNotifier] = useState<
+    Array<{ tag: string; description: string }>
+  >([]);
 
   const fetchLogs = async (pageNum: number) => {
     setLoading(true);
@@ -424,6 +432,14 @@ export default function FaultLogsPaginated() {
           currentPage: result.page || pageNum,
           totalPages: result.totalPages || 0,
         });
+
+        const faultTagsForNotifier = currentPageActiveTags
+          .filter((tag: any) => getTagCategory(tag.tag) === "fault")
+          .map((tag: any) => ({
+            tag: tag.tag,
+            description: formatTagName(tag.tag), // Assuming description is formatted tag name
+          }));
+        setFaultsForNotifier(faultTagsForNotifier);
       } else {
         console.warn("Unexpected data structure:", result);
         setActiveTags([]);
@@ -451,6 +467,10 @@ export default function FaultLogsPaginated() {
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
+      <FaultNotifier
+        activeFaults={faultsForNotifier}
+        machineName={machineName}
+      />
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
