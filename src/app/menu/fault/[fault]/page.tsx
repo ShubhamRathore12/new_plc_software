@@ -479,6 +479,14 @@ export default function FaultPage() {
             </CardContent>
           </Card>
         </main>
+        <div className="p-6 pt-0">
+          <Button
+            variant="outline"
+            onClick={() => router.push(`/menu/${fault}`)}
+          >
+            BACK
+          </Button>
+        </div>
       </div>
     );
   }
