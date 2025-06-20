@@ -29,10 +29,10 @@ export default function AutoPage() {
     "Gtpl-122-S7-1200-01": {
       serialNumber: "GTPL-075",
       temperatureSensors: {
-        TH: { key: "AI_TH_Act", label: "Supply Air" },
-        T0: { key: "AI_AIR_OUTLET_TEMP", label: "After Heat" },
-        T1: { key: "AI_COLD_AIR_TEMP", label: "Cold Air" },
-        T2: { key: "AI_AMBIANT_TEMP", label: "Ambient" },
+        TH: { key: "AI_TH_Act", label: "Supply Air(TH)" },
+        T0: { key: "AI_AIR_OUTLET_TEMP", label: "After Heat(T0)" },
+        T1: { key: "AI_COLD_AIR_TEMP", label: "Cold Air(T1)" },
+        T2: { key: "AI_AMBIANT_TEMP", label: "Ambient(T2)" },
       },
       controls: {
         HTR: { key: "Value_to_Display_HEATER", label: "Heater" },
@@ -50,10 +50,10 @@ export default function AutoPage() {
     "GT80E-S7-200-smart1": {
       serialNumber: "GTPL-109",
       temperatureSensors: {
-        TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air" },
-        T0: { key: "AIR_OUTLET_TEMP", label: "After Heat" },
-        T1: { key: "T1_SET_POINT", label: "Cold Air" },
-        T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient" },
+        TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
+        T0: { key: "AIR_OUTLET_TEMP", label: "After Heat(T0)" },
+        T1: { key: "T1_SET_POINT", label: "Cold Air(T1)" },
+        T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient(T2)" },
       },
       controls: {
         HTR: { key: "AFTER_HEAT_VALVE_RPM", label: "Heater" },
@@ -185,7 +185,7 @@ export default function AutoPage() {
                     <div className="flex justify-between">
                       <span>TH - T1</span>
                       <span className="font-medium">
-                      {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
+                        {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
                       </span>
                     </div>
                     {Object.entries(currentConfig.controls).map(
@@ -210,18 +210,18 @@ export default function AutoPage() {
                         )}`}
                       </span>
                     </div>
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <span>Mode Status</span>
                       <span className="font-medium">
                         {formatValue(data?.mode_status, "%")}
                       </span>
-                    </div>
-                    <div className="flex justify-between">
+                    </div> */}
+                    {/* <div className="flex justify-between">
                       <span>Water Pressure</span>
                       <span className="font-medium">
                         {formatValue(data?.water_pressure, "%")}
                       </span>
-                    </div>
+                    </div> */}
                   </div>
                 </CardContent>
               </Card>

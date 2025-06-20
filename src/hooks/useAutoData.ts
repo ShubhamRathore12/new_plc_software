@@ -59,7 +59,17 @@ export const useAutoData = (autoType: string) => {
 
   const formatValue = (value: any, unit: string = "") => {
     if (value === undefined || value === null) return "--";
-    return `${format(value)}${unit}`;
+
+    const numericValue = parseFloat(value);
+
+    if (isNaN(numericValue)) return `${value}${unit}`;
+
+    if (numericValue === 0) return `0${unit}`;
+
+    const str = String(numericValue).replace(/[^0-9.]/g, ""); // clean any stray chars
+    const firstTwoDigits = str.replace(".", "").slice(0, 2);
+
+    return `${firstTwoDigits}${unit}`;
   };
 
   return {
