@@ -209,7 +209,6 @@ export default function AutoPage() {
                       )
                     )}
                     <div className="flex justify-between">
-                      <span>COMP</span>
                       <span className="font-medium">
                         HP {formatValue(data?.[currentConfig.compressor.hp])} LP{" "}
                         {formatValue(data?.[currentConfig.compressor.lp])}
