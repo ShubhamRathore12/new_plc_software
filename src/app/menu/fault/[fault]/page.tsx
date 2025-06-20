@@ -14,9 +14,10 @@ import {
 import { useAutoData } from "@/hooks/useAutoData";
 import { useParams, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import FaultLogsPaginated from "@/components/FaultLogsPaginated";
 
 export default function FaultPage() {
-  const [currentView, setCurrentView] = useState("faultLogs"); // 'faultCodes', 'faultLogs', 'viewFaultCode'
+  const [currentView, setCurrentView] = useState("faultLogs"); // 'faultCodes', 'faultLogs', 'viewFaultCode', 'allPaginatedLogs'
   const [selectedFault, setSelectedFault] = useState<any>(null);
   const router = useRouter();
   const { fault } = useParams();
@@ -377,6 +378,25 @@ export default function FaultPage() {
     );
   }
 
+  // Add a new view for all paginated logs
+  if (currentView === "allPaginatedLogs") {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <main className="flex-1 container py-8">
+          <FaultLogsPaginated />
+          <div className="mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setCurrentView("faultLogs")}
+            >
+              BACK
+            </Button>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
   // Fault Logs Screen
   if (currentView === "faultLogs") {
     return (
@@ -391,13 +411,19 @@ export default function FaultPage() {
             </p>
           </div>
 
-          {/* Add button to switch to Fault Codes view */}
-          <div className="mb-4 flex justify-end">
+          {/* Add button to switch to Fault Codes view and to all paginated logs */}
+          <div className="mb-4 flex justify-end gap-2">
             <Button
               variant="secondary"
               onClick={() => setCurrentView("faultCodes")}
             >
               View Fault Codes
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => setCurrentView("allPaginatedLogs")}
+            >
+              View All Paginated Logs
             </Button>
           </div>
 
