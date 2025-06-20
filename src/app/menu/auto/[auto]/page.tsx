@@ -188,12 +188,12 @@ export default function AutoPage() {
                         </div>
                       )
                     )}
-                    <div className="flex justify-between">
+                    {/* <div className="flex justify-between">
                       <span>TH - T1</span>
                       <span className="font-medium">
                         {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
                       </span>
-                    </div>
+                    </div> */}
                     {Object.entries(currentConfig.controls).map(
                       ([key, control]) => (
                         <div key={key} className="flex justify-between">
