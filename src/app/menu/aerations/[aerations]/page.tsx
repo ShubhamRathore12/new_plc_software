@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-
+import { useEffect, useState } from "react";
 import { Wind, Thermometer } from "lucide-react";
 import { motion } from "framer-motion";
 import {
@@ -14,6 +14,18 @@ export default function AerationPage() {
   const router = useRouter();
   const { aerations } = useParams();
   const device = aerations?.toString();
+
+  const [shouldRender, setShouldRender] = useState(true);
+
+  useEffect(() => {
+    if (device === "Gtpl-122-S7-1200-01") {
+      setShouldRender(false); // prevent cards from rendering
+      router.push(`/menu/aerations/without-heating/${device}`);
+    }
+  }, [device, router]);
+
+  if (!shouldRender) return null;
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">

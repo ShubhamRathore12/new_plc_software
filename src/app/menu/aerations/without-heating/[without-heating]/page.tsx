@@ -28,12 +28,14 @@ export default function AerationWithoutHeatingPage() {
   const [runningHours, setRunningHours] = useState(0);
   const [runningMinutes, setRunningMinutes] = useState(0);
 
-  const isRunning = data?.AERATION_WITHOUT_HEATER_START === 1;
-  const continuousMode = data?.CONTINUOUS_MODE === 1;
+  const isRunning = data?.AERATION_WITHOUT_HEATER_START ||  data?.Aeration_start == 1;
+  const continuousMode = data?.CONTINUOUS_MODE || data?.Continuous_mode == 1;
 
   const handleBack = () => {
     router.push(`/menu/${devices}`);
   };
+
+
 
   const {
     AI_AMBIANT_TEMP,
@@ -42,6 +44,12 @@ export default function AerationWithoutHeatingPage() {
     AI_RH_Analog_Scale,
     HEATING_MODE_Continuous_Mode,
     Value_to_Display_EVAP_ACT_SPEED,
+    Aeration_duration_set,
+    Running_time_hour,
+    Running_time_minute,
+    Continuous_mode,
+    Aeration_start,
+    Aeration_stop
   } = data || {};
 
   return (
@@ -50,7 +58,7 @@ export default function AerationWithoutHeatingPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              AERATION W/O HEATING
+           {devices === "Gtpl-122-S7-1200-01" ? "AERATION":"AERATION W/O HEATING"}  
             </h1>
             {!isConnected && (
               <Badge variant="destructive">
@@ -88,7 +96,7 @@ export default function AerationWithoutHeatingPage() {
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
-                        value={data?.SET_DURATION || duration}
+                        value={data?.SET_DURATION || data?.Aeration_duration_set}
                         onChange={(e) => setDuration(Number.parseInt(e.target.value) || 0)}
                         className="w-16"
                         min={1}
@@ -101,7 +109,7 @@ export default function AerationWithoutHeatingPage() {
                     <div className="flex items-center space-x-4">
                       <Input
                         type="number"
-                        value={data?.RUNNING_HOUR1 || runningHours}
+                        value={data?.RUNNING_HOUR1 || data?.Running_time_hour}
                         onChange={(e) => setRunningHours(Number.parseInt(e.target.value) || 0)}
                         className="w-16"
                         min={0}
@@ -110,7 +118,7 @@ export default function AerationWithoutHeatingPage() {
                       <span>h</span>
                       <Input
                         type="number"
-                        value={data?.RUNNING_MINUTE1 || runningMinutes}
+                        value={data?.RUNNING_MINUTE1 || data?.Running_time_minute}
                         onChange={(e) => setRunningMinutes(Number.parseInt(e.target.value) || 0)}
                         className="w-16"
                         min={0}
@@ -126,12 +134,18 @@ export default function AerationWithoutHeatingPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    <div className="flex justify-between">
+                    {devices === 'Gtpl-122-S7-1200-01' ?    <div className="flex justify-between">
+                      <span>T0 (Cold Air)</span>
+                      <span className="font-medium">
+                        {formatValue(AI_COLD_AIR_TEMP, "°C")}
+                      </span>
+                    </div> :   <div className="flex justify-between">
                       <span>T1 (Cold Air)</span>
                       <span className="font-medium">
                         {formatValue(AI_COLD_AIR_TEMP, "°C")}
                       </span>
-                    </div>
+                    </div>}
+                 
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>
                       <span className="font-medium">
@@ -144,12 +158,13 @@ export default function AerationWithoutHeatingPage() {
                         {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM, "%")}
                       </span>
                     </div>
-                    <div className="flex justify-between">
+                    {devices === 'Gtpl-122-S7-1200-01' ?null :   <div className="flex justify-between">
                       <span>TH</span>
                       <span className="font-medium">
                         {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}
                       </span>
-                    </div>
+                    </div>}
+                 
                   </div>
                 </CardContent>
               </Card>

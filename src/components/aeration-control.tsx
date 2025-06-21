@@ -47,7 +47,7 @@ export default function Home({ data, devices, heat,title ,formatValue}: any) {
             </defs>
 
             <text x="40" y="30" fontSize="16" fontWeight="700" fill="#1F2937">
-              SR. NO: GTPL-{devices === "S7-1200" ? "085" : "109"}
+              SR. NO: -{devices === "Gtpl-122-S7-1200-01" ? "Gtpl-122-S7-1200-01" : "GT80E-S7-200-smart1"}
             </text>
 
             {/* Silo */}
@@ -56,8 +56,10 @@ export default function Home({ data, devices, heat,title ,formatValue}: any) {
             <path d="M50 100 L80 50 L110 100 Z" fill="url(#siloGradient)" stroke="#4B5563" strokeWidth="1" filter="url(#shadow)" />
 
             {/* TH */}
-            <text x="130" y="150" fontSize="14" fontWeight="700" fill="#1F2937" textAnchor="middle">TH</text>
-            <text x="130" y="170" fontSize="14" fontWeight="400" fill="#4B5563" textAnchor="middle">  {formatValue(data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}</text>
+            {devices === 'Gtpl-122-S7-1200-01' ?<>  <text x="130" y="150" fontSize="14" fontWeight="700" fill="#1F2937" textAnchor="middle">T0</text>
+              <text x="130" y="170" fontSize="14" fontWeight="400" fill="#4B5563" textAnchor="middle">  {formatValue(data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}</text></> :<>  <text x="130" y="150" fontSize="14" fontWeight="700" fill="#1F2937" textAnchor="middle">TH</text>
+              <text x="130" y="170" fontSize="14" fontWeight="400" fill="#4B5563" textAnchor="middle">  {formatValue(data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}</text></>}
+          
 
             {/* HTR & Delta(T) */}
             {isHeating && (
@@ -105,8 +107,8 @@ export default function Home({ data, devices, heat,title ,formatValue}: any) {
             <text x="200" y="300" fontSize="14" fontWeight="700" fill="#1F2937" textAnchor="middle">Running Time</text>
             <rect x="170" y="310" width="30" height="20" fill="#E5E7EB" rx="3" filter="url(#shadow)" />
             <rect x="210" y="310" width="30" height="20" fill="#E5E7EB" rx="3" filter="url(#shadow)" />
-            <text x="185" y="325" fontSize="12" fontWeight="400" fill="#4B5563" textAnchor="middle">{HEATING_MODE_Remaing_Time_h || data?.RUNNING_HOUR1 || "N/A"}</text>
-            <text x="225" y="325" fontSize="12" fontWeight="400" fill="#4B5563" textAnchor="middle">{HEATING_MODE_Remaing_Time_m ||data?.RUNNING_MINUTE1 || "N/A"}</text>
+            <text x="185" y="325" fontSize="12" fontWeight="400" fill="#4B5563" textAnchor="middle">{formatValue(data?.Running_time_hour || data?.RUNNING_HOUR1  || "0")}</text>
+            <text x="225" y="325" fontSize="12" fontWeight="400" fill="#4B5563" textAnchor="middle">{formatValue(data?.Running_time_minute ||data?.RUNNING_MINUTE1 || "0")}</text>
             <text x="185" y="345" fontSize="10" fontWeight="700" fill="#6B7280" textAnchor="middle">HOURS</text>
             <text x="225" y="345" fontSize="10" fontWeight="700" fill="#6B7280" textAnchor="middle">MINUTES</text>
 
