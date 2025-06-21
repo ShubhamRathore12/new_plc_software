@@ -253,38 +253,50 @@ export default function DefaultsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    <Label htmlFor="t1" className="text-right font-medium">
-                      T1
-                    </Label>
+                    {defaults === "Gtpl-122-S7-1200-01" ? (
+                      <Label htmlFor="t1" className="text-right font-medium">
+                        T0
+                      </Label>
+                    ) : (
+                      <Label htmlFor="t1" className="text-right font-medium">
+                        T1
+                      </Label>
+                    )}
+
                     <Input
                       id="t1"
                       type="number"
-                      value={SETTINGS_T1_REF_FR_T0 || data?.T1_SET_POINT}
+                      value={
+                        SETTINGS_T1_REF_FR_T0 ||
+                        data?.T1_SET_POINT ||
+                        data?.T0_set_point
+                      }
                       className="col-span-1"
                     />
                     <div>°C</div>
                   </motion.div>
-
-                  <motion.div
-                    className="grid grid-cols-3 items-center gap-4"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <Label htmlFor="th-t1" className="text-right font-medium">
-                      TH-T1
-                    </Label>
-                    <Input
-                      id="th-t1"
-                      type="number"
-                      value={SETTINGS_Delta_T || data?.Th_T1}
-                      // onChange={(e) =>
-                      //   setThT1(Number.parseInt(e.target.value) || 0)
-                      // }
-                      className="col-span-1"
-                    />
-                    <div>°C</div>
-                  </motion.div>
+                  {defaults === "Gtpl-122-S7-1200-01" ? null : (
+                    <motion.div
+                      className="grid grid-cols-3 items-center gap-4"
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.3 }}
+                    >
+                      <Label htmlFor="th-t1" className="text-right font-medium">
+                        TH-T1
+                      </Label>
+                      <Input
+                        id="th-t1"
+                        type="number"
+                        value={SETTINGS_Delta_T || data?.Th_T1}
+                        // onChange={(e) =>
+                        //   setThT1(Number.parseInt(e.target.value) || 0)
+                        // }
+                        className="col-span-1"
+                      />
+                      <div>°C</div>
+                    </motion.div>
+                  )}
 
                   <motion.div
                     className="grid grid-cols-3 items-center gap-4"
@@ -293,13 +305,15 @@ export default function DefaultsPage() {
                     transition={{ delay: 0.4 }}
                   >
                     <Label htmlFor="delta-a" className="text-right font-medium">
-                      Delta(A)
+                      Delta {defaults === "Gtpl-122-S7-1200-01" ? "(T)" : "(A)"}
                     </Label>
                     <Input
                       id="delta-a"
                       type="number"
                       value={
-                        HEATING_MODE_SET_TH_FOR_HEATING_MODE || data?.DELTA_SET
+                        HEATING_MODE_SET_TH_FOR_HEATING_MODE ||
+                        data?.DELTA_SET ||
+                        data?.Delta_T_set_point
                       }
                       // onChange={(e) =>
                       //   setDeltaA(Number.parseInt(e.target.value) || 0)
@@ -321,7 +335,11 @@ export default function DefaultsPage() {
                     <Input
                       id="hp"
                       type="number"
-                      value={PID_SETTINGS_HP_SET_FROM_HMI || data?.HP_SET_POINT}
+                      value={
+                        PID_SETTINGS_HP_SET_FROM_HMI ||
+                        data?.HP_SET_POINT ||
+                        data?.HP_set_point
+                      }
                       // onChange={(e) =>
                       //   setHp(Number.parseInt(e.target.value) || 0)
                       // }
@@ -343,7 +361,9 @@ export default function DefaultsPage() {
                       <Input
                         id="lp"
                         type="number"
-                        value={PID_SETTINGS_LP_SET_FROM_HMI}
+                        value={
+                          PID_SETTINGS_LP_SET_FROM_HMI || data?.LP_set_point
+                        }
                         className="col-span-1"
                       />
                       <div>psi</div>

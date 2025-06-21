@@ -22,20 +22,21 @@ export default function AerationWithoutHeatingPage() {
   const router = useRouter();
   const heat = useParams();
   const devices = heat["without-heating"];
-  const { data, isConnected, error, formatValue } = useAutoData(devices as string);
+  const { data, isConnected, error, formatValue } = useAutoData(
+    devices as string
+  );
 
   const [duration, setDuration] = useState(12);
   const [runningHours, setRunningHours] = useState(0);
   const [runningMinutes, setRunningMinutes] = useState(0);
 
-  const isRunning = data?.AERATION_WITHOUT_HEATER_START ||  data?.Aeration_start == 1;
+  const isRunning =
+    data?.AERATION_WITHOUT_HEATER_START || data?.Aeration_start == 1;
   const continuousMode = data?.CONTINUOUS_MODE || data?.Continuous_mode == 1;
 
   const handleBack = () => {
     router.push(`/menu/${devices}`);
   };
-
-
 
   const {
     AI_AMBIANT_TEMP,
@@ -49,7 +50,7 @@ export default function AerationWithoutHeatingPage() {
     Running_time_minute,
     Continuous_mode,
     Aeration_start,
-    Aeration_stop
+    Aeration_stop,
   } = data || {};
 
   return (
@@ -58,7 +59,9 @@ export default function AerationWithoutHeatingPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-           {devices === "Gtpl-122-S7-1200-01" ? "AERATION":"AERATION W/O HEATING"}  
+              {devices === "Gtpl-122-S7-1200-01"
+                ? "AERATION"
+                : "AERATION W/O HEATING"}
             </h1>
             {!isConnected && (
               <Badge variant="destructive">
@@ -82,12 +85,18 @@ export default function AerationWithoutHeatingPage() {
             <AnimatedContainer className="space-y-6" delay={2}>
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Aeration Control</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Aeration Control
+                  </h2>
 
                   <div className="space-y-6">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <Switch id="continuous-mode" checked={continuousMode} disabled />
+                        <Switch
+                          id="continuous-mode"
+                          checked={continuousMode}
+                          disabled
+                        />
                         <Label htmlFor="continuous-mode">CONTINUOUS MODE</Label>
                       </div>
                     </div>
@@ -96,8 +105,12 @@ export default function AerationWithoutHeatingPage() {
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
-                        value={data?.SET_DURATION || data?.Aeration_duration_set}
-                        onChange={(e) => setDuration(Number.parseInt(e.target.value) || 0)}
+                        value={
+                          data?.SET_DURATION || data?.Aeration_duration_set
+                        }
+                        onChange={(e) =>
+                          setDuration(Number.parseInt(e.target.value) || 0)
+                        }
                         className="w-16"
                         min={1}
                         max={24}
@@ -110,7 +123,9 @@ export default function AerationWithoutHeatingPage() {
                       <Input
                         type="number"
                         value={data?.RUNNING_HOUR1 || data?.Running_time_hour}
-                        onChange={(e) => setRunningHours(Number.parseInt(e.target.value) || 0)}
+                        onChange={(e) =>
+                          setRunningHours(Number.parseInt(e.target.value) || 0)
+                        }
                         className="w-16"
                         min={0}
                         max={23}
@@ -118,8 +133,14 @@ export default function AerationWithoutHeatingPage() {
                       <span>h</span>
                       <Input
                         type="number"
-                        value={data?.RUNNING_MINUTE1 || data?.Running_time_minute}
-                        onChange={(e) => setRunningMinutes(Number.parseInt(e.target.value) || 0)}
+                        value={
+                          data?.RUNNING_MINUTE1 || data?.Running_time_minute
+                        }
+                        onChange={(e) =>
+                          setRunningMinutes(
+                            Number.parseInt(e.target.value) || 0
+                          )
+                        }
                         className="w-16"
                         min={0}
                         max={59}
@@ -134,37 +155,53 @@ export default function AerationWithoutHeatingPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    {devices === 'Gtpl-122-S7-1200-01' ?    <div className="flex justify-between">
-                      <span>T0 (Cold Air)</span>
-                      <span className="font-medium">
-                        {formatValue(AI_COLD_AIR_TEMP, "°C")}
-                      </span>
-                    </div> :   <div className="flex justify-between">
-                      <span>T1 (Cold Air)</span>
-                      <span className="font-medium">
-                        {formatValue(AI_COLD_AIR_TEMP, "°C")}
-                      </span>
-                    </div>}
-                 
+                    {devices === "Gtpl-122-S7-1200-01" ? (
+                      <div className="flex justify-between">
+                        <span>T0 (Cold Air)</span>
+                        <span className="font-medium">
+                          {formatValue(data?.T0_temp_mean, "°C")}
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between">
+                        <span>T1 (Cold Air)</span>
+                        <span className="font-medium">
+                          {formatValue(AI_COLD_AIR_TEMP, "°C")}
+                        </span>
+                      </div>
+                    )}
+
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>
                       <span className="font-medium">
-                        {formatValue(AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2, "°C")}
+                        {formatValue(
+                          AI_AMBIANT_TEMP ||
+                            data?.AMBIENT_AIR_TEMP_T2 ||
+                            data?.T2_temp_mean,
+                          "°C"
+                        )}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>BLOWER</span>
                       <span className="font-medium">
-                        {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM, "%")}
+                        {formatValue(
+                          Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM,
+                          "%"
+                        )}
                       </span>
                     </div>
-                    {devices === 'Gtpl-122-S7-1200-01' ?null :   <div className="flex justify-between">
-                      <span>TH</span>
-                      <span className="font-medium">
-                        {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}
-                      </span>
-                    </div>}
-                 
+                    {devices === "Gtpl-122-S7-1200-01" ? null : (
+                      <div className="flex justify-between">
+                        <span>TH</span>
+                        <span className="font-medium">
+                          {formatValue(
+                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                            "°C"
+                          )}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -193,7 +230,11 @@ export default function AerationWithoutHeatingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 2.3 }}
               >
-                <Button variant="outline" className="w-full" onClick={handleBack}>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleBack}
+                >
                   BACK
                 </Button>
               </motion.div>
