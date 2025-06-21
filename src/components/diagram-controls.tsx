@@ -53,16 +53,22 @@ export default function Home({ data, formatValue, machineName }: any) {
             </text>
 
             {/* HTR Block with Zigzag */}
+            {machineName !== "Gtpl-122-S7-1200-01" && ( 
+
+              <>
             <rect x="150" y="100" width="50" height="100" fill="lightgray" />
             <path
               d="M150 120 H160 L165 130 H175 L180 120 H190 L195 130 H200 V180 H150 Z"
               fill="none"
               stroke="black"
               strokeWidth="1"
-            />
-            <text x="175" y="90" fontSize="12" textAnchor="middle">
-              HTR {formatValue(data.Value_to_Display_HEATER, "%")}
-            </text>
+            /></>)}
+          {machineName !== "Gtpl-122-S7-1200-01" && (
+  <text x="175" y="90" fontSize="12" textAnchor="middle">
+    HTR {formatValue(data.Value_to_Display_HEATER, "%")}
+  </text>
+)}
+
 
             {/* AHT Block with Zigzag (now lightgray, no label/value) */}
             <rect x="250" y="100" width="50" height="100" fill="lightgray" />
@@ -75,27 +81,29 @@ export default function Home({ data, formatValue, machineName }: any) {
 
             {/* HGS Block with Zigzag (now lightgray, no label/value) */}
             <rect x="350" y="100" width="50" height="100" fill="lightgray" />
-            <path
+               {machineName !== "Gtpl-122-S7-1200-01" && <>   <path
               d="M350 120 H360 L365 130 H375 L380 120 H390 L395 130 H400 V180 H350 Z"
               fill="none"
               stroke="black"
               strokeWidth="1"
             />
 
-            {/* TH, T0, T1 Labels */}
+   
+
             <text x="175" y="230" fontSize="12" textAnchor="middle">
               TH
             </text>
             <text x="175" y="250" fontSize="12" textAnchor="middle">
               {formatValue(data.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}
-            </text>
+            </text> </>}
+         
 
             <text x="275" y="230" fontSize="12" textAnchor="middle">
               T0
             </text>
             <text x="275" y="250" fontSize="12" textAnchor="middle">
               {formatValue(
-                data.AI_AIR_OUTLET_TEMP || data?.AIR_OUTLET_TEMP,
+                data.AIR_OUTLET_TEMP || data?.T0_temp_mean,
                 "°C"
               )}
             </text>
@@ -104,7 +112,7 @@ export default function Home({ data, formatValue, machineName }: any) {
               T1
             </text>
             <text x="375" y="250" fontSize="12" textAnchor="middle">
-              {formatValue(data?.COLD_AIR_TEMP_T1, "°C")}
+              {formatValue(data?.COLD_AIR_TEMP_T1 || data?.T1_temp_mean, "°C")}
             </text>
 
             {/* T2 Block */}
@@ -121,22 +129,29 @@ export default function Home({ data, formatValue, machineName }: any) {
             </text>
             <text x="490" y="210" fontSize="12" textAnchor="middle">
               {formatValue(
-                data?.AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2
+                data?.T2_temp_mean || data?.AMBIENT_AIR_TEMP_T2
               ) || "N/A"}
             </text>
 
             {/* T1 = ### °C Box */}
             <rect x="600" y="50" width="100" height="40" fill="orange" />
+            {machineName === "Gtpl-122-S7-1200-01" ?  <text x="650" y="75" fontSize="12" textAnchor="middle">
+              T0 = {formatValue(data?.T0_temp_mean, "°C")}
+            </text> : (
             <text x="650" y="75" fontSize="12" textAnchor="middle">
               T1 = {formatValue(data?.T1_SET_POINT, "°C")}
             </text>
-
+            )
+}
             {/* TH - T1 = ### °C Box */}
             <rect x="600" y="100" width="100" height="40" fill="orange" />
+            {machineName === "Gtpl-122-S7-1200-01" ?    <text x="650" y="125" fontSize="12" textAnchor="middle">
+              T Detla = {formatValue(data.Delta_T_set_point || data?.Th_T1, "°C")}
+            </text> :
             <text x="650" y="125" fontSize="12" textAnchor="middle">
               TH - T1 = {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
             </text>
-
+}
             {/* ###% Box near COND */}
             <rect x="600" y="300" width="80" height="40" fill="lightgray" />
             <text x="640" y="325" fontSize="12" textAnchor="middle">
@@ -159,7 +174,7 @@ export default function Home({ data, formatValue, machineName }: any) {
             <text x="175" y="380" fontSize="16" textAnchor="middle" fill="#111">
               {formatValue(
                 data.Value_to_Display_AHT_VALE_OPEN ||
-                  data.AFTER_HEAT_VALVE_RPM,
+                  data.AFTER_HEAT_VALVE_RPM || data?.AHT_vale_speed,
                 "%"
               )}
             </text>
@@ -167,7 +182,7 @@ export default function Home({ data, formatValue, machineName }: any) {
             <text x="275" y="380" fontSize="16" textAnchor="middle" fill="#111">
               {formatValue(
                 data.Value_to_Display_HOT_GAS_VALVE_OPEN ||
-                  data?.HOT_GAS_VALVE_RPM,
+                  data?.HOT_GAS_VALVE_RPM || data?.Hot_valve_speed,
                 "%"
               )}
             </text>
@@ -197,7 +212,7 @@ export default function Home({ data, formatValue, machineName }: any) {
               COMP*
             </text>
             <text x="640" y="425" fontSize="12" textAnchor="middle">
-              {formatValue(data?.COMPRESSOR_TIME, "%")}
+              {formatValue(data?.COMPRESSOR_TIME || data?.Compressor_timer, "%")}
             </text>
 
             {/* HP and LP Separate Yellow Blocks */}
@@ -215,7 +230,7 @@ export default function Home({ data, formatValue, machineName }: any) {
             </text>
             <text x="635" y="530" fontSize="12" textAnchor="middle" fill="#111">
               {formatValue(
-                data.AI_COND_PRESSURE || data?.HP || data?.COMPRESSOR_TIME
+                data.AI_COND_PRESSURE || data?.HP || data?.COMPRESSOR_TIME || data?.HP_value
               )}
             </text>
             <rect
@@ -231,11 +246,11 @@ export default function Home({ data, formatValue, machineName }: any) {
               LP
             </text>
             <text x="715" y="530" fontSize="12" textAnchor="middle" fill="#111">
-              {formatValue(data.AI_SUC_PRESSURE || data?.LP)}
+              {formatValue(data.AI_SUC_PRESSURE || data?.LP || data?.LP_value)}
             </text>
 
             {/* Top Data Boxes with Dashed Border (conditionally rendered) */}
-            {showTopBlocks && (
+            {/* {showTopBlocks && (
               <>
                 <rect
                   x="250"
@@ -264,7 +279,7 @@ export default function Home({ data, formatValue, machineName }: any) {
                   {data?.AI_Pa_Analog_Scale || "N/A"} Pa
                 </text>
               </>
-            )}
+            )} */}
 
             {/* Three Lamps at Left Bottom Corner */}
             <circle

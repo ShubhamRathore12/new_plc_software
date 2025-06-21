@@ -29,28 +29,30 @@ export default function AutoPage() {
     "Gtpl-122-S7-1200-01": {
       serialNumber: "GTPL-075",
       temperatureSensors: {
-        TH: { key: "AI_TH_Act", label: "Supply Air(TH)" },
-        T0: { key: "AI_AIR_OUTLET_TEMP", label: "After Heat(T0)" },
-        T1: { key: "AI_COLD_AIR_TEMP", label: "Cold Air(T1)" },
-        T2: { key: "AI_AMBIANT_TEMP", label: "Ambient(T2)" },
+
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        'Delta T': { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
-        HTR: { key: "Value_to_Display_HEATER", label: "Heater" },
+ 
         AHT: {
-          key: "Value_to_Display_AHT_VALE_OPEN",
+          key: "AHT_vale_speed",
           label: "After Heat(AHT)",
         },
         HGS: {
-          key: "Value_to_Display_HOT_GAS_VALVE_OPEN",
+          key: "Hot_valve_speed",
           label: "Hot Gas(HGS)",
         },
-        BLOWER: { key: "Value_to_Display_EVAP_ACT_SPEED", label: "Blower" },
-        COND: { key: "Value_to_Display_COND_ACT_SPEED", label: "Condenser" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+
       },
       compressor: {
-        time: "COMPRESSOR_TIME",
-        hp: "AI_COND_PRESSURE",
-        lp: "AI_SUC_PRESSURE",
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
       },
     },
     "GT80E-S7-200-smart1": {
