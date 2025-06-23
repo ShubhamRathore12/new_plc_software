@@ -77,17 +77,66 @@ const S7_200_TAGS = [
   "YELLOW_LIGHT",
 ];
 
+const S7_1200_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Ambient_air_sensor_1open",
+  "COND_FAN_OVERLOAD",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp._lower_than_set_temp.",
+  "Ambient_temp._over_50°C",
+  "COMP._MODULE_FEEDBACK_ERROR_(Si-I1)",
+  "Low_pressure_1_fault",
+  "COMP_FBK_ERROR",
+  "Low_pressure_2_fault",
+  "Ambient_temp._over_47°C",
+  "Condenser_fan_2_TOP_fault",
+  "Condenser_fan_3_TOP_fault",
+  "Condenser_fan_4_TOP_fault",
+  "Condenser_fan_2_circuit_breaker_fault",
+  "Condenser_fan_3_circuit_breaker_fault",
+  "Condenser_fan_4_circuit_breaker_fault",
+  "Condenser_fan_5_TOP_fault",
+  "Condenser_fan_6_TOP_fault",
+  "Condenser_fan_5_circuit_breaker_fault",
+  "Condenser_fan_6_circuit_breaker_fault",
+  "Condenser_fan_1_circuit_breaker_fault",
+  "Condenser_fan_1_TOP_fault",
+  "Ambient_air_sensor_1_short_circuit",
+  "Ambient_air_sensor_2_open",
+  "Ambient_air_sensor_2_short_circuit",
+  "Cold_air_sensor_1_open",
+  "Cold_air_sensor_1_short_circuit",
+  "Cold_air_sensor_2_open",
+  "Cold_air_sensor_2_short_circuit",
+  "Air_outlet_sensor_1_open",
+  "Air_outlet_sensor_1_short_circuit",
+  "Air_outlet_sensor_2_open",
+  "Air_outlet_sensor_2_short_circuit"
+];
+
+
 // Function to extract active tags from data
 function extractActiveTags(
-  data: any
+  data: any,
+  machineName: string
 ): Array<{ tag: string; value: boolean; createdAt: string }> {
   const activeTags = [];
+  const tags = machineName === "GT80E-S7-200-smart1" ? S7_200_TAGS : S7_1200_TAGS;
+  const isS7_200 = machineName === "GT80E-S7-200-smart1";
 
-  for (const tag of S7_200_TAGS) {
-    if (data[tag] === "tr") {
+  for (const tag of tags) {
+    const value = data[tag];
+
+    const isActive = isS7_200 ? value === "tr" : value === true;
+
+    if (isActive) {
       activeTags.push({
-        tag: tag,
-        value: data[tag],
+        tag,
+        value,
         createdAt: data.created_at || data.createdAt,
       });
     }
@@ -95,6 +144,7 @@ function extractActiveTags(
 
   return activeTags;
 }
+
 
 // Function to format tag names for display
 function formatTagName(tag: string): string {
@@ -381,9 +431,14 @@ export default function FaultLogsPaginated({
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `https://grain-backend.onrender.com/api/all700data/paginatedSmart200?page=${pageNum}&pageSize=${PAGE_SIZE}`
-      );
+      const endpoint =
+      machineName === "GT80E-S7-200-smart1"
+        ? "paginatedSmart200"
+        : "paginatedSmart1200";
+    
+    const res = await fetch(
+      `https://grain-backend.onrender.com/api/all700data/${endpoint}?page=${pageNum}&pageSize=${PAGE_SIZE}`
+    );
       if (!res.ok) throw new Error("Failed to fetch logs");
       const result = await res.json();
 
@@ -410,7 +465,8 @@ export default function FaultLogsPaginated({
         let faultCount = 0;
 
         for (const record of result.data) {
-          const recordActiveTags = extractActiveTags(record);
+          const recordActiveTags = extractActiveTags(record, machineName);
+
           currentPageActiveTags.push(...recordActiveTags);
 
           // Count fault tags
