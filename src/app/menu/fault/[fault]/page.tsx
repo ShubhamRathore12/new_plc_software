@@ -252,13 +252,13 @@ export default function FaultPage() {
 
   const s7_1200_tags = [
     { tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT", value: data?.Compressor_circuit_breaker_fault },
-    { tag: "OIL_PRESSURE_LOW", value: data?.OIL_PRESSURE_LOW },
-    { tag: "BLOWER_DRIVE_FAULT", value: data?.BLOWER_DRIVE_FAULT },
-    { tag: "BLOWER_CIRCUIT_BREAKER_FAULT", value: data?.BLOWER_CIRCUIT_BREAKER_FAULT },
+    { tag: "OIL_PRESSURE_LOW", value: data?.Oil_pressure_low },
+    { tag: "BLOWER_DRIVE_FAULT", value: data?.Blower_drive_fault },
+    { tag: "BLOWER_CIRCUIT_BREAKER_FAULT", value: data?.Blower_circuit_breaker_fault },
     { tag: "AMBIENT_AIR_SENSOR_1_OPEN", value: data?.AMBIENT_AIR_SENSOR_1_OPEN },
     { tag: "COND_FAN_OVERLOAD", value: data?.COND_FAN_OVERLOAD },
-    { tag: "THREE_PHASE_MONITOR_FAULT", value: data?.THREE_PHASE_MONITOR_FAULT },
-    { tag: "HIGH_PRESSURE_FAULT", value: data?.HIGH_PRESSURE_FAULT },
+    { tag: "THREE_PHASE_MONITOR_FAULT", value: data?.Three_phase_monitor_fault },
+    { tag: "HIGH_PRESSURE_FAULT", value: data?.High_pressure_fault },
     { tag: "AMBIENT_TEMP_LOWER_THAN_SET_TEMP", value: data?.AMBIENT_TEMP_LOWER_THAN_SET_TEMP },
     { tag: "AMBIENT_TEMP_OVER_50C", value: data?.AMBIENT_TEMP_OVER_50C },
     { tag: "COMP_MODULE_FEEDBACK_ERROR", value: data?.COMP_MODULE_FEEDBACK_ERROR },
