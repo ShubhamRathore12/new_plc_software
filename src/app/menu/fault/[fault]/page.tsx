@@ -251,7 +251,7 @@ export default function FaultPage() {
   ];
 
   const s7_1200_tags = [
-    { tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT", value: data?.COMPRESSOR_CIRCUIT_BREAKER_FAULT },
+    { tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT", value: data?.Compressor_circuit_breaker_fault },
     { tag: "OIL_PRESSURE_LOW", value: data?.OIL_PRESSURE_LOW },
     { tag: "BLOWER_DRIVE_FAULT", value: data?.BLOWER_DRIVE_FAULT },
     { tag: "BLOWER_CIRCUIT_BREAKER_FAULT", value: data?.BLOWER_CIRCUIT_BREAKER_FAULT },
