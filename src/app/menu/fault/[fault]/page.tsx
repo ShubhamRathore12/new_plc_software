@@ -66,6 +66,7 @@ export default function FaultPage() {
     { code: 41, description: "Air_outlet_sensor_2_open" },
     { code: 42, description: "Air_outlet_sensor_2_short_circuit" },
   ];
+  
 
   // S7-200 fault codes
   const s7_200_faultCodes = [
@@ -249,6 +250,57 @@ export default function FaultPage() {
     { tag: "created_at", value: data?.created_at },
   ];
 
+  const s7_1200_tags = [
+    { tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT", value: data?.COMPRESSOR_CIRCUIT_BREAKER_FAULT },
+    { tag: "OIL_PRESSURE_LOW", value: data?.OIL_PRESSURE_LOW },
+    { tag: "BLOWER_DRIVE_FAULT", value: data?.BLOWER_DRIVE_FAULT },
+    { tag: "BLOWER_CIRCUIT_BREAKER_FAULT", value: data?.BLOWER_CIRCUIT_BREAKER_FAULT },
+    { tag: "AMBIENT_AIR_SENSOR_1_OPEN", value: data?.AMBIENT_AIR_SENSOR_1_OPEN },
+    { tag: "COND_FAN_OVERLOAD", value: data?.COND_FAN_OVERLOAD },
+    { tag: "THREE_PHASE_MONITOR_FAULT", value: data?.THREE_PHASE_MONITOR_FAULT },
+    { tag: "HIGH_PRESSURE_FAULT", value: data?.HIGH_PRESSURE_FAULT },
+    { tag: "AMBIENT_TEMP_LOWER_THAN_SET_TEMP", value: data?.AMBIENT_TEMP_LOWER_THAN_SET_TEMP },
+    { tag: "AMBIENT_TEMP_OVER_50C", value: data?.AMBIENT_TEMP_OVER_50C },
+    { tag: "COMP_MODULE_FEEDBACK_ERROR", value: data?.COMP_MODULE_FEEDBACK_ERROR },
+    { tag: "LOW_PRESSURE_1_FAULT", value: data?.LOW_PRESSURE_1_FAULT },
+    { tag: "COMP_FBK_ERROR", value: data?.COMP_FBK_ERROR },
+    { tag: "LOW_PRESSURE_2_FAULT", value: data?.LOW_PRESSURE_2_FAULT },
+    { tag: "AMBIENT_TEMP_OVER_47C", value: data?.AMBIENT_TEMP_OVER_47C },
+    { tag: "CONDENSER_FAN_2_TOP_FAULT", value: data?.CONDENSER_FAN_2_TOP_FAULT },
+    { tag: "CONDENSER_FAN_3_TOP_FAULT", value: data?.CONDENSER_FAN_3_TOP_FAULT },
+    { tag: "CONDENSER_FAN_4_TOP_FAULT", value: data?.CONDENSER_FAN_4_TOP_FAULT },
+    { tag: "CONDENSER_FAN_2_CB_FAULT", value: data?.CONDENSER_FAN_2_CB_FAULT },
+    { tag: "CONDENSER_FAN_3_CB_FAULT", value: data?.CONDENSER_FAN_3_CB_FAULT },
+    { tag: "CONDENSER_FAN_4_CB_FAULT", value: data?.CONDENSER_FAN_4_CB_FAULT },
+    { tag: "CONDENSER_FAN_5_TOP_FAULT", value: data?.CONDENSER_FAN_5_TOP_FAULT },
+    { tag: "CONDENSER_FAN_6_TOP_FAULT", value: data?.CONDENSER_FAN_6_TOP_FAULT },
+    { tag: "CONDENSER_FAN_5_CB_FAULT", value: data?.CONDENSER_FAN_5_CB_FAULT },
+    { tag: "CONDENSER_FAN_6_CB_FAULT", value: data?.CONDENSER_FAN_6_CB_FAULT },
+    { tag: "CONDENSER_FAN_1_CB_FAULT", value: data?.CONDENSER_FAN_1_CB_FAULT },
+    { tag: "CONDENSER_FAN_1_TOP_FAULT", value: data?.CONDENSER_FAN_1_TOP_FAULT },
+    { tag: "AMBIENT_AIR_SENSOR_1_SHORT", value: data?.AMBIENT_AIR_SENSOR_1_SHORT },
+    { tag: "AMBIENT_AIR_SENSOR_2_OPEN", value: data?.AMBIENT_AIR_SENSOR_2_OPEN },
+    { tag: "AMBIENT_AIR_SENSOR_2_SHORT", value: data?.AMBIENT_AIR_SENSOR_2_SHORT },
+    { tag: "COLD_AIR_SENSOR_1_OPEN", value: data?.COLD_AIR_SENSOR_1_OPEN },
+    { tag: "COLD_AIR_SENSOR_1_SHORT", value: data?.COLD_AIR_SENSOR_1_SHORT },
+    { tag: "COLD_AIR_SENSOR_2_OPEN", value: data?.COLD_AIR_SENSOR_2_OPEN },
+    { tag: "COLD_AIR_SENSOR_2_SHORT", value: data?.COLD_AIR_SENSOR_2_SHORT },
+    { tag: "AIR_OUTLET_SENSOR_1_OPEN", value: data?.AIR_OUTLET_SENSOR_1_OPEN },
+    { tag: "AIR_OUTLET_SENSOR_1_SHORT", value: data?.AIR_OUTLET_SENSOR_1_SHORT },
+    { tag: "AIR_OUTLET_SENSOR_2_OPEN", value: data?.AIR_OUTLET_SENSOR_2_OPEN },
+    { tag: "AIR_OUTLET_SENSOR_2_SHORT", value: data?.AIR_OUTLET_SENSOR_2_SHORT },
+    { tag: "created_at", value: data?.created_at },
+  ];
+  
+
+
+  const isActiveTag = (value: any) => {
+    if (!value) return false;
+    const normalized = value.toString().toLowerCase();
+    return normalized === "true" || normalized === "tr";
+  };
+  
+
   function getRandomBoolean() {
     return Math.random() < 0.5;
   }
@@ -262,6 +314,9 @@ export default function FaultPage() {
     : fault?.toString().toLowerCase().includes("s7-1200-02")
       ? "Gtpl-S7-1200-02"
       : "Gtpl-122-S7-1200-01";
+
+
+      const currentTags = isGT80E ? s7_200_tags : s7_1200_tags;
 
   const handleViewFaultCode = (faultItem: any) => {
     setSelectedFault(faultItem);
@@ -319,35 +374,32 @@ export default function FaultPage() {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {s7_200_tags
-                          .filter((tag) => tag.value == "tr") // Only show tags with true values
-                          .map((tag, index) => (
-                            <TableRow key={index}>
-                              <TableCell className="font-mono text-sm">
-                                {tag.tag}
-                              </TableCell>
-                              <TableCell>
-                                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                                  Active
-                                </span>
-                              </TableCell>
-                              <TableCell className="font-medium">
-                                TRUE
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        {s7_200_tags.filter((tag) => tag.value == "tr")
-                          .length === 0 && (
-                          <TableRow>
-                            <TableCell
-                              colSpan={3}
-                              className="text-center py-8 text-muted-foreground"
-                            >
-                              No active tags found
-                            </TableCell>
-                          </TableRow>
-                        )}
-                      </TableBody>
+  {currentTags.filter((tag) => isActiveTag(tag.value)).map((tag, index) => (
+    <TableRow key={index}>
+      <TableCell className="font-mono text-sm">{tag.tag}</TableCell>
+      <TableCell>
+        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+          Active
+        </span>
+      </TableCell>
+      <TableCell className="font-medium">{isActiveTag(tag.value) ? "TRUE" : "FALSE"}</TableCell>
+      <TableCell className="font-medium">
+        {tag.tag === "created_at"
+          ? tag.value
+          : currentTags.find((t) => t.tag === "created_at")?.value || "N/A"}
+      </TableCell>
+    </TableRow>
+  ))}
+  {currentTags.filter((tag) => isActiveTag(tag.value)).length === 0 && (
+    <TableRow>
+      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+        No active tags found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
+
+
                     </Table>
                   </ScrollArea>
                 </>
@@ -430,40 +482,32 @@ export default function FaultPage() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {s7_200_tags
-                      .filter((tag) => tag.value == "tr") // Only show tags with true values
+  {currentTags.filter((tag) => isActiveTag(tag.value)).map((tag, index) => (
+    <TableRow key={index}>
+      <TableCell className="font-mono text-sm">{tag.tag}</TableCell>
+      <TableCell>
+        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+          Active
+        </span>
+      </TableCell>
+      <TableCell className="font-medium">{isActiveTag(tag.value) ? "TRUE" : "FALSE"}</TableCell>
+      <TableCell className="font-medium">
+        {tag.tag === "created_at"
+          ? tag.value
+          : currentTags.find((t) => t.tag === "created_at")?.value || "N/A"}
+      </TableCell>
+    </TableRow>
+  ))}
+  {currentTags.filter((tag) => isActiveTag(tag.value)).length === 0 && (
+    <TableRow>
+      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+        No active tags found
+      </TableCell>
+    </TableRow>
+  )}
+</TableBody>
 
-                      .map((tag: any, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-mono text-sm">
-                            {tag.tag}
-                          </TableCell>
-                          <TableCell>
-                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                              Active
-                            </span>
-                          </TableCell>
-                          <TableCell className="font-medium">TRUE</TableCell>
-                          <TableCell className="font-medium">
-                            {tag.tag === "created_at"
-                              ? tag.value
-                              : s7_200_tags.find((t) => t.tag === "created_at")
-                                  ?.value || "N/A"}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    {s7_200_tags.filter((tag) => tag.value == "tr").length ===
-                      0 && (
-                      <TableRow>
-                        <TableCell
-                          colSpan={3}
-                          className="text-center py-8 text-muted-foreground"
-                        >
-                          No active tags found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
+
                 </Table>
               </ScrollArea>
             </CardContent>

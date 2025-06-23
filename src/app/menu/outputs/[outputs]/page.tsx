@@ -14,22 +14,30 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "S7-1200") {
-      return [
-        { id: "1", description: "Blower drive", dataKey: "Q0.0" },
-        { id: "2", description: "Heater drive", dataKey: "Q0.2" },
-        { id: "3", description: "Condenser fan drive", dataKey: "Q0.3" },
-        { id: "4", description: "Compressor", dataKey: "Q0.4" },
-        { id: "5", description: "Compressor reset", dataKey: "Q0.5" },
-        { id: "6", description: "Solenoid valve", dataKey: "Q0.6" },
-        { id: "7", description: "Hot gas valve", dataKey: "Q0.7" },
-        { id: "8", description: "After heat motor valve", dataKey: "Q1.0" },
-        { id: "9", description: "Chiller healthy", dataKey: "Q1.1" },
-        { id: "10", description: "Chiller Fault", dataKey: "Q2.0" },
-        { id: "11", description: "Collective Trouble Signal", dataKey: "Q2.1" },
-        { id: "12", description: "Buzzer on", dataKey: "Q2.2" },
+    if (deviceType === "Gtpl-122-S7-1200-01") {
+      return  [
+        { id: "1", description: "Compressor Start", dataKey: "Compressor Start" },
+        { id: "2", description: "Compressor Module Reset", dataKey: "Compressor Module Reset" },
+        { id: "3", description: "CR Valve 25% ON", dataKey: "CR Valve 25% ON" },
+        { id: "4", description: "CR Valve 50% ON", dataKey: "CR Valve 50% ON" },
+        { id: "5", description: "Solenoid Valve ON", dataKey: "Solenoid Valve ON" },
+        { id: "6", description: "Hot Gas Valve ON", dataKey: "Hot Gas Valve ON" },
+        { id: "7", description: "AHT Valve ON", dataKey: "AHT Valve ON" },
+        { id: "8", description: "Blower Drive Start", dataKey: "Blower Drive Start" },
+        { id: "9", description: "System Warning", dataKey: "System Warning" },
+        { id: "10", description: "Chiller Healthy", dataKey: "Chiller Healthy" },
+        { id: "11", description: "Cond Fan 1 ON", dataKey: "Cond Fan 1 ON" },
+        { id: "12", description: "CR Valve 75% ON", dataKey: "CR Valve 75% ON" },
+        { id: "13", description: "Chiller Fault", dataKey: "Chiller Fault" },
+        { id: "14", description: "Cond Fan 2 ON", dataKey: "Cond Fan 2 ON" },
+        { id: "15", description: "Cond Fan 3 ON", dataKey: "Cond Fan 3 ON" },
+        { id: "16", description: "Cond Fan 4 ON", dataKey: "Cond Fan 4 ON" },
+        { id: "17", description: "CR Valve 100% ON", dataKey: "CR Valve 100% ON" },
+        { id: "18", description: "Cond Fan 5 ON", dataKey: "Cond Fan 5 ON" },
+        { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
       ];
-    } else if (deviceType === "S7-200") {
+      
+    } else if (deviceType === "GT80E-S7-200-smart1") {
       return [
         { id: "1", description: "Blower Drive", dataKey: "BLOWER_DRIVE_ENABLE" },
         { id: "2", description: "Heater Drive", dataKey: "heater_on" },
@@ -64,11 +72,24 @@ export default function OutputsPage() {
   const outputsData = getOutputsConfig(device || "");
 
   // Function to get status from dynamic data
-  const getStatus = (dataKey: string) => {
-    if (!data) return false;
-    const value = data[dataKey];
-    return value === true || value === 1 || value === "tr" || value === "1";
-  };
+// Function to get status from dynamic data based on device type
+const getStatus = (dataKey: string) => {
+  if (!data) return false;
+  const value = data[dataKey];
+
+  // S7-200 uses "tr" and "fr" (as string flags)
+  if (device === "GT80E-S7-200-smart1") {
+    return value === "tr";
+  }
+
+  // S7-1200 uses boolean or number
+  if (device === "Gtpl-122-S7-1200-01") {
+    return value === true || value === 1 || value === "1";
+  }
+
+  // Default fallback
+  return value === true || value === 1 || value === "1" || value === "tr";
+};
 
   return (
     <div className="flex flex-col min-h-screen">

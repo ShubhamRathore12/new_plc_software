@@ -96,40 +96,39 @@ export default function InputsPage() {
     },
   ];
 
-  const s7_1200_inputsData = [
-    { id: "10.0", description: "Blower circuit breaker fault", status: false },
-    { id: "10.1", description: "Blower drive fault", status: false },
-    { id: "10.2", description: "Blower drive operation", status: true },
-    { id: "10.4", description: "Heater drive fault", status: false },
-    { id: "10.5", description: "Spare", status: false },
-    { id: "10.6", description: "Condenser fan TOP fault", status: false },
-    { id: "10.7", description: "Condenser fan drive fault", status: false },
-    { id: "11.0", description: "Compressor oil low", status: false },
-    {
-      id: "11.1",
-      description: "Compressor circuit breaker fault",
-      status: false,
-    },
-    { id: "11.2", description: "Compressor motor overheat", status: false },
-    { id: "11.3", description: "High pressure 1 fault", status: false },
-    { id: "11.4", description: "High pressure 2 fault", status: false },
-    { id: "12.0", description: "Three phase monitor fault", status: false },
-    { id: "12.1", description: "Heater TOP fault", status: false },
-    {
-      id: "12.2",
-      description: "Cond. fan circuit breaker fault",
-      status: false,
-    },
-    { id: "12.3", description: "Heater circuit breaker fault", status: false },
-    { id: "12.4", description: "Heater RCCB fault", status: false },
-    { id: "12.5", description: "Condenser fan door open", status: false },
+  const s7_1200_faultStatus = [
+    { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_ },
+    { id: "I0.1", description: "Compressor module FDK error", status: data?.Comp_module_fdk_error_ },
+    { id: "I0.2", description: "Compressor in operation", status: data?.Comp_in_operation_ },
+    { id: "I0.3", description: "Oil level", status: data?.Oil_level_ },
+    { id: "I0.4", description: "Blower drive", status: data?.Blower_drive_ },
+    { id: "I0.5", description: "Blower in operation", status: data?.Blower_in_operation_ },
+    { id: "I0.6", description: "Blower circuit breaker", status: data?.Blower_circuit_breaker_ },
+    { id: "I0.7", description: "Condenser fan 1 TOP", status: data?.Cond_fan_1_TOP_ },
+    { id: "I1.0", description: "Cond fan 1 circuit breaker", status: data?.Cond_fan_1_cir_cuit_breaker_ },
+    { id: "I1.1", description: "Low pressure fault", status: data?.Low_pressure_fault_ },
+    { id: "I1.2", description: "Compressor OLR trip", status: data?.Compressor_OLR_trip_ },
+    { id: "I1.3", description: "High pressure fault", status: data?.High_pressure_fault_ },
+    { id: "I1.4", description: "Start stop switch", status: data?.Start_stop_switch_ },
+    { id: "I2.0", description: "Three phase monitoring fault", status: data?.Three_phase_monitoring_fault_ },
+    { id: "I2.2", description: "Condenser fan 2 TOP", status: data?.Cond_fan_2_TOP_ },
+    { id: "I2.3", description: "Condenser fan 3 TOP", status: data?.Cond_fan_3_TOP_ },
+    { id: "I2.4", description: "Condenser fan 4 TOP", status: data?.Cond_fan_4_TOP_ },
+    { id: "I2.5", description: "Cond fan 2 circuit breaker", status: data?.Cond_fan_2_circuit_breaker_ },
+    { id: "I2.6", description: "Cond fan 3 circuit breaker", status: data?.Cond_fan_3_circuit_breaker_ },
+    { id: "I2.7", description: "Cond fan 4 circuit breaker", status: data?.Cond_fan_4_circuit_breaker_ },
+    { id: "I3.0", description: "Condenser fan 5 TOP", status: data?.Cond_fan_5_TOP_ },
+    { id: "I3.1", description: "Condenser fan 6 TOP", status: data?.Cond_fan_6_TOP_ },
+    { id: "I3.2", description: "Cond fan 5 circuit breaker", status: data?.Cond_fan_5_circuit_breaker_ },
+    { id: "I3.3", description: "Cond fan 6 circuit breaker", status: data?.Cond_fan_6_circuit_breaker_ },
   ];
+  
 
   const renderList = () => {
     if (isGT80E) {
       return s7_200_faultStatus.map((item) => {
-        const isFault = item.status === "tr";
-
+        const isFault = item.status === "tr"; // treat "tr" as fault
+  
         return (
           <div
             key={item.id}
@@ -137,7 +136,7 @@ export default function InputsPage() {
           >
             <div className="font-mono text-sm">{item.id}</div>
             <div className="flex-1">{item.description}</div>
-
+  
             <div
               className={`w-4 h-4 rounded-full ${
                 isFault ? "bg-red-500" : "bg-green-500"
@@ -147,28 +146,32 @@ export default function InputsPage() {
         );
       });
     }
-
+  
     if (isGtpl122 || isGtpl1200_02) {
-      return s7_1200_inputsData.map((input) => (
-        <div
-          key={input.id}
-          className="flex items-center gap-4 p-3 rounded-md hover:bg-muted/50"
-        >
-          <div className="font-mono text-sm">{input.id}</div>
-          <div className="flex-1">{input.description}</div>
-
+      return s7_1200_faultStatus.map((input) => {
+        const isFault = input.status === "true"; // treat "true" string as fault
+  
+        return (
           <div
-            className={`w-4 h-4 rounded-full ${
-              input.status ? "bg-green-500" : "border-2 border-muted-foreground"
-            }`}
-          ></div>
-        </div>
-      ));
+            key={input.id}
+            className="flex items-center gap-4 p-3 rounded-md hover:bg-muted/50"
+          >
+            <div className="font-mono text-sm">{input.id}</div>
+            <div className="flex-1">{input.description}</div>
+  
+            <div
+              className={`w-4 h-4 rounded-full ${
+                isFault ? "bg-red-500" : "bg-green-500"
+              }`}
+            ></div>
+          </div>
+        );
+      });
     }
-
-    // Default case - return empty array or some default content
+  
     return [];
   };
+  
 
   return (
     <div className="flex flex-col min-h-screen">
