@@ -186,9 +186,18 @@ export default function Home({ data, formatValue, machineName }: any) {
                 "%"
               )}
             </text>
-            <text x="500" y="375" fontSize="12" textAnchor="middle">
-              BLOWER
-            </text>
+            <rect x="450" y="350" width="100" height="50" fill="red" />
+<text x="500" y="370" fontSize="12" textAnchor="middle" fill="#111">
+  BLOWER
+</text>
+<text x="500" y="390" fontSize="16" textAnchor="middle" fill="#111">
+  {formatValue(
+    data?.Blower_speed || data?.BLOWER_RPM || data?.Value_to_Display_BLOWER,
+    "%"
+  )}
+</text>
+
+           
 
             {/* Condenser Block */}
             <rect x="600" y="150" width="80" height="200" fill="lightgray" />
