@@ -127,8 +127,19 @@ export default function InputsPage() {
   const renderList = () => {
     if (isGT80E) {
       return s7_200_faultStatus.map((item) => {
-        const isFault = item.status === "tr"; // treat "tr" as fault
-  
+        const isSpecialCase =
+          item.status &&
+          (item.description === "Condenser fan overheat" ||
+            item.description === "Heater overheat");
+    
+        let isFault;
+    
+        if (isSpecialCase) {
+          isFault = item.status === "fr"; // "fr" is fault here, so red
+        } else {
+          isFault = item.status === "tr"; // "tr" is fault for others
+        }
+    
         return (
           <div
             key={item.id}
@@ -136,7 +147,7 @@ export default function InputsPage() {
           >
             <div className="font-mono text-sm">{item.id}</div>
             <div className="flex-1">{item.description}</div>
-  
+    
             <div
               className={`w-4 h-4 rounded-full ${
                 isFault ? "bg-red-500" : "bg-green-500"
@@ -146,6 +157,7 @@ export default function InputsPage() {
         );
       });
     }
+    
   
     if (isGtpl122 || isGtpl1200_02) {
       return s7_1200_faultStatus.map((input) => {
