@@ -59,7 +59,7 @@ export default function AerationWithoutHeatingPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {devices === "Gtpl-122-S7-1200-01"
+              {devices === "GTPL-122-gT-1000T-S7-1200"
                 ? "AERATION"
                 : "AERATION W/O HEATING"}
             </h1>
@@ -155,7 +155,7 @@ export default function AerationWithoutHeatingPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    {devices === "Gtpl-122-S7-1200-01" ? (
+                    {devices === "GTPL-122-gT-1000T-S7-1200" ? (
                       <div className="flex justify-between">
                         <span>T0 (Cold Air)</span>
                         <span className="font-medium">
@@ -191,7 +191,7 @@ export default function AerationWithoutHeatingPage() {
                         )}
                       </span>
                     </div>
-                    {devices === "Gtpl-122-S7-1200-01" ? null : (
+                    {devices === "GTPL-122-gT-1000T-S7-1200" ? null : (
                       <div className="flex justify-between">
                         <span>TH</span>
                         <span className="font-medium">

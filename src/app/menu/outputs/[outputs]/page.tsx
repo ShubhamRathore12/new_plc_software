@@ -14,7 +14,7 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "Gtpl-122-S7-1200-01") {
+    if (deviceType === "GTPL-122-gT-1000T-S7-1200") {
       return  [
         { id: "1", description: "Compressor Start", dataKey: "Compressor Start" },
         { id: "2", description: "Compressor Module Reset", dataKey: "Compressor Module Reset" },
@@ -37,7 +37,7 @@ export default function OutputsPage() {
         { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
       ];
       
-    } else if (deviceType === "GT80E-S7-200-smart1") {
+    } else if (deviceType === "GTPL-118-gT-80E-P-S7-200") {
       return [
         { id: "1", description: "Blower Drive", dataKey: "BLOWER_DRIVE_ENABLE" },
         { id: "2", description: "Heater Drive", dataKey: "heater_on" },
@@ -78,12 +78,12 @@ const getStatus = (dataKey: string) => {
   const value = data[dataKey];
 
   // S7-200 uses "tr" and "fr" (as string flags)
-  if (device === "GT80E-S7-200-smart1") {
+  if (device === "GTPL-118-gT-80E-P-S7-200") {
     return value === "tr";
   }
 
   // S7-1200 uses boolean or number
-  if (device === "Gtpl-122-S7-1200-01") {
+  if (device === "GTPL-122-gT-1000T-S7-1200") {
     return value === true || value === 1 || value === "1";
   }
 

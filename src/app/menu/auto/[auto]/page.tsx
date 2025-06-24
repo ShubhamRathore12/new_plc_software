@@ -26,7 +26,7 @@ export default function AutoPage() {
 
   // Configuration for different machines
   const machineConfig = {
-    "Gtpl-122-S7-1200-01": {
+    "GTPL-122-gT-1000T-S7-1200": {
       serialNumber: "GTPL-075",
       temperatureSensors: {
 
@@ -55,7 +55,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GT80E-S7-200-smart1": {
+    "GTPL-118-gT-80E-P-S7-200": {
       serialNumber: "GTPL-109",
       temperatureSensors: {
         TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
@@ -101,7 +101,7 @@ export default function AutoPage() {
 
   const currentConfig =
     machineConfig[auto as keyof typeof machineConfig] ||
-    machineConfig["Gtpl-122-S7-1200-01"];
+    machineConfig["GTPL-122-gT-1000T-S7-1200"];
 
   const handleBack = () => router.push(`/menu/${auto}`);
 

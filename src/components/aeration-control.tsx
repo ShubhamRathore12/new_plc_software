@@ -67,9 +67,9 @@ export default function Home({ data, devices, heat, title, formatValue }: any) {
 
             <text x="40" y="30" fontSize="16" fontWeight="700" fill="#1F2937">
               SR. NO: -
-              {devices === "Gtpl-122-S7-1200-01"
-                ? "Gtpl-122-S7-1200-01"
-                : "GT80E-S7-200-smart1"}
+              {devices === "GTPL-122-gT-1000T-S7-1200"
+                ? "GTPL-122-gT-1000T-S7-1200"
+                : "GTPL-118-gT-80E-P-S7-200"}
             </text>
 
             {/* Silo */}
@@ -98,7 +98,7 @@ export default function Home({ data, devices, heat, title, formatValue }: any) {
             />
 
             {/* TH */}
-            {devices === "Gtpl-122-S7-1200-01" ? (
+            {devices === "GTPL-122-gT-1000T-S7-1200" ? (
               <>
                 {" "}
                 <text

@@ -125,8 +125,8 @@ function extractActiveTags(
   machineName: string
 ): Array<{ tag: string; value: boolean; createdAt: string }> {
   const activeTags = [];
-  const tags = machineName === "GT80E-S7-200-smart1" ? S7_200_TAGS : S7_1200_TAGS;
-  const isS7_200 = machineName === "GT80E-S7-200-smart1";
+  const tags = machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
+  const isS7_200 = machineName === "GTPL-118-gT-80E-P-S7-200";
 
   for (const tag of tags) {
     const value = data[tag];
@@ -432,7 +432,7 @@ export default function FaultLogsPaginated({
     setError(null);
     try {
       const endpoint =
-      machineName === "GT80E-S7-200-smart1"
+      machineName === "GTPL-118-gT-80E-P-S7-200"
         ? "paginatedSmart200"
         : "paginatedSmart1200";
     

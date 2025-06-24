@@ -253,7 +253,7 @@ export default function DefaultsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    {defaults === "Gtpl-122-S7-1200-01" ? (
+                    {defaults === "GTPL-122-gT-1000T-S7-1200" ? (
                       <Label htmlFor="t1" className="text-right font-medium">
                         T0
                       </Label>
@@ -275,7 +275,7 @@ export default function DefaultsPage() {
                     />
                     <div>°C</div>
                   </motion.div>
-                  {defaults === "Gtpl-122-S7-1200-01" ? null : (
+                  {defaults === "GTPL-122-gT-1000T-S7-1200" ? null : (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -305,7 +305,7 @@ export default function DefaultsPage() {
                     transition={{ delay: 0.4 }}
                   >
                     <Label htmlFor="delta-a" className="text-right font-medium">
-                      Delta {defaults === "Gtpl-122-S7-1200-01" ? "(T)" : "(A)"}
+                      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" ? "(T)" : "(A)"}
                     </Label>
                     <Input
                       id="delta-a"
@@ -348,7 +348,7 @@ export default function DefaultsPage() {
                     <div>psi</div>
                   </motion.div>
 
-                  {defaults !== "GT80E-S7-200-smart1" && (
+                  {defaults !== "GTPL-118-gT-80E-P-S7-200" && (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -370,7 +370,7 @@ export default function DefaultsPage() {
                     </motion.div>
                   )}
 
-                  {defaults === "GT80E-S7-200-smart1" && (
+                  {defaults === "GTPL-118-gT-80E-P-S7-200" && (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}

@@ -11,10 +11,10 @@ export default function Home({ data, formatValue, machineName }: any) {
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db"); // gray-300
 
-  // Hide RH and Pa blocks for GT80E-S7-200-smart1
+  // Hide RH and Pa blocks for GTPL-118-gT-80E-P-S7-200
   const showTopBlocks =
-    machineName !== "GT80E-S7-200-smart1" &&
-    machineName !== "gt80e-s7-200-smart1";
+    machineName !== "GTPL-118-gT-80E-P-S7-200" &&
+    machineName !== "GTPL-118-gT-80E-P-S7-200";
 
   console.log(machineName);
 
@@ -53,7 +53,7 @@ export default function Home({ data, formatValue, machineName }: any) {
             </text>
 
             {/* HTR Block with Zigzag */}
-            {machineName !== "Gtpl-122-S7-1200-01" && ( 
+            {machineName !== "GTPL-122-gT-1000T-S7-1200" && ( 
 
               <>
             <rect x="150" y="100" width="50" height="100" fill="lightgray" />
@@ -63,7 +63,7 @@ export default function Home({ data, formatValue, machineName }: any) {
               stroke="black"
               strokeWidth="1"
             /></>)}
-          {machineName !== "Gtpl-122-S7-1200-01" && (
+          {machineName !== "GTPL-122-gT-1000T-S7-1200" && (
   <text x="175" y="90" fontSize="12" textAnchor="middle">
     HTR {formatValue(data.Value_to_Display_HEATER, "%")}
   </text>
@@ -81,7 +81,7 @@ export default function Home({ data, formatValue, machineName }: any) {
 
             {/* HGS Block with Zigzag (now lightgray, no label/value) */}
             <rect x="350" y="100" width="50" height="100" fill="lightgray" />
-               {machineName !== "Gtpl-122-S7-1200-01" && <>   <path
+               {machineName !== "GTPL-122-gT-1000T-S7-1200" && <>   <path
               d="M350 120 H360 L365 130 H375 L380 120 H390 L395 130 H400 V180 H350 Z"
               fill="none"
               stroke="black"
@@ -135,7 +135,7 @@ export default function Home({ data, formatValue, machineName }: any) {
 
             {/* T1 = ### °C Box */}
             <rect x="600" y="50" width="100" height="40" fill="orange" />
-            {machineName === "Gtpl-122-S7-1200-01" ?  <text x="650" y="75" fontSize="12" textAnchor="middle">
+            {machineName === "GTPL-122-gT-1000T-S7-1200" ?  <text x="650" y="75" fontSize="12" textAnchor="middle">
               T0 = {formatValue(data?.T0_temp_mean, "°C")}
             </text> : (
             <text x="650" y="75" fontSize="12" textAnchor="middle">
@@ -145,7 +145,7 @@ export default function Home({ data, formatValue, machineName }: any) {
 }
             {/* TH - T1 = ### °C Box */}
             <rect x="600" y="100" width="100" height="40" fill="orange" />
-            {machineName === "Gtpl-122-S7-1200-01" ?    <text x="650" y="125" fontSize="12" textAnchor="middle">
+            {machineName === "GTPL-122-gT-1000T-S7-1200" ?    <text x="650" y="125" fontSize="12" textAnchor="middle">
               T Detla = {formatValue(data.Delta_T_set_point || data?.Th_T1, "°C")}
             </text> :
             <text x="650" y="125" fontSize="12" textAnchor="middle">
