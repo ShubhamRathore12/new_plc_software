@@ -437,7 +437,7 @@ export default function FaultLogsPaginated({
         : "paginatedSmart1200";
     
     const res = await fetch(
-      `https://grain-backend.onrender.com/api/all700data/${endpoint}?page=${pageNum}&pageSize=${PAGE_SIZE}`
+      `https://grain-backend-1.onrender.com/api/all700data/${endpoint}?page=${pageNum}&pageSize=${PAGE_SIZE}`
     );
       if (!res.ok) throw new Error("Failed to fetch logs");
       const result = await res.json();

@@ -203,7 +203,7 @@ useEffect(() => {
       };
 
       const response = await fetch(
-        "https://grain-backend.onrender.com/api/register",
+        "/api/register",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

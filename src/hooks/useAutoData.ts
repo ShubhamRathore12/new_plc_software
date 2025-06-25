@@ -16,11 +16,11 @@ export const useAutoData = (autoType: string) => {
     let url = "";
 
     if (autoType === "GTPL-122-gT-1000T-S7-1200") {
-      url = "https://grain-backend.onrender.com/api/ws/current-data";
+      url = "/api/getData";
     } else if (autoType === "GTPL-118-gT-80E-P-S7-200") {
-      url = "https://grain-backend.onrender.com/api/alldata/alldata";
+      url = "/api/getSmartData";
     } else if (autoType === "Gtpl-S7-1200-02") {
-      url = "https://grain-backend.onrender.com/api/ws/current-data";
+      url = "https://grain-backend-1.onrender.com/api/ws/current-data";
     } else {
       url = "/api/latest-data";
     }
@@ -32,8 +32,8 @@ export const useAutoData = (autoType: string) => {
 
       // Full structure
 
-      if (result.success) {
-        setData([result.data]);
+      if (result) {
+        setData([result?.[0]]);
         setIsConnected(true);
         setError(null);
         setRetryCount(0);
@@ -50,7 +50,7 @@ export const useAutoData = (autoType: string) => {
 
   useEffect(() => {
     fetchData(); // fetch immediately on mount
-    intervalRef.current = setInterval(fetchData, 5000); // poll every 5s
+    intervalRef.current = setInterval(fetchData, 10000); // poll every 5s
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);

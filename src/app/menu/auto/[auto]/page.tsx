@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,11 @@ export default function AutoPage() {
   const router = useRouter();
   const { auto } = useParams();
   const { data, isConnected, error, formatValue } = useAutoData(auto as string);
+
+
+
+
+
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
