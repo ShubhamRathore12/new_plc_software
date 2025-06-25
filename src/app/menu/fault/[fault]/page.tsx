@@ -259,7 +259,7 @@ export default function FaultPage() {
     { tag: "COND_FAN_OVERLOAD", value: data?.COND_FAN_OVERLOAD },
     { tag: "THREE_PHASE_MONITOR_FAULT", value: data?.Three_phase_monitor_fault },
     { tag: "HIGH_PRESSURE_FAULT", value: data?.High_pressure_fault },
-    { tag: "AMBIENT_TEMP_LOWER_THAN_SET_TEMP", value: data?.Ambient_temp._lower_than_set_temp },
+    { tag: "AMBIENT_TEMP_LOWER_THAN_SET_TEMP", value: data?.AMBIENT_TEMP_LOWER_THAN_SET_TEMP },
     { tag: "AMBIENT_TEMP_OVER_50C", value: data?.AMBIENT_TEMP_OVER_50C },
     { tag: "COMP_MODULE_FEEDBACK_ERROR", value: data?.COMP_MODULE_FEEDBACK_ERROR },
     { tag: "LOW_PRESSURE_1_FAULT", value: data?.LOW_PRESSURE_1_FAULT },
