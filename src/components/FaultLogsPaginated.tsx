@@ -1,9 +1,28 @@
 import { useState, useEffect } from "react";
-import FaultNotifier from "./FaultNotifier";
 
-const PAGE_SIZE = 10; // Changed to match your requirement
+const PAGE_SIZE = 10;
 
-// Define all the S7-200 tags
+interface TagData {
+  tag: string;
+  value: boolean;
+  createdAt: string;
+}
+
+interface Stats {
+  total: number;
+  activeTags: number;
+  faultTags: number;
+  currentPage: number;
+  totalPages: number;
+}
+
+interface Pagination {
+  total: number;
+  totalPages: number;
+  limit: number;
+  page: number;
+}
+
 const S7_200_TAGS = [
   "AERATION_MODE_WITH_HEAT",
   "AERATION_MODE_WITHOUT_HEAT",
@@ -118,146 +137,87 @@ const S7_1200_TAGS = [
   "Air_outlet_sensor_2_short_circuit"
 ];
 
-
-// Function to extract active tags from data
-function extractActiveTags(
-  data: any,
-  machineName: string
-): Array<{ tag: string; value: boolean; createdAt: string }> {
-  const activeTags = [];
+function extractActiveTags(data: any, machineName: string): TagData[] {
   const tags = machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
   const isS7_200 = machineName === "GTPL-118-gT-80E-P-S7-200";
 
-  for (const tag of tags) {
+  return tags.reduce((acc: TagData[], tag) => {
     const value = data[tag];
-
     const isActive = isS7_200 ? value === "tr" : value === true;
 
     if (isActive) {
-      activeTags.push({
+      acc.push({
         tag,
         value,
-        createdAt: data.created_at || data.createdAt,
+        createdAt: data.created_at || data.createdAt || new Date().toISOString(),
       });
     }
-  }
-
-  return activeTags;
+    return acc;
+  }, []);
 }
 
-
-// Function to format tag names for display
 function formatTagName(tag: string): string {
-  return tag
-    .replace(/_/g, " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (l) => l.toUpperCase());
+  return tag.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
 }
 
-// Function to get tag category/type for styling
 function getTagCategory(tag: string): string {
-  if (tag.includes("FAULT") || tag.includes("OVER") || tag.includes("TRIP"))
-    return "fault";
+  if (tag.includes("FAULT") || tag.includes("OVER") || tag.includes("TRIP")) return "fault";
   if (tag.includes("TEMP") || tag.includes("SENSOR")) return "sensor";
-  if (tag.includes("START") || tag.includes("STOP") || tag.includes("ON"))
-    return "control";
+  if (tag.includes("START") || tag.includes("STOP") || tag.includes("ON")) return "control";
   if (tag.includes("MANUAL") || tag.includes("AUTO")) return "mode";
   return "status";
 }
 
-// Subcomponent: Table row for a single active tag
-function ActiveTagRow({
-  tagData,
-}: {
-  tagData: { tag: string; value: boolean; createdAt: string };
-}) {
+function ActiveTagRow({ tagData }: { tagData: TagData }) {
   const category = getTagCategory(tagData.tag);
-
   const getCategoryStyle = (cat: string) => {
     switch (cat) {
-      case "fault":
-        return "bg-red-50 text-red-800 border-red-200";
-      case "sensor":
-        return "bg-blue-50 text-blue-800 border-blue-200";
-      case "control":
-        return "bg-green-50 text-green-800 border-green-200";
-      case "mode":
-        return "bg-purple-50 text-purple-800 border-purple-200";
-      default:
-        return "bg-gray-50 text-gray-800 border-gray-200";
+      case "fault": return "bg-red-50 text-red-800 border-red-200";
+      case "sensor": return "bg-blue-50 text-blue-800 border-blue-200";
+      case "control": return "bg-green-50 text-green-800 border-green-200";
+      case "mode": return "bg-purple-50 text-purple-800 border-purple-200";
+      default: return "bg-gray-50 text-gray-800 border-gray-200";
     }
   };
 
   return (
-    <tr
-      className={`border-b border-gray-200 hover:bg-gray-50 ${getCategoryStyle(
-        category
-      )}`}
-    >
+    <tr className={`border-b border-gray-200 hover:bg-gray-50 ${getCategoryStyle(category)}`}>
       <td className="px-4 py-3 text-sm font-medium">{tagData.tag}</td>
       <td className="px-4 py-3 text-sm">{formatTagName(tagData.tag)}</td>
       <td className="px-4 py-3 text-sm">
-        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-          Active
-        </span>
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
       </td>
       <td className="px-4 py-3 text-sm">
-        <span
-          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getCategoryStyle(
-            category
-          )}`}
-        >
+        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getCategoryStyle(category)}`}>
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm">
-        {tagData.createdAt ? new Date(tagData.createdAt).toLocaleString() : "-"}
-      </td>
+      <td className="px-4 py-3 text-sm">{new Date(tagData.createdAt).toLocaleString()}</td>
     </tr>
   );
 }
 
-// Subcomponent: Table for active tags
-function ActiveTagsTable({
-  activeTags,
-}: {
-  activeTags: Array<{ tag: string; value: boolean; createdAt: string }>;
-}) {
+function ActiveTagsTable({ activeTags }: { activeTags: TagData[] }) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
-              Tag Name
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
-              Description
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
-              Status
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
-              Category
-            </th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
-              Timestamp
-            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Tag Name</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Description</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Category</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Timestamp</th>
           </tr>
         </thead>
         <tbody>
           {activeTags.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
-                No active tags found
-              </td>
+              <td colSpan={5} className="px-4 py-8 text-center text-gray-500">No active tags found</td>
             </tr>
           ) : (
             activeTags.map((tagData, idx) => (
-              <ActiveTagRow
-                key={`${tagData.tag}-${tagData.createdAt}-${idx}`}
-                tagData={tagData}
-              />
+              <ActiveTagRow key={`${tagData.tag}-${tagData.createdAt}-${idx}`} tagData={tagData} />
             ))
           )}
         </tbody>
@@ -266,121 +226,84 @@ function ActiveTagsTable({
   );
 }
 
-// Subcomponent: Statistics cards
-function StatisticsCards({ stats }: { stats: any }) {
+function StatisticsCards({ stats }: { stats: Stats }) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <h3 className="text-sm font-medium text-blue-600">Total Records</h3>
-        <p className="text-2xl font-bold text-blue-800">{stats.total}</p>
-      </div>
-      <div className="bg-green-50 p-4 rounded-lg border border-green-200">
-        <h3 className="text-sm font-medium text-green-600">Active Tags</h3>
-        <p className="text-2xl font-bold text-green-800">{stats.activeTags}</p>
-      </div>
-      <div className="bg-red-50 p-4 rounded-lg border border-red-200">
-        <h3 className="text-sm font-medium text-red-600">Fault Tags</h3>
-        <p className="text-2xl font-bold text-red-800">{stats.faultTags}</p>
-      </div>
-      <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
-        <h3 className="text-sm font-medium text-purple-600">Current Page</h3>
-        <p className="text-2xl font-bold text-purple-800">
-          {stats.currentPage}
-        </p>
-      </div>
-      <div className="bg-yellow-50 p-4 rounded-lg border border-yellow-200">
-        <h3 className="text-sm font-medium text-yellow-600">Total Pages</h3>
-        <p className="text-2xl font-bold text-yellow-800">{stats.totalPages}</p>
-      </div>
+      {[
+        { label: "Total Records", value: stats.total, color: "blue" },
+        { label: "Active Tags", value: stats.activeTags, color: "green" },
+        { label: "Fault Tags", value: stats.faultTags, color: "red" },
+        { label: "Current Page", value: stats.currentPage, color: "purple" },
+        { label: "Total Pages", value: stats.totalPages, color: "yellow" },
+      ].map((stat, idx) => (
+        <div key={idx} className={`bg-${stat.color}-50 p-4 rounded-lg border border-${stat.color}-200`}>
+          <h3 className={`text-sm font-medium text-${stat.color}-600`}>{stat.label}</h3>
+          <p className={`text-2xl font-bold text-${stat.color}-800`}>{stat.value}</p>
+        </div>
+      ))}
     </div>
   );
 }
 
-// Subcomponent: Pagination controls
 function PaginationControls({
   currentPage,
   totalPages,
   loading,
   onPageChange,
 }: {
-  currentPage: number |any;
-  totalPages: number |any;
+  currentPage: number;
+  totalPages: number;
   loading: boolean;
   onPageChange: (page: number) => void;
 }) {
-  const getVisiblePages = () => {
-    const delta = 2;
-    const range = [];
-    const rangeWithDots = [];
+  const delta = 2;
+  const visiblePages = [];
 
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i);
-    }
+  for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+    visiblePages.push(i);
+  }
 
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, "...");
-    } else {
-      rangeWithDots.push(1);
-    }
+ const pageButtons: (number | string)[] = [1];
 
-    rangeWithDots.push(...range);
+if (currentPage - delta > 2) {
+  pageButtons.push("...");
+}
 
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push("...", totalPages);
-    } else if (totalPages > 1) {
-      rangeWithDots.push(totalPages);
-    }
+pageButtons.push(...visiblePages);
 
-    return rangeWithDots;
-  };
+if (currentPage + delta < totalPages - 1) {
+  pageButtons.push("...");
+}
+
+if (totalPages > 1) {
+  pageButtons.push(totalPages);
+}
 
   return (
     <div className="flex items-center justify-between mt-6">
       <div className="text-sm text-gray-700">
-        Showing page {currentPage} of {totalPages} ({totalPages * PAGE_SIZE}{" "}
-        total records)
+        Showing page {currentPage} of {totalPages} ({totalPages * PAGE_SIZE} total records)
       </div>
-
       <div className="flex items-center space-x-2">
-        {/* Previous button */}
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1 || loading}
-          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        >
+        <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1 || loading}
+          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
           Previous
         </button>
-
-        {/* Page numbers */}
-        <div className="flex space-x-1">
-          {getVisiblePages().map((page, index) => (
-            <button
-              key={index}
-              onClick={() => typeof page === "number" && onPageChange(page)}
-              disabled={page === "..." || loading || page === currentPage}
-              className={`px-3 py-2 text-sm font-medium rounded-md ${
-                page === currentPage
-                  ? "bg-blue-600 text-white"
-                  : page === "..."
-                  ? "text-gray-400 cursor-default"
-                  : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
-              } disabled:cursor-not-allowed`}
-            >
-              {page}
-            </button>
-          ))}
-        </div>
-
-        {/* Next button */}
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages || loading}
-          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
-        >
+        {pageButtons.map((page, idx) => (
+          <button key={idx} disabled={page === "..." || loading || page === currentPage}
+            onClick={() => typeof page === "number" && onPageChange(page)}
+            className={`px-3 py-2 text-sm font-medium rounded-md ${
+              page === currentPage
+                ? "bg-blue-600 text-white"
+                : page === "..."
+                ? "text-gray-400 cursor-default"
+                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            }`}>
+            {page}
+          </button>
+        ))}
+        <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages || loading}
+          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
           Next
         </button>
       </div>
@@ -388,7 +311,6 @@ function PaginationControls({
   );
 }
 
-// Subcomponent: Loading indicator
 function LoadingIndicator() {
   return (
     <div className="flex justify-center items-center py-8">
@@ -398,112 +320,63 @@ function LoadingIndicator() {
   );
 }
 
-// Main component with button-based pagination
-export default function FaultLogsPaginated({
-  machineName,
-}: {
-  machineName: string;
-}) {
-  const [activeTags, setActiveTags] = useState<
-    Array<{ tag: string; value: boolean; createdAt: string }>
-  >([]);
+export default function FaultLogsPaginated({ machineName }: { machineName: string }) {
+  const [activeTags, setActiveTags] = useState<TagData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [paginationInfo, setPaginationInfo] = useState({
+  const [paginationInfo, setPaginationInfo] = useState<Pagination>({
     total: 0,
     totalPages: 0,
     limit: PAGE_SIZE,
     page: 1,
   });
-  const [stats, setStats] = useState<any>({
+  const [stats, setStats] = useState<Stats>({
     total: 0,
     activeTags: 0,
     faultTags: 0,
     currentPage: 1,
     totalPages: 0,
   });
-  const [faultsForNotifier, setFaultsForNotifier] = useState<
-    Array<{ tag: string; description: string }>
-  >([]);
 
   const fetchLogs = async (pageNum: number) => {
     setLoading(true);
     setError(null);
     try {
-      const endpoint =
-      machineName === "GTPL-118-gT-80E-P-S7-200"
-        ? "/api/getSmart200Fault"
-        : "/api/getSmart1200Fault";
-    
-    const res = await fetch(
-      
-  `${endpoint}?page=${pageNum}&limit=10&from=2024-01-01&to=2024-12-31`
-
-    );
+      const endpoint = machineName === "GTPL-118-gT-80E-P-S7-200" ? "/api/getSmart200Fault" : "/api/getSmart1200Fault";
+      const res = await fetch(`${endpoint}?page=${pageNum}&limit=${PAGE_SIZE}&from=2024-01-01&to=2024-12-31`);
       if (!res.ok) throw new Error("Failed to fetch logs");
       const result = await res.json();
 
-      console.log("API Response:", result);
+      if (result?.data && Array.isArray(result.data)) {
+        const active: TagData[] = [];
+        let faultCount = 0;
 
-      // Handle pagination info from API
-      if (
-        result.limit !== undefined &&
-        result.page !== undefined &&
-        result.total !== undefined &&
-        result.totalPages !== undefined
-      ) {
+        for (const record of result.data) {
+          const tags = extractActiveTags(record, machineName);
+          active.push(...tags);
+          faultCount += tags.filter(t => getTagCategory(t.tag) === "fault").length;
+        }
+
+        setActiveTags(active);
+        setStats({
+          total: result.total,
+          activeTags: active.length,
+          faultTags: faultCount,
+          currentPage: result.page,
+          totalPages: result.totalPages,
+        });
         setPaginationInfo({
           total: result.total,
           totalPages: result.totalPages,
           limit: result.limit,
           page: result.page,
         });
-      }
-
-      if (result && Array.isArray(result)) {
-        // Extract active tags from current page records only
-        const currentPageActiveTags: any = [];
-        let faultCount = 0;
-
-        for (const record of result) {
-          const recordActiveTags = extractActiveTags(record, machineName);
-
-          currentPageActiveTags.push(...recordActiveTags);
-
-          // Count fault tags
-          recordActiveTags.forEach((tag) => {
-            if (getTagCategory(tag.tag) === "fault") {
-              faultCount++;
-            }
-          });
-        }
-
-        // Replace active tags instead of appending (for pagination)
-        setActiveTags(currentPageActiveTags);
-
-        // Update statistics
-        setStats({
-          total: result.total || 0,
-          activeTags: currentPageActiveTags.length,
-          faultTags: faultCount,
-          currentPage: result.page || pageNum,
-          totalPages: result.totalPages || 0,
-        });
-
-        const faultTagsForNotifier = currentPageActiveTags
-          .filter((tag: any) => getTagCategory(tag.tag) === "fault")
-          .map((tag: any) => ({
-            tag: tag.tag,
-            description: formatTagName(tag.tag), // Assuming description is formatted tag name
-          }));
-        setFaultsForNotifier(faultTagsForNotifier);
       } else {
-        console.warn("Unexpected data structure:", result);
+        console.warn("Unexpected response:", result);
         setActiveTags([]);
       }
     } catch (err: any) {
-      console.error("Fetch error:", err);
       setError(err.message || "Unknown error");
       setActiveTags([]);
     } finally {
@@ -511,89 +384,40 @@ export default function FaultLogsPaginated({
     }
   };
 
-  const handlePageChange = (pageNum: number) => {
-    if (pageNum >= 1 && pageNum <= paginationInfo.totalPages && !loading) {
-      setCurrentPage(pageNum);
-      window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to top on page change
-    }
-  };
-
-  // Fetch logs when page changes
   useEffect(() => {
     fetchLogs(currentPage);
   }, [currentPage]);
 
   return (
-    
+    <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            Active S7-200 Tags Monitor
-          </h2>
-
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Active S7-200 Tags Monitor</h2>
           <StatisticsCards stats={stats} />
-
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-red-700 text-sm">{error}</p>
-            </div>
-          )}
+          {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">{error}</div>}
         </div>
-
         <div className="p-6">
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">
-              Active Tags ({activeTags.length} found on this page)
-            </h3>
-            <p className="text-sm text-gray-500">
-              Showing only tags with value = true • Page {currentPage} of{" "}
-              {paginationInfo.totalPages}
-            </p>
+            <h3 className="text-lg font-semibold text-gray-700">Active Tags ({activeTags.length} found on this page)</h3>
+            <p className="text-sm text-gray-500">Showing only tags with value = true • Page {currentPage} of {paginationInfo.totalPages}</p>
           </div>
-
-          {loading ? (
-            <LoadingIndicator />
-          ) : (
+          {loading ? <LoadingIndicator /> : (
             <>
               <div className="border border-gray-200 rounded-lg">
                 <ActiveTagsTable activeTags={activeTags} />
               </div>
-
               {paginationInfo.totalPages > 1 && (
                 <PaginationControls
                   currentPage={currentPage}
                   totalPages={paginationInfo.totalPages}
                   loading={loading}
-                  onPageChange={handlePageChange}
+                  onPageChange={page => setCurrentPage(page)}
                 />
               )}
             </>
           )}
         </div>
       </div>
-
-      {/* Debug section - can be removed in production */}
-      {activeTags.length > 0 && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold mb-2">
-            Debug: Pagination Info & Sample Tags
-          </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-medium mb-2">Pagination Info:</h4>
-              <pre className="text-xs bg-white p-3 rounded border overflow-auto">
-                {JSON.stringify(paginationInfo, null, 2)}
-              </pre>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Sample Active Tags:</h4>
-              <pre className="text-xs bg-white p-3 rounded border overflow-auto max-h-40">
-                {JSON.stringify(activeTags.slice(0, 3), null, 2)}
-              </pre>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
