@@ -31,7 +31,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        "https://grain-backend.onrender.com/api/auth/login",
+        "/api/login",
         {
           method: "POST",
           headers: {
