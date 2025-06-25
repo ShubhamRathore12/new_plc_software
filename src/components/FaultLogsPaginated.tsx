@@ -303,8 +303,8 @@ function PaginationControls({
   loading,
   onPageChange,
 }: {
-  currentPage: number;
-  totalPages: number;
+  currentPage: number |any;
+  totalPages: number |any;
   loading: boolean;
   onPageChange: (page: number) => void;
 }) {
@@ -416,7 +416,7 @@ export default function FaultLogsPaginated({
     limit: PAGE_SIZE,
     page: 1,
   });
-  const [stats, setStats] = useState({
+  const [stats, setStats] = useState<any>({
     total: 0,
     activeTags: 0,
     faultTags: 0,
@@ -437,7 +437,9 @@ export default function FaultLogsPaginated({
         : "/api/getSmart1200Fault";
     
     const res = await fetch(
-      `${endpoint}?&page=1&limit=10&from=2024-01-01&to=2024-12-31`
+      
+  `${endpoint}?page=${pageNum}&limit=10&from=2024-01-01&to=2024-12-31`
+
     );
       if (!res.ok) throw new Error("Failed to fetch logs");
       const result = await res.json();
@@ -459,12 +461,12 @@ export default function FaultLogsPaginated({
         });
       }
 
-      if (result.data && Array.isArray(result.data)) {
+      if (result && Array.isArray(result)) {
         // Extract active tags from current page records only
         const currentPageActiveTags: any = [];
         let faultCount = 0;
 
-        for (const record of result.data) {
+        for (const record of result) {
           const recordActiveTags = extractActiveTags(record, machineName);
 
           currentPageActiveTags.push(...recordActiveTags);
