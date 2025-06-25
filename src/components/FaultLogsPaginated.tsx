@@ -433,8 +433,8 @@ export default function FaultLogsPaginated({
     try {
       const endpoint =
       machineName === "GTPL-118-gT-80E-P-S7-200"
-        ? "/api/getAllDataSmart200"
-        : "/api/getAllData";
+        ? "/api/getSmart200Fault"
+        : "/api/getSmart1200Fault";
     
     const res = await fetch(
       `${endpoint}?&page=1&limit=10&from=2024-01-01&to=2024-12-31`
