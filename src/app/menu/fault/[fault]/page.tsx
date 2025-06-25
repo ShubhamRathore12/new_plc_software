@@ -25,6 +25,9 @@ export default function FaultPage() {
     fault as string
   );
 
+  console.log(data?.HEATER_CIRCUIT_BREAKER_FAULT,"data");
+  
+
   // S7-1200 fault codes (original codes)
   const s7_1200_faultCodes = [
     { code: 1, description: "Compressor_circuit_breaker_fault" },
@@ -213,7 +216,7 @@ export default function FaultPage() {
     // { tag: "GREEN_LIGHT", value: data?.GREEN_LIGHT },
     {
       tag: "HEATER_CIRCUIT_BREAKER_FAULT",
-      value: data?.HEATER_CIRCUIT_BREAKER_FAULT,
+      value:'tr',
     },
     // { tag: "HEATER_OVER_HEAT", value: data?.HEATER_OVER_HEAT },
     { tag: "HEATER_RCCCB_TRIP_FAULT", value: data?.HEATER_RCCCB_TRIP_FAULT },
@@ -306,17 +309,19 @@ export default function FaultPage() {
   }
 
   // Determine which fault codes to use based on the fault parameter
-  const isGT80E =
-    fault && fault.toString().toLowerCase().includes("GTPL-118-gT-80E-P-S7-200");
+const isGT80E = fault?.toString().toLowerCase().includes("gtpl-118-gt-80e-p-s7-200");
+
   const faultCodes = isGT80E ? s7_200_faultCodes : s7_1200_faultCodes;
   const modelType = isGT80E
     ? "GTPL-118-gT-80E-P-S7-200"
     : fault?.toString().toLowerCase().includes("s7-1200-02")
-      ? "Gtpl-S7-1200-02"
-      : "GTPL-122-gT-1000T-S7-1200";
-
+    ? "Gtpl-S7-1200-02"
+    : "GTPL-122-gT-1000T-S7-1200";
 
       const currentTags = isGT80E ? s7_200_tags : s7_1200_tags;
+
+      console.log(currentTags);
+      
 
   const handleViewFaultCode = (faultItem: any) => {
     setSelectedFault(faultItem);
