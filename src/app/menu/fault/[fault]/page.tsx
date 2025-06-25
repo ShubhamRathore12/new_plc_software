@@ -25,7 +25,7 @@ export default function FaultPage() {
     fault as string
   );
 
-  console.log(data?.HEATER_CIRCUIT_BREAKER_FAULT,"data");
+
   
 
   // S7-1200 fault codes (original codes)
@@ -216,7 +216,7 @@ export default function FaultPage() {
     // { tag: "GREEN_LIGHT", value: data?.GREEN_LIGHT },
     {
       tag: "HEATER_CIRCUIT_BREAKER_FAULT",
-      value:'tr',
+      value:data?.HEATER_CIRCUIT_BREAKER_FAULT,
     },
     // { tag: "HEATER_OVER_HEAT", value: data?.HEATER_OVER_HEAT },
     { tag: "HEATER_RCCCB_TRIP_FAULT", value: data?.HEATER_RCCCB_TRIP_FAULT },
