@@ -392,7 +392,7 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Active S7-200 Tags Monitor</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Active {machineName} Tags Monitor</h2>
           <StatisticsCards stats={stats} />
           {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">{error}</div>}
         </div>
