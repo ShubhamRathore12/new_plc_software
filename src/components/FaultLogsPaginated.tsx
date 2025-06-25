@@ -433,11 +433,11 @@ export default function FaultLogsPaginated({
     try {
       const endpoint =
       machineName === "GTPL-118-gT-80E-P-S7-200"
-        ? "paginatedSmart200"
-        : "paginatedSmart1200";
+        ? "/api/machineData/paginatedSmart200"
+        : "/api/machineData/paginatedSmart1200";
     
     const res = await fetch(
-      `https://grain-backend-1.onrender.com/api/all700data/${endpoint}?page=${pageNum}&pageSize=${PAGE_SIZE}`
+      `${endpoint}?&page=1&limit=10&from=2024-01-01&to=2024-12-31`
     );
       if (!res.ok) throw new Error("Failed to fetch logs");
       const result = await res.json();

@@ -68,8 +68,8 @@ export default function DevicesPage() {
   
 
   const deviceNameToStatusKey: Record<string, string> = {
-    "GTPL-122-S7-1200": "gtpl",
-    "GTPL-111-S7-200": "kabo",
+    "GTPL-122-gT-1000T-S7-1200": "gtpl",
+    "GTPL-118-gT-80E-P-S7-200": "kabo",
   };
 
   const handleViewMore = (deviceName: string) => {
