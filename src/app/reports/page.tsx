@@ -22,8 +22,8 @@ export default function TableWithDownload() {
   const fetchData = async (deviceType: string) => {
     const endpoint =
       deviceType === "S7-1200"
-        ? "/api/getData"
-        : "/api/getSmartData";
+        ? "/api/getAllData"
+        : "/api/getAllDataSmart200";
     const res = await fetch(endpoint);
     const json = await res.json();
     setData(json);

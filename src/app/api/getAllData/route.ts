@@ -3,7 +3,7 @@ import { pool } from "@/lib/db";
 export async function GET(req: Request) {
   try {
     const [rows]: any = await pool.query(
-      "SELECT * FROM kabumachinedata ORDER BY id DESC LIMIT 100" // 🔥 Latest 100 rows
+      "SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT 100" // 🔥 Latest 100 rows
     );
 
     return new Response(JSON.stringify(rows), {
