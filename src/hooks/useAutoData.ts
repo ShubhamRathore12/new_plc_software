@@ -64,9 +64,12 @@ export const useAutoData = (autoType: string) => {
     if (isNaN(numericValue)) return `${value}${unit}`;
     if (numericValue === 0) return `0${unit}`;
 
-    // If decimal part is zero, show integer only
-    const isWholeNumber = numericValue % 1 === 0;
-    return `${isWholeNumber ? Math.floor(numericValue) : numericValue.toFixed(2)}${unit}`;
+    const decimalPart = numericValue % 1;
+
+    const roundedValue =
+      decimalPart >= 0.5 ? Math.ceil(numericValue) : Math.floor(numericValue);
+
+    return `${roundedValue}${unit}`;
   };
 
   return {
