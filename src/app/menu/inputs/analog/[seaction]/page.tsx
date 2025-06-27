@@ -25,23 +25,23 @@ export default function AnalogPage() {
         },
       ],
     },
-    {
-      section: "Analog Input (0-10V)",
-      items: [
-        {
-          id: "AIW76",
-          description: "Static pressure (SA)",
-          value: "1200",
-          unit: "Pa",
-        },
-        {
-          id: "AIW66",
-          description: "Hummidity of (SA)",
-          value: "45",
-          unit: "%",
-        },
-      ],
-    },
+    // {
+    //   section: "Analog Input (0-10V)",
+    //   items: [
+    //     {
+    //       id: "AIW76",
+    //       description: "Static pressure (SA)",
+    //       value: "1200",
+    //       unit: "Pa",
+    //     },
+    //     {
+    //       id: "AIW66",
+    //       description: "Hummidity of (SA)",
+    //       value: "45",
+    //       unit: "%",
+    //     },
+    //   ],
+    // },
     {
       section: "Analog Input (RTD type)",
       items: [
