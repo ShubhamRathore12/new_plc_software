@@ -23,10 +23,12 @@ interface Pagination {
   page: number;
 }
 
-const S7_200_TAGS= [
+const S7_200_TAGS = [
+
   "AFTER_HEAT_TEMP_MORE_THAN_50",
   "AFTER_HEAT_TEMP_SENSOR_TH_OPEN",
   "AFTER_HEAT_TEMP_SENSOR_TH_SHORT_CIRCUIT",
+  
   "AIR_OUTLET_TEMP_SENSOR_T0_OPEN",
   "AIR_OUTLET_TEMP_SENSOR_T0_SHORT_CIRCUIT",
   "AMBIENT_TEMP_LESS_THAN_4",
@@ -35,27 +37,36 @@ const S7_200_TAGS= [
   "AMBIENT_TEMP_OVER_43",
   "AMBIENT_TEMP_SENSOR_T2_OPEN",
   "AMBIENT_TEMP_SENSOR_T2_SHORT_CIRCUIT",
+  
   "BLOWER_CIRCUIT_BREAKER_FAULT",
+ 
   "BLOWER_DRIVE_FAULT",
+
   "C0ND_FAN_TOP",
   "COLD_AIR_TEMP_SENSOR_T1_OPEN",
   "COLD_AIR_TEMP_SENSOR_T1_SHORT_CIRCUIT",
   "COMPRESSOR_CIRCUIT_BREA_FAULT",
+  
   "COND_FAN_CIRCUIT_BREAKE_FAULT",
-  "CONDENSER_FAN_DOOR_OPEN",
+  
   "HEATER_CIRCUIT_BREAKER_FAULT",
+
   "HEATER_RCCCB_TRIP_FAULT",
+
   "HEATER_TOP_FAULT",
   "HIGH_PRESSURE_FAULT",
   "HIGH_PRESSURE_FAULT_LOCKED",
+
   "HP_TRANSDUCEER_FAILURE",
   "LOW_PRESSURE_FAULT",
   "LOW_PRESSURE_FAULT_LOCKED",
   "LP_TRANSDUCER_FAILURE",
-  "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
-  "THREE_PHASE_MONITORING_FAULT"
-];
 
+  "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
+
+  "THREE_PHASE_MONITORING_FAULT",
+
+];
 
 const S7_1200_TAGS = [
   "Compressor_circuit_breaker_fault",
@@ -173,7 +184,7 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm">{tagData.createdAt}</td>
+      <td className="px-4 py-3 text-sm">{new Date(tagData.createdAt).toLocaleString()}</td>
     </tr>
   );
 }
