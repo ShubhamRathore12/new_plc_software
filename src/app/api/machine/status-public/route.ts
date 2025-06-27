@@ -1,7 +1,10 @@
-// app/api/machine/status-public/route.ts
 import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 import { getMachineSpecificResponse, hasIdChanged, MachineResponse } from '@/lib/machineUtils';
+
+// Store previous IDs in memory (you might want to use a database or cache for production)
+let previousGtplId: number | null = null;
+let previousKaboId: number | null = null;
 
 export async function GET() {
   try {
@@ -16,8 +19,13 @@ export async function GET() {
     const gtplTimestamp = gtpl?.created_on || gtpl?.timestamp || gtpl?.updated_at || gtpl?.date_created || currentTime;
     const kaboTimestamp = kabo?.created_on || kabo?.timestamp || kabo?.updated_at || kabo?.date_created || currentTime;
 
-    const gtplIdChanged = hasIdChanged(gtpl?.id, null);
-    const kaboIdChanged = hasIdChanged(kabo?.id, null);
+    // Check if IDs have changed
+    const gtplIdChanged = hasIdChanged(gtpl?.id, previousGtplId);
+    const kaboIdChanged = hasIdChanged(kabo?.id, previousKaboId);
+
+    // Update stored IDs for next comparison
+    previousGtplId = gtpl?.id || null;
+    previousKaboId = kabo?.id || null;
 
     const gtplResponse: MachineResponse = {
       ...getMachineSpecificResponse('gtpl', gtplTimestamp, currentTime, gtplIdChanged),

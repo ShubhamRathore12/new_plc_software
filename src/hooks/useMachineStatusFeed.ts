@@ -49,7 +49,7 @@ export const useMachineStatusFeed = (
 
   const fetchInitialData = useCallback(async () => {
     try {
-      const res = await fetch("/api/machine/status-public");
+      const res = await fetch("https://grain-backend-1.onrender.com/api/machine/status");
       const result = await res.json();
 
       
@@ -68,7 +68,7 @@ export const useMachineStatusFeed = (
 
   // Connect to SSE
   const connectSSE = useCallback(() => {
-    const source = new EventSource("/api/machine/status-public");
+    const source = new EventSource("https://grain-backend-1.onrender.com/api/machine/status");
 
     source.onopen = () => {
       setConnection("connected");

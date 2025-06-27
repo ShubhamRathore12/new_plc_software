@@ -1,5 +1,3 @@
-// lib/machineUtils.ts
-
 export type MachineType = 'gtpl' | 'kabo' | 'unknown';
 
 export interface MachineResponse {
@@ -21,9 +19,15 @@ export function hasTimestampChanged(newTimestamp: any, lastTimestamp: any): bool
   return new Date(newTimestamp).getTime() !== new Date(lastTimestamp).getTime();
 }
 
-export function hasIdChanged(newId: any, lastId: any): boolean {
-  if (!lastId) return true;
-  return newId !== lastId;
+export function hasIdChanged(currentId: number | undefined, previousId: number | null): boolean {
+  // If we don't have a current ID, no change
+  if (currentId === undefined) return false;
+  
+  // If this is the first run (no previous ID), consider it as new data
+  if (previousId === null) return true;
+  
+  // Compare current ID with previous ID
+  return currentId !== previousId;
 }
 
 export function getMachineSpecificResponse(
