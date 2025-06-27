@@ -494,9 +494,17 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
     }
   };
 
-  useEffect(() => {
+ useEffect(() => {
+ 
+  fetchLogs(currentPage);
+
+  const intervalId = setInterval(() => {
     fetchLogs(currentPage);
-  }, [currentPage, machineName]);
+  }, 5 * 60 * 1000); 
+
+
+  return () => clearInterval(intervalId);
+}, [currentPage, machineName]);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
