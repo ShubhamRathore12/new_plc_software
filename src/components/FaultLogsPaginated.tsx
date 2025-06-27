@@ -4,7 +4,7 @@ const PAGE_SIZE = 10;
 
 interface TagData {
   tag: string;
-  value: boolean;
+  value: boolean | string;
   createdAt: string;
 }
 
@@ -105,13 +105,13 @@ const S7_1200_TAGS = [
   "COND_FAN_OVERLOAD",
   "Three_phase_monitor_fault",
   "High_pressure_fault",
-  "Ambient_temp._lower_than_set_temp.",
-  "Ambient_temp._over_50°C",
-  "COMP._MODULE_FEEDBACK_ERROR_(Si-I1)",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_over_50C",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
   "Low_pressure_1_fault",
   "COMP_FBK_ERROR",
   "Low_pressure_2_fault",
-  "Ambient_temp._over_47°C",
+  "Ambient_temp_over_47C",
   "Condenser_fan_2_TOP_fault",
   "Condenser_fan_3_TOP_fault",
   "Condenser_fan_4_TOP_fault",
@@ -141,19 +141,37 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
   const tags = machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
   const isS7_200 = machineName === "GTPL-118-gT-80E-P-S7-200";
 
-  return tags.reduce((acc: TagData[], tag) => {
+  console.log('Processing data for machine:', machineName);
+  console.log('Data received:', data);
+  console.log('Using tags:', tags.slice(0, 5), '... (showing first 5)');
+
+  const activeTags: TagData[] = [];
+
+  tags.forEach(tag => {
     const value = data[tag];
-    const isActive = isS7_200 ? value === "tr" : value === true;
+    console.log(`Tag: ${tag}, Value: ${value}, Type: ${typeof value}`);
+    
+    let isActive = false;
+    if (isS7_200) {
+      // For S7_200, check for "tr" string or true boolean
+      isActive = value === "tr" || value === true || value === "true";
+    } else {
+      // For S7_1200, check for true boolean or "true" string
+      isActive = value === true || value === "true" || value === 1 || value === "1";
+    }
 
     if (isActive) {
-      acc.push({
+      console.log(`Active tag found: ${tag} with value: ${value}`);
+      activeTags.push({
         tag,
         value,
         createdAt: data.created_at || data.createdAt || new Date().toISOString(),
       });
     }
-    return acc;
-  }, []);
+  });
+
+  console.log('Total active tags found:', activeTags.length);
+  return activeTags;
 }
 
 function formatTagName(tag: string): string {
@@ -161,10 +179,10 @@ function formatTagName(tag: string): string {
 }
 
 function getTagCategory(tag: string): string {
-  if (tag.includes("FAULT") || tag.includes("OVER") || tag.includes("TRIP")) return "fault";
-  if (tag.includes("TEMP") || tag.includes("SENSOR")) return "sensor";
-  if (tag.includes("START") || tag.includes("STOP") || tag.includes("ON")) return "control";
-  if (tag.includes("MANUAL") || tag.includes("AUTO")) return "mode";
+  if (tag.includes("fault") || tag.includes("FAULT") || tag.includes("OVER") || tag.includes("over") || tag.includes("TRIP") || tag.includes("trip")) return "fault";
+  if (tag.includes("TEMP") || tag.includes("temp") || tag.includes("SENSOR") || tag.includes("sensor")) return "sensor";
+  if (tag.includes("START") || tag.includes("start") || tag.includes("STOP") || tag.includes("stop") || tag.includes("ON") || tag.includes("on")) return "control";
+  if (tag.includes("MANUAL") || tag.includes("manual") || tag.includes("AUTO") || tag.includes("auto")) return "mode";
   return "status";
 }
 
@@ -181,11 +199,13 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
   };
 
   return (
-    <tr className={`border-b border-gray-200 hover:bg-gray-50 ${getCategoryStyle(category)}`}>
+    <tr className={`border-b border-gray-200 hover:bg-gray-50`}>
       <td className="px-4 py-3 text-sm font-medium">{tagData.tag}</td>
       <td className="px-4 py-3 text-sm">{formatTagName(tagData.tag)}</td>
       <td className="px-4 py-3 text-sm">
-        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          Active ({String(tagData.value)})
+        </span>
       </td>
       <td className="px-4 py-3 text-sm">
         <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getCategoryStyle(category)}`}>
@@ -227,6 +247,17 @@ function ActiveTagsTable({ activeTags }: { activeTags: TagData[] }) {
 }
 
 function StatisticsCards({ stats }: { stats: Stats }) {
+  const getGradientClass = (color: string) => {
+    switch (color) {
+      case "blue": return "bg-gradient-to-r from-blue-500 to-blue-600";
+      case "green": return "bg-gradient-to-r from-green-500 to-green-600";
+      case "red": return "bg-gradient-to-r from-red-500 to-red-600";
+      case "purple": return "bg-gradient-to-r from-purple-500 to-purple-600";
+      case "yellow": return "bg-gradient-to-r from-amber-500 to-yellow-600";
+      default: return "bg-gradient-to-r from-gray-500 to-gray-600";
+    }
+  };
+
   return (
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
       {[
@@ -236,9 +267,19 @@ function StatisticsCards({ stats }: { stats: Stats }) {
         { label: "Current Page", value: stats.currentPage, color: "purple" },
         { label: "Total Pages", value: stats.totalPages, color: "yellow" },
       ].map((stat, idx) => (
-        <div key={idx} className={`bg-${stat.color}-50 p-4 rounded-lg border border-${stat.color}-200`}>
-          <h3 className={`text-sm font-medium text-${stat.color}-600`}>{stat.label}</h3>
-          <p className={`text-2xl font-bold text-${stat.color}-800`}>{stat.value}</p>
+        <div 
+          key={idx} 
+          className={`${getGradientClass(stat.color)} p-5 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden`}
+        >
+          <div className="relative z-10">
+            <h3 className="text-sm font-medium text-white text-opacity-90 mb-2">
+              {stat.label}
+            </h3>
+            <p className="text-2xl font-bold text-white">
+              {stat.value.toLocaleString()}
+            </p>
+          </div>
+          <div className="absolute top-0 right-0 w-20 h-20 bg-white bg-opacity-10 rounded-full -mr-10 -mt-10"></div>
         </div>
       ))}
     </div>
@@ -263,21 +304,21 @@ function PaginationControls({
     visiblePages.push(i);
   }
 
- const pageButtons: (number | string)[] = [1];
+  const pageButtons: (number | string)[] = [1];
 
-if (currentPage - delta > 2) {
-  pageButtons.push("...");
-}
+  if (currentPage - delta > 2) {
+    pageButtons.push("...");
+  }
 
-pageButtons.push(...visiblePages);
+  pageButtons.push(...visiblePages);
 
-if (currentPage + delta < totalPages - 1) {
-  pageButtons.push("...");
-}
+  if (currentPage + delta < totalPages - 1) {
+    pageButtons.push("...");
+  }
 
-if (totalPages > 1) {
-  pageButtons.push(totalPages);
-}
+  if (totalPages > 1) {
+    pageButtons.push(totalPages);
+  }
 
   return (
     <div className="flex items-center justify-between mt-6">
@@ -320,11 +361,77 @@ function LoadingIndicator() {
   );
 }
 
+// Debug component to show raw data
+function DebugDataDisplay({ data, machineName }: { data: any[], machineName: string }) {
+  const [showDebug, setShowDebug] = useState(false);
+  
+  if (!showDebug) {
+    return (
+      <button 
+        onClick={() => setShowDebug(true)}
+        className="mb-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+      >
+        Show Debug Data
+      </button>
+    );
+  }
+
+  const tags = machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
+  const sampleRecord = data[0] || {};
+
+  return (
+    <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold text-yellow-800">Debug Information</h3>
+        <button 
+          onClick={() => setShowDebug(false)}
+          className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+        >
+          Hide
+        </button>
+      </div>
+      
+      <div className="space-y-4">
+        <div>
+          <h4 className="font-medium text-yellow-700">Machine: {machineName}</h4>
+          <p className="text-sm text-yellow-600">Records found: {data.length}</p>
+        </div>
+        
+        <div>
+          <h4 className="font-medium text-yellow-700">Expected Tags (first 10):</h4>
+          <div className="text-sm text-yellow-600 bg-white p-2 rounded border">
+            {tags.slice(0, 10).join(', ')}
+          </div>
+        </div>
+        
+        <div>
+          <h4 className="font-medium text-yellow-700">Sample Record Keys:</h4>
+          <div className="text-sm text-yellow-600 bg-white p-2 rounded border max-h-32 overflow-y-auto">
+            {Object.keys(sampleRecord).join(', ')}
+          </div>
+        </div>
+        
+        <div>
+          <h4 className="font-medium text-yellow-700">Sample Values for Expected Tags:</h4>
+          <div className="text-sm text-yellow-600 bg-white p-2 rounded border max-h-32 overflow-y-auto">
+            {tags.slice(0, 10).map(tag => (
+              <div key={tag}>
+                <strong>{tag}:</strong> {JSON.stringify(sampleRecord[tag])} ({typeof sampleRecord[tag]})
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function FaultLogsPaginated({ machineName }: { machineName: string }) {
   const [activeTags, setActiveTags] = useState<TagData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [rawData, setRawData] = useState<any[]>([]);
   const [paginationInfo, setPaginationInfo] = useState<Pagination>({
     total: 0,
     totalPages: 0,
@@ -349,6 +456,7 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
       const result = await res.json();
 
       if (result?.data && Array.isArray(result.data)) {
+        setRawData(result.data);
         const active: TagData[] = [];
         let faultCount = 0;
 
@@ -360,25 +468,27 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
 
         setActiveTags(active);
         setStats({
-          total: result.total,
+          total: result.total || 0,
           activeTags: active.length,
           faultTags: faultCount,
-          currentPage: result.page,
-          totalPages: result.totalPages,
+          currentPage: result.page || pageNum,
+          totalPages: result.totalPages || 1,
         });
         setPaginationInfo({
-          total: result.total,
-          totalPages: result.totalPages,
-          limit: result.limit,
-          page: result.page,
+          total: result.total || 0,
+          totalPages: result.totalPages || 1,
+          limit: result.limit || PAGE_SIZE,
+          page: result.page || pageNum,
         });
       } else {
         console.warn("Unexpected response:", result);
         setActiveTags([]);
+        setRawData([]);
       }
     } catch (err: any) {
       setError(err.message || "Unknown error");
       setActiveTags([]);
+      setRawData([]);
     } finally {
       setLoading(false);
     }
@@ -386,7 +496,7 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
 
   useEffect(() => {
     fetchLogs(currentPage);
-  }, [currentPage]);
+  }, [currentPage, machineName]);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
@@ -395,11 +505,12 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Active {machineName} Tags Monitor</h2>
           <StatisticsCards stats={stats} />
           {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">{error}</div>}
+          <DebugDataDisplay data={rawData} machineName={machineName} />
         </div>
         <div className="p-6">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-gray-700">Active Tags ({activeTags.length} found on this page)</h3>
-            <p className="text-sm text-gray-500">Showing only tags with value = true • Page {currentPage} of {paginationInfo.totalPages}</p>
+            <p className="text-sm text-gray-500">Showing only tags with active values • Page {currentPage} of {paginationInfo.totalPages}</p>
           </div>
           {loading ? <LoadingIndicator /> : (
             <>
