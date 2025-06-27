@@ -56,6 +56,7 @@ const S7_200_TAGS= [
   "THREE_PHASE_MONITORING_FAULT"
 ];
 
+
 const S7_1200_TAGS = [
   "Compressor_circuit_breaker_fault",
   "Oil_pressure_low",
@@ -172,7 +173,7 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm">{new Date(tagData.createdAt).toLocaleString()}</td>
+      <td className="px-4 py-3 text-sm">{tagData.createdAt}</td>
     </tr>
   );
 }
