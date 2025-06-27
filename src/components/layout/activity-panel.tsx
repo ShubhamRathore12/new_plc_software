@@ -23,32 +23,22 @@ const recentActivities = [
   },
 ];
 
-const devices = [
-  {
-    name: "VI MIXER",
-    lastActivity: "17/08/23 @ 03:00:08 am",
-    status: "active",
-  },
-  {
-    name: "VI CUTTER",
-    lastActivity: "17/08/23 @ 03:00:08 am",
-    status: "active",
-  },
-  {
-    name: "AGITATOR MIXER 1",
-    lastActivity: "17/08/23 @ 03:00:08 am",
-    status: "active",
-  },
-  {
-    name: "NAS TANK",
-    lastActivity: "17/08/23 @ 03:00:08 am",
-    status: "active",
-  },
-  {
-    name: "BLENDER 09",
-    lastActivity: "17/08/23 @ 03:00:08 am",
-    status: "active",
-  },
+const allDevices = [
+  { name: "GTPL-122-gT-1000T-S7-1200", location: "Noida---kanpur", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-1000T" },
+  { name: "GTPL-118-gT-80E-P-S7-200", location: "Noida", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
+  { name: "GTPL-108-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
+  { name: "GTPL-109-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
+  { name: "GTPL-110-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
+  { name: "GTPL-111-gT-80E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
+  { name: "GTPL-112-gT-80E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
+  { name: "GTPL-113-gT-80E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
+  { name: "GTPL-114-gT-140E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-140E" },
+  { name: "GTPL-115-gT-180E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-180E" },
+  { name: "GTPL-116-gT-240E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-240E" },
+  { name: "GTPL-117-gT-320E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-320E" },
+  { name: "GTPL-119-gT-180E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-180E" },
+  { name: "GTPL-120-gT-180E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-180E" },
+  { name: "GTPL-121-gT-1000T-S7-1200", location: "Noida---kanpur", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-1000T" },
 ];
 
 export default function ActivityPanel() {
@@ -85,15 +75,15 @@ export default function ActivityPanel() {
           </h2>
         </div>
         <div className="p-4 space-y-3">
-          {devices.map((device, index) => (
-            <div key={index} className="flex items-center space-x-3">
-              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+          {allDevices.map((device, index) => (
+            <div key={index} className="flex items-start space-x-3">
+              <div className="h-2 w-2 mt-1 rounded-full bg-emerald-500" />
               <div>
                 <div className="text-sm font-medium text-black dark:text-white">
                   {device.name}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-300">
-                  {t("last_activity")}: {device.lastActivity}
+                  PLC: {device.plc} | Chiller: {device.chillerModel}
                 </div>
               </div>
             </div>
