@@ -15,16 +15,14 @@ import {
 import { ConnectionStatus } from "@/components/ui/connection-status";
 import Home from "@/components/diagram-controls";
 import { useAutoData } from "@/hooks/useAutoData";
+import AutoDiagram from "@/components/AutoDiagram";
+import HVACDashboard from "../../../../components/AutoDiagram";
+import Fan from "../../../../../public/images/fan.jpg"
 
 export default function AutoPage() {
   const router = useRouter();
   const { auto } = useParams();
   const { data, isConnected, error, formatValue } = useAutoData(auto as string);
-
-
-
-
-
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
@@ -34,15 +32,13 @@ export default function AutoPage() {
     "GTPL-122-gT-1000T-S7-1200": {
       serialNumber: "GTPL-075",
       temperatureSensors: {
-
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        'Delta T': { key: "Delta_T_set_point", label: "Delta T" },
+        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
- 
         AHT: {
           key: "AHT_vale_speed",
           label: "After Heat(AHT)",
@@ -52,7 +48,6 @@ export default function AutoPage() {
           label: "Hot Gas(HGS)",
         },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-
       },
       compressor: {
         time: "Compressor_timer",
@@ -161,6 +156,7 @@ export default function AutoPage() {
                   formatValue={formatValue}
                   machineName={auto}
                 />
+                {/* <HVACDashboard blower={Fan}/> */}
               </div>
             </AnimatedContainer>
 

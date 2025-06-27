@@ -93,7 +93,7 @@ const S7_200_TAGS = [
   "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
   "SET_TIME",
   "THREE_PHASE_MONITORING_FAULT",
-  "YELLOW_LIGHT",
+
 ];
 
 const S7_1200_TAGS = [
@@ -165,7 +165,7 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
       activeTags.push({
         tag,
         value,
-        createdAt: data.created_at || data.createdAt || new Date().toISOString(),
+        createdAt: data.created_at || data.createdAt ,
       });
     }
   });
@@ -212,7 +212,7 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm">{new Date(tagData.createdAt).toLocaleString()}</td>
+      <td className="px-4 py-3 text-sm">{tagData.createdAt}</td>
     </tr>
   );
 }
@@ -520,21 +520,22 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
             <h3 className="text-lg font-semibold text-gray-700">Active Tags ({activeTags.length} found on this page)</h3>
             <p className="text-sm text-gray-500">Showing only tags with active values • Page {currentPage} of {paginationInfo.totalPages}</p>
           </div>
-          {loading ? <LoadingIndicator /> : (
-            <>
-              <div className="border border-gray-200 rounded-lg">
-                <ActiveTagsTable activeTags={activeTags} />
-              </div>
-              {paginationInfo.totalPages > 1 && (
-                <PaginationControls
-                  currentPage={currentPage}
-                  totalPages={paginationInfo.totalPages}
-                  loading={loading}
-                  onPageChange={page => setCurrentPage(page)}
-                />
-              )}
-            </>
-          )}
+     {loading ? <LoadingIndicator /> : (
+  <>
+    <div className="border border-gray-200 rounded-lg">
+      <ActiveTagsTable activeTags={activeTags.filter(tag => getTagCategory(tag.tag) !== "control")} />
+    </div>
+    {paginationInfo.totalPages > 1 && (
+      <PaginationControls
+        currentPage={currentPage}
+        totalPages={paginationInfo.totalPages}
+        loading={loading}
+        onPageChange={page => setCurrentPage(page)}
+      />
+    )}
+  </>
+)}
+
         </div>
       </div>
     </div>
