@@ -165,7 +165,7 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
       activeTags.push({
         tag,
         value,
-        createdAt: data.created_at || data.createdAt || new Date().toISOString(),
+        createdAt: data.created_at || data.createdAt ,
       });
     }
   });
@@ -212,7 +212,7 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </td>
-      <td className="px-4 py-3 text-sm">{new Date(tagData.createdAt).toLocaleString()}</td>
+      <td className="px-4 py-3 text-sm">{tagData.createdAt}</td>
     </tr>
   );
 }
