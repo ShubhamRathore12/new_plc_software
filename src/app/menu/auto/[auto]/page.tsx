@@ -161,7 +161,7 @@ export default function AutoPage() {
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>
-              <Card>
+              {/* <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">System Status</h2>
                   <div className="space-y-4">
@@ -179,7 +179,7 @@ export default function AutoPage() {
                     <Badge>{isRunning ? "Running" : "Stopped"}</Badge>
                   </div>
                 </CardContent>
-              </Card>
+              </Card> */}
 
               <Card>
                 <CardContent className="p-6">
