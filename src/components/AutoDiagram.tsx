@@ -1,5 +1,6 @@
 import Image from "next/image"
 
+
 export default function HVACDashboard({blower,data,formatValue,machineName}:any) {
   const getSiloColor = (temp: number) => {
     return "#10b981" // Green color
@@ -9,9 +10,9 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
     TS1: 35,
   }
 
-    const greenOn = data?.GREEN_LIGHT === "tr" || data?.GREEN_LIGHT === "tr";
-  const redOn = data?.RED_LIGHT === "tr" || data?.RED_LIGHT === "tr";
-  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.YELLOW_LIGHT === "tr";
+    const greenOn = data?.GREEN_LIGHT === "tr" || data?.GREEN_LIGHT === "true";
+  const redOn = data?.RED_LIGHT === "tr" || data?.RED_LIGHT === "true";
+  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.YELLOW_LIGHT === "true";
 
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db");
