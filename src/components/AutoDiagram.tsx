@@ -202,8 +202,8 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       {/* T2 Temperature Display */}
       <div className="absolute left-110 top-48 ml-24">
         <div className="text-center">
-          <div className="text-2xl font-bold">T2</div>
-          <div className="text-3xl font-bold">       {formatValue(
+          <div className="text-lg font-bold">T2</div>
+          <div className="text-lg font-bold">       {formatValue(
                 data?.T2_temp_mean || data?.AMBIENT_AIR_TEMP_T2
               ) || "N/A"}</div>
         </div>
