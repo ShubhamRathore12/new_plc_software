@@ -24,10 +24,8 @@ type MessageLog = {
   timestamp: string;
 };
 
-export const useMachineStatusFeed = (
-  type: "sse" | "ws" = "ws" // you can switch between 'sse' and 'ws'
-) => {
-  const [status, setStatus] = useState<MachineStatus |  any>({
+export const useMachineStatusFeed = () => {
+  const [status, setStatus] = useState<MachineStatus>({
     machineStatus: false,
     coolingStatus: false,
     internetStatus: false,
@@ -36,141 +34,75 @@ export const useMachineStatusFeed = (
     dataChanged: { gtpl: false, kabo: false },
   });
 
-  const [connection, setConnection] = useState<
-    "connected" | "disconnected" | "error"
-  >("disconnected");
+  const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState<MessageLog[]>([]);
-  const ref = useRef<EventSource | WebSocket | null>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const addMessage = useCallback((msg: string, type: MessageLog["type"]) => {
     const timestamp = new Date().toLocaleTimeString();
     setMessages((prev) => [...prev.slice(-9), { message: msg, type, timestamp }]);
   }, []);
 
-  const fetchInitialData = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("https://grain-backend-1.onrender.com/api/machine/status");
+      const res = await fetch("/api/machine/status-public");
       const result = await res.json();
 
-      
       if (result.success) {
         setStatus(result.data);
-     
-        
-        addMessage("Initial data fetched successfully", "info");
+        setIsConnected(true);
+        addMessage("Data updated successfully", "status");
       } else {
-        addMessage("Initial fetch failed", "error");
+        addMessage("API call failed", "error");
+        setIsConnected(false);
       }
-    } catch {
-      addMessage("Error fetching initial data", "error");
+    } catch (error) {
+      addMessage("Error fetching data", "error");
+      setIsConnected(false);
     }
   }, [addMessage]);
 
-  // Connect to SSE
-  const connectSSE = useCallback(() => {
-    const source = new EventSource("https://grain-backend-1.onrender.com/api/machine/status");
+  const startPolling = useCallback(() => {
+    // Initial fetch
+    fetchData();
+    
+    // Set up interval for polling every 6 seconds
+    intervalRef.current = setInterval(() => {
+      fetchData();
+    }, 6000);
+    
+    addMessage("Polling started (6 second interval)", "info");
+  }, [fetchData, addMessage]);
 
-    source.onopen = () => {
-      setConnection("connected");
-      addMessage("SSE Connected", "info");
-    };
-
-    source.addEventListener("connected", (event) => {
-      const data = JSON.parse((event as MessageEvent).data);
-      addMessage(`SSE says connected: ${data.status}`, "info");
-    });
-
-    source.addEventListener("update", (event) => {
-      const parsed = JSON.parse((event as MessageEvent).data);
-      setStatus(parsed);
-      addMessage("SSE: Data updated", "status");
-    });
-
-    source.onerror = (event: Event) => {
-      addMessage("SSE Error occurred", "error");
-      source.close();
-      setConnection("error");
-    };
-
-    ref.current = source;
-  }, [addMessage]);
-
-  // Connect to WebSocket
-  const connectWebSocket = useCallback(() => {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-    const wsUrl = `${protocol}//${window.location.host}/ws`;
-
-    const ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-      setConnection("connected");
-      addMessage("WebSocket connected", "info");
-    };
-
-    ws.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-
-        if (data.type === "machine_status_update" || data.type === "machine_status_reset") {
-          setStatus(data.data);
-          addMessage("WebSocket: Status updated", "status");
-        } else if (data.type === "machine_status_error") {
-          addMessage(`WebSocket Error: ${data.data.message}`, "error");
-        } else if (data.type === "connected") {
-          addMessage("WebSocket connection established", "info");
-        } else {
-          addMessage("Unknown WebSocket message type", "warning");
-        }
-      } catch {
-        addMessage("Failed to parse WebSocket message", "error");
-      }
-    };
-
-    ws.onerror = () => {
-      addMessage("WebSocket error occurred", "error");
-      setConnection("error");
-    };
-
-    ws.onclose = () => {
-      setConnection("disconnected");
-      addMessage("WebSocket disconnected", "warning");
-
-      // Auto-reconnect
-      setTimeout(() => {
-        if (ref.current?.readyState === WebSocket.CLOSED) {
-          connectWebSocket();
-        }
-      }, 5000);
-    };
-
-    ref.current = ws;
-  }, [addMessage]);
-
-  const disconnect = useCallback(() => {
-    if (ref.current) {
-      ref.current.close();
-      ref.current = null;
-      setConnection("disconnected");
-      addMessage("Connection manually closed", "warning");
+  const stopPolling = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+      setIsConnected(false);
+      addMessage("Polling stopped", "warning");
     }
   }, [addMessage]);
+
+  const refresh = useCallback(() => {
+    fetchData();
+  }, [fetchData]);
 
   useEffect(() => {
-    fetchInitialData();
-    if (type === "sse") connectSSE();
-    else connectWebSocket();
+    startPolling();
 
     return () => {
-      if (ref.current) ref.current.close();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-  }, [type, connectSSE, connectWebSocket, fetchInitialData]);
+  }, [startPolling]);
 
   return {
     status,
-    connection,
+    isConnected,
     messages,
-    disconnect,
-    reconnect: type === "sse" ? connectSSE : connectWebSocket,
-    refresh: fetchInitialData,
+    stopPolling,
+    startPolling,
+    refresh,
   };
 };

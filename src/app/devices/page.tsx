@@ -28,7 +28,7 @@ export default function DevicesPage() {
   const locationDropdownRef = useRef<HTMLDivElement>(null);
   const companyDropdownRef = useRef<HTMLDivElement>(null);
 
-  const { status } = useMachineStatusFeed("ws");
+  const { status } = useMachineStatusFeed();
 
   const allDevices = [
     // ⬆️ First: GTPL-118
@@ -198,9 +198,9 @@ export default function DevicesPage() {
 
             {/* Enhanced Device Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredDevices.map((device, index) => {
+              {filteredDevices.map((device:any, index) => {
                 const key = deviceNameToStatusKey[device.name];
-                const deviceStatus = status?.[key] || {};
+                const deviceStatus = key ? (status as Record<string, any>)?.[key] || {} : {};
                 const isMachineRunning = deviceStatus.machineStatus ?? false;
                 const isInternetConnected = deviceStatus.internetStatus ?? false;
                 const isCoolingWorking = deviceStatus.coolingStatus ?? false;

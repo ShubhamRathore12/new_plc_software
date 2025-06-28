@@ -12,6 +12,8 @@ export interface MachineResponse {
   lastUpdate?: string;
   hasNewData?: boolean;
   idChanged?: boolean;
+  createdOnChanged?:any;
+  createdAtChanged?:any
 }
 
 export function hasTimestampChanged(newTimestamp: any, lastTimestamp: any): boolean {
