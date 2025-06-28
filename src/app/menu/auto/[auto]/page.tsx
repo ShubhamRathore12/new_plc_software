@@ -18,6 +18,8 @@ import { useAutoData } from "@/hooks/useAutoData";
 import AutoDiagram from "@/components/AutoDiagram";
 import HVACDashboard from "../../../../components/AutoDiagram";
 import Fan from "../../../../../public/images/fan.png"
+import useIsMobile from "@/hooks/useIsMobile";
+import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 
 export default function AutoPage() {
   const router = useRouter();
@@ -132,6 +134,9 @@ export default function AutoPage() {
     });
   };
 
+    const isMobile = useIsMobile()
+
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -156,10 +161,15 @@ export default function AutoPage() {
                   formatValue={formatValue}
                   machineName={auto}
                 /> */}
+               { isMobile ? <MobileAutoDiagram  blower={Fan}         data={data}
+                  formatValue={formatValue}
+                  machineName={auto}/>:
                 <HVACDashboard blower={Fan}         data={data}
                   formatValue={formatValue}
                   machineName={auto}/>
+                }
               </div>
+              
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>
