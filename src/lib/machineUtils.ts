@@ -1,4 +1,4 @@
-export type MachineType = 'gtpl' | 'kabo' | 'unknown';
+export type MachineType = "gtpl" | "kabo" | "unknown";
 
 export interface MachineResponse {
   machineStatus: boolean;
@@ -12,22 +12,29 @@ export interface MachineResponse {
   lastUpdate?: string;
   hasNewData?: boolean;
   idChanged?: boolean;
-  createdOnChanged?:any;
-  createdAtChanged?:any
+  createdOnChanged?: any;
+  createdAtChanged?: any;
+  condFanOn?: any;
 }
 
-export function hasTimestampChanged(newTimestamp: any, lastTimestamp: any): boolean {
+export function hasTimestampChanged(
+  newTimestamp: any,
+  lastTimestamp: any
+): boolean {
   if (!lastTimestamp) return true;
   return new Date(newTimestamp).getTime() !== new Date(lastTimestamp).getTime();
 }
 
-export function hasIdChanged(currentId: number | undefined, previousId: number | null): boolean {
+export function hasIdChanged(
+  currentId: number | undefined,
+  previousId: number | null
+): boolean {
   // If we don't have a current ID, no change
   if (currentId === undefined) return false;
-  
+
   // If this is the first run (no previous ID), consider it as new data
   if (previousId === null) return true;
-  
+
   // Compare current ID with previous ID
   return currentId !== previousId;
 }
@@ -51,26 +58,26 @@ export function getMachineSpecificResponse(
   };
 
   switch (machineType) {
-    case 'gtpl':
+    case "gtpl":
       return {
         ...base,
-        machineType: 'GTPL_122_S7_1200_01',
-        priority: 'high',
-        responseType: 'gtpl_machine',
+        machineType: "GTPL_122_S7_1200_01",
+        priority: "high",
+        responseType: "gtpl_machine",
       };
-    case 'kabo':
+    case "kabo":
       return {
         ...base,
-        machineType: 'KABO_MACHINE_SMART200',
-        priority: 'medium',
-        responseType: 'kabo_machine',
+        machineType: "KABO_MACHINE_SMART200",
+        priority: "medium",
+        responseType: "kabo_machine",
       };
     default:
       return {
         ...base,
-        machineType: 'UNKNOWN',
-        priority: 'low',
-        responseType: 'unknown_machine',
+        machineType: "UNKNOWN",
+        priority: "low",
+        responseType: "unknown_machine",
       };
   }
 }

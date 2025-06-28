@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useRef } from "react";
@@ -7,7 +5,16 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronDown, MapPin, Building2, Wifi, Cpu, Snowflake, Download, Eye } from "lucide-react";
+import {
+  ChevronDown,
+  MapPin,
+  Building2,
+  Wifi,
+  Cpu,
+  Snowflake,
+  Download,
+  Eye,
+} from "lucide-react";
 import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useFieldVisibility } from "@/hooks/useFieldVisibility";
@@ -32,29 +39,116 @@ export default function DevicesPage() {
 
   const allDevices = [
     // ⬆️ First: GTPL-118
-    { name: "GTPL-122-gT-1000T-S7-1200", location: "Noida---kanpur", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-1000T" },
-    { name: "GTPL-118-gT-80E-P-S7-200", location: "Noida", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
-  
+    {
+      name: "GTPL-122-gT-1000T-S7-1200",
+      location: "Noida---kanpur",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-1000T",
+    },
+    {
+      name: "GTPL-118-gT-80E-P-S7-200",
+      location: "Noida",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-80E-P",
+    },
+
     // ⬆️ Second: GTPL-122
-   
-  
+
     // Remaining in original order (excluding 118 & 122)
-    { name: "GTPL-108-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
-    { name: "GTPL-109-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
-    { name: "GTPL-110-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
-    { name: "GTPL-111-gT-80E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
-    { name: "GTPL-112-gT-80E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
-    { name: "GTPL-113-gT-80E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-80E-P" },
-    { name: "GTPL-114-gT-140E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-140E" },
-    { name: "GTPL-115-gT-180E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-180E" },
-    { name: "GTPL-116-gT-240E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-240E" },
-    { name: "GTPL-117-gT-320E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-320E" },
-    { name: "GTPL-119-gT-180E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-180E" },
-    { name: "GTPL-120-gT-180E-S7-1200", location: "Germany", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-180E" },
-    { name: "GTPL-121-gT-1000T-S7-1200", location: "Noida---kanpur", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-1000T" },
+    {
+      name: "GTPL-108-gT-40E-P-S7-200",
+      location: "Germany",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-40E-P",
+    },
+    {
+      name: "GTPL-109-gT-40E-P-S7-200",
+      location: "Germany",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-40E-P",
+    },
+    {
+      name: "GTPL-110-gT-40E-P-S7-200",
+      location: "Germany",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-40E-P",
+    },
+    {
+      name: "GTPL-111-gT-80E-P-S7-200",
+      location: "Germany",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-80E-P",
+    },
+    {
+      name: "GTPL-112-gT-80E-P-S7-200",
+      location: "Germany",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-80E-P",
+    },
+    {
+      name: "GTPL-113-gT-80E-P-S7-200",
+      location: "Germany",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-80E-P",
+    },
+    {
+      name: "GTPL-114-gT-140E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-140E",
+    },
+    {
+      name: "GTPL-115-gT-180E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-180E",
+    },
+    {
+      name: "GTPL-116-gT-240E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-240E",
+    },
+    {
+      name: "GTPL-117-gT-320E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-320E",
+    },
+    {
+      name: "GTPL-119-gT-180E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-180E",
+    },
+    {
+      name: "GTPL-120-gT-180E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-180E",
+    },
+    {
+      name: "GTPL-121-gT-1000T-S7-1200",
+      location: "Noida---kanpur",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-1000T",
+    },
   ];
-  
-  
 
   const locations = [
     { name: "All", image: "/images/1200.jpg" }, // default "All" option
@@ -65,9 +159,11 @@ export default function DevicesPage() {
   ];
 
   const filteredDevices = allDevices.filter(
-    (device) => selectedLocation === "" || selectedLocation === "All" || device.location === selectedLocation
+    (device) =>
+      selectedLocation === "" ||
+      selectedLocation === "All" ||
+      device.location === selectedLocation
   );
-  
 
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "gtpl",
@@ -96,7 +192,9 @@ export default function DevicesPage() {
               <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text text-transparent mb-2">
                 {t("Devices Overview")}
               </h1>
-              <p className="text-gray-600 dark:text-gray-300">Monitor and manage your industrial devices</p>
+              <p className="text-gray-600 dark:text-gray-300">
+                Monitor and manage your industrial devices
+              </p>
             </div>
 
             {/* Modern Dropdown Section */}
@@ -118,7 +216,9 @@ export default function DevicesPage() {
                     <MapPin className="h-4 w-4 text-blue-500" />
                     {selectedLocation || t("select_a_location")}
                   </span>
-                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isLocationDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-300 ${isLocationDropdownOpen ? "rotate-180" : ""}`}
+                  />
                 </Button>
                 {isLocationDropdownOpen && (
                   <Card className="absolute z-20 w-full mt-2 max-h-60 overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 animate-in slide-in-from-top-2 duration-200">
@@ -165,7 +265,9 @@ export default function DevicesPage() {
                     <Building2 className="h-4 w-4 text-purple-500" />
                     {selectedCompany || t("select_a_company")}
                   </span>
-                  <ChevronDown className={`h-4 w-4 transition-transform duration-300 ${isCompanyDropdownOpen ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform duration-300 ${isCompanyDropdownOpen ? "rotate-180" : ""}`}
+                  />
                 </Button>
                 {isCompanyDropdownOpen && (
                   <Card className="absolute z-20 w-full mt-2 max-h-60 overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 animate-in slide-in-from-top-2 duration-200">
@@ -198,12 +300,15 @@ export default function DevicesPage() {
 
             {/* Enhanced Device Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredDevices.map((device:any, index) => {
+              {filteredDevices.map((device: any, index) => {
                 const key = deviceNameToStatusKey[device.name];
-                const deviceStatus = key ? (status as Record<string, any>)?.[key] || {} : {};
+                const deviceStatus = key
+                  ? (status as Record<string, any>)?.[key] || {}
+                  : {};
                 const isMachineRunning = deviceStatus.machineStatus ?? false;
-                const isInternetConnected = deviceStatus.internetStatus ?? false;
-                const isCoolingWorking = deviceStatus.coolingStatus ?? false;
+                const isInternetConnected =
+                  deviceStatus.internetStatus ?? false;
+                const isCoolingWorking = deviceStatus.condFanOn ?? false;
 
                 return (
                   <Card
@@ -212,14 +317,18 @@ export default function DevicesPage() {
                   >
                     {/* Enhanced Gradient overlay */}
                     <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 via-purple-400/20 to-pink-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
+
                     {/* Light overlay for enhanced brightness */}
                     <div className="absolute inset-0 bg-gradient-to-tr from-white/30 via-transparent to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    
+
                     {/* Status indicator */}
                     <div className="absolute top-4 right-4 z-10">
-                      <div className={`w-3 h-3 rounded-full ${isMachineRunning ? 'bg-green-500' : 'bg-red-500'} shadow-lg ring-2 ring-white dark:ring-gray-900`}>
-                        <div className={`w-3 h-3 rounded-full ${isMachineRunning ? 'bg-green-500' : 'bg-red-500'} animate-ping`}></div>
+                      <div
+                        className={`w-3 h-3 rounded-full ${isMachineRunning ? "bg-green-500" : "bg-red-500"} shadow-lg ring-2 ring-white dark:ring-gray-900`}
+                      >
+                        <div
+                          className={`w-3 h-3 rounded-full ${isMachineRunning ? "bg-green-500" : "bg-red-500"} animate-ping`}
+                        ></div>
                       </div>
                     </div>
 
@@ -239,7 +348,7 @@ export default function DevicesPage() {
                         <h3 className="text-lg font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                           {device.name}
                         </h3>
-                        
+
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                           <Building2 className="h-4 w-4 text-purple-500" />
                           <span className="font-medium">Grain Technik</span>
@@ -255,16 +364,22 @@ export default function DevicesPage() {
                           <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50/80 dark:bg-gray-800/50 group-hover:bg-white/90 group-hover:shadow-md dark:group-hover:bg-gray-700/60 transition-all duration-300">
                             <div className="flex items-center gap-2">
                               <Cpu className="h-4 w-4 text-blue-500 group-hover:text-blue-600 transition-colors duration-300" />
-                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">Machine</span>
+                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
+                                Machine
+                              </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <span
                                 className={`h-2 w-2 rounded-full ${
-                                  isMachineRunning ? "bg-green-500 group-hover:bg-green-600" : "bg-red-500 group-hover:bg-red-600"
+                                  isMachineRunning
+                                    ? "bg-green-500 group-hover:bg-green-600"
+                                    : "bg-red-500 group-hover:bg-red-600"
                                 } shadow-sm transition-colors duration-300`}
                               />
-                              <span className={`text-xs font-semibold ${isMachineRunning ? 'text-green-600 dark:text-green-400 group-hover:text-green-700' : 'text-red-600 dark:text-red-400 group-hover:text-red-700'} transition-colors duration-300`}>
-                                {isMachineRunning ? 'Running' : 'Stopped'}
+                              <span
+                                className={`text-xs font-semibold ${isMachineRunning ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
+                              >
+                                {isMachineRunning ? "Running" : "Stopped"}
                               </span>
                             </div>
                           </div>
@@ -272,16 +387,22 @@ export default function DevicesPage() {
                           <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50/80 dark:bg-gray-800/50 group-hover:bg-white/90 group-hover:shadow-md dark:group-hover:bg-gray-700/60 transition-all duration-300">
                             <div className="flex items-center gap-2">
                               <Wifi className="h-4 w-4 text-green-500 group-hover:text-green-600 transition-colors duration-300" />
-                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">Internet</span>
+                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
+                                Internet
+                              </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <span
                                 className={`h-2 w-2 rounded-full ${
-                                  isInternetConnected ? "bg-green-500 group-hover:bg-green-600" : "bg-red-500 group-hover:bg-red-600"
+                                  isInternetConnected
+                                    ? "bg-green-500 group-hover:bg-green-600"
+                                    : "bg-red-500 group-hover:bg-red-600"
                                 } shadow-sm transition-colors duration-300`}
                               />
-                              <span className={`text-xs font-semibold ${isInternetConnected ? 'text-green-600 dark:text-green-400 group-hover:text-green-700' : 'text-red-600 dark:text-red-400 group-hover:text-red-700'} transition-colors duration-300`}>
-                                {isInternetConnected ? 'Connected' : 'Offline'}
+                              <span
+                                className={`text-xs font-semibold ${isInternetConnected ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
+                              >
+                                {isInternetConnected ? "Connected" : "Offline"}
                               </span>
                             </div>
                           </div>
@@ -289,16 +410,22 @@ export default function DevicesPage() {
                           <div className="flex items-center justify-between p-2 rounded-lg bg-gray-50/80 dark:bg-gray-800/50 group-hover:bg-white/90 group-hover:shadow-md dark:group-hover:bg-gray-700/60 transition-all duration-300">
                             <div className="flex items-center gap-2">
                               <Snowflake className="h-4 w-4 text-cyan-500 group-hover:text-cyan-600 transition-colors duration-300" />
-                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">Cooling</span>
+                              <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
+                                Cooling
+                              </span>
                             </div>
                             <div className="flex items-center gap-1">
                               <span
                                 className={`h-2 w-2 rounded-full ${
-                                  isCoolingWorking ? "bg-green-500 group-hover:bg-green-600" : "bg-red-500 group-hover:bg-red-600"
+                                  isCoolingWorking
+                                    ? "bg-green-500 group-hover:bg-green-600"
+                                    : "bg-red-500 group-hover:bg-red-600"
                                 } shadow-sm transition-colors duration-300`}
                               />
-                              <span className={`text-xs font-semibold ${isCoolingWorking ? 'text-green-600 dark:text-green-400 group-hover:text-green-700' : 'text-red-600 dark:text-red-400 group-hover:text-red-700'} transition-colors duration-300`}>
-                                {isCoolingWorking ? 'Active' : 'Inactive'}
+                              <span
+                                className={`text-xs font-semibold ${isCoolingWorking ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
+                              >
+                                {isCoolingWorking ? "Active" : "Inactive"}
                               </span>
                             </div>
                           </div>
@@ -315,8 +442,8 @@ export default function DevicesPage() {
                             <Eye className="h-4 w-4 mr-1 group-hover/btn:rotate-12 transition-transform duration-300" />
                             {t("view_more")}
                           </Button>
-                          <Button 
-                            variant="outline" 
+                          <Button
+                            variant="outline"
                             size="sm"
                             className="bg-gradient-to-r from-green-500 to-teal-600 text-white border-0 hover:from-green-600 hover:to-teal-700 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group/btn"
                           >
