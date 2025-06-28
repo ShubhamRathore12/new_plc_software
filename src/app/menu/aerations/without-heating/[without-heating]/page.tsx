@@ -17,6 +17,7 @@ import { motion } from "framer-motion";
 
 import { useAutoData } from "@/hooks/useAutoData";
 import Home from "@/components/aeration-control";
+import AerationwithHeating from "@/components/AerationwithHeating";
 
 export default function AerationWithoutHeatingPage() {
   const router = useRouter();
@@ -73,13 +74,18 @@ export default function AerationWithoutHeatingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
-              <Home
+              {/* <Home
                 data={data}
                 devices={devices}
                 heat={heat}
                 title="AERATION W/O HEATING"
                 formatValue={formatValue}
-              />
+              /> */}
+              <AerationwithHeating     data={data}
+                devices={devices}
+                heat={heat}
+                title="AERATION W/O HEATING"
+                formatValue={formatValue}/>
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>

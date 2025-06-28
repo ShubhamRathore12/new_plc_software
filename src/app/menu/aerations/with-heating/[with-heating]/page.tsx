@@ -20,6 +20,7 @@ import Image from "next/image";
 import { format } from "@/lib/utils";
 import { useAutoData } from "@/hooks/useAutoData"; // ✅ USE HOOK
 import Home from "@/components/aeartionheating-control";
+import AerationHeating from "@/components/AerationHeating";
 
 
 export default function AerationWithHeatingPage() {
@@ -92,13 +93,18 @@ export default function AerationWithHeatingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
-            <Home
+            {/* <Home
                 data={data}
                 devices={devices}
                 heat={heat}
                 title="AERATION W/O HEATING"
                 formatValue={formatValue}
-              />
+              /> */}
+              <AerationHeating    data={data}
+                devices={devices}
+                heat={heat}
+                title="AERATION W/O HEATING"
+                formatValue={formatValue}/>
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>

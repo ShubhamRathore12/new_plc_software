@@ -259,7 +259,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
           <div className="absolute -right-16 top-1/2 transform -translate-y-1/2">
             <div className="flex items-center">
          
-              <div className="w-full h-full rounded-full flex items-center justify-center ml-10">
+              <div className="w-full h-full rounded-full flex items-center justify-centera ml-10">
               <Image src={machineName === 'GTPL-122-gT-1000T-S7-1200' ? Fan1200: blower} alt="" width={60} height={60}/>
               </div>
             </div>
