@@ -1,5 +1,5 @@
 import Image from "next/image"
-
+import Fan1200 from "../../public/images/fan.jpg"
 
 export default function HVACDashboard({blower,data,formatValue,machineName}:any) {
   const getSiloColor = (temp: number) => {
@@ -260,7 +260,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
             <div className="flex items-center">
          
               <div className="w-full h-full rounded-full flex items-center justify-center ml-10">
-              <Image src={blower} alt="" width={60} height={60}/>
+              <Image src={machineName === 'GTPL-122-gT-1000T-S7-1200' ? Fan1200: blower} alt="" width={60} height={60}/>
               </div>
             </div>
           </div>
