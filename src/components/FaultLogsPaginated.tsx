@@ -1,7 +1,6 @@
 import useDebounce from "@/hooks/useDebounce";
 import { useState, useEffect } from "react";
-
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 500;
 
 interface TagData {
   tag: string;
@@ -57,7 +56,7 @@ const S7_200_TAGS = [
   "BLOWER_START_MANUAL_MOD",
   "BLOWER_STOP_MANUAL_MODE",
   "BUZZER_ON",
-  "C0ND_FAN_TOP",
+ 
   "COLD_AIR_TEMP_SENSOR_T1_OPEN",
   "COLD_AIR_TEMP_SENSOR_T1_SHORT_CIRCUIT",
   "COMPRESSOR_CIRCUIT_BREA_FAULT",
@@ -66,7 +65,7 @@ const S7_200_TAGS = [
   "COMPRESSOR_STOP_MANUAL",
   "COMPRESSOR_VISIBLE",
   "COND_FAN_CIRCUIT_BREAKE_FAULT",
-  "COND_FAN_MOTOR_OVERHEAT",
+
   "cond_fan_on",
   "COND_FAN_START_MANUAL_M",
   "COND_FAN_STOP_MANUAL_M",
@@ -75,7 +74,7 @@ const S7_200_TAGS = [
   "FAULT_RESET",
   "GREEN_LIGHT",
   "HEATER_CIRCUIT_BREAKER_FAULT",
-  "HEATER_OVER_HEAT",
+
   "HEATER_RCCCB_TRIP_FAULT",
   "HEATER_START_MANUAL",
   "HEATER_STOP_MANUAL",
@@ -85,10 +84,10 @@ const S7_200_TAGS = [
   "HOT_GAS_VALVE_ON",
   "HOT_GAS_VALVE_START_MAN",
   "HOT_GAS_VALVE_STOP_MAN",
-  "HP_TRANSDUCEER_FAILURE",
+ 
   "LOW_PRESSURE_FAULT",
   "LOW_PRESSURE_FAULT_LOCKED",
-  "LP_TRANSDUCER_FAILURE",
+ 
   "MANUAL_EN",
   "OPERATING_HOURS_RESET",
   "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
@@ -167,7 +166,7 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
       activeTags.push({
         tag,
         value,
-        createdAt: data.created_at || data.createdAt,
+        createdAt: data.created_at || data.createdAt || data?.created_on,
       });
     }
   });
