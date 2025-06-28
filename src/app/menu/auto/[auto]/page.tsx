@@ -147,7 +147,7 @@ export default function AutoPage() {
               SELECT AUTO
             </h1>
             <p className="text-muted-foreground">
-              SR. NO. {currentConfig.serialNumber} |{" "}
+              SR. NO. {auto} |{" "}
               {formatValue(data?.AI_RH_Analog_Scale, "%")} RH |{" "}
               {formatValue(data?.AI_Pa_Analog_Scale, " Pa")}
             </p>
