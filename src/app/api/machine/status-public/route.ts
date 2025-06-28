@@ -27,18 +27,7 @@ export async function GET() {
     const kaboTimestamp = kaboCreatedAt || currentTime;
 
     // DEBUG LOGGING
-    console.log('=== GTPL DEBUG ===');
-    console.log('Current GTPL ID:', gtpl?.id);
-    console.log('Previous GTPL ID:', previousGtplId);
-    console.log('Current GTPL created_on:', gtplCreatedOn);
-    console.log('Previous GTPL created_on:', previousGtplCreatedOn);
-
-    console.log('=== KABO DEBUG ===');
-    console.log('Current KABO ID:', kabo?.id);
-    console.log('Previous KABO ID:', previousKaboId);
-    console.log('Current KABO created_at:', kaboCreatedAt);
-    console.log('Previous KABO created_at:', previousKaboCreatedAt);
-
+    
     // Check if GTPL ID has increased from previous
     const gtplIdIncreased = gtpl?.id && previousGtplId ? gtpl.id > previousGtplId : false;
     
@@ -60,13 +49,7 @@ export async function GET() {
     const kaboHasNewData = kaboIdIncreased && kaboCreatedAtChanged;
 
     // MORE DEBUG LOGGING
-    console.log('=== COMPARISON RESULTS ===');
-    console.log('GTPL ID Increased:', gtplIdIncreased);
-    console.log('GTPL Created On Changed:', gtplCreatedOnChanged);
-    console.log('GTPL Has New Data:', gtplHasNewData);
-    console.log('KABO ID Increased:', kaboIdIncreased);
-    console.log('KABO Created At Changed:', kaboCreatedAtChanged);
-    console.log('KABO Has New Data:', kaboHasNewData);
+  
 
     // Update stored values for next comparison
     previousGtplId = gtpl?.id || null;
