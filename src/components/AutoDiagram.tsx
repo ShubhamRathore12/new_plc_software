@@ -203,9 +203,9 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       <div className="absolute left-110 top-48 ml-24">
         <div className="text-center">
           <div className="text-lg font-bold">T2</div>
-          <div className="text-lg font-bold">       {formatValue(
+          <div className="text-lg">       {formatValue(
                 data?.T2_temp_mean || data?.AMBIENT_AIR_TEMP_T2
-              ) || "N/A"}</div>
+              ) || "N/A"}°C </div>
         </div>
       </div>
 
@@ -238,7 +238,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
  
 
       {/* Additional Blower */}
-      <div className="absolute left-96 top-96 ml-32">
+      <div className="absolute left-96 top-92 ml-32">
         <div className= "text-black px-6 py-4 text-center rounded">
           <img src="https://www.thumbsfrog.com/1046553/pages/low-pressure-blower-image-1695819922-1046553.jpg" alt="" width={70} height={70}/>
           <div className="text-xs font-bold">BLOWER</div>
@@ -251,7 +251,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
 
       {/* Condenser Fan */}
       <div className="absolute right-32 top-32 max-[1500px]:right-9">
-        <div className="w-16 h-32 bg-pink-200 border-2 border-red-300 rounded-lg relative">
+        <div className="w-12 h-32 bg-pink-200 border-2 border-red-300 rounded-lg relative">
           <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
           <div className="absolute top-2 right-2">
             <div className="w-3 h-3 bg-red-500 rounded-full"></div>
@@ -265,7 +265,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
             </div>
           </div>
         </div>
-        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2 text-center">
+        <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
           <div className="text-sm font-bold">Condensor</div>
           <div>      {formatValue(data.Value_to_Display_COND_ACT_SPEED, "%")}</div>
         </div>
@@ -276,7 +276,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </div>
 
       {/* Compressor Unit */}
-      <div className="absolute right-32 bottom-32">
+      <div className="absolute right-32 bottom-32 max-[1600px]:left-[38rem]">
         <div className="w-20 h-12 rounded relative">
         <img src="https://tse2.mm.bing.net/th/id/OIP.I6O7E9W-F27nxBsa_GZ35wAAAA?r=0&w=370&h=370&rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3" width={80} height={80}/>  
         </div>
