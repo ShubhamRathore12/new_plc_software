@@ -122,27 +122,27 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
 
         {/* Main horizontal line across the top - extended to reach blower */}
 
-        <line x1="200" y1="120" x2="580" y2="120" stroke="black" strokeWidth="2" />
+        <line x1="200" y1="120" x2="500" y2="120" stroke="black" strokeWidth="2" />
 
         {/* Diagonal line from silo to main horizontal line */}
 
         <line x1="170" y1="180" x2="200" y2="120" stroke="black" strokeWidth="2" />
 
         {/* Vertical drops from main line to thermometers */}
-  {machineName !== "GTPL-122-gT-1000T-S7-1200" &&      <line x1="280" y1="120" x2="280" y2="128" stroke="black" strokeWidth="2" />}
+  {machineName !== "GTPL-122-gT-1000T-S7-1200" &&      <line x1="240" y1="120" x2="240" y2="128" stroke="black" strokeWidth="2" />}
   
 
-        <line x1="380" y1="120" x2="380" y2="128" stroke="black" strokeWidth="2" />
+        <line x1="320" y1="120" x2="320" y2="128" stroke="black" strokeWidth="2" />
 
-        <line x1="480" y1="120" x2="480" y2="128" stroke="black" strokeWidth="2" />
+        <line x1="410" y1="120" x2="410" y2="128" stroke="black" strokeWidth="2" />
 
         {/* Connection from top line to blower - NEW */}
 
-        <line x1="580" y1="120" x2="580" y2="400" stroke="black" strokeWidth="2" />
+        <line x1="500" y1="120" x2="500" y2="400" stroke="black" strokeWidth="2" />
 
         {/* Lower horizontal line for HTR units */}
 
-        <line x1="170" y1="300" x2="580" y2="300" stroke="black" strokeWidth="2" />
+        <line x1="170" y1="300" x2="500" y2="300" stroke="black" strokeWidth="2" />
 
         {/* Diagonal line from silo to lower horizontal line */}
 
@@ -162,8 +162,8 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </svg>
 
       {/* Larger Thermometers - TH and T1 increased in size */}
-      <div className="absolute left-64 top-32">
-        {machineName !== "GTPL-122-gT-1000T-S7-1200" &&   <div className="w-16 h-42 bg-pink-200 border-2 border-red-300 rounded-lg relative">
+      <div className="absolute left-54 top-32">
+        {machineName !== "GTPL-122-gT-1000T-S7-1200" &&   <div className="w-14 h-42 bg-pink-200 border-2 border-red-300 rounded-lg relative">
           <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
           <div className="absolute bottom-1 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
@@ -174,7 +174,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       
       </div>
 
-      <div className="absolute left-64 top-32 ml-24">
+      <div className="absolute left-50 top-32 ml-24">
         <div className="w-14 h-42 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
           <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded"></div>
           <div className="absolute top-1 left-1 right-1 h-3 bg-blue-500 rounded-full"></div>
@@ -188,8 +188,8 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
         </div>
       </div>
 
-      <div className="absolute left-64 top-32 ml-48">
-        <div className="w-16 h-42 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
+      <div className="absolute left-48 top-32 ml-48">
+        <div className="w-14 h-42 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
           <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded"></div>
           <div className="absolute top-1 left-1 right-1 h-3 bg-blue-500 rounded-full"></div>
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
@@ -203,14 +203,14 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       <div className="absolute left-110 top-48 ml-24">
         <div className="text-center">
           <div className="text-lg font-bold">T2</div>
-          <div className="text-lg">       {formatValue(
+          <div className="text-sm">       {formatValue(
                 data?.T2_temp_mean || data?.AMBIENT_AIR_TEMP_T2
               ) || "N/A"}°C </div>
         </div>
       </div>
 
       {/* HTR Units - Repositioned to align with lower line connections */}
-      <div className="absolute left-64 top-90 flex gap-8">
+      <div className="absolute left-54 top-90 flex gap-8">
         {machineName !== "GTPL-122-gT-1000T-S7-1200" &&  <div className="bg-red-600 text-white px-4 py-6 text-center rounded">
           <div className="text-xs font-bold">HTR</div>
           <div className="text-lg font-bold">{formatValue(data.Value_to_Display_HEATER, "%")}</div>
@@ -238,7 +238,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
  
 
       {/* Additional Blower */}
-      <div className="absolute left-96 top-92 ml-32">
+      <div className="absolute left-85 top-92 ml-32">
         <div className= "text-black px-6 py-4 text-center rounded">
           <img src="https://www.thumbsfrog.com/1046553/pages/low-pressure-blower-image-1695819922-1046553.jpg" alt="" width={70} height={70}/>
           <div className="text-xs font-bold">BLOWER</div>
@@ -250,7 +250,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </div>
 
       {/* Condenser Fan */}
-      <div className="absolute right-32 top-32 max-[1500px]:right-9">
+      <div className="absolute right-32 top-32 max-[1600px]:right-16">
         <div className="w-12 h-32 bg-pink-200 border-2 border-red-300 rounded-lg relative">
           <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
           <div className="absolute top-2 right-2">
@@ -276,7 +276,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </div>
 
       {/* Compressor Unit */}
-      <div className="absolute right-20 bottom-52 max-[1600px]:left-[38.2rem]">
+      <div className="absolute right-20 bottom-72 max-[1600px]:left-[37rem] max-[1600px]:bottom-56">
         <div className="w-20 h-12 rounded relative">
         <img src="https://tse2.mm.bing.net/th/id/OIP.I6O7E9W-F27nxBsa_GZ35wAAAA?r=0&w=370&h=370&rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3" width={80} height={80}/>  
         </div>
@@ -286,7 +286,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </div>
 
       {/* Pressure Readings */}
-      <div className="absolute right-20 bottom-2 flex gap-2 max-[1600px]:bottom-[6rem] max-[1600px]:right-2">
+      <div className="absolute right-20 bottom-42  flex gap-2 max-[1600px]:right-2 max-[1600px]:bottom-28 ">
         <div className="bg-yellow-400 text-black px-3 py-2 rounded text-sm font-bold">
           HP
           <br />
