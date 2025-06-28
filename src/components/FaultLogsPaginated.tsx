@@ -1,3 +1,4 @@
+import useDebounce from "@/hooks/useDebounce";
 import { useState, useEffect } from "react";
 
 const PAGE_SIZE = 10;
@@ -93,7 +94,6 @@ const S7_200_TAGS = [
   "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
   "SET_TIME",
   "THREE_PHASE_MONITORING_FAULT",
-
 ];
 
 const S7_1200_TAGS = [
@@ -134,30 +134,32 @@ const S7_1200_TAGS = [
   "Air_outlet_sensor_1_open",
   "Air_outlet_sensor_1_short_circuit",
   "Air_outlet_sensor_2_open",
-  "Air_outlet_sensor_2_short_circuit"
+  "Air_outlet_sensor_2_short_circuit",
 ];
 
 function extractActiveTags(data: any, machineName: string): TagData[] {
-  const tags = machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
+  const tags =
+    machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
   const isS7_200 = machineName === "GTPL-118-gT-80E-P-S7-200";
 
-  console.log('Processing data for machine:', machineName);
-  console.log('Data received:', data);
-  console.log('Using tags:', tags.slice(0, 5), '... (showing first 5)');
+  console.log("Processing data for machine:", machineName);
+  console.log("Data received:", data);
+  console.log("Using tags:", tags.slice(0, 5), "... (showing first 5)");
 
   const activeTags: TagData[] = [];
 
-  tags.forEach(tag => {
+  tags.forEach((tag) => {
     const value = data[tag];
     console.log(`Tag: ${tag}, Value: ${value}, Type: ${typeof value}`);
-    
+
     let isActive = false;
     if (isS7_200) {
       // For S7_200, check for "tr" string or true boolean
       isActive = value === "tr" || value === true || value === "true";
     } else {
       // For S7_1200, check for true boolean or "true" string
-      isActive = value === true || value === "true" || value === 1 || value === "1";
+      isActive =
+        value === true || value === "true" || value === 1 || value === "1";
     }
 
     if (isActive) {
@@ -165,24 +167,55 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
       activeTags.push({
         tag,
         value,
-        createdAt: data.created_at || data.createdAt ,
+        createdAt: data.created_at || data.createdAt,
       });
     }
   });
 
-  console.log('Total active tags found:', activeTags.length);
+  console.log("Total active tags found:", activeTags.length);
   return activeTags;
 }
 
 function formatTagName(tag: string): string {
-  return tag.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+  return tag
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (l) => l.toUpperCase());
 }
 
 function getTagCategory(tag: string): string {
-  if (tag.includes("fault") || tag.includes("FAULT") || tag.includes("OVER") || tag.includes("over") || tag.includes("TRIP") || tag.includes("trip")) return "fault";
-  if (tag.includes("TEMP") || tag.includes("temp") || tag.includes("SENSOR") || tag.includes("sensor")) return "sensor";
-  if (tag.includes("START") || tag.includes("start") || tag.includes("STOP") || tag.includes("stop") || tag.includes("ON") || tag.includes("on")) return "control";
-  if (tag.includes("MANUAL") || tag.includes("manual") || tag.includes("AUTO") || tag.includes("auto")) return "mode";
+  if (
+    tag.includes("fault") ||
+    tag.includes("FAULT") ||
+    tag.includes("OVER") ||
+    tag.includes("over") ||
+    tag.includes("TRIP") ||
+    tag.includes("trip")
+  )
+    return "fault";
+  if (
+    tag.includes("TEMP") ||
+    tag.includes("temp") ||
+    tag.includes("SENSOR") ||
+    tag.includes("sensor")
+  )
+    return "sensor";
+  if (
+    tag.includes("START") ||
+    tag.includes("start") ||
+    tag.includes("STOP") ||
+    tag.includes("stop") ||
+    tag.includes("ON") ||
+    tag.includes("on")
+  )
+    return "control";
+  if (
+    tag.includes("MANUAL") ||
+    tag.includes("manual") ||
+    tag.includes("AUTO") ||
+    tag.includes("auto")
+  )
+    return "mode";
   return "status";
 }
 
@@ -190,11 +223,16 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
   const category = getTagCategory(tagData.tag);
   const getCategoryStyle = (cat: string) => {
     switch (cat) {
-      case "fault": return "bg-red-50 text-red-800 border-red-200";
-      case "sensor": return "bg-blue-50 text-blue-800 border-blue-200";
-      case "control": return "bg-green-50 text-green-800 border-green-200";
-      case "mode": return "bg-purple-50 text-purple-800 border-purple-200";
-      default: return "bg-gray-50 text-gray-800 border-gray-200";
+      case "fault":
+        return "bg-red-50 text-red-800 border-red-200";
+      case "sensor":
+        return "bg-blue-50 text-blue-800 border-blue-200";
+      case "control":
+        return "bg-green-50 text-green-800 border-green-200";
+      case "mode":
+        return "bg-purple-50 text-purple-800 border-purple-200";
+      default:
+        return "bg-gray-50 text-gray-800 border-gray-200";
     }
   };
 
@@ -208,7 +246,9 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
         </span>
       </td>
       <td className="px-4 py-3 text-sm">
-        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getCategoryStyle(category)}`}>
+        <span
+          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${getCategoryStyle(category)}`}
+        >
           {category.charAt(0).toUpperCase() + category.slice(1)}
         </span>
       </td>
@@ -223,21 +263,36 @@ function ActiveTagsTable({ activeTags }: { activeTags: TagData[] }) {
       <table className="w-full border-collapse bg-white rounded-lg shadow-sm">
         <thead className="bg-gray-100">
           <tr>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Tag Name</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Description</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Category</th>
-            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">Timestamp</th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+              Tag Name
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+              Description
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+              Status
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+              Category
+            </th>
+            <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+              Timestamp
+            </th>
           </tr>
         </thead>
         <tbody>
           {activeTags.length === 0 ? (
             <tr>
-              <td colSpan={5} className="px-4 py-8 text-center text-gray-500">No active tags found</td>
+              <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
+                No active tags found
+              </td>
             </tr>
           ) : (
             activeTags.map((tagData, idx) => (
-              <ActiveTagRow key={`${tagData.tag}-${tagData.createdAt}-${idx}`} tagData={tagData} />
+              <ActiveTagRow
+                key={`${tagData.tag}-${tagData.createdAt}-${idx}`}
+                tagData={tagData}
+              />
             ))
           )}
         </tbody>
@@ -249,12 +304,18 @@ function ActiveTagsTable({ activeTags }: { activeTags: TagData[] }) {
 function StatisticsCards({ stats }: { stats: Stats }) {
   const getGradientClass = (color: string) => {
     switch (color) {
-      case "blue": return "bg-gradient-to-r from-blue-500 to-blue-600";
-      case "green": return "bg-gradient-to-r from-green-500 to-green-600";
-      case "red": return "bg-gradient-to-r from-red-500 to-red-600";
-      case "purple": return "bg-gradient-to-r from-purple-500 to-purple-600";
-      case "yellow": return "bg-gradient-to-r from-amber-500 to-yellow-600";
-      default: return "bg-gradient-to-r from-gray-500 to-gray-600";
+      case "blue":
+        return "bg-gradient-to-r from-blue-500 to-blue-600";
+      case "green":
+        return "bg-gradient-to-r from-green-500 to-green-600";
+      case "red":
+        return "bg-gradient-to-r from-red-500 to-red-600";
+      case "purple":
+        return "bg-gradient-to-r from-purple-500 to-purple-600";
+      case "yellow":
+        return "bg-gradient-to-r from-amber-500 to-yellow-600";
+      default:
+        return "bg-gradient-to-r from-gray-500 to-gray-600";
     }
   };
 
@@ -267,8 +328,8 @@ function StatisticsCards({ stats }: { stats: Stats }) {
         { label: "Current Page", value: stats.currentPage, color: "purple" },
         { label: "Total Pages", value: stats.totalPages, color: "yellow" },
       ].map((stat, idx) => (
-        <div 
-          key={idx} 
+        <div
+          key={idx}
           className={`${getGradientClass(stat.color)} p-5 rounded-lg shadow-md transform transition-all duration-300 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden`}
         >
           <div className="relative z-10">
@@ -300,7 +361,11 @@ function PaginationControls({
   const delta = 2;
   const visiblePages = [];
 
-  for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+  for (
+    let i = Math.max(2, currentPage - delta);
+    i <= Math.min(totalPages - 1, currentPage + delta);
+    i++
+  ) {
     visiblePages.push(i);
   }
 
@@ -323,28 +388,38 @@ function PaginationControls({
   return (
     <div className="flex items-center justify-between mt-6">
       <div className="text-sm text-gray-700">
-        Showing page {currentPage} of {totalPages} ({totalPages * PAGE_SIZE} total records)
+        Showing page {currentPage} of {totalPages} ({totalPages * PAGE_SIZE}{" "}
+        total records)
       </div>
       <div className="flex items-center space-x-2">
-        <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1 || loading}
-          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
+        <button
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1 || loading}
+          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
           Previous
         </button>
         {pageButtons.map((page, idx) => (
-          <button key={idx} disabled={page === "..." || loading || page === currentPage}
+          <button
+            key={idx}
+            disabled={page === "..." || loading || page === currentPage}
             onClick={() => typeof page === "number" && onPageChange(page)}
             className={`px-3 py-2 text-sm font-medium rounded-md ${
               page === currentPage
                 ? "bg-blue-600 text-white"
                 : page === "..."
-                ? "text-gray-400 cursor-default"
-                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
-            }`}>
+                  ? "text-gray-400 cursor-default"
+                  : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+            }`}
+          >
             {page}
           </button>
         ))}
-        <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages || loading}
-          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed">
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages || loading}
+          className="px-3 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        >
           Next
         </button>
       </div>
@@ -362,12 +437,18 @@ function LoadingIndicator() {
 }
 
 // Debug component to show raw data
-function DebugDataDisplay({ data, machineName }: { data: any[], machineName: string }) {
+function DebugDataDisplay({
+  data,
+  machineName,
+}: {
+  data: any[];
+  machineName: string;
+}) {
   const [showDebug, setShowDebug] = useState(false);
-  
+
   if (!showDebug) {
     return (
-      <button 
+      <button
         onClick={() => setShowDebug(true)}
         className="mb-4 px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
       >
@@ -376,47 +457,59 @@ function DebugDataDisplay({ data, machineName }: { data: any[], machineName: str
     );
   }
 
-  const tags = machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
+  const tags =
+    machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
   const sampleRecord = data[0] || {};
 
   return (
     <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
       <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold text-yellow-800">Debug Information</h3>
-        <button 
+        <h3 className="text-lg font-semibold text-yellow-800">
+          Debug Information
+        </h3>
+        <button
           onClick={() => setShowDebug(false)}
           className="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
         >
           Hide
         </button>
       </div>
-      
+
       <div className="space-y-4">
         <div>
-          <h4 className="font-medium text-yellow-700">Machine: {machineName}</h4>
-          <p className="text-sm text-yellow-600">Records found: {data.length}</p>
+          <h4 className="font-medium text-yellow-700">
+            Machine: {machineName}
+          </h4>
+          <p className="text-sm text-yellow-600">
+            Records found: {data.length}
+          </p>
         </div>
-        
+
         <div>
-          <h4 className="font-medium text-yellow-700">Expected Tags (first 10):</h4>
+          <h4 className="font-medium text-yellow-700">
+            Expected Tags (first 10):
+          </h4>
           <div className="text-sm text-yellow-600 bg-white p-2 rounded border">
-            {tags.slice(0, 10).join(', ')}
+            {tags.slice(0, 10).join(", ")}
           </div>
         </div>
-        
+
         <div>
           <h4 className="font-medium text-yellow-700">Sample Record Keys:</h4>
           <div className="text-sm text-yellow-600 bg-white p-2 rounded border max-h-32 overflow-y-auto">
-            {Object.keys(sampleRecord).join(', ')}
+            {Object.keys(sampleRecord).join(", ")}
           </div>
         </div>
-        
+
         <div>
-          <h4 className="font-medium text-yellow-700">Sample Values for Expected Tags:</h4>
+          <h4 className="font-medium text-yellow-700">
+            Sample Values for Expected Tags:
+          </h4>
           <div className="text-sm text-yellow-600 bg-white p-2 rounded border max-h-32 overflow-y-auto">
-            {tags.slice(0, 10).map(tag => (
+            {tags.slice(0, 10).map((tag) => (
               <div key={tag}>
-                <strong>{tag}:</strong> {JSON.stringify(sampleRecord[tag])} ({typeof sampleRecord[tag]})
+                <strong>{tag}:</strong> {JSON.stringify(sampleRecord[tag])} (
+                {typeof sampleRecord[tag]})
               </div>
             ))}
           </div>
@@ -426,7 +519,13 @@ function DebugDataDisplay({ data, machineName }: { data: any[], machineName: str
   );
 }
 
-export default function FaultLogsPaginated({ machineName }: { machineName: string }) {
+export default function FaultLogsPaginated({
+  machineName,
+}: {
+  machineName: string;
+}) {
+  const [searchTerm, setSearchTerm] = useState("");
+  const debouncedSearch = useDebounce(searchTerm, 500); // debounce after 500ms
   const [activeTags, setActiveTags] = useState<TagData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -446,12 +545,22 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
     totalPages: 0,
   });
 
-  const fetchLogs = async (pageNum: number) => {
+  const fetchLogs = async (pageNum: number, search = "") => {
     setLoading(true);
     setError(null);
     try {
-      const endpoint = machineName === "GTPL-118-gT-80E-P-S7-200" ? "/api/getSmart200Fault" : "/api/getSmart1200Fault";
-      const res = await fetch(`${endpoint}?page=${pageNum}&limit=${PAGE_SIZE}&from=2024-01-01&to=2024-12-31`);
+      const endpoint =
+        machineName === "GTPL-118-gT-80E-P-S7-200"
+          ? "/api/getSmart200Fault"
+          : "/api/getSmart1200Fault";
+      const url = new URL(`${endpoint}`, window.location.origin);
+      url.searchParams.append("page", pageNum.toString());
+      url.searchParams.append("limit", PAGE_SIZE.toString());
+      url.searchParams.append("from", "2024-01-01");
+      url.searchParams.append("to", "2025-12-31");
+      if (search) url.searchParams.append("search", search);
+
+      const res = await fetch(url.toString());
       if (!res.ok) throw new Error("Failed to fetch logs");
       const result = await res.json();
 
@@ -463,7 +572,9 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
         for (const record of result.data) {
           const tags = extractActiveTags(record, machineName);
           active.push(...tags);
-          faultCount += tags.filter(t => getTagCategory(t.tag) === "fault").length;
+          faultCount += tags.filter(
+            (t) => getTagCategory(t.tag) === "fault"
+          ).length;
         }
 
         setActiveTags(active);
@@ -481,7 +592,6 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
           page: result.page || pageNum,
         });
       } else {
-        console.warn("Unexpected response:", result);
         setActiveTags([]);
         setRawData([]);
       }
@@ -494,48 +604,77 @@ export default function FaultLogsPaginated({ machineName }: { machineName: strin
     }
   };
 
- useEffect(() => {
- 
-  fetchLogs(currentPage);
+  useEffect(() => {
+    fetchLogs(currentPage, debouncedSearch);
 
-  const intervalId = setInterval(() => {
-    fetchLogs(currentPage);
-  }, 5 * 60 * 1000); 
+    const intervalId = setInterval(
+      () => {
+        fetchLogs(currentPage, debouncedSearch);
+      },
+      5 * 60 * 1000
+    ); // every 5 min
 
-
-  return () => clearInterval(intervalId);
-}, [currentPage, machineName]);
+    return () => clearInterval(intervalId);
+  }, [currentPage, machineName, debouncedSearch]);
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Active {machineName} Tags Monitor</h2>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+            Active {machineName} Tags Monitor
+          </h2>
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Search by device name..."
+              className="w-full md:w-1/2 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1); // reset to page 1 on new search
+              }}
+            />
+          </div>
           <StatisticsCards stats={stats} />
-          {error && <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">{error}</div>}
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+              {error}
+            </div>
+          )}
           <DebugDataDisplay data={rawData} machineName={machineName} />
         </div>
         <div className="p-6">
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">Active Tags ({activeTags.length} found on this page)</h3>
-            <p className="text-sm text-gray-500">Showing only tags with active values • Page {currentPage} of {paginationInfo.totalPages}</p>
+            <h3 className="text-lg font-semibold text-gray-700">
+              Active Tags ({activeTags.length} found on this page)
+            </h3>
+            <p className="text-sm text-gray-500">
+              Filtered by: <strong>{debouncedSearch || "None"}</strong>
+            </p>
           </div>
-     {loading ? <LoadingIndicator /> : (
-  <>
-    <div className="border border-gray-200 rounded-lg">
-      <ActiveTagsTable activeTags={activeTags.filter(tag => getTagCategory(tag.tag) !== "control")} />
-    </div>
-    {paginationInfo.totalPages > 1 && (
-      <PaginationControls
-        currentPage={currentPage}
-        totalPages={paginationInfo.totalPages}
-        loading={loading}
-        onPageChange={page => setCurrentPage(page)}
-      />
-    )}
-  </>
-)}
 
+          {loading ? (
+            <LoadingIndicator />
+          ) : (
+            <>
+              <div className="border border-gray-200 rounded-lg">
+                <ActiveTagsTable
+                  activeTags={activeTags.filter(
+                    (tag) => getTagCategory(tag.tag) !== "control"
+                  )}
+                />
+              </div>
+              {paginationInfo.totalPages > 1 && (
+                <PaginationControls
+                  currentPage={currentPage}
+                  totalPages={paginationInfo.totalPages}
+                  loading={loading}
+                  onPageChange={(page) => setCurrentPage(page)}
+                />
+              )}
+            </>
+          )}
         </div>
       </div>
     </div>

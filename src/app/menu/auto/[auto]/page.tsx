@@ -17,7 +17,7 @@ import Home from "@/components/diagram-controls";
 import { useAutoData } from "@/hooks/useAutoData";
 import AutoDiagram from "@/components/AutoDiagram";
 import HVACDashboard from "../../../../components/AutoDiagram";
-import Fan from "../../../../../public/images/fan.jpg"
+import Fan from "../../../../../public/images/fan.png"
 
 export default function AutoPage() {
   const router = useRouter();
@@ -151,12 +151,14 @@ export default function AutoPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
               <div className="relative w-full h-full">
-                <Home
+                {/* <Home
                   data={data}
                   formatValue={formatValue}
                   machineName={auto}
-                />
-                {/* <HVACDashboard blower={Fan}/> */}
+                /> */}
+                <HVACDashboard blower={Fan}         data={data}
+                  formatValue={formatValue}
+                  machineName={auto}/>
               </div>
             </AnimatedContainer>
 
