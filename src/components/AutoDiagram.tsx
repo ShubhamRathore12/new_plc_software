@@ -270,13 +270,13 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
           <div>      {formatValue(data.Value_to_Display_COND_ACT_SPEED, "%")}</div>
         </div>
 
-           <div className="absolute -bottom-8 left-30 transform -translate-x-1/2 text-center">
+           {/* <div className="absolute -bottom-8 left-30 transform -translate-x-1/2 text-center">
           <div className="text-sm font-bold">Cond Fan</div>
-        </div>
+        </div> */}
       </div>
 
       {/* Compressor Unit */}
-      <div className="absolute right-32 bottom-32 max-[1600px]:left-[38rem]">
+      <div className="absolute right-20 bottom-52 max-[1600px]:left-[38.2rem]">
         <div className="w-20 h-12 rounded relative">
         <img src="https://tse2.mm.bing.net/th/id/OIP.I6O7E9W-F27nxBsa_GZ35wAAAA?r=0&w=370&h=370&rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3" width={80} height={80}/>  
         </div>
@@ -286,7 +286,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </div>
 
       {/* Pressure Readings */}
-      <div className="absolute right-20 bottom-2 flex gap-2">
+      <div className="absolute right-20 bottom-2 flex gap-2 max-[1600px]:bottom-[6rem] max-[1600px]:right-2">
         <div className="bg-yellow-400 text-black px-3 py-2 rounded text-sm font-bold">
           HP
           <br />
