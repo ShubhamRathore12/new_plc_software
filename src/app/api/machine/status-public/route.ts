@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { pool } from '@/lib/db';
 import { getMachineSpecificResponse, hasIdChanged, MachineResponse } from '@/lib/machineUtils';
 
-// Store previous IDs and timestamps in memory (you might want to use a database or cache for production)
+// Store previous IDs and timestamps in memory
 let previousGtplId: number | null = null;
 let previousKaboId: number | null = null;
 let previousGtplCreatedOn: string | null = null;
@@ -26,6 +26,19 @@ export async function GET() {
     const kaboCreatedAt = kabo?.created_at;
     const kaboTimestamp = kaboCreatedAt || currentTime;
 
+    // DEBUG LOGGING
+    console.log('=== GTPL DEBUG ===');
+    console.log('Current GTPL ID:', gtpl?.id);
+    console.log('Previous GTPL ID:', previousGtplId);
+    console.log('Current GTPL created_on:', gtplCreatedOn);
+    console.log('Previous GTPL created_on:', previousGtplCreatedOn);
+
+    console.log('=== KABO DEBUG ===');
+    console.log('Current KABO ID:', kabo?.id);
+    console.log('Previous KABO ID:', previousKaboId);
+    console.log('Current KABO created_at:', kaboCreatedAt);
+    console.log('Previous KABO created_at:', previousKaboCreatedAt);
+
     // Check if GTPL ID has increased from previous
     const gtplIdIncreased = gtpl?.id && previousGtplId ? gtpl.id > previousGtplId : false;
     
@@ -46,6 +59,15 @@ export async function GET() {
     // KABO returns true only if BOTH ID increased AND created_at changed
     const kaboHasNewData = kaboIdIncreased && kaboCreatedAtChanged;
 
+    // MORE DEBUG LOGGING
+    console.log('=== COMPARISON RESULTS ===');
+    console.log('GTPL ID Increased:', gtplIdIncreased);
+    console.log('GTPL Created On Changed:', gtplCreatedOnChanged);
+    console.log('GTPL Has New Data:', gtplHasNewData);
+    console.log('KABO ID Increased:', kaboIdIncreased);
+    console.log('KABO Created At Changed:', kaboCreatedAtChanged);
+    console.log('KABO Has New Data:', kaboHasNewData);
+
     // Update stored values for next comparison
     previousGtplId = gtpl?.id || null;
     previousKaboId = kabo?.id || null;
@@ -58,7 +80,7 @@ export async function GET() {
       lastUpdate: new Date(gtplTimestamp).toISOString(),
       hasNewData: gtplHasNewData,
       idChanged: gtplIdIncreased,
-      createdOnChanged: gtplCreatedOnChanged, // Additional field to track created_on changes
+      createdOnChanged: gtplCreatedOnChanged,
     };
 
     const kaboResponse: MachineResponse = {
@@ -67,7 +89,7 @@ export async function GET() {
       lastUpdate: new Date(kaboTimestamp).toISOString(),
       hasNewData: kaboHasNewData,
       idChanged: kaboIdIncreased,
-      createdAtChanged: kaboCreatedAtChanged, // Additional field to track created_at changes
+      createdAtChanged: kaboCreatedAtChanged,
     };
 
     return NextResponse.json({
