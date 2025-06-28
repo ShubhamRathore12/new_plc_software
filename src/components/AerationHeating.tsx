@@ -88,16 +88,14 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 
       {/* Connecting Lines - Exact Pattern */}
 
-        {/* Main horizontal line across the top - extended to reach blower */}
-
-        <line x1="200" y1="120" x2="500" y2="120" stroke="black" strokeWidth="2" />
+          <line x1="200" y1="120" x2="500" y2="120" stroke="black" strokeWidth="2" />
 
         {/* Diagonal line from silo to main horizontal line */}
 
         <line x1="170" y1="180" x2="200" y2="120" stroke="black" strokeWidth="2" />
 
         {/* Vertical drops from main line to thermometers */}
-  {machineName !== "GTPL-122-gT-1000T-S7-1200" &&      <line x1="240" y1="120" x2="240" y2="128" stroke="black" strokeWidth="2" />}
+  {machineName !== "GTPL-122-gT-1000T-S7-1200" &&      <line x1="240" y1="120" x2="240" y2="128" stroke="black" strokeWidth="0" />}
   
 
         <line x1="320" y1="120" x2="320" y2="128" stroke="black" strokeWidth="0" />
@@ -106,11 +104,11 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 
         {/* Connection from top line to blower - NEW */}
 
-        <line x1="500" y1="120" x2="500" y2="400" stroke="black" strokeWidth="2" />
+        <line x1="500" y1="120" x2="540" y2="400" stroke="black" strokeWidth="2" />
 
         {/* Lower horizontal line for HTR units */}
 
-        <line x1="170" y1="300" x2="500" y2="300" stroke="black" strokeWidth="2" />
+        <line x1="170" y1="300" x2="475" y2="300" stroke="black" strokeWidth="2" />
 
         {/* Diagonal line from silo to lower horizontal line */}
 
@@ -122,7 +120,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 
         <line x1="350" y1="300" x2="350" y2="320" stroke="black" strokeWidth="0" />
 
-        <line x1="420" y1="300" x2="420" y2="320" stroke="black" strokeWidth="0" />
+        <line x1="475" y1="300" x2="500" y2="400" stroke="black" strokeWidth="2" />
 
         {/* Line to condenser fan */}
 
@@ -130,19 +128,25 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
       </svg>
 
       {/* Larger Thermometers - TH and T1 increased in size */}
-        <div className="absolute left-54 top-32">
+        <div className="absolute left-82 top-32">
         <div className="w-14 h-42 bg-pink-200 border-2 border-red-300 rounded-lg relative">
           <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
           <div className="absolute bottom-1 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
+           <div className="absolute bottom-7 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
+                               <div className="absolute bottom-14 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
+                                               <div className="absolute bottom-20 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
+                                               <div className="absolute bottom-26 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
+                                               <div className="absolute bottom-34 left-1 right-1 h-4 bg-red-500 rounded-full"></div>
+
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
             <div className="text-sm font-bold">HTR </div>
-            <div className="text-sm">  {formatValue(data.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}</div>
+            
           </div>
         </div>
         </div>
 
       {/* T2 Temperature Display */}
-      <div className="absolute left-110 top-48 ml-24">
+         <div className="absolute left-90 top-80 ml-24">
         <div className="text-center">
           <div className="text-lg font-bold">T2</div>
           <div className="text-sm">       {formatValue(
@@ -153,21 +157,23 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 
       {/* HTR Units - Repositioned to align with lower line connections */}
  
-
-      {/* Blower Unit */}
- 
-{/* TH box next to Silo */}
-<div className="absolute left-[170px] top-[30px]">
-  <div className="flex flex-col items-center px-2 py-1">
-    <div className="text-sm font-bold text-gray-700 mb-1">TH</div>
+<div className="absolute left-[170px] top-[180px]">
+  <div className="flex flex-row items-center px-2 py-1 gap-2">
+    <div className="text-sm font-bold text-gray-700">
+      {machineName === "GTPL-122-gT-1000T-S7-1200" ? "T0" : "TH"}:
+    </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
-         {formatValue(
-                    data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.T0_temp_mean,
-                    "°C"
-                  )}
+      {formatValue(
+        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.T0_temp_mean,
+        "°C"
+      )}
     </div>
   </div>
 </div>
+      {/* Blower Unit */}
+ 
+{/* TH box next to Silo */}
+
 
       {/* Additional Blower */}
       <div className="absolute left-85 top-92 ml-32">
@@ -209,33 +215,26 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 
       {/* Set Duration - Below Running Time */}
 
-        <div className="absolute left-125 top-15">
-    <div className="flex items-center gap-3 px-3 py-2">
-      {/* Label */}
-      <div className="text-sm font-bold text-gray-700">
-      Delta 
-      </div>
-
-      {/* Value in black box */}
-      <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
+    <div className="absolute left-[500px] top-[60px]">
+  <div className="space-y-3">
+    {/* Row 1: Delta */}
+    <div className="flex items-center gap-1 px-2 py-2">
+      <div className="w-32 text-sm font-bold text-gray-700">Delta</div>
+      <div className="bg-black text-white px-1 py-2 rounded text-lg font-bold min-w-[60px] text-center">
         {data?.HEATING_MODE_SET_TH_FOR_HEATING_MODE || data?.DELTA_SET} °C
       </div>
     </div>
-  </div>
 
-  <div className="absolute left-125 top-32">
-    <div className="flex items-center gap-3 px-3 py-2">
-      {/* Label */}
-      <div className="text-sm font-bold text-gray-700">
-        Set Duration
-      </div>
-
-      {/* Value in black box */}
-      <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
+    {/* Row 2: Set Duration */}
+    <div className="flex items-center gap-1 px-2 py-2">
+      <div className="w-32 text-sm font-bold text-gray-700">Set Duration</div>
+      <div className="bg-black text-white px-1 py-2 rounded text-lg font-bold min-w-[60px] text-center">
         {formatValue(data?.HEATING_MODE_Set_Run_Duration || data?.SET_DURATION) || "00:00"}h
       </div>
     </div>
   </div>
+</div>
+
 
 </div>
   )

@@ -624,7 +624,7 @@ export default function FaultLogsPaginated({
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Active {machineName} Tags Monitor
           </h2>
-          <div className="mb-4">
+          {/* <div className="mb-4">
             <input
               type="text"
               placeholder="Search by device name..."
@@ -635,7 +635,7 @@ export default function FaultLogsPaginated({
                 setCurrentPage(1); // reset to page 1 on new search
               }}
             />
-          </div>
+          </div> */}
           <StatisticsCards stats={stats} />
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">

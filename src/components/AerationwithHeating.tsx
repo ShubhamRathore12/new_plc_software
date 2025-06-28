@@ -106,11 +106,11 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 
         {/* Connection from top line to blower - NEW */}
 
-        <line x1="500" y1="120" x2="500" y2="400" stroke="black" strokeWidth="2" />
+        <line x1="500" y1="120" x2="540" y2="400" stroke="black" strokeWidth="2" />
 
         {/* Lower horizontal line for HTR units */}
 
-        <line x1="170" y1="300" x2="500" y2="300" stroke="black" strokeWidth="2" />
+        <line x1="170" y1="300" x2="475" y2="300" stroke="black" strokeWidth="2" />
 
         {/* Diagonal line from silo to lower horizontal line */}
 
@@ -122,7 +122,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 
         <line x1="350" y1="300" x2="350" y2="320" stroke="black" strokeWidth="0" />
 
-        <line x1="420" y1="300" x2="420" y2="320" stroke="black" strokeWidth="0" />
+        <line x1="475" y1="300" x2="500" y2="400" stroke="black" strokeWidth="2" />
 
         {/* Line to condenser fan */}
 
@@ -133,7 +133,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
    
 
       {/* T2 Temperature Display */}
-      <div className="absolute left-110 top-48 ml-24">
+      <div className="absolute left-90 top-80 ml-24">
         <div className="text-center">
           <div className="text-lg font-bold">T2</div>
           <div className="text-sm">       {formatValue(
@@ -148,17 +148,20 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
       {/* Blower Unit */}
  
 {/* TH box next to Silo */}
-<div className="absolute left-[170px] top-[30px]">
-  <div className="flex flex-col items-center px-2 py-1">
-    <div className="text-sm font-bold text-gray-700 mb-1">{machineName !== "GTPL-122-gT-1000T-S7-1200" ? "T0" :'TH'}</div>
+<div className="absolute left-[170px] top-[180px]">
+  <div className="flex flex-row items-center px-2 py-1 gap-2">
+    <div className="text-sm font-bold text-gray-700">
+      {machineName === "GTPL-122-gT-1000T-S7-1200" ? "T0" : "TH"}:
+    </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
-         {formatValue(
-                    data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.T0_temp_mean,
-                    "°C"
-                  )}
+      {formatValue(
+        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.T0_temp_mean,
+        "°C"
+      )}
     </div>
   </div>
 </div>
+
 
       {/* Additional Blower */}
       <div className="absolute left-85 top-92 ml-32">
@@ -202,7 +205,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 
    {machineName === "GTPL-122-gT-1000T-S7-1200" && null }
    
-   {machineName == "GTPL-118-gT-80E-P-S7-200" && (
+
   <div className="absolute left-125 top-32">
     <div className="flex items-center gap-3 px-3 py-2">
       {/* Label */}
@@ -216,7 +219,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
       </div>
     </div>
   </div>
-)}
+
 </div>
   )
 }

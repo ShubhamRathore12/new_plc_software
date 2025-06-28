@@ -101,7 +101,7 @@ export default function AerationWithHeatingPage() {
                 formatValue={formatValue}
               /> */}
               <AerationHeating    data={data}
-                devices={devices}
+                machineName={devices}
                 heat={heat}
                 title="AERATION W/O HEATING"
                 formatValue={formatValue}/>
