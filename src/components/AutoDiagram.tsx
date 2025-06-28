@@ -250,7 +250,7 @@ export default function HVACDashboard({blower,data,formatValue,machineName}:any)
       </div>
 
       {/* Condenser Fan */}
-      <div className="absolute right-32 top-32">
+      <div className="absolute right-32 top-32 max-[1500px]:right-9">
         <div className="w-16 h-32 bg-pink-200 border-2 border-red-300 rounded-lg relative">
           <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
           <div className="absolute top-2 right-2">
