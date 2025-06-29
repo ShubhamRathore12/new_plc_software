@@ -325,30 +325,28 @@ export default function DevicesPage() {
                 </Button>
                 {isCompanyDropdownOpen && (
                   <Card className="absolute z-20 w-full mt-2 max-h-60 overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 animate-in slide-in-from-top-2 duration-200">
-                    {["Grain Technik", "Company A", "Company B"].map(
-                      (company) => (
-                        <Card
-                          key={company}
-                          className="flex items-center p-3 m-2 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 rounded-lg transition-all duration-200 hover:scale-[1.02] border-0 shadow-sm hover:shadow-md"
-                          onClick={() => {
-                            setSelectedCompany(company);
-                            setIsCompanyDropdownOpen(false);
-                          }}
-                        >
-                          <div className="relative">
-                            <img
-                              src="/images/1200.jpg"
-                              alt={company}
-                              className="w-10 h-10 object-cover rounded-lg mr-3 ring-2 ring-purple-200 dark:ring-purple-800"
-                            />
-                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800"></div>
-                          </div>
-                          <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-                            {company}
-                          </span>
-                        </Card>
-                      )
-                    )}
+                    {["Grain Technik"].map((company) => (
+                      <Card
+                        key={company}
+                        className="flex items-center p-3 m-2 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 rounded-lg transition-all duration-200 hover:scale-[1.02] border-0 shadow-sm hover:shadow-md"
+                        onClick={() => {
+                          setSelectedCompany(company);
+                          setIsCompanyDropdownOpen(false);
+                        }}
+                      >
+                        <div className="relative">
+                          <img
+                            src="/images/1200.jpg"
+                            alt={company}
+                            className="w-10 h-10 object-cover rounded-lg mr-3 ring-2 ring-purple-200 dark:ring-purple-800"
+                          />
+                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800"></div>
+                        </div>
+                        <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                          {company}
+                        </span>
+                      </Card>
+                    ))}
                   </Card>
                 )}
               </div>
