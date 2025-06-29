@@ -18,6 +18,7 @@ import { motion } from "framer-motion";
 import { useAutoData } from "@/hooks/useAutoData";
 import Home from "@/components/aeration-control";
 import AerationwithHeating from "@/components/AerationwithHeating";
+import useIsMobile from "@/hooks/useIsMobile";
 
 export default function AerationWithoutHeatingPage() {
   const router = useRouter();
@@ -54,6 +55,8 @@ export default function AerationWithoutHeatingPage() {
     Aeration_stop,
   } = data || {};
 
+  const isMobile = useIsMobile();
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -74,6 +77,23 @@ export default function AerationWithoutHeatingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
+              {isMobile ? (
+                <Home
+                  data={data}
+                  devices={devices}
+                  heat={heat}
+                  title="AERATION W/O HEATING"
+                  formatValue={formatValue}
+                />
+              ) : (
+                <AerationwithHeating
+                  data={data}
+                  machineName={devices}
+                  heat={heat}
+                  title="AERATION W/O HEATING"
+                  formatValue={formatValue}
+                />
+              )}
               {/* <Home
                 data={data}
                 devices={devices}
@@ -81,11 +101,6 @@ export default function AerationWithoutHeatingPage() {
                 title="AERATION W/O HEATING"
                 formatValue={formatValue}
               /> */}
-              <AerationwithHeating     data={data}
-                machineName={devices}
-                heat={heat}
-                title="AERATION W/O HEATING"
-                formatValue={formatValue}/>
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>

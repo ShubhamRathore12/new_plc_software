@@ -210,8 +210,7 @@ export default function AutoPage() {
                   machineName={auto}
                 /> */}
                 {isMobile ? (
-                  <MobileAutoDiagram
-                    blower={Fan}
+                  <Home
                     data={data}
                     formatValue={formatValue}
                     machineName={auto}

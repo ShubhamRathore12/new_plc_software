@@ -21,14 +21,16 @@ import { format } from "@/lib/utils";
 import { useAutoData } from "@/hooks/useAutoData"; // ✅ USE HOOK
 import Home from "@/components/aeartionheating-control";
 import AerationHeating from "@/components/AerationHeating";
-
+import useIsMobile from "@/hooks/useIsMobile";
 
 export default function AerationWithHeatingPage() {
   const router = useRouter();
   const heat = useParams();
   const devices = heat["with-heating"];
 
-  const { data, isConnected, error, formatValue } = useAutoData(devices as string); // ✅ FETCH VIA HOOK
+  const { data, isConnected, error, formatValue } = useAutoData(
+    devices as string
+  ); // ✅ FETCH VIA HOOK
 
   const [isRunning, setIsRunning] = useState(false);
   const [continuousMode, setContinuousMode] = useState(false);
@@ -75,6 +77,8 @@ export default function AerationWithHeatingPage() {
   };
   const handleBack = () => router.push(`/menu/${devices}`);
 
+  const isMobile = useIsMobile();
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -93,24 +97,38 @@ export default function AerationWithHeatingPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <AnimatedContainer className="lg:col-span-2" delay={1}>
-            {/* <Home
+              {isMobile ? (
+                <Home
+                  data={data}
+                  devices={devices}
+                  heat={heat}
+                  title="AERATION W/O HEATING"
+                  formatValue={formatValue}
+                />
+              ) : (
+                <AerationHeating
+                  data={data}
+                  machineName={devices}
+                  heat={heat}
+                  title="AERATION W/O HEATING"
+                  formatValue={formatValue}
+                />
+              )}
+              {/* <Home
                 data={data}
                 devices={devices}
                 heat={heat}
                 title="AERATION W/O HEATING"
                 formatValue={formatValue}
               /> */}
-              <AerationHeating    data={data}
-                machineName={devices}
-                heat={heat}
-                title="AERATION W/O HEATING"
-                formatValue={formatValue}/>
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Aeration Control</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    Aeration Control
+                  </h2>
                   <div className="space-y-6">
                     <div className="flex items-center space-x-2">
                       <Switch
@@ -166,7 +184,7 @@ export default function AerationWithHeatingPage() {
                     <div className="flex items-center space-x-4">
                       <Input
                         type="number"
-                        value={data?.RUNNING_HOUR1||runningHours}
+                        value={data?.RUNNING_HOUR1 || runningHours}
                         onChange={(e) =>
                           setRunningHours(Number.parseInt(e.target.value) || 0)
                         }
@@ -177,9 +195,11 @@ export default function AerationWithHeatingPage() {
                       <span>h</span>
                       <Input
                         type="number"
-                        value={data?.RUNNING_MINUTE1 ||runningMinutes}
+                        value={data?.RUNNING_MINUTE1 || runningMinutes}
                         onChange={(e) =>
-                          setRunningMinutes(Number.parseInt(e.target.value) || 0)
+                          setRunningMinutes(
+                            Number.parseInt(e.target.value) || 0
+                          )
                         }
                         className="w-16"
                         min={0}
@@ -197,19 +217,33 @@ export default function AerationWithHeatingPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>TH (Supply Air)</span>
-                      <span className="font-medium">{formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}</span>
+                      <span className="font-medium">
+                        {formatValue(
+                          AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                          "°C"
+                        )}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>
-                      <span className="font-medium">{formatValue(AI_AMBIANT_TEMP ||data?.AMBIENT_AIR_TEMP_T2, "°C")}</span>
+                      <span className="font-medium">
+                        {formatValue(
+                          AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2,
+                          "°C"
+                        )}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>BLOWER</span>
-                      <span className="font-medium">{formatValue(Value_to_Display_EVAP_ACT_SPEED, "%")}</span>
+                      <span className="font-medium">
+                        {formatValue(Value_to_Display_EVAP_ACT_SPEED, "%")}
+                      </span>
                     </div>
                     <div className="flex justify-between">
                       <span>HTR</span>
-                      <span className="font-medium">{formatValue(Value_to_Display_HEATER, "%")}</span>
+                      <span className="font-medium">
+                        {formatValue(Value_to_Display_HEATER, "%")}
+                      </span>
                     </div>
                   </div>
                 </CardContent>
@@ -243,7 +277,11 @@ export default function AerationWithHeatingPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 2.3 }}
               >
-                <Button variant="outline" className="w-full" onClick={handleBack}>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleBack}
+                >
                   BACK
                 </Button>
               </motion.div>
