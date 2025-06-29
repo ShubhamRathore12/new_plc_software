@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,27 @@ import { useFieldVisibility } from "@/hooks/useFieldVisibility";
 import { useDataStore } from "@/lib/store";
 import { useLanguage } from "@/providers/language-provider";
 import { useMachineStatusFeed } from "@/hooks/useMachineStatusFeed";
+import { useAutoData } from "@/hooks/useAutoData";
+
+// Define interfaces for type safety
+interface Device {
+  name: string;
+  location: string;
+  image: string;
+  plc: string;
+  chillerModel: string;
+}
+
+interface Location {
+  name: string;
+  image: string;
+}
+
+interface DeviceStatus {
+  machineStatus?: boolean;
+  internetStatus?: boolean;
+  condFanOn?: boolean;
+}
 
 export default function DevicesPage() {
   const [selectedLocation, setSelectedLocation] = useState<string>("");
@@ -36,9 +57,36 @@ export default function DevicesPage() {
   const companyDropdownRef = useRef<HTMLDivElement>(null);
 
   const { status } = useMachineStatusFeed();
+  const { data } = useDataStore();
+  const { showCompanyField } = useFieldVisibility(data);
 
-  const allDevices = [
-    // ⬆️ First: GTPL-118
+  // Debug: Log the showCompanyField value
+  console.log("showCompanyField:", showCompanyField);
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        locationDropdownRef.current &&
+        !locationDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsLocationDropdownOpen(false);
+      }
+      if (
+        companyDropdownRef.current &&
+        !companyDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsCompanyDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  const allDevices: Device[] = [
     {
       name: "GTPL-122-gT-1000T-S7-1200",
       location: "Noida---kanpur",
@@ -53,10 +101,6 @@ export default function DevicesPage() {
       plc: "S7-200",
       chillerModel: "gT-80E-P",
     },
-
-    // ⬆️ Second: GTPL-122
-
-    // Remaining in original order (excluding 118 & 122)
     {
       name: "GTPL-108-gT-40E-P-S7-200",
       location: "Germany",
@@ -150,8 +194,8 @@ export default function DevicesPage() {
     },
   ];
 
-  const locations = [
-    { name: "All", image: "/images/1200.jpg" }, // default "All" option
+  const locations: Location[] = [
+    { name: "All", image: "/images/1200.jpg" },
     ...Array.from(new Set(allDevices.map((d) => d.location))).map((loc) => ({
       name: loc,
       image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
@@ -166,16 +210,26 @@ export default function DevicesPage() {
   );
 
   const deviceNameToStatusKey: Record<string, string> = {
-    "GTPL-122-gT-1000T-S7-1200": "gtpl",
-    "GTPL-118-gT-80E-P-S7-200": "kabo",
+    "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
+    "GTPL-118-gT-80E-P-S7-200": "KABO_200",
+    "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
+    "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
+    "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
+    "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
+    "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
+    "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
+    "GTPL-114-gT-140E-S7-1200": "GTPL_114",
+    "GTPL-115-gT-180E-S7-1200": "GTPL_115",
+    "GTPL-116-gT-240E-S7-1200": "GTPL_116",
+    "GTPL-117-gT-320E-S7-1200": "GTPL_117",
+    "GTPL-119-gT-180E-S7-1200": "GTPL_119",
+    "GTPL-120-gT-180E-S7-1200": "GTPL_120",
+    "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
   };
 
   const handleViewMore = (deviceName: string) => {
     router.push(`/menu/${deviceName}`);
   };
-
-  const { data } = useDataStore();
-  const { showCompanyField } = useFieldVisibility(data);
 
   return (
     <DashboardLayout>
@@ -197,7 +251,7 @@ export default function DevicesPage() {
               </p>
             </div>
 
-            {/* Modern Dropdown Section */}
+            {/* Modern Dropdown Section - Updated to always show company dropdown */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               {/* Location dropdown */}
               <div className="relative" ref={locationDropdownRef}>
@@ -248,7 +302,7 @@ export default function DevicesPage() {
                 )}
               </div>
 
-              {/* Company dropdown */}
+              {/* Company dropdown - Now always shown, with fallback for when hook fails */}
               <div className="relative" ref={companyDropdownRef}>
                 <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 flex items-center gap-2">
                   <Building2 className="h-4 w-4 text-purple-500" />
@@ -271,28 +325,30 @@ export default function DevicesPage() {
                 </Button>
                 {isCompanyDropdownOpen && (
                   <Card className="absolute z-20 w-full mt-2 max-h-60 overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 animate-in slide-in-from-top-2 duration-200">
-                    {["Grain Technik"].map((company) => (
-                      <Card
-                        key={company}
-                        className="flex items-center p-3 m-2 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 rounded-lg transition-all duration-200 hover:scale-[1.02] border-0 shadow-sm hover:shadow-md"
-                        onClick={() => {
-                          setSelectedCompany(company);
-                          setIsCompanyDropdownOpen(false);
-                        }}
-                      >
-                        <div className="relative">
-                          <img
-                            src="/images/1200.jpg"
-                            alt={company}
-                            className="w-10 h-10 object-cover rounded-lg mr-3 ring-2 ring-purple-200 dark:ring-purple-800"
-                          />
-                          <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800"></div>
-                        </div>
-                        <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
-                          {company}
-                        </span>
-                      </Card>
-                    ))}
+                    {["Grain Technik", "Company A", "Company B"].map(
+                      (company) => (
+                        <Card
+                          key={company}
+                          className="flex items-center p-3 m-2 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 rounded-lg transition-all duration-200 hover:scale-[1.02] border-0 shadow-sm hover:shadow-md"
+                          onClick={() => {
+                            setSelectedCompany(company);
+                            setIsCompanyDropdownOpen(false);
+                          }}
+                        >
+                          <div className="relative">
+                            <img
+                              src="/images/1200.jpg"
+                              alt={company}
+                              className="w-10 h-10 object-cover rounded-lg mr-3 ring-2 ring-purple-200 dark:ring-purple-800"
+                            />
+                            <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800"></div>
+                          </div>
+                          <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
+                            {company}
+                          </span>
+                        </Card>
+                      )
+                    )}
                   </Card>
                 )}
               </div>
@@ -300,15 +356,15 @@ export default function DevicesPage() {
 
             {/* Enhanced Device Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredDevices.map((device: any, index) => {
+              {filteredDevices.map((device: Device, index) => {
                 const key = deviceNameToStatusKey[device.name];
-                const deviceStatus = key
-                  ? (status as Record<string, any>)?.[key] || {}
-                  : {};
-                const isMachineRunning = deviceStatus.machineStatus ?? false;
+                const deviceStatus = status.machines.find(
+                  (m) => m.machineName === key
+                );
+                const isMachineRunning = deviceStatus?.machineStatus ?? false;
                 const isInternetConnected =
-                  deviceStatus.internetStatus ?? false;
-                const isCoolingWorking = deviceStatus.condFanOn ?? false;
+                  deviceStatus?.internetStatus ?? false;
+                const isCoolingWorking = deviceStatus?.hasNewData ?? false;
 
                 return (
                   <Card
@@ -351,7 +407,9 @@ export default function DevicesPage() {
 
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                           <Building2 className="h-4 w-4 text-purple-500" />
-                          <span className="font-medium">Grain Technik</span>
+                          <span className="font-medium">
+                            {selectedCompany || "Grain Technik"}
+                          </span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">

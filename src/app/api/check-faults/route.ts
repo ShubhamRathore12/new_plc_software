@@ -119,223 +119,150 @@ const MACHINE_CONFIG = {
   "GTPL-118-gT-80E-P-S7-200": {
     table: "kabomachinedatasmart200",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
   "GTPL-108-gT-40E-P-S7-200": {
     table: "GTPL_108_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
   "GTPL-109-gT-40E-P-S7-200": {
     table: "GTPL_109_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
   "GTPL-110-gT-40E-P-S7-200": {
     table: "GTPL_110_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
   "GTPL-111-gT-80E-P-S7-200": {
     table: "GTPL_111_gT_80E_P_S7_200_Germany",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
   "GTPL-112-gT-80E-P-S7-200": {
     table: "GTPL_112_gT_80E_P_S7_200_Germany",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
   "GTPL-113-gT-80E-P-S7-200": {
     table: "GTPL_113_gT_80E_P_S7_200_Germany",
     tags: S7_200_TAGS,
-    type: "S7-200",
+    type: "S7-200"
   },
-
+  
   // S7-1200 machines
   "GTPL-122-gT-1000T-S7-1200": {
     table: "gtpl_122_s7_1200_01",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "Gtpl-S7-1200-02": {
     table: "gtpl_122_s7_1200_01",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-114-gT-140E-S7-1200": {
     table: "GTPL_114_GT_140E_S7_1200",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-115-gT-180E-S7-1200": {
     table: "GTPL_115_GT_180E_S7_1200",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-116-gT-240E-S7-1200": {
     table: "GTPL_116_GT_240E_S7_1200",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-117-gT-320E-S7-1200": {
     table: "GTPL_117_GT_320E_S7_1200",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-119-gT-180E-S7-1200": {
     table: "GTPL_119_GT_180E_S7_1200",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-120-gT-180E-S7-1200": {
     table: "GTPL_120_GT_180E_S7_1200",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
+    type: "S7-1200"
   },
   "GTPL-121-gT-1000T-S7-1200": {
     table: "GTPL_121_GT1000T",
     tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
+    type: "S7-1200"
+  }
 };
 
 // Function to check for faults based on machine type
-async function checkFaultsAndNotify(record: any, machineName: string) {
-  const machineConfig =
-    MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
-  if (!machineConfig) return [];
-
-  const activeFaults = [];
-  const tags = machineConfig.tags;
-
-  if (!record || typeof record !== "object") return [];
-
-  for (const tag of tags) {
-    const value = record[tag];
-    if (
-      value === true ||
-      value === 1 ||
-      value === "tr" ||
-      (typeof value === "string" && value.toLowerCase() === "true")
-    ) {
-      activeFaults.push({ tag, value, machineType: machineConfig.type });
-    }
-  }
-
-  if (activeFaults.length > 0) {
-    try {
-      const faultData = {
-        recordId: record.id,
-        machineName,
-        machineType: machineConfig.type,
-        table: machineConfig.table,
-        timestamp: new Date().toISOString(),
-        activeFaults,
-        recordData: record,
-      };
-
-      const response = await fetch("YOUR_API_ENDPOINT_HERE", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(faultData),
-      });
-
-      if (!response.ok) {
-        console.error("Failed to send fault data to API:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error sending fault data to API:", error);
-    }
-  }
-
-  return activeFaults;
-}
-
-async function getPreviousRecords(
-  currentRecordId: number,
-  machineName: string,
-  table: string,
-  limit = 10
-) {
-  try {
-    const [rows]: any = await pool.query(
-      `SELECT * FROM \`${table}\` WHERE id < ? ORDER BY id DESC LIMIT ?`,
-      [currentRecordId, limit]
-    );
-    return rows || [];
-  } catch (error) {
-    console.error("Error fetching previous records:", error);
+function checkFaults(record: any, machineName: string) {
+  const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+  
+  if (!machineConfig) {
+    console.warn(`No configuration found for machine: ${machineName}`);
     return [];
   }
+  
+  const activeFaults = [];
+  const tags = machineConfig.tags;
+  
+  // Check each tag for true values
+  for (const tag of tags) {
+    if (record[tag] === true || record[tag] === 1 || record[tag] === "tr") {
+      activeFaults.push({
+        tag,
+        value: record[tag],
+        machineType: machineConfig.type
+      });
+    }
+  }
+  
+  return activeFaults;
 }
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get("page") || "1", 10);
-  const limit = parseInt(searchParams.get("limit") || "10", 10);
-  const offset = (page - 1) * limit;
-  const search = searchParams.get("search")?.trim() || "";
   const machineName = searchParams.get("machineName")?.trim() || "";
-  const checkFaults = searchParams.get("checkFaults") === "true";
-
+  
   try {
-    const machineConfig =
-      MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+    // Get machine configuration
+    const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+    
     if (!machineConfig) {
       return new Response(
-        JSON.stringify({
+        JSON.stringify({ 
           error: `No configuration found for machine: ${machineName}`,
-          availableMachines: Object.keys(MACHINE_CONFIG),
+          availableMachines: Object.keys(MACHINE_CONFIG)
         }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
       );
     }
-
+    
     const table = machineConfig.table;
-    let whereClause = "";
-    const values: any[] = [];
-
-    if (search) {
-      whereClause = "WHERE machine_name LIKE ?";
-      values.push(`%${search}%`);
-    }
-
-    const [[{ count }]]: any = await pool.query(
-      `SELECT COUNT(*) AS count FROM \`${table}\` ${whereClause}`,
-      values
+    
+    // Get the latest record for the machine
+    const [rows]: any = await pool.query(
+      `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT 1`
     );
-
-    let rows: any[] = [];
-    try {
-      const [result] = await pool.query(
-        `SELECT * FROM \`${table}\` ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`,
-        [...values, limit, offset]
-      );
-      rows = Array.isArray(result) ? result : [];
-    } catch (err) {
-      rows = [];
-    }
-
-    const total = Number(count) || 0;
-    const totalPages = Math.max(1, Math.ceil(total / limit));
-
-    if (!Array.isArray(rows) || rows.length === 0) {
-      console.log(
-        `[INFO] No data found in table: ${table} for machine: ${machineName}`
-      );
+    
+    if (rows.length === 0) {
       return new Response(
         JSON.stringify({
-          data: [],
-          total: 0,
-          totalPages: 1,
-          page,
-          limit,
-          message: `No records found for machine: ${machineName}`,
           machineName,
           machineType: machineConfig.type,
           table: machineConfig.table,
-          faultCheckingEnabled: checkFaults,
+          faults: [],
+          faultCount: 0,
+          message: "No data found for this machine"
         }),
         {
           status: 200,
@@ -343,57 +270,93 @@ export async function GET(req: Request) {
         }
       );
     }
-
-    const enhancedData = [];
-
-    for (const record of rows) {
-      let faultInfo = null;
-      let previousRecords = null;
-
-      if (checkFaults) {
-        const activeFaults = await checkFaultsAndNotify(record, machineName);
-        if (activeFaults.length > 0) {
-          previousRecords = await getPreviousRecords(
-            record.id,
-            machineName,
-            table
-          );
-        }
-
-        faultInfo = {
-          activeFaults,
-          faultCount: activeFaults.length,
-          machineType: machineConfig.type,
-          previousRecords,
-        };
-      }
-
-      enhancedData.push({
-        ...record,
-        faultInfo,
-      });
-    }
-
+    
+    const latestRecord = rows[0];
+    const activeFaults = checkFaults(latestRecord, machineName);
+    
     return new Response(
       JSON.stringify({
-        data: enhancedData,
-        total,
-        totalPages,
-        page,
-        limit,
-        search,
         machineName,
         machineType: machineConfig.type,
         table: machineConfig.table,
-        faultCheckingEnabled: checkFaults,
+        recordId: latestRecord.id,
+        timestamp: latestRecord.created_on || latestRecord.created_at || new Date().toISOString(),
+        faults: activeFaults,
+        faultCount: activeFaults.length,
+        hasFaults: activeFaults.length > 0,
+        recordData: latestRecord
       }),
-      { status: 200, headers: { "Content-Type": "application/json" } }
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
     );
   } catch (err: any) {
-    console.error("Unhandled DB error:", err.message || err);
-    return new Response(JSON.stringify({ error: "Database error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+    console.error("Fault check error:", err?.message || err);
+    return new Response(
+      JSON.stringify({ 
+        error: "Database error",
+        message: err?.message || "Unknown error"
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+}
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { machineName, recordData } = body;
+    
+    if (!machineName || !recordData) {
+      return new Response(
+        JSON.stringify({ 
+          error: "Missing required fields: machineName and recordData"
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+    
+    const activeFaults = checkFaults(recordData, machineName);
+    
+    // If faults found, you can send notifications here
+    if (activeFaults.length > 0) {
+      // Example: Send email notification
+      // await sendFaultNotification(machineName, activeFaults);
+      
+      console.log(`Faults detected for ${machineName}:`, activeFaults);
+    }
+    
+    return new Response(
+      JSON.stringify({
+        machineName,
+        faults: activeFaults,
+        faultCount: activeFaults.length,
+        hasFaults: activeFaults.length > 0,
+        timestamp: new Date().toISOString()
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  } catch (err: any) {
+    console.error("Fault check error:", err?.message || err);
+    return new Response(
+      JSON.stringify({ 
+        error: "Processing error",
+        message: err?.message || "Unknown error"
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

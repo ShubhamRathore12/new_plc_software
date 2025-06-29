@@ -56,7 +56,7 @@ const S7_200_TAGS = [
   "BLOWER_START_MANUAL_MOD",
   "BLOWER_STOP_MANUAL_MODE",
   "BUZZER_ON",
- 
+
   "COLD_AIR_TEMP_SENSOR_T1_OPEN",
   "COLD_AIR_TEMP_SENSOR_T1_SHORT_CIRCUIT",
   "COMPRESSOR_CIRCUIT_BREA_FAULT",
@@ -84,10 +84,10 @@ const S7_200_TAGS = [
   "HOT_GAS_VALVE_ON",
   "HOT_GAS_VALVE_START_MAN",
   "HOT_GAS_VALVE_STOP_MAN",
- 
+
   "LOW_PRESSURE_FAULT",
   "LOW_PRESSURE_FAULT_LOCKED",
- 
+
   "MANUAL_EN",
   "OPERATING_HOURS_RESET",
   "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
@@ -136,25 +136,42 @@ const S7_1200_TAGS = [
   "Air_outlet_sensor_2_short_circuit",
 ];
 
-function extractActiveTags(data: any, machineName: string): TagData[] {
-  const tags =
-    machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
-  const isS7_200 = machineName === "GTPL-118-gT-80E-P-S7-200";
+const S7_200_MACHINES = [
+  "GTPL-118-gT-80E-P-S7-200",
+  "GTPL-108-gT-40E-P-S7-200",
+  "GTPL-109-gT-40E-P-S7-200",
+  "GTPL-110-gT-40E-P-S7-200",
+  "GTPL-111-gT-80E-P-S7-200",
+  "GTPL-112-gT-80E-P-S7-200",
+  "GTPL-113-gT-80E-P-S7-200",
+];
 
-  console.log("Processing data for machine:", machineName);
-  console.log("Data received:", data);
-  console.log("Using tags:", tags.slice(0, 5), "... (showing first 5)");
+function extractActiveTags(data: any, machineName: string): TagData[] {
+  if (!data || typeof data !== "object") {
+    console.warn("Invalid data provided to extractActiveTags:", data);
+    return [];
+  }
+
+  const tags = S7_200_MACHINES.includes(machineName)
+    ? S7_200_TAGS
+    : S7_1200_TAGS;
+  const isS7_200 = S7_200_MACHINES.includes(machineName);
 
   const activeTags: TagData[] = [];
 
   tags.forEach((tag) => {
     const value = data[tag];
-    console.log(`Tag: ${tag}, Value: ${value}, Type: ${typeof value}`);
+
+    // Skip if value is undefined, null, or empty string
+    if (value === undefined || value === null || value === "") {
+      return;
+    }
 
     let isActive = false;
     if (isS7_200) {
       // For S7_200, check for "tr" string or true boolean
-      isActive = value === "tr" || value === true || value === "true";
+      isActive =
+        value === "tr" || value === true || value === "true" || value === 1;
     } else {
       // For S7_1200, check for true boolean or "true" string
       isActive =
@@ -162,16 +179,23 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
     }
 
     if (isActive) {
-      console.log(`Active tag found: ${tag} with value: ${value}`);
+      // Get timestamp from various possible fields
+      const timestamp =
+        data.created_at ||
+        data.createdAt ||
+        data.created_on ||
+        data.timestamp ||
+        data.updated_at ||
+        new Date().toISOString();
+
       activeTags.push({
         tag,
         value,
-        createdAt: data.created_at || data.createdAt || data?.created_on,
+        createdAt: timestamp,
       });
     }
   });
 
-  console.log("Total active tags found:", activeTags.length);
   return activeTags;
 }
 
@@ -456,8 +480,9 @@ function DebugDataDisplay({
     );
   }
 
-  const tags =
-    machineName === "GTPL-118-gT-80E-P-S7-200" ? S7_200_TAGS : S7_1200_TAGS;
+  const tags = S7_200_MACHINES.includes(machineName)
+    ? S7_200_TAGS
+    : S7_1200_TAGS;
   const sampleRecord = data[0] || {};
 
   return (
@@ -524,7 +549,7 @@ export default function FaultLogsPaginated({
   machineName: string;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 500); // debounce after 500ms
+  const debouncedSearch = useDebounce(searchTerm, 500);
   const [activeTags, setActiveTags] = useState<TagData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -547,12 +572,10 @@ export default function FaultLogsPaginated({
   const fetchLogs = async (pageNum: number, search = "") => {
     setLoading(true);
     setError(null);
+
     try {
-      const endpoint =
-        machineName === "GTPL-118-gT-80E-P-S7-200"
-          ? "/api/getSmart200Fault"
-          : "/api/getSmart1200Fault";
-      const url = new URL(`${endpoint}`, window.location.origin);
+      const url = new URL("/api/getSmart200Fault", window.location.origin);
+      url.searchParams.append("machineName", machineName);
       url.searchParams.append("page", pageNum.toString());
       url.searchParams.append("limit", PAGE_SIZE.toString());
       url.searchParams.append("from", "2024-01-01");
@@ -560,44 +583,89 @@ export default function FaultLogsPaginated({
       if (search) url.searchParams.append("search", search);
 
       const res = await fetch(url.toString());
-      if (!res.ok) throw new Error("Failed to fetch logs");
+
+      if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`API Error: ${res.status} - ${errorText}`);
+      }
+
       const result = await res.json();
 
-      if (result?.data && Array.isArray(result.data)) {
-        setRawData(result.data);
-        const active: TagData[] = [];
-        let faultCount = 0;
+      let dataArray = [];
+      let total = 0;
+      let totalPages = 1;
+      let currentPage = pageNum;
 
-        for (const record of result.data) {
+      if (Array.isArray(result?.data)) {
+        dataArray = result.data;
+        total = result.total || result.data.length;
+        totalPages = result.totalPages || 1;
+        currentPage = result.page || pageNum;
+      } else if (result?.data && typeof result.data === "object") {
+        dataArray = [result.data];
+        total = 1;
+        totalPages = 1;
+        currentPage = 1;
+      } else if (result?.recordData) {
+        dataArray = [result.recordData];
+        total = 1;
+        totalPages = 1;
+        currentPage = 1;
+      } else if (Array.isArray(result)) {
+        dataArray = result;
+        total = result.length;
+        totalPages = 1;
+        currentPage = 1;
+      } else {
+        console.warn("Unexpected response format:", result);
+      }
+
+      setRawData(dataArray);
+      const active: TagData[] = [];
+      let faultCount = 0;
+
+      for (const record of dataArray) {
+        if (record && typeof record === "object") {
           const tags = extractActiveTags(record, machineName);
           active.push(...tags);
           faultCount += tags.filter(
             (t) => getTagCategory(t.tag) === "fault"
           ).length;
         }
-
-        setActiveTags(active);
-        setStats({
-          total: result.total || 0,
-          activeTags: active.length,
-          faultTags: faultCount,
-          currentPage: result.page || pageNum,
-          totalPages: result.totalPages || 1,
-        });
-        setPaginationInfo({
-          total: result.total || 0,
-          totalPages: result.totalPages || 1,
-          limit: result.limit || PAGE_SIZE,
-          page: result.page || pageNum,
-        });
-      } else {
-        setActiveTags([]);
-        setRawData([]);
       }
+
+      setActiveTags(active);
+      setStats({
+        total,
+        activeTags: active.length,
+        faultTags: faultCount,
+        currentPage,
+        totalPages,
+      });
+      setPaginationInfo({
+        total,
+        totalPages,
+        limit: result.limit || PAGE_SIZE,
+        page: currentPage,
+      });
     } catch (err: any) {
-      setError(err.message || "Unknown error");
+      console.error("Fetch error:", err);
+      setError(`Failed to fetch logs: ${err.message}`);
       setActiveTags([]);
       setRawData([]);
+      setStats({
+        total: 0,
+        activeTags: 0,
+        faultTags: 0,
+        currentPage: pageNum,
+        totalPages: 1,
+      });
+      setPaginationInfo({
+        total: 0,
+        totalPages: 1,
+        limit: PAGE_SIZE,
+        page: pageNum,
+      });
     } finally {
       setLoading(false);
     }
@@ -606,12 +674,9 @@ export default function FaultLogsPaginated({
   useEffect(() => {
     fetchLogs(currentPage, debouncedSearch);
 
-    const intervalId = setInterval(
-      () => {
-        fetchLogs(currentPage, debouncedSearch);
-      },
-       60 * 1000
-    ); // every 5 min
+    const intervalId = setInterval(() => {
+      fetchLogs(currentPage, debouncedSearch);
+    }, 60 * 1000);
 
     return () => clearInterval(intervalId);
   }, [currentPage, machineName, debouncedSearch]);
@@ -623,26 +688,18 @@ export default function FaultLogsPaginated({
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
             Active {machineName} Tags Monitor
           </h2>
-          {/* <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search by device name..."
-              className="w-full md:w-1/2 px-4 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={searchTerm}
-              onChange={(e) => {
-                setSearchTerm(e.target.value);
-                setCurrentPage(1); // reset to page 1 on new search
-              }}
-            />
-          </div> */}
+
           <StatisticsCards stats={stats} />
+
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
               {error}
             </div>
           )}
+
           <DebugDataDisplay data={rawData} machineName={machineName} />
         </div>
+
         <div className="p-6">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-gray-700">

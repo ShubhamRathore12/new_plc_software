@@ -25,9 +25,6 @@ export default function FaultPage() {
     fault as string
   );
 
-
-  
-
   // S7-1200 fault codes (original codes)
   const s7_1200_faultCodes = [
     { code: 1, description: "Compressor_circuit_breaker_fault" },
@@ -69,7 +66,6 @@ export default function FaultPage() {
     { code: 41, description: "Air_outlet_sensor_2_open" },
     { code: 42, description: "Air_outlet_sensor_2_short_circuit" },
   ];
-  
 
   // S7-200 fault codes
   const s7_200_faultCodes = [
@@ -216,7 +212,7 @@ export default function FaultPage() {
     // { tag: "GREEN_LIGHT", value: data?.GREEN_LIGHT },
     {
       tag: "HEATER_CIRCUIT_BREAKER_FAULT",
-      value:data?.HEATER_CIRCUIT_BREAKER_FAULT,
+      value: data?.HEATER_CIRCUIT_BREAKER_FAULT,
     },
     // { tag: "HEATER_OVER_HEAT", value: data?.HEATER_OVER_HEAT },
     { tag: "HEATER_RCCCB_TRIP_FAULT", value: data?.HEATER_RCCCB_TRIP_FAULT },
@@ -253,75 +249,173 @@ export default function FaultPage() {
     { tag: "created_at", value: data?.created_at },
   ];
 
-const s7_1200_tags = [
-  { tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT", value: data?.Compressor_circuit_breaker_fault },
-  { tag: "OIL_PRESSURE_LOW", value: data?.Oil_pressure_low },
-  { tag: "BLOWER_DRIVE_FAULT", value: data?.Blower_drive_fault },
-  { tag: "BLOWER_CIRCUIT_BREAKER_FAULT", value: data?.Blower_circuit_breaker_fault },
-  { tag: "AMBIENT_AIR_SENSOR_1_OPEN", value: data?.Ambient_air_sensor_1open },
-  { tag: "COND_FAN_OVERLOAD", value: data?.COND_FAN_OVERLOAD },
-  { tag: "THREE_PHASE_MONITOR_FAULT", value: data?.Three_phase_monitor_fault },
-  { tag: "HIGH_PRESSURE_FAULT", value: data?.High_pressure_fault },
-  { tag: "AMBIENT_TEMP_LOWER_THAN_SET_TEMP", value: data?.Ambient_temp_lower_than_set_temp },
-  { tag: "AMBIENT_TEMP_OVER_50C", value: data?.Ambient_temp_over_50C },
-  { tag: "COMP_MODULE_FEEDBACK_ERROR", value: data?.COMP_MODULE_FEEDBACK_ERROR_Si_I1 },
-  { tag: "LOW_PRESSURE_1_FAULT", value: data?.Low_pressure_1_fault },
-  { tag: "COMP_FBK_ERROR", value: data?.COMP_FBK_ERROR },
-  { tag: "LOW_PRESSURE_2_FAULT", value: data?.Low_pressure_2_fault },
-  { tag: "AMBIENT_TEMP_OVER_47C", value: data?.Ambient_temp_over_47C },
-  { tag: "CONDENSER_FAN_2_TOP_FAULT", value: data?.Condenser_fan_2_TOP_fault },
-  { tag: "CONDENSER_FAN_3_TOP_FAULT", value: data?.Condenser_fan_3_TOP_fault },
-  { tag: "CONDENSER_FAN_4_TOP_FAULT", value: data?.Condenser_fan_4_TOP_fault },
-  { tag: "CONDENSER_FAN_2_CB_FAULT", value: data?.Condenser_fan_2_circuit_breaker_fault },
-  { tag: "CONDENSER_FAN_3_CB_FAULT", value: data?.Condenser_fan_3_circuit_breaker_fault },
-  { tag: "CONDENSER_FAN_4_CB_FAULT", value: data?.Condenser_fan_4_circuit_breaker_fault },
-  { tag: "CONDENSER_FAN_5_TOP_FAULT", value: data?.Condenser_fan_5_TOP_fault },
-  { tag: "CONDENSER_FAN_6_TOP_FAULT", value: data?.Condenser_fan_6_TOP_fault },
-  { tag: "CONDENSER_FAN_5_CB_FAULT", value: data?.Condenser_fan_5_circuit_breaker_fault },
-  { tag: "CONDENSER_FAN_6_CB_FAULT", value: data?.Condenser_fan_6_circuit_breaker_fault },
-  { tag: "CONDENSER_FAN_1_CB_FAULT", value: data?.Condenser_fan_1_circuit_breaker_fault },
-  { tag: "CONDENSER_FAN_1_TOP_FAULT", value: data?.Condenser_fan_1_TOP_fault },
-  { tag: "AMBIENT_AIR_SENSOR_1_SHORT", value: data?.Ambient_air_sensor_1_short_circuit },
-  { tag: "AMBIENT_AIR_SENSOR_2_OPEN", value: data?.Ambient_air_sensor_2_open },
-  { tag: "AMBIENT_AIR_SENSOR_2_SHORT", value: data?.Ambient_air_sensor_2_short_circuit },
-  { tag: "COLD_AIR_SENSOR_1_OPEN", value: data?.Cold_air_sensor_1_open },
-  { tag: "COLD_AIR_SENSOR_1_SHORT", value: data?.Cold_air_sensor_1_short_circuit },
-  { tag: "COLD_AIR_SENSOR_2_OPEN", value: data?.Cold_air_sensor_2_open },
-  { tag: "COLD_AIR_SENSOR_2_SHORT", value: data?.Cold_air_sensor_2_short_circuit },
-  { tag: "AIR_OUTLET_SENSOR_1_OPEN", value: data?.Air_outlet_sensor_1_open },
-  { tag: "AIR_OUTLET_SENSOR_1_SHORT", value: data?.Air_outlet_sensor_1_short_circuit },
-  { tag: "AIR_OUTLET_SENSOR_2_OPEN", value: data?.Air_outlet_sensor_2_open },
-  { tag: "AIR_OUTLET_SENSOR_2_SHORT", value: data?.Air_outlet_sensor_2_short_circuit },
-  { tag: "created_at", value: data?.created_at },
-];
-  
+  const s7_1200_tags = [
+    {
+      tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT",
+      value: data?.Compressor_circuit_breaker_fault,
+    },
+    { tag: "OIL_PRESSURE_LOW", value: data?.Oil_pressure_low },
+    { tag: "BLOWER_DRIVE_FAULT", value: data?.Blower_drive_fault },
+    {
+      tag: "BLOWER_CIRCUIT_BREAKER_FAULT",
+      value: data?.Blower_circuit_breaker_fault,
+    },
+    { tag: "AMBIENT_AIR_SENSOR_1_OPEN", value: data?.Ambient_air_sensor_1open },
+    { tag: "COND_FAN_OVERLOAD", value: data?.COND_FAN_OVERLOAD },
+    {
+      tag: "THREE_PHASE_MONITOR_FAULT",
+      value: data?.Three_phase_monitor_fault,
+    },
+    { tag: "HIGH_PRESSURE_FAULT", value: data?.High_pressure_fault },
+    {
+      tag: "AMBIENT_TEMP_LOWER_THAN_SET_TEMP",
+      value: data?.Ambient_temp_lower_than_set_temp,
+    },
+    { tag: "AMBIENT_TEMP_OVER_50C", value: data?.Ambient_temp_over_50C },
+    {
+      tag: "COMP_MODULE_FEEDBACK_ERROR",
+      value: data?.COMP_MODULE_FEEDBACK_ERROR_Si_I1,
+    },
+    { tag: "LOW_PRESSURE_1_FAULT", value: data?.Low_pressure_1_fault },
+    { tag: "COMP_FBK_ERROR", value: data?.COMP_FBK_ERROR },
+    { tag: "LOW_PRESSURE_2_FAULT", value: data?.Low_pressure_2_fault },
+    { tag: "AMBIENT_TEMP_OVER_47C", value: data?.Ambient_temp_over_47C },
+    {
+      tag: "CONDENSER_FAN_2_TOP_FAULT",
+      value: data?.Condenser_fan_2_TOP_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_3_TOP_FAULT",
+      value: data?.Condenser_fan_3_TOP_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_4_TOP_FAULT",
+      value: data?.Condenser_fan_4_TOP_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_2_CB_FAULT",
+      value: data?.Condenser_fan_2_circuit_breaker_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_3_CB_FAULT",
+      value: data?.Condenser_fan_3_circuit_breaker_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_4_CB_FAULT",
+      value: data?.Condenser_fan_4_circuit_breaker_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_5_TOP_FAULT",
+      value: data?.Condenser_fan_5_TOP_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_6_TOP_FAULT",
+      value: data?.Condenser_fan_6_TOP_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_5_CB_FAULT",
+      value: data?.Condenser_fan_5_circuit_breaker_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_6_CB_FAULT",
+      value: data?.Condenser_fan_6_circuit_breaker_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_1_CB_FAULT",
+      value: data?.Condenser_fan_1_circuit_breaker_fault,
+    },
+    {
+      tag: "CONDENSER_FAN_1_TOP_FAULT",
+      value: data?.Condenser_fan_1_TOP_fault,
+    },
+    {
+      tag: "AMBIENT_AIR_SENSOR_1_SHORT",
+      value: data?.Ambient_air_sensor_1_short_circuit,
+    },
+    {
+      tag: "AMBIENT_AIR_SENSOR_2_OPEN",
+      value: data?.Ambient_air_sensor_2_open,
+    },
+    {
+      tag: "AMBIENT_AIR_SENSOR_2_SHORT",
+      value: data?.Ambient_air_sensor_2_short_circuit,
+    },
+    { tag: "COLD_AIR_SENSOR_1_OPEN", value: data?.Cold_air_sensor_1_open },
+    {
+      tag: "COLD_AIR_SENSOR_1_SHORT",
+      value: data?.Cold_air_sensor_1_short_circuit,
+    },
+    { tag: "COLD_AIR_SENSOR_2_OPEN", value: data?.Cold_air_sensor_2_open },
+    {
+      tag: "COLD_AIR_SENSOR_2_SHORT",
+      value: data?.Cold_air_sensor_2_short_circuit,
+    },
+    { tag: "AIR_OUTLET_SENSOR_1_OPEN", value: data?.Air_outlet_sensor_1_open },
+    {
+      tag: "AIR_OUTLET_SENSOR_1_SHORT",
+      value: data?.Air_outlet_sensor_1_short_circuit,
+    },
+    { tag: "AIR_OUTLET_SENSOR_2_OPEN", value: data?.Air_outlet_sensor_2_open },
+    {
+      tag: "AIR_OUTLET_SENSOR_2_SHORT",
+      value: data?.Air_outlet_sensor_2_short_circuit,
+    },
+    { tag: "created_at", value: data?.created_at },
+  ];
 
+  const normalizedFault = fault?.toString().toUpperCase() || "";
+
+  const s7_200_machines = [
+    "GTPL-108-gT-40E-P-S7-200",
+    "GTPL-109-gT-40E-P-S7-200",
+    "GTPL-110-gT-40E-P-S7-200",
+    "GTPL-111-gT-80E-P-S7-200",
+    "GTPL-112-gT-80E-P-S7-200",
+    "GTPL-113-gT-80E-P-S7-200",
+    "GTPL-118-gT-80E-P-S7-200",
+  ];
+
+  const s7_1200_machines = [
+    "GTPL-114-gT-140E-S7-1200",
+    "GTPL-115-gT-180E-S7-1200",
+    "GTPL-116-gT-240E-S7-1200",
+    "GTPL-117-gT-320E-S7-1200",
+    "GTPL-119-gT-180E-S7-1200",
+    "GTPL-120-gT-180E-S7-1200",
+    "GTPL-121-gT-1000T-S7-1200",
+    "GTPL-122-gT-1000T-S7-1200",
+    "Gtpl-S7-1200-02",
+  ];
+
+  const isS7_200 = s7_200_machines.some((machine) =>
+    normalizedFault.includes(machine.toUpperCase())
+  );
+
+  const isS7_1200 = s7_1200_machines.some((machine) =>
+    normalizedFault.includes(machine.toUpperCase())
+  );
+
+  const modelType = isS7_200
+    ? s7_200_machines.find((m) => normalizedFault.includes(m.toUpperCase())) ||
+      "S7-200"
+    : s7_1200_machines.find((m) => normalizedFault.includes(m.toUpperCase())) ||
+      "S7-1200";
+
+  const isGT80E = modelType === "GTPL-118-gT-80E-P-S7-200";
+
+  // Define faultCodes and currentTags based on model type
+  const faultCodes = isS7_200 ? s7_200_faultCodes : s7_1200_faultCodes;
+  const currentTags = isS7_200 ? s7_200_tags : s7_1200_tags;
 
   const isActiveTag = (value: any) => {
     if (!value) return false;
     const normalized = value.toString().toLowerCase();
     return normalized === "true" || normalized === "tr";
   };
-  
 
   function getRandomBoolean() {
     return Math.random() < 0.5;
   }
-
-  // Determine which fault codes to use based on the fault parameter
-const isGT80E = fault?.toString().toLowerCase().includes("gtpl-118-gt-80e-p-s7-200");
-
-  const faultCodes = isGT80E ? s7_200_faultCodes : s7_1200_faultCodes;
-  const modelType = isGT80E
-    ? "GTPL-118-gT-80E-P-S7-200"
-    : fault?.toString().toLowerCase().includes("s7-1200-02")
-    ? "Gtpl-S7-1200-02"
-    : "GTPL-122-gT-1000T-S7-1200";
-
-      const currentTags = isGT80E ? s7_200_tags : s7_1200_tags;
-
-      console.log(currentTags);
-      
 
   const handleViewFaultCode = (faultItem: any) => {
     setSelectedFault(faultItem);
@@ -379,32 +473,42 @@ const isGT80E = fault?.toString().toLowerCase().includes("gtpl-118-gt-80e-p-s7-2
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-  {currentTags.filter((tag) => isActiveTag(tag.value)).map((tag, index) => (
-    <TableRow key={index}>
-      <TableCell className="font-mono text-sm">{tag.tag}</TableCell>
-      <TableCell>
-        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-          Active
-        </span>
-      </TableCell>
-      <TableCell className="font-medium">{isActiveTag(tag.value) ? "TRUE" : "FALSE"}</TableCell>
-      <TableCell className="font-medium">
-        {tag.tag === "created_at"
-          ? tag.value
-          : currentTags.find((t) => t.tag === "created_at")?.value || "N/A"}
-      </TableCell>
-    </TableRow>
-  ))}
-  {currentTags.filter((tag) => isActiveTag(tag.value)).length === 0 && (
-    <TableRow>
-      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-        No active tags found
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
-
+                        {currentTags
+                          .filter((tag) => isActiveTag(tag.value))
+                          .map((tag, index) => (
+                            <TableRow key={index}>
+                              <TableCell className="font-mono text-sm">
+                                {tag.tag}
+                              </TableCell>
+                              <TableCell>
+                                <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                  Active
+                                </span>
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                {isActiveTag(tag.value) ? "TRUE" : "FALSE"}
+                              </TableCell>
+                              <TableCell className="font-medium">
+                                {tag.tag === "created_at"
+                                  ? tag.value
+                                  : currentTags.find(
+                                      (t) => t.tag === "created_at"
+                                    )?.value || "N/A"}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        {currentTags.filter((tag) => isActiveTag(tag.value))
+                          .length === 0 && (
+                          <TableRow>
+                            <TableCell
+                              colSpan={4}
+                              className="text-center py-8 text-muted-foreground"
+                            >
+                              No active tags found
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
                     </Table>
                   </ScrollArea>
                 </>
@@ -487,32 +591,41 @@ const isGT80E = fault?.toString().toLowerCase().includes("gtpl-118-gt-80e-p-s7-2
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-  {currentTags.filter((tag) => isActiveTag(tag.value)).map((tag, index) => (
-    <TableRow key={index}>
-      <TableCell className="font-mono text-sm">{tag.tag}</TableCell>
-      <TableCell>
-        <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-          Active
-        </span>
-      </TableCell>
-      <TableCell className="font-medium">{isActiveTag(tag.value) ? "TRUE" : "FALSE"}</TableCell>
-      <TableCell className="font-medium">
-        {tag.tag === "created_at"
-          ? tag.value
-          : currentTags.find((t) => t.tag === "created_at")?.value || "N/A"}
-      </TableCell>
-    </TableRow>
-  ))}
-  {currentTags.filter((tag) => isActiveTag(tag.value)).length === 0 && (
-    <TableRow>
-      <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-        No active tags found
-      </TableCell>
-    </TableRow>
-  )}
-</TableBody>
-
-
+                    {currentTags
+                      .filter((tag) => isActiveTag(tag.value))
+                      .map((tag, index) => (
+                        <TableRow key={index}>
+                          <TableCell className="font-mono text-sm">
+                            {tag.tag}
+                          </TableCell>
+                          <TableCell>
+                            <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                              Active
+                            </span>
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {isActiveTag(tag.value) ? "TRUE" : "FALSE"}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {tag.tag === "created_at"
+                              ? tag.value
+                              : currentTags.find((t) => t.tag === "created_at")
+                                  ?.value || "N/A"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    {currentTags.filter((tag) => isActiveTag(tag.value))
+                      .length === 0 && (
+                      <TableRow>
+                        <TableCell
+                          colSpan={4}
+                          className="text-center py-8 text-muted-foreground"
+                        >
+                          No active tags found
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
                 </Table>
               </ScrollArea>
             </CardContent>

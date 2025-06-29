@@ -17,7 +17,7 @@ import Home from "@/components/diagram-controls";
 import { useAutoData } from "@/hooks/useAutoData";
 import AutoDiagram from "@/components/AutoDiagram";
 import HVACDashboard from "../../../../components/AutoDiagram";
-import Fan from "../../../../../public/images/fan.png"
+import Fan from "../../../../../public/images/fan.png";
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 
@@ -30,9 +30,30 @@ export default function AutoPage() {
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
 
   // Configuration for different machines
+  const commonS7_200Config = {
+    temperatureSensors: {
+      TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
+      T0: { key: "AIR_OUTLET_TEMP", label: "After Heat(T0)" },
+      T1: { key: "COLD_AIR_TEMP_T1", label: "Cold Air(T1)" },
+      T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient(T2)" },
+    },
+    controls: {
+      HTR: { key: "AFTER_HEAT_VALVE_RPM", label: "Heater" },
+      AHT: { key: "AFTER_HEAT_VALVE_RPM", label: "After Heat(AHT)" },
+      HGS: { key: "HOT_GAS_VALVE_RPM", label: "Hot Gas(HGS)" },
+      BLOWER: { key: "BLOWER_RPM", label: "Blower" },
+      COND: { key: "CONDENSER_RPM", label: "Condenser" },
+    },
+    compressor: {
+      time: "COMPRESSOR_TIME",
+      hp: "HP",
+      lp: "LP",
+    },
+  };
+
   const machineConfig = {
     "GTPL-122-gT-1000T-S7-1200": {
-      serialNumber: "GTPL-075",
+      serialNumber: "GTPL_122_S7_1200",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
@@ -41,14 +62,8 @@ export default function AutoPage() {
         "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
-        AHT: {
-          key: "AHT_vale_speed",
-          label: "After Heat(AHT)",
-        },
-        HGS: {
-          key: "Hot_valve_speed",
-          label: "Hot Gas(HGS)",
-        },
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
       },
       compressor: {
@@ -57,26 +72,61 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-114-gT-140E-S7-1200": {
+      serialNumber: "GTPL_114",
+      ...commonS7_200Config,
+    },
+    "GTPL-115-gT-180E-S7-1200": {
+      serialNumber: "GTPL_115",
+      ...commonS7_200Config,
+    },
+    "GTPL-116-gT-240E-S7-1200": {
+      serialNumber: "GTPL_116",
+      ...commonS7_200Config,
+    },
+    "GTPL-117-gT-320E-S7-1200": {
+      serialNumber: "GTPL_117",
+      ...commonS7_200Config,
+    },
+    "GTPL-119-gT-180E-S7-1200": {
+      serialNumber: "GTPL_119",
+      ...commonS7_200Config,
+    },
+    "GTPL-120-gT-180E-S7-1200": {
+      serialNumber: "GTPL_120",
+      ...commonS7_200Config,
+    },
+    "GTPL-121-gT-1000T-S7-1200": {
+      serialNumber: "GTPL_121",
+      ...commonS7_200Config,
+    },
     "GTPL-118-gT-80E-P-S7-200": {
       serialNumber: "GTPL-109",
-      temperatureSensors: {
-        TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
-        T0: { key: "AIR_OUTLET_TEMP", label: "After Heat(T0)" },
-        T1: { key: "COLD_AIR_TEMP_T1", label: "Cold Air(T1)" },
-        T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient(T2)" },
-      },
-      controls: {
-        HTR: { key: "AFTER_HEAT_VALVE_RPM", label: "Heater" },
-        AHT: { key: "AFTER_HEAT_VALVE_RPM", label: "After Heat(AHT)" },
-        HGS: { key: "HOT_GAS_VALVE_RPM", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "BLOWER_RPM", label: "Blower" },
-        COND: { key: "CONDENSER_RPM", label: "Condenser" },
-      },
-      compressor: {
-        time: "COMPRESSOR_TIME",
-        hp: "HP",
-        lp: "LP",
-      },
+      ...commonS7_200Config,
+    },
+    "GTPL-108-gT-40E-P-S7-200": {
+      serialNumber: "GTPL_108",
+      ...commonS7_200Config,
+    },
+    "GTPL-109-gT-40E-P-S7-200": {
+      serialNumber: "GTPL_109",
+      ...commonS7_200Config,
+    },
+    "GTPL-110-gT-40E-P-S7-200": {
+      serialNumber: "GTPL_110",
+      ...commonS7_200Config,
+    },
+    "GTPL-111-gT-80E-P-S7-200": {
+      serialNumber: "GTPL_111",
+      ...commonS7_200Config,
+    },
+    "GTPL-112-gT-80E-P-S7-200": {
+      serialNumber: "GTPL_112",
+      ...commonS7_200Config,
+    },
+    "GTPL-113-gT-80E-P-S7-200": {
+      serialNumber: "GTPL_113",
+      ...commonS7_200Config,
     },
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
@@ -134,8 +184,7 @@ export default function AutoPage() {
     });
   };
 
-    const isMobile = useIsMobile()
-
+  const isMobile = useIsMobile();
 
   return (
     <PageTransition>
@@ -147,8 +196,7 @@ export default function AutoPage() {
               SELECT AUTO
             </h1>
             <p className="text-muted-foreground">
-              SR. NO. {auto} |{" "}
-              {formatValue(data?.AI_RH_Analog_Scale, "%")} RH |{" "}
+              SR. NO. {auto} | {formatValue(data?.AI_RH_Analog_Scale, "%")} RH |{" "}
               {formatValue(data?.AI_Pa_Analog_Scale, " Pa")}
             </p>
           </AnimatedContainer>
@@ -161,15 +209,22 @@ export default function AutoPage() {
                   formatValue={formatValue}
                   machineName={auto}
                 /> */}
-               { isMobile ? <MobileAutoDiagram  blower={Fan}         data={data}
-                  formatValue={formatValue}
-                  machineName={auto}/>:
-                <HVACDashboard blower={Fan}         data={data}
-                  formatValue={formatValue}
-                  machineName={auto}/>
-                }
+                {isMobile ? (
+                  <MobileAutoDiagram
+                    blower={Fan}
+                    data={data}
+                    formatValue={formatValue}
+                    machineName={auto}
+                  />
+                ) : (
+                  <HVACDashboard
+                    blower={Fan}
+                    data={data}
+                    formatValue={formatValue}
+                    machineName={auto}
+                  />
+                )}
               </div>
-              
             </AnimatedContainer>
 
             <AnimatedContainer className="space-y-6" delay={2}>

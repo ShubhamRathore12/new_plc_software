@@ -8,7 +8,6 @@ interface AutoData {
 
 export const useAutoData = (autoType: string) => {
   const { status } = useMachineStatusFeed();
-  console.log(status);
 
   const [data, setData] = useState<AutoData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -16,78 +15,93 @@ export const useAutoData = (autoType: string) => {
   const [retryCount, setRetryCount] = useState(0);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Device name to status key mapping
+  // AutoType → Table Name mapping
+  const autoTypeToTableMap: Record<string, string> = {
+    "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
+    "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
+    "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
+    "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
+    "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
+    "GTPL-111-gT-80E-P-S7-200": "GTPL_111_gT_80E_P_S7_200_Germany",
+    "GTPL-112-gT-80E-P-S7-200": "GTPL_112_gT_80E_P_S7_200_Germany",
+    "GTPL-113-gT-80E-P-S7-200": "GTPL_113_gT_80E_P_S7_200_Germany",
+    "Gtpl-S7-1200-02": "gtpl_122_s7_1200_01",
+  };
+
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "gtpl",
     "GTPL-118-gT-80E-P-S7-200": "kabo",
+    "GTPL-108-gT-40E-P-S7-200": "gtpl_108",
+    "GTPL-109-gT-40E-P-S7-200": "gtpl_109",
+    "GTPL-110-gT-40E-P-S7-200": "gtpl_110",
+    "GTPL-111-gT-80E-P-S7-200": "gtpl_111",
+    "GTPL-112-gT-80E-P-S7-200": "gtpl_112",
+    "GTPL-113-gT-80E-P-S7-200": "gtpl_113",
+    "Gtpl-S7-1200-02": "gtpl_1200_02",
   };
 
   const fetchData = async () => {
-    let url = "";
+    const table = autoTypeToTableMap[autoType];
+    const statusKey = deviceNameToStatusKey[autoType];
 
-    if (autoType === "GTPL-122-gT-1000T-S7-1200") {
-      url = "/api/getData";
-    } else if (autoType === "GTPL-118-gT-80E-P-S7-200") {
-      url = "/api/getSmartData";
-    } else if (autoType === "Gtpl-S7-1200-02") {
-      url = "https://grain-backend-1.onrender.com/api/ws/current-data";
-    } else {
-      url = "/api/latest-data";
+    const deviceStatus = statusKey ? (status as any)?.[statusKey] : {};
+    const isMachineRunning = deviceStatus?.machineStatus ?? false;
+
+    if (!table) {
+      setError("❌ Unknown table mapping for device: " + autoType);
+      console.error("No table mapping found for:", autoType);
+      return;
     }
 
     try {
-      // Get machine status using the device mapping
-      const key = deviceNameToStatusKey[autoType];
-      const deviceStatus = key ? (status as Record<string, any>)?.[key] || {} : {};
-      const isMachineRunning = deviceStatus.machineStatus ?? false;
+      const response = await fetch(
+        `/api/fetchData?table=${encodeURIComponent(table)}`
+      );
 
-      if (isMachineRunning) {
-        // If machine is running, fetch actual data
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`HTTP error! ${response.status}`);
-        const result = await response.json();
+      if (!response.ok) {
+        throw new Error(
+          `HTTP error! ${response.status}: ${response.statusText}`
+        );
+      }
 
-        if (result) {
-          setData([result?.[0]]);
-          setIsConnected(true);
-          setError(null);
-          setRetryCount(0);
-        } else {
-          throw new Error("Invalid response structure");
-        }
-      } else {
-        // If machine is not running, set default data to 0 and connected to false
-        setData([{}]); // Set empty object or you can set specific default structure with 0 values
-        setIsConnected(false);
-        setError("Machine is not running");
+      const result = await response.json();
+
+      if (result?.data) {
+        setData([result.data]);
+        setIsConnected(true);
+        setError(null);
         setRetryCount(0);
+      } else {
+        throw new Error("Invalid response structure - no data property");
       }
     } catch (err: any) {
-      setIsConnected(false);
-      setError("Failed to fetch data");
-      setRetryCount((prev) => prev + 1);
       console.error("❌ Polling error:", err.message || err);
+      setIsConnected(false);
+      setError(`Failed to fetch data: ${err.message}`);
+      setRetryCount((prev) => prev + 1);
     }
   };
 
   useEffect(() => {
-    fetchData(); // fetch immediately on mount
-    intervalRef.current = setInterval(fetchData, 10000); // poll every 10s
+    if (autoType) {
+      fetchData();
+      intervalRef.current = setInterval(fetchData, 10000);
 
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [autoType, status]); // Added status as dependency
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current);
+        }
+      };
+    }
+  }, [autoType, status]);
 
   const formatValue = (value: any, unit: string = "") => {
     if (value === undefined || value === null) return "--";
-
     const numericValue = parseFloat(value);
     if (isNaN(numericValue)) return `${value}${unit}`;
     if (numericValue === 0) return `0${unit}`;
 
     const decimalPart = numericValue % 1;
-
     const roundedValue =
       decimalPart >= 0.5 ? Math.ceil(numericValue) : Math.floor(numericValue);
 

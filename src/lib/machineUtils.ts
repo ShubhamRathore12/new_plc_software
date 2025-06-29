@@ -1,4 +1,22 @@
-export type MachineType = "gtpl" | "kabo" | "unknown";
+export type MachineType =
+  | "gtpl"
+  | "kabo"
+  | "GTPL_108"
+  | "GTPL_109"
+  | "GTPL_110"
+  | "GTPL_111"
+  | "GTPL_112"
+  | "GTPL_113"
+  | "GTPL_114"
+  | "GTPL_115"
+  | "GTPL_116"
+  | "GTPL_117"
+  | "GTPL_119"
+  | "GTPL_120"
+  | "GTPL_121"
+  | "GTPL_122_S7_1200"
+  | "KABO_200"
+  | "unknown";
 
 export interface MachineResponse {
   machineStatus: boolean;
@@ -12,35 +30,14 @@ export interface MachineResponse {
   lastUpdate?: string;
   hasNewData?: boolean;
   idChanged?: boolean;
-  createdOnChanged?: any;
-  createdAtChanged?: any;
-  condFanOn?: any;
-}
-
-export function hasTimestampChanged(
-  newTimestamp: any,
-  lastTimestamp: any
-): boolean {
-  if (!lastTimestamp) return true;
-  return new Date(newTimestamp).getTime() !== new Date(lastTimestamp).getTime();
-}
-
-export function hasIdChanged(
-  currentId: number | undefined,
-  previousId: number | null
-): boolean {
-  // If we don't have a current ID, no change
-  if (currentId === undefined) return false;
-
-  // If this is the first run (no previous ID), consider it as new data
-  if (previousId === null) return true;
-
-  // Compare current ID with previous ID
-  return currentId !== previousId;
+  createdOnChanged?: boolean;
+  createdAtChanged?: boolean;
+  condFanOn?: boolean;
+  machineName?: string;
 }
 
 export function getMachineSpecificResponse(
-  machineType: MachineType,
+  machineName: string,
   timestamp: string | Date,
   currentTime: Date,
   hasNewData: boolean
@@ -57,27 +54,24 @@ export function getMachineSpecificResponse(
     noNewData: !hasNewData,
   };
 
-  switch (machineType) {
-    case "gtpl":
-      return {
-        ...base,
-        machineType: "GTPL_122_S7_1200_01",
-        priority: "high",
-        responseType: "gtpl_machine",
-      };
-    case "kabo":
-      return {
-        ...base,
-        machineType: "KABO_MACHINE_SMART200",
-        priority: "medium",
-        responseType: "kabo_machine",
-      };
-    default:
-      return {
-        ...base,
-        machineType: "UNKNOWN",
-        priority: "low",
-        responseType: "unknown_machine",
-      };
+  let priority = "low";
+  let responseType = "unknown_machine";
+
+  if (machineName.startsWith("GTPL_122")) {
+    priority = "high";
+    responseType = "gtpl_machine";
+  } else if (machineName.startsWith("GTPL_")) {
+    priority = "medium";
+    responseType = "gtpl_machine";
+  } else if (machineName === "KABO_200") {
+    priority = "medium";
+    responseType = "kabo_machine";
   }
+
+  return {
+    ...base,
+    machineType: machineName,
+    priority,
+    responseType,
+  };
 }

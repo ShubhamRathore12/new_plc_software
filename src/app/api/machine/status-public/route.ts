@@ -5,107 +5,120 @@ import {
   MachineResponse,
 } from "@/lib/machineUtils";
 
-// Store previous IDs and timestamps in memory
-let previousGtplId: number | null = null;
-let previousKaboId: number | null = null;
-let previousGtplCreatedOn: string | null = null;
-let previousKaboCreatedAt: string | null = null;
+const MACHINE_TABLES: Record<string, string> = {
+  gtpl_122_s7_1200_01: "GTPL_122_S7_1200",
+  kabomachinedatasmart200: "KABO_200",
+  GTPL_108_gT_40E_P_S7_200_Germany: "GTPL_108",
+  GTPL_109_gT_40E_P_S7_200_Germany: "GTPL_109",
+  GTPL_110_gT_40E_P_S7_200_Germany: "GTPL_110",
+  GTPL_111_gT_80E_P_S7_200_Germany: "GTPL_111",
+  GTPL_112_gT_80E_P_S7_200_Germany: "GTPL_112",
+  GTPL_113_gT_80E_P_S7_200_Germany: "GTPL_113",
+  GTPL_114_GT_140E_S7_1200: "GTPL_114",
+  GTPL_115_GT_180E_S7_1200: "GTPL_115",
+  GTPL_119_GT_180E_S7_1200: "GTPL_119",
+  GTPL_120_GT_180E_S7_1200: "GTPL_120",
+  GTPL_116_GT_240E_S7_1200: "GTPL_116",
+  GTPL_117_GT_320E_S7_1200: "GTPL_117",
+  GTPL_121_GT1000T: "GTPL_121",
+};
+
+// In-memory cache for last known state
+const previousState: Record<
+  string,
+  { id: number | null; timestamp: string | null }
+> = {};
+
+Object.keys(MACHINE_TABLES).forEach((table) => {
+  previousState[table] = { id: null, timestamp: null };
+});
 
 export async function GET() {
+  const currentTime = new Date();
+  const machines: MachineResponse[] = [];
+
   try {
-    const [gtplRows] = await pool.query<any[]>(
-      "SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT 1"
-    );
-    const [kaboRows] = await pool.query<any[]>(
-      "SELECT * FROM kabomachinedatasmart200 ORDER BY id DESC LIMIT 1"
-    );
+    for (const [tableName, machineName] of Object.entries(MACHINE_TABLES)) {
+      const [rows] = await pool.query<any[]>(
+        `SELECT * FROM ${tableName} ORDER BY id DESC LIMIT 1`
+      );
+      const record = rows[0];
+      if (!record) continue;
 
-    const currentTime = new Date();
+      const id = record.id || 0;
+      const timestamp = record.created_at || record.created_on || currentTime;
+      const isoTime = new Date(timestamp).toISOString();
 
-    const gtpl = gtplRows[0];
-    const kabo = kaboRows[0];
+      const prev = previousState[tableName];
+      const normalizedTimestamp = new Date(timestamp).getTime();
+      const normalizedPrevTimestamp = prev.timestamp
+        ? new Date(prev.timestamp).getTime()
+        : null;
 
-    // Extract timestamps
-    const gtplCreatedOn = gtpl?.created_on;
-    const kaboCreatedAt = kabo?.created_at;
+      const idChanged = prev.id !== null ? id > prev.id : false;
+      const timeChanged =
+        normalizedPrevTimestamp !== null
+          ? normalizedTimestamp !== normalizedPrevTimestamp
+          : false;
 
-    const gtplTimestamp = gtplCreatedOn || currentTime;
-    const kaboTimestamp = kaboCreatedAt || currentTime;
+      const hasNewData = idChanged && timeChanged;
 
-    // GTPL ID and timestamp change checks
-    const gtplIdIncreased =
-      gtpl?.id && previousGtplId ? gtpl.id > previousGtplId : false;
-    const gtplCreatedOnChanged =
-      gtplCreatedOn && previousGtplCreatedOn
-        ? new Date(gtplCreatedOn).getTime() !==
-          new Date(previousGtplCreatedOn).getTime()
-        : false;
-    const gtplHasNewData = gtplIdIncreased && gtplCreatedOnChanged;
+      // Debug logs for GTPL_113
+      if (tableName === "GTPL_113") {
+        console.log("▶️ GTPL_113 Debug:");
+        console.log({ prevId: prev.id, newId: id });
+        console.log({ prevTimestamp: prev.timestamp, newTimestamp: timestamp });
+        console.log({
+          idChanged,
+          timeChanged,
+          hasNewData,
+        });
+      }
 
-    // KABO ID and timestamp change checks
-    const kaboIdIncreased =
-      kabo?.id && previousKaboId ? kabo.id > previousKaboId : false;
-    const kaboCreatedAtChanged =
-      kaboCreatedAt && previousKaboCreatedAt
-        ? new Date(kaboCreatedAt).getTime() !==
-          new Date(previousKaboCreatedAt).getTime()
-        : false;
-    const kaboHasNewData = kaboIdIncreased && kaboCreatedAtChanged;
+      // Update memory cache
+      previousState[tableName] = { id, timestamp };
 
-    // Update stored values
-    previousGtplId = gtpl?.id || null;
-    previousKaboId = kabo?.id || null;
-    previousGtplCreatedOn = gtplCreatedOn || null;
-    previousKaboCreatedAt = kaboCreatedAt || null;
+      const baseResponse: MachineResponse = {
+        ...getMachineSpecificResponse(
+          machineName,
+          timestamp,
+          currentTime,
+          hasNewData
+        ),
+        recordId: id,
+        lastUpdate: isoTime,
+        hasNewData,
+        idChanged,
+        machineName,
+      };
 
-    // === Safely parse cond_fan_on ===
-    const rawCondFan = kabo?.cond_fan_on;
-    const condFanOn = rawCondFan === 1 || rawCondFan === "tr"; // only 1 or "1" are true
+      // Machine-specific extensions
+      if (tableName === "kabomachinedatasmart200") {
+        const rawCondFan = record?.cond_fan_on;
+        const condFanOn = rawCondFan === 1 || rawCondFan === "tr";
+        baseResponse.createdAtChanged = timeChanged;
+        baseResponse.condFanOn = condFanOn;
+      }
 
-    const gtplResponse: MachineResponse = {
-      ...getMachineSpecificResponse(
-        "gtpl",
-        gtplTimestamp,
-        currentTime,
-        gtplHasNewData
-      ),
-      recordId: gtpl?.id || 0,
-      lastUpdate: new Date(gtplTimestamp).toISOString(),
-      hasNewData: gtplHasNewData,
-      idChanged: gtplIdIncreased,
-      createdOnChanged: gtplCreatedOnChanged,
-    };
+      if (tableName === "gtpl_122_s7_1200_01") {
+        baseResponse.createdOnChanged = timeChanged;
+      }
 
-    const kaboResponse: MachineResponse = {
-      ...getMachineSpecificResponse(
-        "kabo",
-        kaboTimestamp,
-        currentTime,
-        kaboHasNewData
-      ),
-      recordId: kabo?.id || 0,
-      lastUpdate: new Date(kaboTimestamp).toISOString(),
-      hasNewData: kaboHasNewData,
-      idChanged: kaboIdIncreased,
-      createdAtChanged: kaboCreatedAtChanged,
-      condFanOn, // ✅ Safe and strict boolean
-    };
+      machines.push(baseResponse);
+    }
 
     return NextResponse.json({
       success: true,
-      message: "Machine status retrieved successfully",
-      data: {
-        gtpl: gtplResponse,
-        kabo: kaboResponse,
-      },
+      message: "Machine statuses retrieved successfully",
+      data: machines,
       timestamp: currentTime.toISOString(),
     });
   } catch (err: any) {
-    console.error("Error fetching status-public:", err);
+    console.error("❌ Error fetching machine statuses:", err);
     return NextResponse.json(
       {
         success: false,
-        message: "Error fetching machine status",
+        message: "Error fetching machine statuses",
         error:
           process.env.NODE_ENV === "development"
             ? err.message

@@ -118,15 +118,14 @@ interface UserData {
   email: string;
   phoneNumber: string;
   company: string;
- 
+
   created_at: string;
-  monitorAccess?: string |any;
+  monitorAccess?: string | any;
 }
 
 interface StoreData {
   user?: UserData;
 }
-
 
 const formatText = (text: string) => {
   return text
@@ -143,18 +142,16 @@ export default function RegistrationForm() {
 
   const [monitorAccessItems, setMonitorAccessItems] = useState<string[]>([]);
 
-useEffect(() => {
-  if (typeof data?.user?.monitorAccess === "string") {
-    const parsed = data.user.monitorAccess
-      .split(",")
-      .map((item) => item.trim().toLowerCase());
-    setMonitorAccessItems(parsed);
-  } else {
-    setMonitorAccessItems([]);
-  }
-}, [data?.user?.monitorAccess]);
-
-
+  useEffect(() => {
+    if (typeof data?.user?.monitorAccess === "string") {
+      const parsed = data.user.monitorAccess
+        .split(",")
+        .map((item) => item.trim().toLowerCase());
+      setMonitorAccessItems(parsed);
+    } else {
+      setMonitorAccessItems([]);
+    }
+  }, [data?.user?.monitorAccess]);
 
   // Example user data - in real app, this would come from an API
   useEffect(() => {
@@ -202,14 +199,11 @@ useEffect(() => {
         monitorAccess: values.monitorAccess || [],
       };
 
-      const response = await fetch(
-        "/api/register",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
       const data = await response.json();
       toast.success("🎉 User created successfully!");
@@ -232,9 +226,6 @@ useEffect(() => {
   }
 
   const monitorOptions = [
-  
-    
-
     { value: "devices", label: formatText(t("devices")) },
     { value: "notifications", label: formatText(t("notifications")) },
     { value: "contacts", label: formatText(t("contacts")) },
@@ -252,19 +243,17 @@ useEffect(() => {
     { value: "reports", label: formatText(t("reports")) },
     { value: "manufacture", label: formatText(t("manufacture")) },
     { value: "customer", label: formatText(t("customer")) },
-
   ];
 
   // Dynamic company and location options
   const [companyOptions, setCompanyOptions] = useState([
-    { value: "Company A", label: "Company A" },
-    { value: "Company B", label: "Company B" },
+    { value: "Grain Technik", label: "Grain Technik" },
   ]);
 
   const [locationOptions, setLocationOptions] = useState([
-    { value: "Location 1", label: "Location 1" },
-    { value: "Location 2", label: "Location 2" },
-    // { value: "location3", label: "Location 3" },
+    { value: "Germany", label: "Germany" },
+    { value: "Noida---kanpur", label: "Noida---kanpur" },
+    { value: "Noida", label: "Noida" },
   ]);
 
   // Update monitor options based on selected company and locations
@@ -335,19 +324,18 @@ useEffect(() => {
               }
               className="w-full mb-4"
             >
-             <TabsList className="grid w-full grid-cols-2">
-  {!monitorAccessItems.includes("manufacturer") && (
-    <TabsTrigger value="manufacturer">
-      {formatText(t("manufacturer"))}
-    </TabsTrigger>
-  )}
-  {!monitorAccessItems.includes("customer") && (
-    <TabsTrigger value="customer">
-      {formatText(t("customer"))}
-    </TabsTrigger>
-  )}
-</TabsList>
-
+              <TabsList className="grid w-full grid-cols-2">
+                {!monitorAccessItems.includes("manufacturer") && (
+                  <TabsTrigger value="manufacturer">
+                    {formatText(t("manufacturer"))}
+                  </TabsTrigger>
+                )}
+                {!monitorAccessItems.includes("customer") && (
+                  <TabsTrigger value="customer">
+                    {formatText(t("customer"))}
+                  </TabsTrigger>
+                )}
+              </TabsList>
             </Tabs>
 
             {/* Form */}

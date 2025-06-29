@@ -438,7 +438,7 @@ export default function HVACDashboard({
             <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
               <div className="text-xs font-bold">Condensor</div>
               <div className="text-xs">
-                {formatValue(data.Value_to_Display_COND_ACT_SPEED, "%")}
+                {formatValue(data.Value_to_Display_COND_ACT_SPEED || data?.CONDENSER_RPM, "%")}
               </div>
             </div>
           </div>

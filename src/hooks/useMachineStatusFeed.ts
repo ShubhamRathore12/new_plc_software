@@ -1,37 +1,40 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-type MachineStatus = {
-  machineStatus: boolean;
-  coolingStatus: boolean;
-  internetStatus: boolean;
-  lastUpdate: {
-    gtpl: string | null;
-    kabo: string | null;
-  };
-  recordIds: {
-    gtpl: number;
-    kabo: number;
-  };
-  dataChanged: {
-    gtpl: boolean;
-    kabo: boolean;
-  };
-};
-
 type MessageLog = {
   message: string;
   type: "info" | "error" | "warning" | "status";
   timestamp: string;
 };
 
+type MachineDataEntry = {
+  machineName: string;
+  lastUpdate: string;
+  recordId: number;
+  hasNewData: boolean;
+  machineStatus: boolean;
+  coolingStatus: boolean;
+  internetStatus: boolean;
+};
+
+type MachineStatus = {
+  overallMachineStatus: boolean;
+  overallCoolingStatus: boolean;
+  overallInternetStatus: boolean;
+  lastUpdate: Record<string, string>;
+  recordIds: Record<string, number>;
+  dataChanged: Record<string, boolean>;
+  machines: MachineDataEntry[];
+};
+
 export const useMachineStatusFeed = () => {
   const [status, setStatus] = useState<MachineStatus>({
-    machineStatus: false,
-    coolingStatus: false,
-    internetStatus: false,
-    lastUpdate: { gtpl: null, kabo: null },
-    recordIds: { gtpl: 0, kabo: 0 },
-    dataChanged: { gtpl: false, kabo: false },
+    overallMachineStatus: false,
+    overallCoolingStatus: false,
+    overallInternetStatus: false,
+    lastUpdate: {},
+    recordIds: {},
+    dataChanged: {},
+    machines: [],
   });
 
   const [isConnected, setIsConnected] = useState(false);
@@ -40,7 +43,10 @@ export const useMachineStatusFeed = () => {
 
   const addMessage = useCallback((msg: string, type: MessageLog["type"]) => {
     const timestamp = new Date().toLocaleTimeString();
-    setMessages((prev) => [...prev.slice(-9), { message: msg, type, timestamp }]);
+    setMessages((prev) => [
+      ...prev.slice(-9),
+      { message: msg, type, timestamp },
+    ]);
   }, []);
 
   const fetchData = useCallback(async () => {
@@ -48,29 +54,62 @@ export const useMachineStatusFeed = () => {
       const res = await fetch("/api/machine/status-public");
       const result = await res.json();
 
-      if (result.success) {
-        setStatus(result.data);
+      if (result.success && Array.isArray(result.data)) {
+        const machines: MachineDataEntry[] = result.data.map(
+          (machine: any) => ({
+            machineName: machine.machineName || machine.machineType,
+            lastUpdate: machine.lastUpdate,
+            recordId: machine.recordId,
+            hasNewData: machine.hasNewData,
+            machineStatus: machine.machineStatus,
+            coolingStatus: machine.coolingStatus,
+            internetStatus: machine.internetStatus,
+          })
+        );
+
+        const lastUpdate: Record<string, string> = {};
+        const recordIds: Record<string, number> = {};
+        const dataChanged: Record<string, boolean> = {};
+
+        let allOnline = true;
+        let allCooling = true;
+        let allInternet = true;
+
+        machines.forEach((m) => {
+          lastUpdate[m.machineName] = m.lastUpdate;
+          recordIds[m.machineName] = m.recordId;
+          dataChanged[m.machineName] = m.hasNewData;
+
+          allOnline &&= m.machineStatus;
+          allCooling &&= m.coolingStatus;
+          allInternet &&= m.internetStatus;
+        });
+
+        setStatus({
+          overallMachineStatus: allOnline,
+          overallCoolingStatus: allCooling,
+          overallInternetStatus: allInternet,
+          lastUpdate,
+          recordIds,
+          dataChanged,
+          machines,
+        });
+
         setIsConnected(true);
-        addMessage("Data updated successfully", "status");
+        addMessage("Machine data updated", "status");
       } else {
-        addMessage("API call failed", "error");
+        addMessage("Invalid machine data from API", "error");
         setIsConnected(false);
       }
     } catch (error) {
-      addMessage("Error fetching data", "error");
+      addMessage("Error fetching machine data", "error");
       setIsConnected(false);
     }
   }, [addMessage]);
 
   const startPolling = useCallback(() => {
-    // Initial fetch
     fetchData();
-    
-    // Set up interval for polling every 6 seconds
-    intervalRef.current = setInterval(() => {
-      fetchData();
-    }, 6000);
-    
+    intervalRef.current = setInterval(fetchData, 6 * 1000);
     addMessage("Polling started (6 second interval)", "info");
   }, [fetchData, addMessage]);
 
@@ -89,7 +128,6 @@ export const useMachineStatusFeed = () => {
 
   useEffect(() => {
     startPolling();
-
     return () => {
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
