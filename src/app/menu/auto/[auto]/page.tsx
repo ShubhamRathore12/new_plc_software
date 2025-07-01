@@ -20,6 +20,7 @@ import HVACDashboard from "../../../../components/AutoDiagram";
 import Fan from "../../../../../public/images/fan.png";
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileAutoDiagram from "@/components/MobileAutoDiagram";
+import AutoDiagram1 from "@/components/AutoDiagram1";
 
 export default function AutoPage() {
   const router = useRouter();
@@ -216,7 +217,7 @@ export default function AutoPage() {
                     machineName={auto}
                   />
                 ) : (
-                  <HVACDashboard
+                  <AutoDiagram1
                     blower={Fan}
                     data={data}
                     formatValue={formatValue}
