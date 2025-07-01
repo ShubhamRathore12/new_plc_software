@@ -47,7 +47,7 @@ export default function ActivityPanel() {
   return (
     <div className="grid grid-cols-2 gap-6">
       {/* Trigger/Report Activity Card */}
-      <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
+      {/* <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
         <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
           <Activity className="h-5 w-5 text-emerald-500" />
           <h2 className="text-sm font-medium text-black dark:text-white">
@@ -64,7 +64,7 @@ export default function ActivityPanel() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Device Activity Card */}
       <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
