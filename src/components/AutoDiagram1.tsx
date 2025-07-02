@@ -181,7 +181,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                   <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
                   <div className="text-xs font-bold p-1 text-center w-full">TH</div>
                   <div className="text-xs font-bold p-1 text-center w-full">
-                    {formatValue(data.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th, "°C")}
+                    {formatValue(data.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean, "°C")}
                   </div>
                   <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
                   <div className="absolute bottom-4 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
