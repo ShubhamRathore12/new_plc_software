@@ -469,7 +469,7 @@ const gpl_115_faultTags = [
     "GTPL-114-gT-140E-S7-1200",
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-116-gT-240E-S7-1200",
-    "GTPL-117-gT-320E-S7-1200",
+   
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
@@ -478,7 +478,7 @@ const gpl_115_faultTags = [
   ];
 
 
-  const gpl_115_machines = ["GTPL-115-gT-180E-S7-1200"];
+  const gpl_115_machines = ["GTPL-115-gT-180E-S7-1200",   "GTPL-117-gT-320E-S7-1200"];
 const normalizedFault = fault?.toString().toUpperCase() || "";
 
 const isGPL_115 = gpl_115_machines.some((machine) =>
@@ -495,7 +495,7 @@ const isS7_1200 = s7_1200_machines.some((machine) =>
 
 
   const modelType = isGPL_115
-  ? "GPL-115"
+  ? "GPL-115" 
   : isS7_200
   ? s7_200_machines.find((m) =>
       normalizedFault.includes(m.toUpperCase())

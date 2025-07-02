@@ -38,7 +38,7 @@ export default function OutputsPage() {
       ];
       
     } 
-    else if (deviceType === "GTPL-115-gT-180E-S7-1200") {
+    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === "GTPL-117-gT-320E-S7-1200") {
     return [
   { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
   { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },

@@ -13,7 +13,7 @@ export default function InputsPage() {
   const isGT80E = device?.includes("S7-200");
   const isGtpl122 = device?.includes("S7-1200");
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
-  const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200"; // ✅ NEW condition
+  const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200" ||"GTPL-117-gT-320E-S7-1200"; // ✅ NEW condition
 
   const { data } = useAutoData(device as string);
 

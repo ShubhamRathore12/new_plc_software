@@ -200,7 +200,7 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
   let tags: string[] = [];
 
   // Select appropriate tag list based on machine name
-  if (machineName === "GTPL-118-gT-80E-P-S7-200") {
+  if (machineName === "GTPL-115-gT-80E-P-S7-200" || machineName === "GTPL-117-gT-320E-S7-1200") {
     tags = GPL_115_TAGS;
   } else if (S7_200_MACHINES.includes(machineName)) {
     tags = S7_200_TAGS;
