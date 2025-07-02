@@ -215,7 +215,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 
       {/* Value in black box */}
       <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
-        {formatValue(data?.HEATING_MODE_Set_Run_Duration) || "00:00"}h
+        {formatValue(data?.HEATING_MODE_Set_Run_Duration || data?.SET_DURATION || data?.Aeration_duration_set) || "00:00"}h
       </div>
     </div>
   </div>
