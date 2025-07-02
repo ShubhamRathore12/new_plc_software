@@ -37,19 +37,23 @@ export default function OutputsPage() {
         { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
       ];
       
-    } else if (deviceType === "GTPL-118-gT-80E-P-S7-200") {
-      return [
-        { id: "1", description: "Blower Drive", dataKey: "BLOWER_DRIVE_ENABLE" },
-        { id: "2", description: "Heater Drive", dataKey: "heater_on" },
-        { id: "3", description: "Condenser", dataKey: "cond_fan_on" },
-        { id: "4", description: "Compressor", dataKey: "COMPRESSOR_ON" },
-        { id: "5", description: "Hot gas valve", dataKey: "HOT_GAS_VALVE_ON" },
-        { id: "6", description: "Afterheat valve", dataKey: "AFTER_HEAT_VALVE_ON" },
-        { id: "7", description: "Chiller healthy", dataKey: "GREEN_LIGHT" },
-        { id: "8", description: "Chiller Fault", dataKey: "YELLOW_LIGHT" },
-        { id: "9", description: "Chiller warning", dataKey: "YELLOW_LIGHT" },
-        { id: "10", description: "Buzzer on", dataKey: "BUZZER_ON" },
-      ];
+    } 
+    else if (deviceType === "GTPL-115-gT-180E-S7-1200") {
+    return [
+  { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
+  { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },
+  { id: "3", description: "Condenser fan drive", dataKey: "Condenser_fan_drive_on_Q0_3" },
+  { id: "4", description: "Compressor", dataKey: "Compressor_on_Q0_4" },
+  { id: "5", description: "Compressor reset", dataKey: "Compressor_reset_on_Q0_5" },
+  { id: "6", description: "Solenoid valve", dataKey: "Solenoid_valve_on_Q0_6" },
+  { id: "7", description: "Hot gas valve", dataKey: "Hot_gas_valve_on_Q0_7" },
+  { id: "8", description: "After heat motor valve", dataKey: "After_heat_motor_valve_on_Q1_0" },
+  { id: "9", description: "Chiller healthy", dataKey: "Chiller_healthy_on_Q1_1" },
+  { id: "10", description: "Chiller Fault", dataKey: "Chiller_Fault_on_Q2_0" },
+  { id: "11", description: "Collective Trouble Signal", dataKey: "Collective_Trouble_Signal_on_Q2_1" },
+  { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
+];
+
     }
     
     // Default fallback
@@ -84,11 +88,14 @@ const getStatus = (dataKey: string) => {
 
   // S7-1200 uses boolean or number
   if (device === "GTPL-122-gT-1000T-S7-1200") {
-    return value === true || value === 1 || value === "1";
+    return value === "true" || value === 1 || value === "1" || value === true;
   }
-
+  // GPL-115 uses boolean or number
+  if (device === "GTPL-115-gT-180E-S7-1200") {
+    return value === true || value === 1 || value === "1" || value === "True" || value === "true";
+  }
   // Default fallback
-  return value === true || value === 1 || value === "1" || value === "tr";
+  return value === true || value === 1 || value === "1" || value === "tr"|| value === "True" || value === "true";
 };
 
   return (

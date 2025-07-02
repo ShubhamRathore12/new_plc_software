@@ -65,7 +65,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
             </div>
           ) : (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T1 = {formatValue(data?.T1_SET_POINT, "°C")}
+              T1 = {formatValue(data?.T1_SET_POINT || data?.T1_temp_mean, "°C")}
             </div>
           )}
 
@@ -75,7 +75,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
             </div>
           ) : (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              TH - T1 = {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
+              TH - T1 = {formatValue(data.AI_TH_Act || data?.Th_T1 ||data?.TH_T1_set_point, "°C")}
             </div>
           )}
         </div>
@@ -187,6 +187,14 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                   <div className="absolute bottom-4 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
                   <div className="absolute bottom-7 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
                   <div className="absolute bottom-10 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+                  <div className="absolute bottom-14 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+                  <div className="absolute bottom-18 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+                  <div className="absolute bottom-22 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+                  <div className="absolute bottom-14 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+
+
+
+
                 </div>
               </div>
             )}
@@ -256,7 +264,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               {machineName !== "GTPL-122-gT-1000T-S7-1200" && (
                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
-                  <div className="text-sm font-bold">{formatValue(data.Value_to_Display_HEATER, "%")}</div>
+                  <div className="text-sm font-bold">{formatValue(data.Value_to_Display_HEATER || data?.Heater_speed, "%")}</div>
                 </div>
               )}
               <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
@@ -330,7 +338,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
                 <div className="text-xs font-bold">Condensor</div>
                 <div className="text-xs">
-                  {formatValue(data.Value_to_Display_COND_ACT_SPEED || data?.CONDENSER_RPM, "%")}
+                  {formatValue(data.Value_to_Display_COND_ACT_SPEED || data?.CONDENSER_RPM || data?.Cond_fan_speed, "%")}
                 </div>
               </div>
             </div>
@@ -364,7 +372,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 HP
                 <br />
-                {formatValue(data.AI_COND_PRESSURE || data?.HP || data?.COMPRESSOR_TIME || data?.HP_value)}
+                {formatValue(data.AI_COND_PRESSURE || data?.HP || data?.COMPRESSOR_TIME || data?.HP_value || data?.Compressor_timer)}
               </div>
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 LP

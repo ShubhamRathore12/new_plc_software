@@ -25,23 +25,6 @@ export default function AnalogPage() {
         },
       ],
     },
-    // {
-    //   section: "Analog Input (0-10V)",
-    //   items: [
-    //     {
-    //       id: "AIW76",
-    //       description: "Static pressure (SA)",
-    //       value: "1200",
-    //       unit: "Pa",
-    //     },
-    //     {
-    //       id: "AIW66",
-    //       description: "Hummidity of (SA)",
-    //       value: "45",
-    //       unit: "%",
-    //     },
-    //   ],
-    // },
     {
       section: "Analog Input (RTD type)",
       items: [
@@ -105,40 +88,87 @@ export default function AnalogPage() {
     { id: "AQW84", description: "Heater drive", value: "65", unit: "%" },
   ];
 
-  const analogInputValueMap: Record<string, string> = {
-    AIW72: "LP",
-    AIW74: "HP",
-    AIW112: "AIR_OUTLET_TEMP",
-    AIW114: "AIR_OUTLET_TEMP",
-    AIW116: "COLD_AIR_TEMP_T1",
-    AIW118: "COLD_AIR_TEMP_T1",
-    AIW120: "AMBIENT_AIR_TEMP_T2",
-    AIW122: "AMBIENT_AIR_TEMP_T2",
-    AIW124: "AFTER_HEATER_TEMP_Th",
-    AIW126: "AFTER_HEATER_TEMP_Th",
+  // Machine-specific variable mappings
+  const machineConfigs: Record<string, {
+    inputs: Record<string, string>;
+    outputs: Record<string, string>;
+    displayName: string;
+  }> = {
+    "GTPL-115-gT-180E-S7-1200": {
+      displayName: "GTPL-115-gT-180E-S7-1200",
+      inputs: {
+        AIW72: "LP_value",
+        AIW74: "HP_value",
+        AIW112: "T0_1_air_outlet_temp",
+        AIW114: "T0_2_air_outlet_temp",
+        AIW116: "T1_1_cold_air_temp",
+        AIW118: "T1_2_cold_air_temp",
+        AIW120: "T2_1_ambient_temp",
+        AIW122: "T2_2_ambient_temp",
+        AIW124: "TH_1_supply_air_temp",
+        AIW126: "TH_2_supply_air_temp",
+      },
+      outputs: {
+        AQW72: "Blower_speed",
+        AQW74: "CONDENSER_RPM", // Keep existing if not specified
+        AQW80: "Hot_valve_speed",
+        AQW82: "AHT_vale_speed",
+        AQW84: "Heater_speed",
+      }
+    },
+    // Default/Legacy machine configuration
+    "default": {
+      displayName: "Default Machine",
+      inputs: {
+        AIW72: "LP",
+        AIW74: "HP",
+        AIW112: "AIR_OUTLET_TEMP",
+        AIW114: "AIR_OUTLET_TEMP",
+        AIW116: "COLD_AIR_TEMP_T1",
+        AIW118: "COLD_AIR_TEMP_T1",
+        AIW120: "AMBIENT_AIR_TEMP_T2",
+        AIW122: "AMBIENT_AIR_TEMP_T2",
+        AIW124: "AFTER_HEATER_TEMP_Th",
+        AIW126: "AFTER_HEATER_TEMP_Th",
+      },
+      outputs: {
+        AQW72: "BLOWER_RPM",
+        AQW74: "CONDENSER_RPM",
+        AQW80: "HOT_GAS_VALVE_RPM",
+        AQW82: "AFTER_HEAT_VALVE_RPM",
+        AQW84: "HEATER_DRIVE",
+      }
+    }
   };
-
-  const analogOutputValueMap: Record<string, string> = {
-    AQW72: "BLOWER_RPM",
-    AQW74: "CONDENSER_RPM",
-    AQW80: "HOT_GAS_VALVE_RPM",
-    AQW82: "AFTER_HEAT_VALVE_RPM",
-    AQW84: "HEATER_DRIVE",
-  };
-
-  const router = useRouter();
+ const router = useRouter();
   const { seaction } = useParams();
   const device = seaction?.toString();
+  // Get current machine configuration
+  const currentMachineConfig = machineConfigs[device || ""] || machineConfigs["default"];
+  const analogInputValueMap = currentMachineConfig.inputs;
+  const analogOutputValueMap = currentMachineConfig.outputs;
+
+ 
+  
+  // Added error handling for when device is undefined
   const { data, isConnected, error, formatValue } = useAutoData(
-    device as string
+    device || ""
   );
+
+ 
 
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">ANALOG</h1>
-          <p className="text-muted-foreground">Analog inputs and outputs</p>
+          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+            {currentMachineConfig.displayName}
+          </h2>
+          <p className="text-muted-foreground">
+            Analog inputs and outputs
+            {!isConnected && " (Disconnected)"}
+          </p>
         </div>
 
         <Card>
@@ -206,14 +236,14 @@ export default function AnalogPage() {
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => router.push(`/menu/inputs/${device}`)}
+                onClick={() => router.push(`/menu/inputs/${device || ""}`)}
               >
                 INPUTS
               </Button>
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => router.push(`/menu/outputs/${device}`)}
+                onClick={() => router.push(`/menu/outputs/${device || ""}`)}
               >
                 OUTPUTS
               </Button>

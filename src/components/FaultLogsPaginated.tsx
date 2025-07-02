@@ -72,7 +72,7 @@ const S7_200_TAGS = [
   "CONDENSER_FAN_DOOR_OPEN",
   "CONTINUOUS_MODE",
   "FAULT_RESET",
-  "GREEN_LIGHT",
+
   "HEATER_CIRCUIT_BREAKER_FAULT",
 
   "HEATER_RCCCB_TRIP_FAULT",
@@ -136,6 +136,51 @@ const S7_1200_TAGS = [
   "Air_outlet_sensor_2_short_circuit",
 ];
 
+const GPL_115_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Condenser_fan_door_open",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Heater_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "Low_Pressure_Fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_Over_43C",
+  "Compressor_motor_overheat",
+  "Heater_RCCB_fault",
+  "Low_pressure_fault_Locked",
+  "Anti_Freeze_Protection",
+  "High_pressure_fault_Locked",
+  "Ambient_temp_Over_40C",
+  "Ambient_temp_Less_than_4C",
+  "Cond_Fan_circuit_breaker_fault",
+  "Cond_Fan_drive_fault",
+  "Cond_Fan_TOP",
+  "Ambient_Temp_Sensor_T2_1_Open",
+  "Ambient_Temp_Sensor_T2_1_Short_Circuit",
+  "Ambient_Temp_Sensor_T2_2_Open",
+  "Ambient_Temp_Sensor_T2_2_Short_Circuit",
+  "Air_Outlet_Temp_Sensor_T0_1_Open",
+  "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit",
+  "Air_Outlet_Temp_Sensor_T0_2_Open",
+  "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit",
+  "Cold_Air_Temp_Sensor_T1_1_Open",
+  "Cold_Air_Temp_Sensor_T1_1_Short_Circuit",
+  "Cold_Air_Temp_Sensor_T1_2_Open",
+  "Cold_Air_Temp_Sensor_T1_2_Short_Circuit",
+  "Air_After_Heater_Temp_Sensor_TH_1_Open",
+  "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit",
+  "Air_After_Heater_Temp_Sensor_TH_2_Open",
+  "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit",
+  "High_Pressure_Fault",
+  "Heater_TOP_fault",
+  "Heater_drive_Fault",
+  "TH_Temp_more_than_50C",
+  "Delta_not_achieved_in_aeration_mode",
+  "Warning_LP_transducer_failure",
+  "Warning_HP_transducer_failure"
+];
+
 const S7_200_MACHINES = [
   "GTPL-118-gT-80E-P-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
@@ -152,34 +197,46 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
     return [];
   }
 
-  const tags = S7_200_MACHINES.includes(machineName)
-    ? S7_200_TAGS
-    : S7_1200_TAGS;
-  const isS7_200 = S7_200_MACHINES.includes(machineName);
+  let tags: string[] = [];
+
+  // Select appropriate tag list based on machine name
+  if (machineName === "GTPL-118-gT-80E-P-S7-200") {
+    tags = GPL_115_TAGS;
+  } else if (S7_200_MACHINES.includes(machineName)) {
+    tags = S7_200_TAGS;
+  } else {
+    tags = S7_1200_TAGS;
+  }
+
+  // S7_200 logic applies for both S7_200_MACHINES and this special case
+  const isS7_200 =
+    machineName === "GTPL-118-gT-80E-P-S7-200" ||
+    S7_200_MACHINES.includes(machineName);
 
   const activeTags: TagData[] = [];
 
   tags.forEach((tag) => {
     const value = data[tag];
 
-    // Skip if value is undefined, null, or empty string
+    // Skip if value is undefined, null, or empty
     if (value === undefined || value === null || value === "") {
       return;
     }
 
     let isActive = false;
+
     if (isS7_200) {
-      // For S7_200, check for "tr" string or true boolean
+      // For S7-200 and GPL-115: check for boolean or "tr"
       isActive =
-        value === "tr" || value === true || value === "true" || value === 1;
+        value === "tr" || value === true || value === "true" || value === 1 || value === "True";
     } else {
-      // For S7_1200, check for true boolean or "true" string
+      // For S7-1200: check for boolean or "1"/"true"
       isActive =
-        value === true || value === "true" || value === 1 || value === "1";
+        value === true || value === "true" || value === 1 || value === "1" || value ==="True";
     }
 
     if (isActive) {
-      // Get timestamp from various possible fields
+      // Extract timestamp from available fields or use now
       const timestamp =
         data.created_at ||
         data.createdAt ||

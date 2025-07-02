@@ -150,7 +150,7 @@ export default function AerationWithHeatingPage() {
                         <div className="flex items-center space-x-2">
                           <Input
                             type="number"
-                            value={data?.SET_DURATION}
+                            value={data?.SET_DURATION || data?.Aeration_duration_set}
                             onChange={(e) =>
                               setDuration(Number.parseInt(e.target.value) || 0)
                             }
@@ -168,7 +168,7 @@ export default function AerationWithHeatingPage() {
                       <div className="flex items-center space-x-2">
                         <Input
                           type="number"
-                          value={data?.DELTA_SET}
+                          value={data?.DELTA_SET || data?.Delta_set_to_aeration}
                           onChange={(e) =>
                             setDeltaTemp(Number.parseInt(e.target.value) || 0)
                           }
@@ -184,7 +184,7 @@ export default function AerationWithHeatingPage() {
                     <div className="flex items-center space-x-4">
                       <Input
                         type="number"
-                        value={data?.RUNNING_HOUR1 || runningHours}
+                        value={data?.RUNNING_HOUR1 || runningHours || data?.Running_time_hour}
                         onChange={(e) =>
                           setRunningHours(Number.parseInt(e.target.value) || 0)
                         }
@@ -195,7 +195,7 @@ export default function AerationWithHeatingPage() {
                       <span>h</span>
                       <Input
                         type="number"
-                        value={data?.RUNNING_MINUTE1 || runningMinutes}
+                        value={data?.RUNNING_MINUTE1 || runningMinutes || data?.Running_time_minute}
                         onChange={(e) =>
                           setRunningMinutes(
                             Number.parseInt(e.target.value) || 0
@@ -219,7 +219,7 @@ export default function AerationWithHeatingPage() {
                       <span>TH (Supply Air)</span>
                       <span className="font-medium">
                         {formatValue(
-                          AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                          AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean,
                           "°C"
                         )}
                       </span>
@@ -228,7 +228,7 @@ export default function AerationWithHeatingPage() {
                       <span>T2 (Ambient)</span>
                       <span className="font-medium">
                         {formatValue(
-                          AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2,
+                          AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2 || data?.T2_temp_mean, 
                           "°C"
                         )}
                       </span>
@@ -236,13 +236,13 @@ export default function AerationWithHeatingPage() {
                     <div className="flex justify-between">
                       <span>BLOWER</span>
                       <span className="font-medium">
-                        {formatValue(Value_to_Display_EVAP_ACT_SPEED, "%")}
+                        {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.Blower_speed, "%")}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>HTR</span>
                       <span className="font-medium">
-                        {formatValue(Value_to_Display_HEATER, "%")}
+                        {formatValue(Value_to_Display_HEATER || data?.Heater_speed, "%")}
                       </span>
                     </div>
                   </div>

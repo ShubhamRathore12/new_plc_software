@@ -140,7 +140,13 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 
           <div className="absolute -bottom-12 left-1/2 transform -translate-x-1/2 text-center">
             <div className="text-sm font-bold">HTR </div>
+               <div className="text-sm">       {formatValue(
+                data?.Heater_speed
+              ) || "N/A"}°C
             
+              
+        </div>
+        
           </div>
         </div>
         </div>
@@ -164,7 +170,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
     </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
       {formatValue(
-        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.T0_temp_mean,
+        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean || data?.T0_temp_mean ,
         "°C"
       )}
     </div>
@@ -181,7 +187,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
           <img src="https://www.thumbsfrog.com/1046553/pages/low-pressure-blower-image-1695819922-1046553.jpg" alt="" width={70} height={70}/>
           <div className="text-xs font-bold">BLOWER</div>
           <div className="text-lg font-bold">         {formatValue(
-                data?.Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM,
+                data?.Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM || data?.Blower_speed,
                 "%"
               )}</div>
         </div>
@@ -196,7 +202,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
       {/* Hour Box */}
       <div className="flex flex-col items-center">
         <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[60px] text-center">
-          {formatValue(data?.Running_time_hour || data?.RUNNING_HOUR1 || "0")}
+          {formatValue(data?.Running_time_hour || data?.RUNNING_HOUR1 || data?.Running_time_hour || "0")}
         </div>
         <div className="text-xs text-gray-600 mt-1">Hours</div>
       </div>
@@ -204,7 +210,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
       {/* Minute Box */}
       <div className="flex flex-col items-center">
         <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[60px] text-center">
-          {formatValue(data?.Running_time_minute || data?.RUNNING_MINUTE1 || "0")}
+          {formatValue(data?.Running_time_minute || data?.RUNNING_MINUTE1 ||data?.Running_time_minute || "0")}
         </div>
         <div className="text-xs text-gray-600 mt-1">Minutes</div>
       </div>
@@ -221,7 +227,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
     <div className="flex items-center gap-1 px-2 py-2">
       <div className="w-32 text-sm font-bold text-gray-700">Delta</div>
       <div className="bg-black text-white px-1 py-2 rounded text-lg font-bold min-w-[60px] text-center">
-        {data?.HEATING_MODE_SET_TH_FOR_HEATING_MODE || data?.DELTA_SET} °C
+        {data?.HEATING_MODE_SET_TH_FOR_HEATING_MODE || data?.DELTA_SET || data?.Delta_set_to_aeration} °C
       </div>
     </div>
 
@@ -229,7 +235,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
     <div className="flex items-center gap-1 px-2 py-2">
       <div className="w-32 text-sm font-bold text-gray-700">Set Duration</div>
       <div className="bg-black text-white px-1 py-2 rounded text-lg font-bold min-w-[60px] text-center">
-        {formatValue(data?.HEATING_MODE_Set_Run_Duration || data?.SET_DURATION) || "00:00"}h
+        {formatValue(data?.HEATING_MODE_Set_Run_Duration || data?.SET_DURATION || data?.Aeration_duration_set) || "00:00"}h
       </div>
     </div>
   </div>

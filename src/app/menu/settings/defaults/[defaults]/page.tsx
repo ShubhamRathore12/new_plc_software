@@ -270,6 +270,7 @@ export default function DefaultsPage() {
                         SETTINGS_T1_REF_FR_T0 ||
                         data?.T1_SET_POINT ||
                         data?.T0_set_point
+                        ||data?.T1_set_point
                       }
                       className="col-span-1"
                     />
@@ -288,7 +289,7 @@ export default function DefaultsPage() {
                       <Input
                         id="th-t1"
                         type="number"
-                        value={SETTINGS_Delta_T || data?.Th_T1}
+                        value={SETTINGS_Delta_T || data?.Th_T1 ||data?.Th_T1_set_point}
                         // onChange={(e) =>
                         //   setThT1(Number.parseInt(e.target.value) || 0)
                         // }

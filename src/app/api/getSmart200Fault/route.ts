@@ -49,7 +49,7 @@ const S7_200_TAGS = [
   "CONDENSER_FAN_DOOR_OPEN",
   "CONTINUOUS_MODE",
   "FAULT_RESET",
-  "GREEN_LIGHT",
+
   "HEATER_CIRCUIT_BREAKER_FAULT",
   "HEATER_RCCCB_TRIP_FAULT",
   "HEATER_START_MANUAL",
@@ -113,106 +113,92 @@ const S7_1200_TAGS = [
   "AI_SUC_PRESSURE",
 ];
 
+const GPL_115_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Condenser_fan_door_open",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Heater_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "Low_Pressure_Fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_Over_43C",
+  "Compressor_motor_overheat",
+  "Heater_RCCB_fault",
+  "Low_pressure_fault_Locked",
+  "Anti_Freeze_Protection",
+  "High_pressure_fault_Locked",
+  "Ambient_temp_Over_40C",
+  "Ambient_temp_Less_than_4C",
+  "Cond_Fan_circuit_breaker_fault",
+  "Cond_Fan_drive_fault",
+  "Cond_Fan_TOP",
+  "Ambient_Temp_Sensor_T2_1_Open",
+  "Ambient_Temp_Sensor_T2_1_Short_Circuit",
+  "Ambient_Temp_Sensor_T2_2_Open",
+  "Ambient_Temp_Sensor_T2_2_Short_Circuit",
+  "Air_Outlet_Temp_Sensor_T0_1_Open",
+  "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit",
+  "Air_Outlet_Temp_Sensor_T0_2_Open",
+  "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit",
+  "Cold_Air_Temp_Sensor_T1_1_Open",
+  "Cold_Air_Temp_Sensor_T1_1_Short_Circuit",
+  "Cold_Air_Temp_Sensor_T1_2_Open",
+  "Cold_Air_Temp_Sensor_T1_2_Short_Circuit",
+  "Air_After_Heater_Temp_Sensor_TH_1_Open",
+  "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit",
+  "Air_After_Heater_Temp_Sensor_TH_2_Open",
+  "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit",
+  "High_Pressure_Fault",
+  "Heater_TOP_fault",
+  "Heater_drive_Fault",
+  "TH_Temp_more_than_50C",
+  "Delta_not_achieved_in_aeration_mode",
+  "Warning_LP_transducer_failure",
+  "Warning_HP_transducer_failure"
+];
+
+
 // Machine configuration mapping
 const MACHINE_CONFIG = {
-  // S7-200 machines
-  "GTPL-118-gT-80E-P-S7-200": {
-    table: "kabomachinedatasmart200",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
-  "GTPL-108-gT-40E-P-S7-200": {
-    table: "GTPL_108_gT_40E_P_S7_200_Germany",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
-  "GTPL-109-gT-40E-P-S7-200": {
-    table: "GTPL_109_gT_40E_P_S7_200_Germany",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
-  "GTPL-110-gT-40E-P-S7-200": {
-    table: "GTPL_110_gT_40E_P_S7_200_Germany",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
-  "GTPL-111-gT-80E-P-S7-200": {
-    table: "GTPL_111_gT_80E_P_S7_200_Germany",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
-  "GTPL-112-gT-80E-P-S7-200": {
-    table: "GTPL_112_gT_80E_P_S7_200_Germany",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
-  "GTPL-113-gT-80E-P-S7-200": {
-    table: "GTPL_113_gT_80E_P_S7_200_Germany",
-    tags: S7_200_TAGS,
-    type: "S7-200",
-  },
+  // S7-200
+  "GTPL-118-gT-80E-P-S7-200": { table: "kabomachinedatasmart200", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-108-gT-40E-P-S7-200": { table: "GTPL_108_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-109-gT-40E-P-S7-200": { table: "GTPL_109_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-110-gT-40E-P-S7-200": { table: "GTPL_110_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-111-gT-80E-P-S7-200": { table: "GTPL_111_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-112-gT-80E-P-S7-200": { table: "GTPL_112_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-113-gT-80E-P-S7-200": { table: "GTPL_113_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
 
-  // S7-1200 machines
-  "GTPL-122-gT-1000T-S7-1200": {
-    table: "gtpl_122_s7_1200_01",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "Gtpl-S7-1200-02": {
-    table: "gtpl_122_s7_1200_01",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-114-gT-140E-S7-1200": {
-    table: "GTPL_114_GT_140E_S7_1200",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-115-gT-180E-S7-1200": {
-    table: "GTPL_115_GT_180E_S7_1200",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-116-gT-240E-S7-1200": {
-    table: "GTPL_116_GT_240E_S7_1200",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-117-gT-320E-S7-1200": {
-    table: "GTPL_117_GT_320E_S7_1200",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-119-gT-180E-S7-1200": {
-    table: "GTPL_119_GT_180E_S7_1200",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-120-gT-180E-S7-1200": {
-    table: "GTPL_120_GT_180E_S7_1200",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
-  "GTPL-121-gT-1000T-S7-1200": {
-    table: "GTPL_121_GT1000T",
-    tags: S7_1200_TAGS,
-    type: "S7-1200",
-  },
+  // S7-1200 (including GTPL-115)
+  "GTPL-122-gT-1000T-S7-1200": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
+  "Gtpl-S7-1200-02": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-114-gT-140E-S7-1200": { table: "GTPL_114_GT_140E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-115-gT-180E-S7-1200": { table: "GTPL_115_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" }, // ✅ Corrected type
+  "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
 };
 
-// Function to check for faults based on machine type
+// Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
+const MACHINE_NAME_ALIASES: Record<string, string> = {
+  "GPL-115": "GTPL-115-gT-180E-S7-1200",
+};
+
+// ------------------ Fault Check Utility ------------------
+
 async function checkFaultsAndNotify(record: any, machineName: string) {
-  const machineConfig =
-    MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+  const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+
   if (!machineConfig) return [];
 
   const activeFaults = [];
   const tags = machineConfig.tags;
 
-  if (!record || typeof record !== "object") return [];
-
   for (const tag of tags) {
-    const value = record[tag];
+    const value = record?.[tag];
     if (
       value === true ||
       value === 1 ||
@@ -225,39 +211,28 @@ async function checkFaultsAndNotify(record: any, machineName: string) {
 
   if (activeFaults.length > 0) {
     try {
-      const faultData = {
-        recordId: record.id,
-        machineName,
-        machineType: machineConfig.type,
-        table: machineConfig.table,
-        timestamp: new Date().toISOString(),
-        activeFaults,
-        recordData: record,
-      };
-
-      const response = await fetch("YOUR_API_ENDPOINT_HERE", {
+      await fetch("YOUR_API_ENDPOINT_HERE", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(faultData),
+        body: JSON.stringify({
+          recordId: record.id,
+          machineName,
+          machineType: machineConfig.type,
+          table: machineConfig.table,
+          timestamp: new Date().toISOString(),
+          activeFaults,
+          recordData: record,
+        }),
       });
-
-      if (!response.ok) {
-        console.error("Failed to send fault data to API:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error sending fault data to API:", error);
+    } catch (err) {
+      console.error("API push failed:", err);
     }
   }
 
   return activeFaults;
 }
 
-async function getPreviousRecords(
-  currentRecordId: number,
-  machineName: string,
-  table: string,
-  limit = 10
-) {
+async function getPreviousRecords(currentRecordId: number, machineName: string, table: string, limit = 10) {
   try {
     const [rows]: any = await pool.query(
       `SELECT * FROM \`${table}\` WHERE id < ? ORDER BY id DESC LIMIT ?`,
@@ -265,36 +240,41 @@ async function getPreviousRecords(
     );
     return rows || [];
   } catch (error) {
-    console.error("Error fetching previous records:", error);
+    console.error("DB fetch error:", error);
     return [];
   }
 }
+
+// ------------------ GET Handler ------------------
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const page = parseInt(searchParams.get("page") || "1", 10);
   const limit = parseInt(searchParams.get("limit") || "10", 10);
   const offset = (page - 1) * limit;
-  const search = searchParams.get("search")?.trim() || "";
-  const machineName = searchParams.get("machineName")?.trim() || "";
+
+  const rawMachineName = searchParams.get("machineName")?.trim() || "";
+  const machineName = MACHINE_NAME_ALIASES[rawMachineName] || rawMachineName;
   const checkFaults = searchParams.get("checkFaults") === "true";
+  const search = searchParams.get("search")?.trim() || "";
+
+const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+
+
+  if (!machineConfig) {
+    return new Response(
+      JSON.stringify({
+        error: `No configuration found for machine: ${machineName}`,
+        availableMachines: Object.keys(MACHINE_CONFIG),
+      }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
 
   try {
-    const machineConfig =
-      MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
-    if (!machineConfig) {
-      return new Response(
-        JSON.stringify({
-          error: `No configuration found for machine: ${machineName}`,
-          availableMachines: Object.keys(MACHINE_CONFIG),
-        }),
-        { status: 400, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
     const table = machineConfig.table;
-    let whereClause = "";
     const values: any[] = [];
+    let whereClause = "";
 
     if (search) {
       whereClause = "WHERE machine_name LIKE ?";
@@ -306,24 +286,16 @@ export async function GET(req: Request) {
       values
     );
 
-    let rows: any[] = [];
-    try {
-      const [result] = await pool.query(
-        `SELECT * FROM \`${table}\` ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`,
-        [...values, limit, offset]
-      );
-      rows = Array.isArray(result) ? result : [];
-    } catch (err) {
-      rows = [];
-    }
+    const [result] = await pool.query(
+      `SELECT * FROM \`${table}\` ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`,
+      [...values, limit, offset]
+    );
 
+    const rows = Array.isArray(result) ? result : [];
     const total = Number(count) || 0;
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
-    if (!Array.isArray(rows) || rows.length === 0) {
-      console.log(
-        `[INFO] No data found in table: ${table} for machine: ${machineName}`
-      );
+    if (rows.length === 0) {
       return new Response(
         JSON.stringify({
           data: [],
@@ -334,45 +306,39 @@ export async function GET(req: Request) {
           message: `No records found for machine: ${machineName}`,
           machineName,
           machineType: machineConfig.type,
-          table: machineConfig.table,
+          table,
           faultCheckingEnabled: checkFaults,
         }),
-        {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        }
+        { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }
 
     const enhancedData = [];
 
-    for (const record of rows) {
-      let faultInfo = null;
-      let previousRecords = null;
+  for (const record of rows as { id: number; [key: string]: any }[]) {
+  let faultInfo = null;
+  let previousRecords = null;
 
-      if (checkFaults) {
-        const activeFaults = await checkFaultsAndNotify(record, machineName);
-        if (activeFaults.length > 0) {
-          previousRecords = await getPreviousRecords(
-            record.id,
-            machineName,
-            table
-          );
-        }
-
-        faultInfo = {
-          activeFaults,
-          faultCount: activeFaults.length,
-          machineType: machineConfig.type,
-          previousRecords,
-        };
-      }
-
-      enhancedData.push({
-        ...record,
-        faultInfo,
-      });
+  if (checkFaults) {
+    const activeFaults = await checkFaultsAndNotify(record, machineName);
+    if (activeFaults.length > 0) {
+      previousRecords = await getPreviousRecords(record.id, machineName, table);
     }
+
+    faultInfo = {
+      activeFaults,
+      faultCount: activeFaults.length,
+      machineType: machineConfig.type,
+      previousRecords,
+    };
+  }
+
+  enhancedData.push({
+    ...record,
+    faultInfo,
+  });
+}
+
 
     return new Response(
       JSON.stringify({
@@ -384,14 +350,14 @@ export async function GET(req: Request) {
         search,
         machineName,
         machineType: machineConfig.type,
-        table: machineConfig.table,
+        table,
         faultCheckingEnabled: checkFaults,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
   } catch (err: any) {
-    console.error("Unhandled DB error:", err.message || err);
-    return new Response(JSON.stringify({ error: "Database error" }), {
+    console.error("Unhandled error:", err.message || err);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

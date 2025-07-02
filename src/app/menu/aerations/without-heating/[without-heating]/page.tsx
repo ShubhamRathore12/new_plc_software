@@ -121,8 +121,8 @@ export default function AerationWithoutHeatingPage() {
                         <Label htmlFor="continuous-mode">CONTINUOUS MODE</Label>
                       </div>
                     </div>
-
-                    <Label className="mb-2 block">Set Duration</Label>
+{devices === "GTPL-115-gT-180E-S7-1200" ? null :  <Label className="mb-2 block">Set Duration</Label>}
+         {devices === "GTPL-115-gT-180E-S7-1200" ? null :         
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
@@ -138,7 +138,7 @@ export default function AerationWithoutHeatingPage() {
                       />
                       <span>h</span>
                     </div>
-
+}
                     <Label className="mb-2 block">Running Time</Label>
                     <div className="flex items-center space-x-4">
                       <Input
@@ -187,7 +187,7 @@ export default function AerationWithoutHeatingPage() {
                       <div className="flex justify-between">
                         <span>T1 (Cold Air)</span>
                         <span className="font-medium">
-                          {formatValue(AI_COLD_AIR_TEMP, "°C")}
+                          {formatValue(AI_COLD_AIR_TEMP || data?.T1_temp_mean, "°C")}
                         </span>
                       </div>
                     )}
@@ -207,7 +207,7 @@ export default function AerationWithoutHeatingPage() {
                       <span>BLOWER</span>
                       <span className="font-medium">
                         {formatValue(
-                          Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM,
+                          Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM ||data?.Blower_speed,
                           "%"
                         )}
                       </span>
@@ -217,7 +217,7 @@ export default function AerationWithoutHeatingPage() {
                         <span>TH</span>
                         <span className="font-medium">
                           {formatValue(
-                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th,
+                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed,
                             "°C"
                           )}
                         </span>

@@ -26,6 +26,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-112-gT-80E-P-S7-200": "GTPL_112_gT_80E_P_S7_200_Germany",
     "GTPL-113-gT-80E-P-S7-200": "GTPL_113_gT_80E_P_S7_200_Germany",
     "Gtpl-S7-1200-02": "gtpl_122_s7_1200_01",
+    "GTPL-115-gT-180E-S7-1200" :  "GTPL_115_GT_180E_S7_1200"
   };
 
   const deviceNameToStatusKey: Record<string, string> = {
@@ -38,6 +39,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-112-gT-80E-P-S7-200": "gtpl_112",
     "GTPL-113-gT-80E-P-S7-200": "gtpl_113",
     "Gtpl-S7-1200-02": "gtpl_1200_02",
+    "GTPL-115-gT-180E-S7-1200" : "gtpl_115"
   };
 
   const fetchData = async () => {

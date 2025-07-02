@@ -225,6 +225,7 @@ export default function DevicesPage() {
     "GTPL-119-gT-180E-S7-1200": "GTPL_119",
     "GTPL-120-gT-180E-S7-1200": "GTPL_120",
     "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
+  
   };
 
   const handleViewMore = (deviceName: string) => {

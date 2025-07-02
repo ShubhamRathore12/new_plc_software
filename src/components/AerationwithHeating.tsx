@@ -155,7 +155,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
     </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
       {formatValue(
-        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.T0_temp_mean,
+        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean || data?.T0_temp_mean,
         "°C"
       )}
     </div>
@@ -169,7 +169,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
           <img src="https://www.thumbsfrog.com/1046553/pages/low-pressure-blower-image-1695819922-1046553.jpg" alt="" width={70} height={70}/>
           <div className="text-xs font-bold">BLOWER</div>
           <div className="text-lg font-bold">         {formatValue(
-                data?.Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM,
+                data?.Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM || data?.Blower_speed,
                 "%"
               )}</div>
         </div>
@@ -184,7 +184,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
       {/* Hour Box */}
       <div className="flex flex-col items-center">
         <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[60px] text-center">
-          {formatValue(data?.Running_time_hour || data?.RUNNING_HOUR1 || "0")}
+          {formatValue(data?.Running_time_hour || data?.RUNNING_HOUR1 || data?.Running_time_hour || "0")}
         </div>
         <div className="text-xs text-gray-600 mt-1">Hours</div>
       </div>
@@ -192,7 +192,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
       {/* Minute Box */}
       <div className="flex flex-col items-center">
         <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[60px] text-center">
-          {formatValue(data?.Running_time_minute || data?.RUNNING_MINUTE1 || "0")}
+          {formatValue(data?.Running_time_minute || data?.RUNNING_MINUTE1 || data?.Running_time_minute || "0")}
         </div>
         <div className="text-xs text-gray-600 mt-1">Minutes</div>
       </div>
@@ -203,7 +203,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 
       {/* Set Duration - Below Running Time */}
 
-   {machineName === "GTPL-122-gT-1000T-S7-1200" && null }
+   {machineName === "GTPL-122-gT-1000T-S7-1200" || machineName === "GTPL-115-gT-180E-S7-1200" ? null :
    
 
   <div className="absolute left-125 top-32">
@@ -219,7 +219,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
       </div>
     </div>
   </div>
-
+}
 </div>
   )
 }

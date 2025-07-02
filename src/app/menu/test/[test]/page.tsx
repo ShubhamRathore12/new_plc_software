@@ -74,10 +74,10 @@ export default function TestPage() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Speed</span>
-                        <span className="font-medium">{blowerSpeed}%</span>
+                        <span className="font-medium">{blowerSpeed ||data?.Blower_speed_set_in_manual}%</span>
                       </div>
                       <Slider
-                        value={[blowerSpeed]}
+                        value={[blowerSpeed || data?.Blower_speed_set_in_manual ]}
                         onValueChange={(v) => setBlowerSpeed(v[0])}
                         max={100}
                         step={1}
@@ -110,10 +110,10 @@ export default function TestPage() {
                     <div className="space-y-2">
                       <div className="flex justify-between">
                         <span>Speed</span>
-                        <span className="font-medium">{condFanSpeed}%</span>
+                        <span className="font-medium">{condFanSpeed || data?.Cond_fan_speed_set_in_manual}%</span>
                       </div>
                       <Slider
-                        value={[condFanSpeed]}
+                        value={[condFanSpeed || data?.CONDN_FAN_SET_POINT_MANUAL ||data?.Cond_fan_speed_set_in_manual]}
                         onValueChange={(v) => setCondFanSpeed(v[0])}
                         max={100}
                         step={1}
@@ -215,10 +215,10 @@ export default function TestPage() {
                   <div className="space-y-6">
                     <div className="flex justify-between">
                       <span>Speed</span>
-                      <span className="font-medium">{hotGasValve}%</span>
+                      <span className="font-medium">{hotGasValve || data?.Hot_gas_valve_set_in_manual}%</span>
                     </div>
                     <Slider
-                      value={[hotGasValve]}
+                      value={[hotGasValve || data?.Hot_gas_valve_set_in_manual]}
                       onValueChange={(v) => setHotGasValve(v[0])}
                       max={100}
                       step={1}
@@ -250,10 +250,10 @@ export default function TestPage() {
                   <div className="space-y-6">
                     <div className="flex justify-between">
                       <span>Speed</span>
-                      <span className="font-medium">{afterHeatValve}%</span>
+                      <span className="font-medium">{afterHeatValve || data?.AHT_valve_set_in_manual}%</span>
                     </div>
                     <Slider
-                      value={[afterHeatValve]}
+                      value={[afterHeatValve || data?.AHT_valve_set_in_manual]}
                       onValueChange={(v) => setAfterHeatValve(v[0])}
                       max={100}
                       step={1}
@@ -284,7 +284,7 @@ export default function TestPage() {
                     <div className="flex items-center gap-4">
                       <Input
                         type="number"
-                        value={heaterOutput}
+                        value={heaterOutput || data?.Heater_set_in_manual}
                         onChange={(e) =>
                           setHeaterOutput(Number(e.target.value) || 0)
                         }
