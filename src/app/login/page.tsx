@@ -18,8 +18,8 @@ import { useDataStore } from "@/lib/store";
 
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("Narayan12");
-  const [password, setPassword] = useState("Naruto@12");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { data, setData, loading, setLoading } = useDataStore();
