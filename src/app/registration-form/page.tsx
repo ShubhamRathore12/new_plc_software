@@ -241,7 +241,7 @@ export default function RegistrationForm() {
     { value: "test", label: formatText(t("test")) },
     { value: "screen-brightness", label: formatText(t("screen_brightness")) },
     { value: "reports", label: formatText(t("reports")) },
-    { value: "manufacture", label: formatText(t("manufacture")) },
+    { value: "manufacture", label: formatText(t("manufacturer")) },
     { value: "customer", label: formatText(t("customer")) },
   ];
 
