@@ -362,7 +362,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
 
             {/* Pressure Readings */}
             <div
-              className="absolute flex gap-2 z-10 mt-[36rem]"
+              className="absolute flex gap-2 flex-col z-10 mt-[36rem] ml-[29.5rem]"
               style={{
                 right: "calc(200px * 100% / 1200px)",
                 bottom: "calc(50px * 100% / 600px)",
