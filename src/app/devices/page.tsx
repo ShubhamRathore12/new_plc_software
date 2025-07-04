@@ -60,8 +60,9 @@ export default function DevicesPage() {
   const { data } = useDataStore();
   const { showCompanyField } = useFieldVisibility(data);
 
-  // Debug: Log the showCompanyField value
-  console.log("showCompanyField:", showCompanyField);
+const accessArray = (data?.user?.monitorAccess?.split(",") || []).map((name: string) => name.trim().toLowerCase());
+
+
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -202,12 +203,25 @@ export default function DevicesPage() {
     })),
   ];
 
-  const filteredDevices = allDevices.filter(
-    (device) =>
-      selectedLocation === "" ||
-      selectedLocation === "All" ||
-      device.location === selectedLocation
-  );
+  // const filteredDevices = allDevices.filter(
+  //   (device) =>
+  //     selectedLocation === "" ||
+  //     selectedLocation === "All" ||
+  //     device.location === selectedLocation
+  // );
+
+const filteredDevices = allDevices.filter((device) => {
+  const matchesLocation =
+    selectedLocation === "" ||
+    selectedLocation === "All" ||
+    device.location === selectedLocation;
+
+  const isRestricted = accessArray.includes(device.name.toLowerCase());
+
+  return matchesLocation && !isRestricted;
+});
+
+
 
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",

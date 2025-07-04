@@ -224,26 +224,42 @@ export default function RegistrationForm() {
       setIsLoading(false);
     }
   }
+const monitorOptions = [
+  { value: "devices", label: formatText(t("devices")) },
+  { value: "notifications", label: formatText(t("notifications")) },
+  { value: "contacts", label: formatText(t("contacts")) },
+  { value: "clusters", label: formatText(t("clusters")) },
+  { value: "reports", label: formatText(t("reports")) },
+  { value: "triggers", label: formatText(t("triggers")) },
+  { value: "auto", label: formatText(t("auto")) },
+  { value: "aeration", label: formatText(t("aeration")) },
+  { value: "fault", label: formatText(t("fault")) },
+  { value: "settings", label: formatText(t("settings")) },
+  { value: "inputs", label: formatText(t("inputs")) },
+  { value: "outputs", label: formatText(t("outputs")) },
+  { value: "test", label: formatText(t("test")) },
+  { value: "screen-brightness", label: formatText(t("screen_brightness")) },
+  { value: "manufacture", label: formatText(t("manufacturer")) },
+  { value: "customer", label: formatText(t("customer")) },
 
-  const monitorOptions = [
-    { value: "devices", label: formatText(t("devices")) },
-    { value: "notifications", label: formatText(t("notifications")) },
-    { value: "contacts", label: formatText(t("contacts")) },
-    { value: "clusters", label: formatText(t("clusters")) },
-    { value: "reports", label: formatText(t("reports")) },
-    { value: "triggers", label: formatText(t("triggers")) },
-    { value: "auto", label: formatText(t("auto")) },
-    { value: "aeration", label: formatText(t("aeration")) },
-    { value: "fault", label: formatText(t("fault")) },
-    { value: "settings", label: formatText(t("settings")) },
-    { value: "inputs", label: formatText(t("inputs")) },
-    { value: "outputs", label: formatText(t("outputs")) },
-    { value: "test", label: formatText(t("test")) },
-    { value: "screen-brightness", label: formatText(t("screen_brightness")) },
-    { value: "reports", label: formatText(t("reports")) },
-    { value: "manufacture", label: formatText(t("manufacturer")) },
-    { value: "customer", label: formatText(t("customer")) },
-  ];
+  // ✅ Devices manually added here
+  { value: "GTPL-122-gT-1000T-S7-1200", label: formatText("GTPL-122-gT-1000T-S7-1200") },
+  { value: "GTPL-118-gT-80E-P-S7-200", label: formatText("GTPL-118-gT-80E-P-S7-200") },
+  { value: "GTPL-108-gT-40E-P-S7-200", label: formatText("GTPL-108-gT-40E-P-S7-200") },
+  { value: "GTPL-109-gT-40E-P-S7-200", label: formatText("GTPL-109-gT-40E-P-S7-200") },
+  { value: "GTPL-110-gT-40E-P-S7-200", label: formatText("GTPL-110-gT-40E-P-S7-200") },
+  { value: "GTPL-111-gT-80E-P-S7-200", label: formatText("GTPL-111-gT-80E-P-S7-200") },
+  { value: "GTPL-112-gT-80E-P-S7-200", label: formatText("GTPL-112-gT-80E-P-S7-200") },
+  { value: "GTPL-113-gT-80E-P-S7-200", label: formatText("GTPL-113-gT-80E-P-S7-200") },
+  { value: "GTPL-114-gT-140E-S7-1200", label: formatText("GTPL-114-gT-140E-S7-1200") },
+  { value: "GTPL-115-gT-180E-S7-1200", label: formatText("GTPL-115-gT-180E-S7-1200") },
+  { value: "GTPL-116-gT-240E-S7-1200", label: formatText("GTPL-116-gT-240E-S7-1200") },
+  { value: "GTPL-117-gT-320E-S7-1200", label: formatText("GTPL-117-gT-320E-S7-1200") },
+  { value: "GTPL-119-gT-180E-S7-1200", label: formatText("GTPL-119-gT-180E-S7-1200") },
+  { value: "GTPL-120-gT-180E-S7-1200", label: formatText("GTPL-120-gT-180E-S7-1200") },
+  { value: "GTPL-121-gT-1000T-S7-1200", label: formatText("GTPL-121-gT-1000T-S7-1200") },
+];
+
 
   // Dynamic company and location options
   const [companyOptions, setCompanyOptions] = useState([
