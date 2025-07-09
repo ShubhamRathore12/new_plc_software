@@ -262,14 +262,11 @@ function formatTagName(tag: string): string {
     .toLowerCase()
     .replace(/\b\w/g, (l) => l.toUpperCase());
 }
-
 function getTagCategory(tag: string): string {
-  if (
-    tag.includes("fault") ||
-    tag.includes("FAULT") ||
-    
-  )
+  const lower = tag.toLowerCase();
+  if (lower.includes("fault") || lower.includes("error") || lower.includes("alarm")) {
     return "fault";
+  }
 
   return "status";
 }
