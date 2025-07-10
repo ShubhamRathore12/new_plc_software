@@ -268,7 +268,7 @@ function getTagCategory(tag: string): string {
     return "fault";
   }
 
-  return "status";
+  return "fault";
 }
 
 function ActiveTagRow({ tagData }: { tagData: TagData }) {
