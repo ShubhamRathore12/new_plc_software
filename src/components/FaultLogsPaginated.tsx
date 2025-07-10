@@ -1,6 +1,6 @@
 import useDebounce from "@/hooks/useDebounce";
 import { useState, useEffect } from "react";
-const PAGE_SIZE = 500;
+const PAGE_SIZE = 20000;
 
 interface TagData {
   tag: string;
@@ -39,7 +39,7 @@ const S7_200_TAGS = [
   "AIR_OUTLET_TEMP_SENSOR_T0_OPEN",
   "AIR_OUTLET_TEMP_SENSOR_T0_SHORT_CIRCUIT",
   "AMBIENT_TEMP_LESS_THAN_4",
-  "AMBIENT_TEMP_LOW_THAN_SET_TEMP",
+  // "AMBIENT_TEMP_LOW_THAN_SET_TEMP",
   "AMBIENT_TEMP_OVER_40",
   "AMBIENT_TEMP_OVER_43",
   "AMBIENT_TEMP_SENSOR_T2_OPEN",
@@ -47,10 +47,10 @@ const S7_200_TAGS = [
   "ANTI_FREEZE_PROTECTION",
   "AUTO_AERATION_ENABLE",
   "AUTO_EN",
-  "AUTO_PROCESS_PB",
+  // "AUTO_PROCESS_PB",
   "AUTO_PROCESS_STOP_PB",
   "BLOWER_CIRCUIT_BREAKER_FAULT",
-  "BLOWER_DRIVE_ENABLE",
+  // "BLOWER_DRIVE_ENABLE",
   "BLOWER_DRIVE_FAULT",
   "BLOWER_DRIVE_ON",
   "BLOWER_START_MANUAL_MOD",
@@ -606,7 +606,7 @@ export default function FaultLogsPaginated({
   machineName: string;
 }) {
   const [searchTerm, setSearchTerm] = useState("");
-  const debouncedSearch = useDebounce(searchTerm, 500);
+  const debouncedSearch = useDebounce(searchTerm, 20000);
   const [activeTags, setActiveTags] = useState<TagData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
