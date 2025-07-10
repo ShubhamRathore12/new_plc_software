@@ -262,40 +262,12 @@ function formatTagName(tag: string): string {
     .toLowerCase()
     .replace(/\b\w/g, (l) => l.toUpperCase());
 }
-
 function getTagCategory(tag: string): string {
-  if (
-    tag.includes("fault") ||
-    tag.includes("FAULT") ||
-    tag.includes("OVER") ||
-    tag.includes("over") ||
-    tag.includes("TRIP") ||
-    tag.includes("trip")
-  )
+  const lower = tag.toLowerCase();
+  if (lower.includes("fault") || lower.includes("error") || lower.includes("alarm")) {
     return "fault";
-  if (
-    tag.includes("TEMP") ||
-    tag.includes("temp") ||
-    tag.includes("SENSOR") ||
-    tag.includes("sensor")
-  )
-    return "sensor";
-  if (
-    tag.includes("START") ||
-    tag.includes("start") ||
-    tag.includes("STOP") ||
-    tag.includes("stop") ||
-    tag.includes("ON") ||
-    tag.includes("on")
-  )
-    return "control";
-  if (
-    tag.includes("MANUAL") ||
-    tag.includes("manual") ||
-    tag.includes("AUTO") ||
-    tag.includes("auto")
-  )
-    return "mode";
+  }
+
   return "status";
 }
 
@@ -305,12 +277,7 @@ function ActiveTagRow({ tagData }: { tagData: TagData }) {
     switch (cat) {
       case "fault":
         return "bg-red-50 text-red-800 border-red-200";
-      case "sensor":
-        return "bg-blue-50 text-blue-800 border-blue-200";
-      case "control":
-        return "bg-green-50 text-green-800 border-green-200";
-      case "mode":
-        return "bg-purple-50 text-purple-800 border-purple-200";
+      
       default:
         return "bg-gray-50 text-gray-800 border-gray-200";
     }
