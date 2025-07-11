@@ -23,7 +23,7 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const table = searchParams.get("table") || "kabomachinedatasmart200";
     const page = parseInt(searchParams.get("page") || "1", 10);
-    const limit = 100; // Fixed limit to 500
+    const limit = 1000; // Fixed limit to 500
     const offset = (page - 1) * limit;
 
     if (!ALLOWED_TABLES.includes(table)) {
