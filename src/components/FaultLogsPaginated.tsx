@@ -58,49 +58,45 @@ const S7_200_TAGS = [
 ];
 
 const S7_1200_TAGS = [
-  "Compressor_circuit_breaker_fault"  ,
-"Condenser_fan_door_open"  ,
-"Blower_drive_fault"  ,
-"Blower_circuit_breaker_fault"  ,
-"Three_phase_monitor_fault"  ,
-"Low_Pressure_Fault"  ,
-"Ambient_temp_lower_than_set_temp"  ,
-"Ambient_temp_Over_43C"  ,
-"Compressor_motor_overheat",  
-"Low_pressure_fault_Locked" , 
-"High_pressure_fault_Locked" , 
-"Ambient_temp_Over_40C"  ,
-"Ambient_temp_Less_than_4C",  
-"Cond_Fan_circuit_breaker_fault",  
-"Cond_Fan_drive_fault"  ,
-"Cond_Fan_TOP"  ,
-"Ambient_Temp_Sensor_T2_1_Open"  ,
-"Ambient_Temp_Sensor_T2_1_Short_Circuit"  ,
-"Ambient_Temp_Sensor_T2_2_Open"  ,
-"Ambient_Temp_Sensor_T2_2_Short_Circuit"  ,
-"Air_Outlet_Temp_Sensor_T0_1_Open"  ,
-"Air_Outlet_Temp_Sensor_T0_1_Short_Circuit"  ,
-"Air_Outlet_Temp_Sensor_T0_2_Open"  ,
-"Air_Outlet_Temp_Sensor_T0_2_Short_Circuit"  ,
-"Cold_Air_Temp_Sensor_T1_1_Open"  ,
-"Cold_Air_Temp_Sensor_T1_1_Short_Circuit"  ,
-"Cold_Air_Temp_Sensor_T1_2_Open"  ,
-"Cold_Air_Temp_Sensor_T1_2_Short_Circuit"  ,
-"Air_After_Heater_Temp_Sensor_TH_1_Open"  ,
-"Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit"  ,
-"Air_After_Heater_Temp_Sensor_TH_2_Open"  ,
-"Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit"  ,
-"High_Pressure_Fault"  ,
-"Heater_TOP_fault"  ,
-"Heater_drive_Fault" , 
-"Heater_circuit_breaker_fault"  ,
-"Heater_RCCB_fault"  ,
-"Anti_Freeze_Protection",  
-"TH_Temp_more_than_50C"  ,
-"Delta_not_achieved_in_aeration_mode",  
-"Warning_LP_transducer_failure"  ,
-"Warning_HP_transducer_failure"  ,
-];
+  "Compressor_circuit_breaker_fault",
+"Oil_pressure_low",
+"Blower_drive_fault",
+"Blower_circuit_breaker_fault",
+"Ambient_air_sensor_1open",
+"COND_FAN_OVERLOAD",
+"Three_phase_monitor_fault",
+"High_pressure_fault",
+"Ambient_temp_lower_than_set_temp",
+"Ambient_temp_over_50C",
+"COMP_MODULE_FEEDBACK_ERROR_Si_I1",
+"Low_pressure_1_fault",
+"COMP_FBK_ERROR",
+"Low_pressure_2_fault",
+"Ambient_temp_over_47C",
+"Condenser_fan_2_TOP_fault",
+"Condenser_fan_3_TOP_fault",
+"Condenser_fan_4_TOP_fault",
+"Condenser_fan_2_circuit_breaker_fault",
+"Condenser_fan_3_circuit_breaker_fault",
+"Condenser_fan_4_circuit_breaker_fault",
+"Condenser_fan_5_TOP_fault",
+"Condenser_fan_6_TOP_fault",
+"Condenser_fan_5_circuit_breaker_fault",
+"Condenser_fan_6_circuit_breaker_fault",
+"Condenser_fan_1_circuit_breaker_fault",
+"Condenser_fan_1_TOP_fault",
+"Ambient_air_sensor_1_short_circuit",
+"Ambient_air_sensor_2_open",
+"Ambient_air_sensor_2_short_circuit",
+"Cold_air_sensor_1_open",
+"Cold_air_sensor_1_short_circuit",
+"Cold_air_sensor_2_open",
+"Cold_air_sensor_2_short_circuit",
+"Air_outlet_sensor_1_open",
+"Air_outlet_sensor_1_short_circuit",
+"Air_outlet_sensor_2_open",
+"Air_outlet_sensor_2_short_circuit"
+]
 
 const GPL_115_TAGS = [
    "Compressor_circuit_breaker_fault"  ,
@@ -147,6 +143,56 @@ const GPL_115_TAGS = [
 "Warning_HP_transducer_failure"  ,
 ];
 
+const GPL_117_TAGS = [
+  "Compressor_circuit_breaker_fault",
+"Condenser_fan1_door_open",
+"Blower_drive_fault",
+"Blower_circuit_breaker_fault",
+"Three_phase_monitor_fault",
+"Low_Pressure_Fault",
+"Ambient_temp_lower_than_set_temp",
+"Ambient_temp_Over_43C",
+"Compressor_motor_overheat",
+"Cond_Fan2_circuit_breaker_fault",
+"Low_pressure_fault_Locked",
+"High_pressure_fault_Locked",
+"Ambient_temp_Over_40C",
+"Ambient_temp_Less_than_4C",
+"Cond_Fan_1_TOP",
+"Cond_Fan1_circuit_breaker_fault",
+"Cond_Fan_drive_fault",
+"Cond_Fan_2_TOP",
+"Ambient_Temp_Sensor_T2_1_Open",
+"Ambient_Temp_Sensor_T2_1_Short_Circuit",
+"Ambient_Temp_Sensor_T2_2_Open",
+"Ambient_Temp_Sensor_T2_2_Short_Circuit",
+"Air_Outlet_Temp_Sensor_T0_1_Open",
+"Air_Outlet_Temp_Sensor_T0_1_Short_Circuit",
+"Air_Outlet_Temp_Sensor_T0_2_Open",
+"Air_Outlet_Temp_Sensor_T0_2_Short_Circuit",
+"Cold_Air_Temp_Semsor_T1_1_Open",
+"Cold_Air_Temp_Sensor_T1_1_Short_Circuit",
+"Cold_Air_Temp_Sensor_T1_2_Open",
+"Cold_Air_Temp_Sensor_T1_2_Short_Circuit",
+"Air_After_Heater_Temp_Sensor_TH_1_Open",
+"Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit",
+"Air_After_Heater_Temp_Sensor_TH_2_Open",
+"Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit",
+"High_Pressure_Fault",
+"Comp_Oil_Low",
+"Heater_TOP_fault",
+"Heater_drive_Fault",
+"Heater_circuit_breaker_fault",
+"Heater_RCCB_fault",
+"Anti_Freeze_Protection",
+"Condenser_fan2_door_open",
+"TH_Temp_more_than_50C",
+"Delta_not_achieved_in_aeration_mode",
+"Warning_LP_transducer_failure",
+"Warning_HP_transducer_failure",
+"Cond_fan_drive_circuit_breaker_fault"
+];
+
 const S7_200_MACHINES = [
   "GTPL-118-gT-80E-P-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
@@ -166,9 +212,12 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
   let tags: string[] = [];
 
   // Select appropriate tag list based on machine name
-  if (machineName === "GTPL-115-gT-80E-P-S7-200" || machineName === "GTPL-117-gT-320E-S7-1200") {
+  if (machineName === "GTPL-115-gT-80E-P-S7-200") {
     tags = GPL_115_TAGS;
-  } else if (S7_200_MACHINES.includes(machineName)) {
+  } else   if (machineName === "GTPL-117-gT-320E-S7-1200") {
+    tags = GPL_117_TAGS;
+  }
+   else if (S7_200_MACHINES.includes(machineName)) {
     tags = S7_200_TAGS;
   } else {
     tags = S7_1200_TAGS;
