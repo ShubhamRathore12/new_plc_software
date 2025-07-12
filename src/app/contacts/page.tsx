@@ -4,7 +4,6 @@ import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import emailjs from "emailjs-com";
 
 const Contact3D = dynamic(() => import("@/components/Contact3D"), {
   ssr: false,
@@ -29,17 +28,25 @@ export default function ContactPage() {
   const sendEmail = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSending(true);
+    setStatus("");
 
     try {
-      await emailjs.send(
-        "service_1wiy0cf", // Replace with your EmailJS Service ID
-        "template_ddett7w", // Replace with your EmailJS Template ID
-        formData,
-        "6v7DsclIUJSPDIIyp" // Replace with your EmailJS Public Key
-      );
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to send email');
+      }
+
       setStatus("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
+      console.error('Error sending email:', error);
       setStatus("Failed to send message. Try again later.");
     } finally {
       setIsSending(false);
@@ -99,7 +106,11 @@ export default function ContactPage() {
               </button>
 
               {status && (
-                <p className="mt-4 text-sm text-center text-green-500 dark:text-green-400">
+                <p className={`mt-4 text-sm text-center ${
+                  status.includes("success") 
+                    ? "text-green-500 dark:text-green-400" 
+                    : "text-red-500 dark:text-red-400"
+                }`}>
                   {status}
                 </p>
               )}

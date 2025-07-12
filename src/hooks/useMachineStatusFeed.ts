@@ -109,7 +109,7 @@ export const useMachineStatusFeed = () => {
 
   const startPolling = useCallback(() => {
     fetchData();
-    intervalRef.current = setInterval(fetchData, 6 * 1000);
+    intervalRef.current = setInterval(fetchData, 18 * 1000);
     addMessage("Polling started (6 second interval)", "info");
   }, [fetchData, addMessage]);
 

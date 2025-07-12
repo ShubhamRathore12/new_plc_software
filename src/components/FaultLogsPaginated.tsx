@@ -615,11 +615,9 @@ export default function FaultLogsPaginated({
     try {
       const url = new URL("/api/getSmart200Fault", window.location.origin);
       url.searchParams.append("machineName", machineName);
-      url.searchParams.append("page", pageNum.toString());
-      url.searchParams.append("limit", PAGE_SIZE.toString());
-      url.searchParams.append("from", "2024-01-01");
-      url.searchParams.append("to", "2025-12-31");
-      if (search) url.searchParams.append("search", search);
+      
+   
+    
 
       const res = await fetch(url.toString());
 

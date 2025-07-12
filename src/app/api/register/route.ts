@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     company,
     password,
     monitorAccess,
+    location, // Add location to the destructured properties
   } = body;
 
   try {
@@ -37,8 +38,8 @@ export async function POST(req: Request) {
 
     await pool.query(
       `INSERT INTO kabu_users 
-       (accountType, firstName, lastName, username, email, phoneNumber, company, password, monitorAccess) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (accountType, firstName, lastName, username, email, phoneNumber, company, password, monitorAccess, location) 
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, // Add location to the query
       [
         accountType,
         firstName,
@@ -49,6 +50,7 @@ export async function POST(req: Request) {
         company,
         password,
         monitorAccessStr,
+        location || null, // Add location to the values
       ]
     );
 
