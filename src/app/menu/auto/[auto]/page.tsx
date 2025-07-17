@@ -317,14 +317,17 @@ export default function AutoPage() {
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
                     {Object.entries(currentConfig.temperatureSensors).map(
-                      ([key, sensor]) => (
-                        <div key={key} className="flex justify-between">
-                          <span>{sensor.label}</span>
-                          <span className="font-medium">
-                            {formatValue(data?.[sensor.key], "°C")}
-                          </span>
-                        </div>
-                      )
+                      ([key, sensor]) => {
+                        const value = data?.[sensor.key];
+                        return value > 0 && (
+                          <div key={key} className="flex justify-between">
+                            <span>{sensor.label}</span>
+                            <span className="font-medium">
+                              {formatValue(value, "°C")}
+                            </span>
+                          </div>
+                        );
+                      }
                     )}
                     {/* <div className="flex justify-between">
                       <span>TH - T1</span>

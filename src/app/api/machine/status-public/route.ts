@@ -63,17 +63,7 @@ export async function GET() {
 
       const hasNewData = idChanged && timeChanged;
 
-      // Debug logs for GTPL_113
-      if (tableName === "GTPL_113") {
-        console.log("▶️ GTPL_113 Debug:");
-        console.log({ prevId: prev.id, newId: id });
-        console.log({ prevTimestamp: prev.timestamp, newTimestamp: timestamp });
-        console.log({
-          idChanged,
-          timeChanged,
-          hasNewData,
-        });
-      }
+      
 
       // Update memory cache
       previousState[tableName] = { id, timestamp };
