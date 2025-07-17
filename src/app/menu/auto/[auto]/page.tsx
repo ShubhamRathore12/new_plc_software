@@ -319,7 +319,7 @@ export default function AutoPage() {
                     {Object.entries(currentConfig.temperatureSensors).map(
                       ([key, sensor]) => {
                         const value = data?.[sensor.key];
-                        return value > 0 && (
+                        return value !== undefined && value !== null && (
                           <div key={key} className="flex justify-between">
                             <span>{sensor.label}</span>
                             <span className="font-medium">
