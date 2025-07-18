@@ -33,9 +33,19 @@ const AdaptiveQualityController = () => {
 };
 
 // Progressive loading model component
-const ProgressiveModel = ({ url, position = [0, 0, 0], scale = 1 }) => {
+interface ProgressiveModelProps {
+  url: string;
+  position?: [number, number, number];
+  scale?: number;
+}
+
+const ProgressiveModel: React.FC<ProgressiveModelProps> = ({ 
+  url, 
+  position = [0, 0, 0], 
+  scale = 1 
+}) => {
   const { deviceCapabilities } = usePerformance();
-  const modelRef = useRef();
+  const modelRef = React.useRef<THREE.Group>(null);
   
   // Load model with appropriate level of detail
   const { scene } = useGLTF(url, true);
@@ -44,7 +54,7 @@ const ProgressiveModel = ({ url, position = [0, 0, 0], scale = 1 }) => {
     if (!scene) return;
     
     // Apply optimizations based on device tier
-    scene.traverse((object) => {
+    scene.traverse((object:any) => {
       if (object.isMesh) {
         // Apply appropriate material settings based on device tier
         if (deviceCapabilities.tier === 'low') {
