@@ -292,7 +292,9 @@ export default function TestPage() {
                         min={0}
                         max={100}
                       />
+                      {String(test).includes('200') ? null : 
                       <span>% Output</span>
+}
                     </div>
                     <div className="flex gap-4">
                       <Button

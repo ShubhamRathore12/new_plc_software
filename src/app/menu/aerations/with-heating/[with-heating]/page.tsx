@@ -215,36 +215,40 @@ export default function AerationWithHeatingPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>TH (Supply Air)</span>
-                      <span className="font-medium">
-                        {formatValue(
-                          AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean,
-                          "°C"
-                        )}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>T2 (Ambient)</span>
-                      <span className="font-medium">
-                        {formatValue(
-                          AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2 || data?.T2_temp_mean, 
-                          "°C"
-                        )}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>BLOWER</span>
-                      <span className="font-medium">
-                        {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.Blower_speed, "%")}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>HTR</span>
-                      <span className="font-medium">
-                        {formatValue(Value_to_Display_HEATER || data?.Heater_speed, "%")}
-                      </span>
-                    </div>
+                    {AI_TH_Act !== null && (
+                      <div className="flex justify-between">
+                        <span>TH (Supply Air)</span>
+                        <span className="font-medium">
+                          {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean, "°C")}
+                        </span>
+                      </div>
+                    )}
+                    {AI_AMBIANT_TEMP !== null && (
+                      <div className="flex justify-between">
+                        <span>T2 (Ambient)</span>
+                        <span className="font-medium">
+                          {formatValue(AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2 || data?.T2_temp_mean, "°C")}
+                        </span>
+                      </div>
+                    )}
+                    {Value_to_Display_EVAP_ACT_SPEED !== null && (
+                      <div className="flex justify-between">
+                        <span>BLOWER</span>
+                        <span className="font-medium">
+                          {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.Blower_speed, "%")}
+                        </span>
+                      </div>
+                    )}
+         {Value_to_Display_HEATER !== null && !String(devices).includes('200') && (
+  <div className="flex justify-between">
+    <span>HTR</span>
+    <span className="font-medium">
+      {formatValue(Value_to_Display_HEATER || data?.Heater_speed, "%")}
+    </span>
+  </div>
+)}
+
+
                   </div>
                 </CardContent>
               </Card>

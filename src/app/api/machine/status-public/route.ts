@@ -63,8 +63,6 @@ export async function GET() {
 
       const hasNewData = idChanged && timeChanged;
 
-      
-
       // Update memory cache
       previousState[tableName] = { id, timestamp };
 
@@ -80,18 +78,16 @@ export async function GET() {
         hasNewData,
         idChanged,
         machineName,
+        // Add createdAtChanged and createdOnChanged for all machines
+        createdAtChanged: timeChanged,
+        createdOnChanged: timeChanged,
       };
 
-      // Machine-specific extensions
-      if (tableName === "kabomachinedatasmart200") {
-        const rawCondFan = record?.cond_fan_on;
-        const condFanOn = rawCondFan === 1 || rawCondFan === "tr";
-        baseResponse.createdAtChanged = timeChanged;
+      // Check for condenser fan status in all machines
+      const rawCondFan = record?.COND_FAN_ON || record?.cond_fan_on;
+      if (rawCondFan !== undefined) {
+        const condFanOn = rawCondFan === 1 || rawCondFan === "tr" || rawCondFan === "true" || rawCondFan === true;
         baseResponse.condFanOn = condFanOn;
-      }
-
-      if (tableName === "gtpl_122_s7_1200_01") {
-        baseResponse.createdOnChanged = timeChanged;
       }
 
       machines.push(baseResponse);

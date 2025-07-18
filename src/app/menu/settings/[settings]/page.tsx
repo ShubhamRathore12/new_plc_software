@@ -13,15 +13,27 @@ export default function SettingsPage() {
   const router = useRouter();
   const searchParams = useParams();
   const device = searchParams["settings"];
+  // const settingsItems = [
+  //   { icon: Settings2, title: "DEFAULTS", path: "defaults" },
+  //   { icon: Clock, title: "DATE & TIME", path: "date-time" },
+  //   // ...(device !== "S7-1200"
+  //   //   ? [{ icon: Sliders, title: "PID", path: "pid" }]
+  //   //   : []),
+  //   { icon: Timer, title: "OPERATING HOURS", path: "operating-hours" },
+  //   { icon: Database, title: "DATA LOG", path: "data-log" },
+  // ];
+
   const settingsItems = [
-    { icon: Settings2, title: "DEFAULTS", path: "defaults" },
-    { icon: Clock, title: "DATE & TIME", path: "date-time" },
-    // ...(device !== "S7-1200"
-    //   ? [{ icon: Sliders, title: "PID", path: "pid" }]
-    //   : []),
-    { icon: Timer, title: "OPERATING HOURS", path: "operating-hours" },
-    { icon: Database, title: "DATA LOG", path: "data-log" },
-  ];
+  { icon: Settings2, title: "DEFAULTS", path: "defaults" },
+  { icon: Clock, title: "DATE & TIME", path: "date-time" },
+  { icon: Timer, title: "OPERATING HOURS", path: "operating-hours" },
+  { icon: Database, title: "DATA LOG", path: "data-log" },
+].filter((item) => {
+  if (String(device).includes('200') && item.title === "DATA LOG") {
+    return false;
+  }
+  return true;
+});
 
   const container = {
     hidden: { opacity: 0 },

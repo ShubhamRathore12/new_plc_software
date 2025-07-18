@@ -142,7 +142,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
             <div className="text-sm font-bold">HTR </div>
                <div className="text-sm">       {formatValue(
                 data?.Heater_speed
-              ) || "N/A"}°C
+              ) || "N/A"}
             
               
         </div>

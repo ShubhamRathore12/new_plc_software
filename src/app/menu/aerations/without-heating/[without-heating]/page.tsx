@@ -176,7 +176,7 @@ export default function AerationWithoutHeatingPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    {devices === "GTPL-122-gT-1000T-S7-1200" ? (
+                    {String(devices).includes('200') ? (
                       <div className="flex justify-between">
                         <span>T0 (Cold Air)</span>
                         <span className="font-medium">
