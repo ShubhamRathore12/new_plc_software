@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  MonitorIcon,
-  LayoutDashboard,
-  Users,
-} from "lucide-react";
+import { MonitorIcon, LayoutDashboard, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { useDataStore, useSidebarStore } from "@/lib/store";
@@ -17,12 +13,11 @@ import { useLanguage } from "@/providers/language-provider";
 // Define types
 interface UserData {
   monitorAccess?: string;
-  firstName?:string
+  firstName?: string;
 }
 
 interface StoreData {
   user?: UserData;
-
 }
 
 // All menu items
@@ -39,7 +34,7 @@ export default function Sidebar() {
   const pathname = usePathname();
   const { isOpen, toggleSidebar } = useSidebarStore();
   const { data } = useDataStore() as { data: StoreData };
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [mounted, setMounted] = useState(false);
   const [monitorAccessItems, setMonitorAccessItems] = useState<string[]>([]);
@@ -54,7 +49,7 @@ export default function Sidebar() {
     } else {
       setMonitorAccessItems([]);
     }
-  }, [data?.user?.monitorAccess]);
+  }, [data?.user?.monitorAccess, language]);
 
   useEffect(() => {
     setMounted(true);
@@ -83,7 +78,7 @@ export default function Sidebar() {
           <span className="text-sm">{data?.user?.firstName}</span>
         </div>
 
-        <nav className="space-y-1">
+        <nav className="space-y-1" key={language}>
           {menuItems
             .filter(
               (item) => !monitorAccessItems.includes(item.label.toLowerCase())

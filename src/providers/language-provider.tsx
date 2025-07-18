@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 
 type Language = "en" | "de" | "fr";
 
@@ -16,10 +22,17 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("en");
+  const [translations, setTranslations] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    // Dynamically load translation file from public/locales
+    fetch(`/locales/${language}/translation.json`)
+      .then((res) => res.json())
+      .then((data) => setTranslations(data))
+      .catch(() => setTranslations({}));
+  }, [language]);
 
   const t = (key: string): string => {
-    // Import translations based on the current language
-    const translations = require(`@/translations/${language}.json`);
     return translations[key] || key;
   };
 

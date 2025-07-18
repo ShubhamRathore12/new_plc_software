@@ -4,12 +4,14 @@ import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import dynamic from "next/dynamic";
 import { useState } from "react";
+import { useLanguage } from "@/providers/language-provider";
 
 const Contact3D = dynamic(() => import("@/components/Contact3D"), {
   ssr: false,
 });
 
 export default function ContactPage() {
+  const { t } = useLanguage();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [formData, setFormData] = useState({
     name: "",
@@ -31,22 +33,22 @@ export default function ContactPage() {
     setStatus("");
 
     try {
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
+      const response = await fetch("/api/send-email", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
 
       if (!response.ok) {
-        throw new Error('Failed to send email');
+        throw new Error("Failed to send email");
       }
 
       setStatus("Message sent successfully!");
       setFormData({ name: "", email: "", message: "" });
     } catch (error) {
-      console.error('Error sending email:', error);
+      console.error("Error sending email:", error);
       setStatus("Failed to send message. Try again later.");
     } finally {
       setIsSending(false);
@@ -58,7 +60,7 @@ export default function ContactPage() {
       <div className="flex h-screen bg-gray-50 dark:bg-black">
         <div className="flex-1 p-6">
           <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-            Contact Us
+            {t("Contact Us")}
           </h1>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -67,13 +69,13 @@ export default function ContactPage() {
               onSubmit={sendEmail}
             >
               <h2 className="text-2xl font-semibold mb-4 text-black dark:text-white">
-                Get in Touch
+                {t("Get in Touch")}
               </h2>
 
               {["name", "email", "message"].map((field, index) => (
                 <div className="mb-4" key={index}>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                    {field.charAt(0).toUpperCase() + field.slice(1)}
+                    {t(field.charAt(0).toUpperCase() + field.slice(1))}
                   </label>
                   {field === "message" ? (
                     <textarea
@@ -102,16 +104,18 @@ export default function ContactPage() {
                 disabled={isSending}
                 className="w-full p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition"
               >
-                {isSending ? "Sending..." : "Send Message"}
+                {isSending ? t("Sending...") : t("Send Message")}
               </button>
 
               {status && (
-                <p className={`mt-4 text-sm text-center ${
-                  status.includes("success") 
-                    ? "text-green-500 dark:text-green-400" 
-                    : "text-red-500 dark:text-red-400"
-                }`}>
-                  {status}
+                <p
+                  className={`mt-4 text-sm text-center ${
+                    status.includes("success")
+                      ? "text-green-500 dark:text-green-400"
+                      : "text-red-500 dark:text-red-400"
+                  }`}
+                >
+                  {t(status)}
                 </p>
               )}
             </form>

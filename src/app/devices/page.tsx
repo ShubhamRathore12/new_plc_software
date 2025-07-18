@@ -60,9 +60,9 @@ export default function DevicesPage() {
   const { data } = useDataStore();
   const { showCompanyField } = useFieldVisibility(data);
 
-const accessArray = (data?.user?.monitorAccess?.split(",") || []).map((name: string) => name.trim().toLowerCase());
-
-
+  const accessArray = (data?.user?.monitorAccess?.split(",") || []).map(
+    (name: string) => name.trim().toLowerCase()
+  );
 
   // Close dropdowns when clicking outside
   useEffect(() => {
@@ -196,7 +196,7 @@ const accessArray = (data?.user?.monitorAccess?.split(",") || []).map((name: str
   ];
 
   const locations: Location[] = [
-    { name: "All", image: "/images/1200.jpg" },
+    { name: t("All"), image: "/images/1200.jpg" },
     ...Array.from(new Set(allDevices.map((d) => d.location))).map((loc) => ({
       name: loc,
       image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
@@ -210,18 +210,16 @@ const accessArray = (data?.user?.monitorAccess?.split(",") || []).map((name: str
   //     device.location === selectedLocation
   // );
 
-const filteredDevices = allDevices.filter((device) => {
-  const matchesLocation =
-    selectedLocation === "" ||
-    selectedLocation === "All" ||
-    device.location === selectedLocation;
+  const filteredDevices = allDevices.filter((device) => {
+    const matchesLocation =
+      selectedLocation === "" ||
+      selectedLocation === "All" ||
+      device.location === selectedLocation;
 
-  const isRestricted = accessArray.includes(device.name.toLowerCase());
+    const isRestricted = accessArray.includes(device.name.toLowerCase());
 
-  return matchesLocation && !isRestricted;
-});
-
-
+    return matchesLocation && !isRestricted;
+  });
 
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
@@ -239,7 +237,6 @@ const filteredDevices = allDevices.filter((device) => {
     "GTPL-119-gT-180E-S7-1200": "GTPL_119",
     "GTPL-120-gT-180E-S7-1200": "GTPL_120",
     "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
-  
   };
 
   const handleViewMore = (deviceName: string) => {
@@ -262,7 +259,7 @@ const filteredDevices = allDevices.filter((device) => {
                 {t("Devices Overview")}
               </h1>
               <p className="text-gray-600 dark:text-gray-300">
-                Monitor and manage your industrial devices
+                {t("Monitor and manage your industrial devices")}
               </p>
             </div>
 
@@ -340,7 +337,7 @@ const filteredDevices = allDevices.filter((device) => {
                 </Button>
                 {isCompanyDropdownOpen && (
                   <Card className="absolute z-20 w-full mt-2 max-h-60 overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 animate-in slide-in-from-top-2 duration-200">
-                    {["Grain Technik"].map((company) => (
+                    {[t("Grain Technik")].map((company) => (
                       <Card
                         key={company}
                         className="flex items-center p-3 m-2 cursor-pointer hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 rounded-lg transition-all duration-200 hover:scale-[1.02] border-0 shadow-sm hover:shadow-md"
@@ -421,7 +418,7 @@ const filteredDevices = allDevices.filter((device) => {
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                           <Building2 className="h-4 w-4 text-purple-500" />
                           <span className="font-medium">
-                            {selectedCompany || "Grain Technik"}
+                            {selectedCompany || t("Grain Technik")}
                           </span>
                         </div>
 
@@ -436,7 +433,7 @@ const filteredDevices = allDevices.filter((device) => {
                             <div className="flex items-center gap-2">
                               <Cpu className="h-4 w-4 text-blue-500 group-hover:text-blue-600 transition-colors duration-300" />
                               <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
-                                Machine
+                                {t("Machine")}
                               </span>
                             </div>
                             <div className="flex items-center gap-1">
@@ -450,7 +447,7 @@ const filteredDevices = allDevices.filter((device) => {
                               <span
                                 className={`text-xs font-semibold ${isMachineRunning ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
                               >
-                                {isMachineRunning ? "Running" : "Stopped"}
+                                {isMachineRunning ? t("Running") : t("Stopped")}
                               </span>
                             </div>
                           </div>
@@ -459,7 +456,7 @@ const filteredDevices = allDevices.filter((device) => {
                             <div className="flex items-center gap-2">
                               <Wifi className="h-4 w-4 text-green-500 group-hover:text-green-600 transition-colors duration-300" />
                               <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
-                                Internet
+                                {t("Internet")}
                               </span>
                             </div>
                             <div className="flex items-center gap-1">
@@ -473,7 +470,9 @@ const filteredDevices = allDevices.filter((device) => {
                               <span
                                 className={`text-xs font-semibold ${isInternetConnected ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
                               >
-                                {isInternetConnected ? "Connected" : "Offline"}
+                                {isInternetConnected
+                                  ? t("Connected")
+                                  : t("Offline")}
                               </span>
                             </div>
                           </div>
@@ -482,7 +481,7 @@ const filteredDevices = allDevices.filter((device) => {
                             <div className="flex items-center gap-2">
                               <Snowflake className="h-4 w-4 text-cyan-500 group-hover:text-cyan-600 transition-colors duration-300" />
                               <span className="text-xs font-medium text-gray-700 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors duration-300">
-                                Cooling
+                                {t("Cooling")}
                               </span>
                             </div>
                             <div className="flex items-center gap-1">
@@ -496,7 +495,7 @@ const filteredDevices = allDevices.filter((device) => {
                               <span
                                 className={`text-xs font-semibold ${isCoolingWorking ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
                               >
-                                {isCoolingWorking ? "Active" : "Inactive"}
+                                {isCoolingWorking ? t("Active") : t("Inactive")}
                               </span>
                             </div>
                           </div>
