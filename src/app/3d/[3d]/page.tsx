@@ -37,6 +37,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useAutoData } from "@/hooks/useAutoData";
+import { useLanguage } from "@/providers/language-provider";
 
 const Index = () => {
   const [theme, setTheme] = useState<"dark" | "light">("light");
@@ -45,6 +46,8 @@ const Index = () => {
 
   const router = useRouter();
   const [is3D, setIs3D] = useState(true); // toggle state
+
+  const { t } = useLanguage();
 
   const devices = useParams();
   const param = devices["3d"];
@@ -137,7 +140,7 @@ const Index = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium flex items-center">
                     <Thermometer className="w-4 h-4 mr-2" />
-                    Aeration Wihthout Heating
+                    {t("Aeration Without Heating")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -166,7 +169,7 @@ const Index = () => {
             <div className="col-span-1 md:col-span-2 lg:col-span-2 bg-white/90 dark:bg-gray-800/90 border-blue-200 dark:border-blue-800">
               <CardHeader className="pb-2">
                 <CardTitle className="text-sm font-medium">
-                  System Overview
+                  {t("System Overview")}
                 </CardTitle>
               </CardHeader>
               <CardContent className="h-[300px]">
@@ -184,7 +187,7 @@ const Index = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium flex items-center">
                     <Activity className="w-4 h-4 mr-2" />
-                    Aeration With Heating
+                    {t("Aeration With Heating")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -197,7 +200,7 @@ const Index = () => {
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm font-medium flex items-center">
                     <BarChart3 className="w-4 h-4 mr-2" />
-                    System Metrics
+                    {t("System Metrics")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -213,10 +216,10 @@ const Index = () => {
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-sm font-medium">
-                    System Diagnostics
+                    {t("System Diagnostics")}
                   </CardTitle>
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    LAST 24 HOURS
+                    {t("LAST 24 HOURS")}
                   </div>
                 </div>
               </CardHeader>
@@ -332,7 +335,7 @@ const Index = () => {
                     {/* System Status Card */}
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-lg">System Status</CardTitle>
+                        <CardTitle className="text-lg">{t("System Status")}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-2 gap-4">
@@ -377,7 +380,7 @@ const Index = () => {
                       <Button
                         onClick={() => router.push(`/menu/auto/${param}`)}
                       >
-                        View Detailed Settings
+                        {t("View Detailed Settings")}
                       </Button>
                     </div>
                   </div>
@@ -431,19 +434,19 @@ const Index = () => {
                     {/* System Status Card */}
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-lg">System Status</CardTitle>
+                        <CardTitle className="text-lg">{t("System Status")}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <div className="flex justify-between">
-                              <span className="text-sm">Aeration Mode</span>
+                              <span className="text-sm">{t("Aeration Mode")}</span>
                               <span className="font-medium">
-                                Without Heating
+                                {t("Without Heating")}
                               </span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-sm">Device</span>
+                              <span className="text-sm">{t("Device")}</span>
                               <span className="font-medium">{param}</span>
                             </div>
                           </div>
@@ -459,7 +462,7 @@ const Index = () => {
                           )
                         }
                       >
-                        View Detailed Settings
+                        {t("View Detailed Settings")}
                       </Button>
                     </div>
                   </div>
@@ -519,17 +522,17 @@ const Index = () => {
                     {/* System Status Card */}
                     <Card>
                       <CardHeader>
-                        <CardTitle className="text-lg">System Status</CardTitle>
+                        <CardTitle className="text-lg">{t("System Status")}</CardTitle>
                       </CardHeader>
                       <CardContent>
                         <div className="grid grid-cols-2 gap-4">
                           <div className="space-y-2">
                             <div className="flex justify-between">
-                              <span className="text-sm">Aeration Mode</span>
-                              <span className="font-medium">With Heating</span>
+                              <span className="text-sm">{t("Aeration Mode")}</span>
+                              <span className="font-medium">{t("With Heating")}</span>
                             </div>
                             <div className="flex justify-between">
-                              <span className="text-sm">Device</span>
+                              <span className="text-sm">{t("Device")}</span>
                               <span className="font-medium">{param}</span>
                             </div>
                           </div>
@@ -543,7 +546,7 @@ const Index = () => {
                           router.push(`/menu/aerations/with-heating/${param}`)
                         }
                       >
-                        View Detailed Settings
+                        {t("View Detailed Settings")}
                       </Button>
                     </div>
                   </div>
