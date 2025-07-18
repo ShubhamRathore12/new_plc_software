@@ -15,6 +15,7 @@ import { MonitorIcon } from "lucide-react";
 import ThreeBackground from "@/components/ThreeBackground";
 import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated";
 import { useDataStore } from "@/lib/store";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { data, setData, loading, setLoading } = useDataStore();
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -67,9 +69,9 @@ export default function LoginPage() {
           <div className="flex justify-center">
             <MonitorIcon className="h-12 w-12 text-blue-600" />
           </div>
-          <h2 className="text-2xl font-bold">Grain Technik</h2>
+          <h2 className="text-2xl font-bold">{t("Grain Technik")}</h2>
           <p className="text-sm text-muted-foreground">
-            Enter your credentials to access the dashboard
+            {t("Enter your credentials to access the dashboard")}
           </p>
         </CardHeader>
         <form onSubmit={handleSubmit}>
@@ -80,7 +82,7 @@ export default function LoginPage() {
               </div>
             )}
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="username">{t("Username")}</Label>
               <Input
                 id="username"
                 type="text"
@@ -91,7 +93,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t("Password")}</Label>
               <Input
                 id="password"
                 type="password"
@@ -103,7 +105,7 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter>
             <Button type="submit" className="w-full mt-10" disabled={isLoading}>
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? t("Signing in...") : t("Sign in")}
             </Button>
           </CardFooter>
         </form>

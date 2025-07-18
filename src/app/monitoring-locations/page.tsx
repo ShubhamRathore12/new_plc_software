@@ -8,35 +8,38 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useMediaQuery } from "../hooks/use-media-query";
 import DashboardLayout from "@/components/layout/dashboard-layout"; // Import the DashboardLayout
+import { useLanguage } from "@/providers/language-provider";
 
 export default function MonitoringPage() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
+  const { t } = useLanguage();
+
   const [zoomLevel, setZoomLevel] = useState(1);
 
   const monitoringData = [
     {
-      title: "Supply Air Temperature",
+      title: t("Supply Air Temperature"),
       value: "13.9°C",
       icon: Thermometer,
       color: "bg-blue-500",
     },
     {
-      title: "Cold Air Temperature",
+      title: t("Cold Air Temperature"),
       value: "11.0°C",
       icon: Wind,
       color: "bg-cyan-500",
     },
     {
-      title: "Ambient Air Temperature",
+      title: t("Ambient Air Temperature"),
       value: "33.0°C",
       icon: Thermometer,
       color: "bg-orange-500",
     },
     {
-      title: "Blower Status",
+      title: t("Blower Status"),
       value: "75%",
       icon: Gauge,
       color: "bg-green-500",
@@ -65,7 +68,7 @@ export default function MonitoringPage() {
           className="flex-1 p-6 bg-gray-50 dark:bg-black min-h-screen"
         >
           <h1 className="text-3xl font-bold mb-8 text-black dark:text-white">
-            Monitoring Location Overview
+            {t("Monitoring Location Overview")}
           </h1>
 
           <div
@@ -100,13 +103,13 @@ export default function MonitoringPage() {
             <div className="mt-8 monitoring-card">
               <Card className="p-6 bg-white dark:bg-gray-800">
                 <h2 className="text-xl font-bold mb-4 text-black dark:text-white">
-                  System Status
+                  {t("System Status")}
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                  <StatusIndicator label="Compressor" status="active" />
-                  <StatusIndicator label="Blower" status="active" />
-                  <StatusIndicator label="Fan 1" status="active" />
-                  <StatusIndicator label="Fan 2" status="active" />
+                  <StatusIndicator label={t("Compressor")} status="active" />
+                  <StatusIndicator label={t("Blower")} status="active" />
+                  <StatusIndicator label={t("Fan 1") } status="active" />
+                  <StatusIndicator label={t("Fan 2") } status="active" />
                 </div>
               </Card>
             </div>

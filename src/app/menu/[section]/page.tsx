@@ -16,6 +16,7 @@ import { motion } from "framer-motion";
 import { PageTransition } from "@/components/ui/animated-container";
 import { Logo } from "@/components/logo";
 import { useDataStore } from "@/lib/dataStore";
+import { useLanguage } from "@/providers/language-provider";
 
 interface UserData {
   monitorAccess?: string; // Comma-separated items
@@ -36,6 +37,7 @@ export default function Home() {
   const [is3D, setIs3D] = useState(false);
 
   const { data } = useDataStore() as { data: StoreData };
+  const { t } = useLanguage();
 
   const { section } = useParams();
   const device = Array.isArray(section) ? section[0] : section?.toString();
@@ -65,13 +67,13 @@ export default function Home() {
   };
 
   const menuItems: MenuItem[] = [
-    { icon: Activity, title: "AUTO", path: "auto" },
-    { icon: Wind, title: "AERATION", path: "aerations" },
-    { icon: AlertTriangle, title: "FAULT", path: "fault" },
-    { icon: Settings, title: "SETTINGS", path: "settings" },
-    { icon: ToggleLeft, title: "INPUTS", path: "inputs" },
-    { icon: ToggleRight, title: "OUTPUTS", path: "outputs" },
-    { icon: TestTube, title: "TEST", path: "test" },
+    { icon: Activity, title: t("auto"), path: "auto" },
+    { icon: Wind, title: t("aeration"), path: "aerations" },
+    { icon: AlertTriangle, title: t("fault"), path: "fault" },
+    { icon: Settings, title: t("settings"), path: "settings" },
+    { icon: ToggleLeft, title: t("inputs"), path: "inputs" },
+    { icon: ToggleRight, title: t("outputs"), path: "outputs" },
+    { icon: TestTube, title: t("test"), path: "test" },
   ];
 
   const container = {

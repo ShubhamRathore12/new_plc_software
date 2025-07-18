@@ -24,6 +24,21 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const [language, setLanguage] = useState<Language>("en");
   const [translations, setTranslations] = useState<Record<string, string>>({});
 
+  // Load persisted language preference on mount
+  useEffect(() => {
+    const stored = typeof window !== "undefined" && localStorage.getItem("lang");
+    if (stored === "en" || stored === "de" || stored === "fr") {
+      setLanguage(stored);
+    }
+  }, []);
+
+  // Persist language changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lang", language);
+    }
+  }, [language]);
+
   useEffect(() => {
     // Dynamically load translation file from public/locales
     fetch(`/locales/${language}/translation.json`)
@@ -37,7 +52,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, t }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t }} key={language}>
       {children}
     </LanguageContext.Provider>
   );
