@@ -288,8 +288,8 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     left: "calc(200px * 100% / 1200px)",
     top: "calc(430px * 100% / 600px)",
     transform: machineName.endsWith('1200')
-      ? "translate(0%,650%)"
-      : "translateY(600%)",
+      ? "translate(230%,650%)"
+      : "translateY(620%)",
   }}
 >
               {!machineName.endsWith('1200') && (

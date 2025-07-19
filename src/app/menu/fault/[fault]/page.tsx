@@ -524,7 +524,7 @@ const currentTags = isGPL_115
   const isActiveTag = (value: any) => {
     if (!value) return false;
     const normalized = value.toString().toLowerCase();
-    return normalized === "true" || normalized === "tr";
+    return normalized === "true" || normalized === "tr" || normalized === "True";
   };
 
   function getRandomBoolean() {
