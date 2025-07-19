@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     }
 
     const { data, error } = await resend.emails.send({
-      from: `onboarding@resend.dev`,
+      from: fromEmail,
       to: [toEmail],
       subject: `🚨 Fault Alert: ${fault.description} on ${machineName}`,
       html: createFaultEmailTemplate(machineName, fault),
