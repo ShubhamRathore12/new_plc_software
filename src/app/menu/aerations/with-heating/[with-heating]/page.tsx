@@ -133,7 +133,7 @@ export default function AerationWithHeatingPage() {
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="continuous-mode"
-                        checked={continuousMode}
+                        checked={continuousMode || data?.Continuous_mode}
                         onCheckedChange={setContinuousMode}
                       />
                       <Label htmlFor="continuous-mode">CONTINUOUS MODE</Label>
@@ -219,7 +219,7 @@ export default function AerationWithHeatingPage() {
                       <div className="flex justify-between">
                         <span>TH (Supply Air)</span>
                         <span className="font-medium">
-                          {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean, "°C")}
+                          {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean || data?.TH_temp_mean, "°C")}
                         </span>
                       </div>
                     )}

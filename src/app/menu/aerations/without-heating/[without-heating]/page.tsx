@@ -217,7 +217,7 @@ export default function AerationWithoutHeatingPage() {
                         <span>TH</span>
                         <span className="font-medium">
                           {formatValue(
-                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed,
+                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean,
                             "°C"
                           )}
                         </span>
