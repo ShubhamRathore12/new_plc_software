@@ -12,7 +12,11 @@ import {
 } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { MonitorIcon } from "lucide-react";
-import ThreeBackground from "@/components/ThreeBackground";
+import dynamic from "next/dynamic";
+
+const ThreeBackground = dynamic(() => import("@/components/ThreeBackground"), {
+  ssr: false,
+});
 import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated";
 import { useDataStore } from "@/lib/store";
 import { useLanguage } from "@/providers/language-provider";
