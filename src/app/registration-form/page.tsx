@@ -239,7 +239,7 @@ export default function RegistrationForm() {
     { value: "outputs", label: formatText(t("outputs")) },
     { value: "test", label: formatText(t("test")) },
     { value: "screen-brightness", label: formatText(t("screen_brightness")) },
-    { value: "manufacture", label: formatText(t("manufacturer")) },
+    { value: "manufacturer", label: formatText(t("manufacturer")) },
     { value: "customer", label: formatText(t("customer")) },
 
     // ✅ Devices manually added here
