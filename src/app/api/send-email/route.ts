@@ -30,7 +30,7 @@ export async function POST(request: Request) {
       to: [toEmail],
       subject: `New message from ${name} - PLC Software Contact Form`,
       html: createContactEmailTemplate(name, email, message),
-      reply_to: email,
+      replyTo: email,
     });
 
     if (error) {
