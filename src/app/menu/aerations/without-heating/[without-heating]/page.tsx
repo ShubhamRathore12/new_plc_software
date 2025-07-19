@@ -63,7 +63,7 @@ export default function AerationWithoutHeatingPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {devices === "GTPL-122-gT-1000T-S7-1200"
+              {String(devices)?.endsWith("1200")
                 ? "AERATION"
                 : "AERATION W/O HEATING"}
             </h1>

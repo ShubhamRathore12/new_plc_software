@@ -162,7 +162,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
     </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
       {formatValue(
-        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean || data?.T0_temp_mean,
+        data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th  || data?.T0_temp_mean || data?.TH_temp_mean,
         "°C"
       )}
     </div>
