@@ -9,7 +9,11 @@ class MyDocument extends Document {
           {/* Link to the favicon */}
           <link rel="icon" href="/favicon.ico" type="image/x-icon" />
           {/* Preconnect to Google Fonts to improve FCP */}
-          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link
+            rel="preconnect"
+            href="https://fonts.googleapis.com"
+            crossOrigin="anonymous"
+          />
           <link
             rel="preconnect"
             href="https://fonts.gstatic.com"

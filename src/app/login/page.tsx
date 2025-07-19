@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { MonitorIcon } from "lucide-react";
 import dynamic from "next/dynamic";
+import { loginUser } from "@/lib/auth";
 
 const ThreeBackground = dynamic(() => import("@/components/ThreeBackground"), {
   ssr: false,
@@ -36,29 +37,17 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const response = await fetch(
-        "/api/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Login failed");
-        return;
-      }
+      const data = await loginUser(username, password);
       setData(data);
       router.push("/dashboard");
       setLoading(false);
     } catch (error) {
       console.error("Login error:", error);
-      setError("An error occurred during sign in");
+      if (error instanceof Error) {
+        setError(error.message);
+      } else {
+        setError("An error occurred during sign in");
+      }
     } finally {
       setIsLoading(false);
     }
