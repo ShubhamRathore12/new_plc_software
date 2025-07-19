@@ -387,7 +387,7 @@ export default function DefaultsPage() {
                         value={data?.AUTO_AEARATIO_TIME}
                         className="col-span-1"
                       />
-                      <div>psi</div>
+                      <div>minute</div>
                     </motion.div>
                   )}
 
