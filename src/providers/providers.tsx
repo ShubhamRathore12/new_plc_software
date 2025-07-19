@@ -31,7 +31,8 @@ export default function Providers({ children }: ProvidersProps) {
           <ThemeProvider>
             {children}
             <RoutePrefetcher />
-            <FaultToastPoller />
+            {/* <FaultToastPoller /> */}
+
             <Toaster richColors />
           </ThemeProvider>
         </AppPerformanceProvider>
