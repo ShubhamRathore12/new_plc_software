@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Fan1200 from "../../public/images/fan.jpg";
 import Fan from "../../public/images/fan.png";
+import { useEffect, useState } from "react";
 
 export default function AutoDiagram1({ blower, data, formatValue, machineName }: any) {
   const getSiloColor = (temp: number) => {
@@ -11,6 +12,33 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     TS1: 35,
   }
 
+  const [compressorTime, setCompressorTime] = useState<number | null>(null);
+
+  useEffect(() => {
+    const rawValue = data?.COMPRESSOR_TIME || data?.Compressor_timer;
+    const parsed = parseFloat(rawValue);
+
+    if (!isNaN(parsed)) {
+      setCompressorTime(parsed);
+    }
+  }, [data?.COMPRESSOR_TIME, data?.Compressor_timer]);
+
+  useEffect(() => {
+    if (compressorTime === null) return;
+
+    const interval = setInterval(() => {
+      setCompressorTime((prev) => {
+        if (prev === null || prev <= 0) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000); // decrement every second
+
+    return () => clearInterval(interval);
+  }, [compressorTime]);
+
   const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true"
 
   const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true"
@@ -19,6 +47,9 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
 
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db")
+
+ 
+  
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-auto">
@@ -33,7 +64,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
         }}
       >
         {/* Status Indicators - Fixed to container */}
-        <div className="absolute top-4 left-4 flex gap-4 items-center z-10">
+        <div className="absolute top-4 left-[30rem] flex gap-4 items-center z-10">
           <div className="flex flex-col items-center">
             <div
               className="w-8 h-8 rounded-full border-2 border-gray-400"
@@ -58,8 +89,8 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
         </div>
 
         {/* Temperature Display Boxes - Fixed to container */}
-        <div className="absolute top-4 right-4 space-y-2 z-10">
-          {machineName === "GTPL-122-gT-1000T-S7-1200" ? (
+        <div className="absolute top-4 right-[35rem] space-y-2 z-10">
+          {machineName.endsWith('1200') ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T0 = {formatValue(data?.T0_temp_mean, "°C")}
             </div>
@@ -69,7 +100,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
             </div>
           )}
 
-          {machineName === "GTPL-122-gT-1000T-S7-1200" ? (
+          {machineName.endsWith('1200') ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T Delta = {formatValue(data.Delta_T_set_point || data?.Th_T1, "°C")}
             </div>
@@ -149,7 +180,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               <line x1="170" y1="180" x2="200" y2="120" stroke="black" strokeWidth="2" />
 
               {/* Vertical drops from main line to thermometers */}
-              {machineName !== "GTPL-122-gT-1000T-S7-1200" && (
+              {!machineName.endsWith('1200') && (
                 <line x1="280" y1="120" x2="280" y2="150" stroke="black" strokeWidth="2" />
               )}
               <line x1="380" y1="120" x2="380" y2="150" stroke="black" strokeWidth="2" />
@@ -168,7 +199,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
             </svg>
 
             {/* Thermometers - Fixed positioning */}
-            {machineName !== "GTPL-122-gT-1000T-S7-1200" && (
+            {!machineName.endsWith('1200') && (
               <div
                 className="absolute z-10"
                 style={{
@@ -256,12 +287,12 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   style={{
     left: "calc(200px * 100% / 1200px)",
     top: "calc(430px * 100% / 600px)",
-    transform: machineName === "GTPL-122-gT-1000T-S7-1200"
-      ? "translate(230%,650%)"
+    transform: machineName.endsWith('1200')
+      ? "translate(0%,650%)"
       : "translateY(600%)",
   }}
 >
-              {machineName !== "GTPL-122-gT-1000T-S7-1200" && (
+              {!machineName.endsWith('1200') && (
                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
                   <div className="text-sm font-bold">{formatValue(data.Value_to_Display_HEATER || data?.Heater_speed, "%")}</div>
@@ -327,7 +358,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                   <div className="flex items-center">
                     <div className="w-full h-full rounded-full flex items-center justify-center">
                       <Image  src={
-                        machineName === "GTPL-122-gT-1000T-S7-1200"
+                        machineName.endsWith('1200')
                           ? Fan1200
                           : Fan
                       } alt="Fan" className="w-90 h-90 object-contain"  width={70} height={80}/>
@@ -356,29 +387,33 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                 <img         src="https://tse2.mm.bing.net/th/id/OIP.I6O7E9W-F27nxBsa_GZ35wAAAA?r=0&w=370&h=370&rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3" className="w-40 h-20 object-contain" alt="Compressor" />
               </div>
               <div className="absolute -bottom-8 bg-red-600 text-white px-2 py-1 text-center rounded text-xs left-1/2 transform -translate-x-1/2">
-                <div className="font-bold">{formatValue(data?.COMPRESSOR_TIME || data?.Compressor_timer, "%")}</div>
+            <div className="font-bold">
+  {compressorTime !== null ? `${compressorTime.toFixed(0)}s` : "N/A"}
+</div>
+
               </div>
             </div>
 
             {/* Pressure Readings */}
             <div
-              className="absolute flex gap-2 flex-col z-10 mt-[36rem] ml-[29.5rem]"
+              className="absolute flex gap-2 flex-row z-10 mt-[36rem] ml-[29.5rem]"
               style={{
                 right: "calc(200px * 100% / 1200px)",
                 bottom: "calc(50px * 100% / 600px)",
-                transform: "translate(1200%)"
+                transform: "translate(520%)"
               }}
             >
+                   <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
+                LP
+                <br />
+                {formatValue(data.AI_SUC_PRESSURE || data?.LP || data?.LP_value)}
+              </div>
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 HP
                 <br />
                 {formatValue(data.AI_COND_PRESSURE || data?.HP || data?.COMPRESSOR_TIME || data?.HP_value || data?.Compressor_timer)}
               </div>
-              <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
-                LP
-                <br />
-                {formatValue(data.AI_SUC_PRESSURE || data?.LP || data?.LP_value)}
-              </div>
+         
             </div>
           </div>
         </div>

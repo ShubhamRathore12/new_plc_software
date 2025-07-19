@@ -261,8 +261,8 @@ export default function AutoPage() {
               SELECT AUTO
             </h1>
             <p className="text-muted-foreground">
-              SR. NO. {auto} | {formatValue(data?.AI_RH_Analog_Scale, "%")} RH |{" "}
-              {formatValue(data?.AI_Pa_Analog_Scale, " Pa")}
+              SR. NO. {auto}
+           
             </p>
           </AnimatedContainer>
 
@@ -335,22 +335,38 @@ export default function AutoPage() {
                         {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
                       </span>
                     </div> */}
-                    {Object.entries(currentConfig.controls).map(
-                      ([key, control]) => (
-                        <div key={key} className="flex justify-between">
-                          <span>{control.label}</span>
-                          <span className="font-medium">
-                            {formatValue(data?.[control.key], "%")}
-                          </span>
-                        </div>
-                      )
-                    )}
-                    <div className="flex justify-between">
-                      <span className="font-medium">
-                        HP {formatValue(data?.[currentConfig.compressor.hp])} LP{" "}
-                        {formatValue(data?.[currentConfig.compressor.lp])}
-                      </span>
-                    </div>
+              {Object.entries(currentConfig.controls).map(([key, control]) => {
+  // Don't show Heater if machine ends with S7-200
+  if (
+    control.label === "Heater" &&
+    (auto as string)?.endsWith("200")
+  ) {
+    return null;
+  }
+
+  return (
+    <div key={key} className="flex justify-between">
+      <span>{control.label}</span>
+      <span className="font-medium">
+        {formatValue(data?.[control.key], "%")}
+      </span>
+    </div>
+  );
+})}
+
+              <div className="flex justify-between">
+  <span>LP</span>
+  <span className="font-medium">
+    {formatValue(data?.[currentConfig.compressor.lp])}
+  </span>
+</div>
+<div className="flex justify-between">
+  <span>HP</span>
+  <span className="font-medium">
+    {formatValue(data?.[currentConfig.compressor.hp])}
+  </span>
+</div>
+
 
                     {/* <div className="flex justify-between">
                       <span>Mode Status</span>

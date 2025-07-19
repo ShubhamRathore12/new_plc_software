@@ -1,27 +1,9 @@
 "use client";
 
-import { Activity, Circle } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Circle } from "lucide-react";
 import { useLanguage } from "@/providers/language-provider";
-
-const recentActivities = [
-  {
-    type: "report_vibration_report",
-    status: "completed_successfully",
-    timestamp: "17/08/23 @ 06:05:08 am",
-  },
-  {
-    type: "device_configuration",
-    device: "FLVA_A196",
-    status: "updated_successfully",
-    timestamp: "17/08/23 @ 11:26:11 am",
-  },
-  {
-    type: "device_configuration",
-    device: "FLVA_A197",
-    status: "updated_successfully",
-    timestamp: "17/08/23 @ 11:26:04 am",
-  },
-];
+import { useDataStore } from "@/lib/store";
 
 const allDevices = [
   { name: "GTPL-122-gT-1000T-S7-1200", location: "Noida---kanpur", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-1000T" },
@@ -43,30 +25,31 @@ const allDevices = [
 
 export default function ActivityPanel() {
   const { t } = useLanguage();
+  const { data } = useDataStore();
+  const [visibleDevices, setVisibleDevices] = useState([]);
+
+  useEffect(() => {
+ 
+
+    const accessList = typeof data.monitorAccess === "string"
+      ? data.monitorAccess.split(",").map((x:any) => x.trim())
+      : Array.isArray(data.monitorAccess)
+      ? data.monitorAccess.map((x:any) => x.trim())
+      : [];
+
+    const deviceAccessList = accessList.filter((item:any) => item.startsWith("GTPL-"));
+
+    const filtered:any = allDevices.filter(
+      (device) => !deviceAccessList.includes(device.name.trim())
+    );
+
+    
+
+    setVisibleDevices(filtered);
+  }, [data]);
 
   return (
     <div className="grid grid-cols-2 gap-6">
-      {/* Trigger/Report Activity Card */}
-      {/* <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
-        <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
-          <Activity className="h-5 w-5 text-emerald-500" />
-          <h2 className="text-sm font-medium text-black dark:text-white">
-            {t("trigger_report_activity")}
-          </h2>
-        </div>
-        <div className="p-4">
-          <div className="bg-gray-50 dark:bg-gray-700 rounded p-3">
-            <div className="text-xs font-medium text-black dark:text-white mb-1">
-              {t("active_trigger")}
-            </div>
-            <div className="text-sm text-gray-600 dark:text-gray-300">
-              {t("no_active_triggers")}
-            </div>
-          </div>
-        </div>
-      </div> */}
-
-      {/* Device Activity Card */}
       <div className="bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700">
         <div className="p-3 border-b border-gray-200 dark:border-gray-700 flex items-center space-x-2">
           <Circle className="h-5 w-5 text-emerald-500" />
@@ -75,19 +58,25 @@ export default function ActivityPanel() {
           </h2>
         </div>
         <div className="p-4 space-y-3">
-          {allDevices.map((device, index) => (
-            <div key={index} className="flex items-start space-x-3">
-              <div className="h-2 w-2 mt-1 rounded-full bg-emerald-500" />
-              <div>
-                <div className="text-sm font-medium text-black dark:text-white">
-                  {device.name}
-                </div>
-                <div className="text-xs text-gray-500 dark:text-gray-300">
-                  PLC: {device.plc} | Chiller: {device.chillerModel}
+          {visibleDevices.length > 0 ? (
+            visibleDevices.map((device:any, index) => (
+              <div key={index} className="flex items-start space-x-3">
+                <div className="h-2 w-2 mt-1 rounded-full bg-emerald-500" />
+                <div>
+                  <div className="text-sm font-medium text-black dark:text-white">
+                    {device.name}
+                  </div>
+                  <div className="text-xs text-gray-500 dark:text-gray-300">
+                    PLC: {device.plc} | Chiller: {device.chillerModel}
+                  </div>
                 </div>
               </div>
+            ))
+          ) : (
+            <div className="text-sm text-gray-500 dark:text-gray-300">
+              {t("no_devices_to_display") || "No devices to display."}
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

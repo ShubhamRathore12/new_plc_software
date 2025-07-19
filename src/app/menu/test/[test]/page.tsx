@@ -55,6 +55,8 @@ export default function TestPage() {
       setHeaterOutput(data.MANUAL_Heater_Output);
   }, [data]);
 
+
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -140,20 +142,21 @@ export default function TestPage() {
             {/* SOL VALVE */}
             <AnimatedContainer delay={3}>
               <Card>
-                <CardContent className="p-6">
+                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-6">SOL VALVE</h2>
                   <div className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <span>Valve Status</span>
-                      <div className="flex items-center gap-2">
-                        <Switch
-                          checked={solValve}
-                          onCheckedChange={setSolValve}
-                        />
-                        <span className="font-medium">
-                          {solValve ? "ON" : "OFF"}
-                        </span>
-                      </div>
+                 
+                    <div className="flex gap-4">
+                      <Button
+                        className="flex-1"
+                        disabled
+                        variant={solValve ? "secondary" : "default"}
+                      >
+                        START
+                      </Button>
+                      <Button className="flex-1" disabled variant="outline">
+                        STOP
+                      </Button>
                     </div>
                   </div>
                 </CardContent>
@@ -282,16 +285,23 @@ export default function TestPage() {
                   <h2 className="text-xl font-semibold mb-6">HEATER</h2>
                   <div className="space-y-6">
                     <div className="flex items-center gap-4">
-                      <Input
-                        type="number"
-                        value={heaterOutput || data?.Heater_set_in_manual}
-                        onChange={(e) =>
-                          setHeaterOutput(Number(e.target.value) || 0)
-                        }
-                        className="w-20"
-                        min={0}
-                        max={100}
-                      />
+           {test?.toString().endsWith('1200') && (
+  <div className="flex items-center gap-4">
+    <Input
+      type="number"
+      value={heaterOutput || data?.Heater_set_in_manual}
+      onChange={(e) =>
+        setHeaterOutput(Number(e.target.value) || 0)
+      }
+      className="w-20"
+      min={0}
+      max={100}
+    />
+    
+  </div>
+)}
+
+
                       {String(test).includes('200') ? null : 
                       <span>% Output</span>
 }
