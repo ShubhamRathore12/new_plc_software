@@ -158,6 +158,55 @@ const GPL_115_TAGS = [
   "Warning_HP_transducer_failure"
 ];
 
+const GPL_117_TAGS = [
+  "Compressor_circuit_breaker_fault" ,
+  "Condenser_fan1_door_open" ,
+  "Blower_drive_fault" ,
+  "Blower_circuit_breaker_fault" ,
+  "Heater_circuit_breaker_fault" ,
+  "Three_phase_monitor_fault" ,
+  "Low_Pressure_Fault" ,
+  "Ambient_temp_lower_than_set_temp" ,
+   "Ambient_temp_Over_43C" ,
+   "Compressor_motor_overheat" ,
+   "Heater_RCCB_fault" ,
+   "Cond_Fan2_circuit_breaker_fault" ,
+   "Low_pressure_fault_Locked" ,
+   "Anti_Freeze_Protection" ,
+   "High_pressure_fault_Locked" ,
+   "Ambient_temp_Over_40C" ,
+   "Ambient_temp_Less_than_4C" ,
+   "Cond_Fan_1_TOP" ,
+   "Cond_Fan1_circuit_breaker_fault" ,
+   "Cond_Fan_drive_fault" ,
+   "Cond_Fan_2_TOP" ,
+   "Ambient_Temp_Sensor_T2_1_Open" ,
+   "Ambient_Temp_Sensor_T2_1_Short_Circuit" ,
+   "Ambient_Temp_Sensor_T2_2_Open" ,
+   "Ambient_Temp_Sensor_T2_2_Short_Circuit" ,
+   "Air_Outlet_Temp_Sensor_T0_1_Open" ,
+   "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit" ,
+   "Air_Outlet_Temp_Sensor_T0_2_Open" ,
+   "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit" ,
+   "Cold_Air_Temp_Sensor_T1_1_Open" ,
+   "Cold_Air_Temp_Sensor_T1_1_Short_Circuit" ,
+   "Cold_Air_Temp_Sensor_T1_2_Open" ,
+   "Cold_Air_Temp_Sensor_T1_2_Short_Circuit" ,
+   "Air_After_Heater_Temp_Sensor_TH_1_Open" ,
+   "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit" ,
+   "Air_After_Heater_Temp_Sensor_TH_2_Open" ,
+   "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit" ,
+   "High_Pressure_Fault" ,
+   "Comp_Oil_Low" ,
+   "Heater_TOP_fault" ,
+   "Heater_drive_Fault" ,
+   "Condenser_fan2_door_open" ,
+   "TH_Temp_more_than_50C" ,
+   "Delta_not_achieved_in_aeration_mode" ,
+   "Warning_LP_transducer_failure" ,
+   "Warning_HP_transducer_failure" ,
+];
+
 
 // Machine configuration mapping
 const MACHINE_CONFIG = {
@@ -176,7 +225,7 @@ const MACHINE_CONFIG = {
   "GTPL-114-gT-140E-S7-1200": { table: "GTPL_114_GT_140E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-115-gT-180E-S7-1200": { table: "GTPL_115_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" }, // ✅ Corrected type
   "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
+  "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
   "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
@@ -185,6 +234,7 @@ const MACHINE_CONFIG = {
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
 const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
+  "GPL-117" : "GTPL-117-gT-320E-S7-1200",
 };
 
 // ------------------ Fault Check Utility ------------------
@@ -202,7 +252,7 @@ async function checkFaultsAndNotify(record: any, machineName: string) {
     if (
       value === true ||
       value === 1 ||
-      value === "tr" ||
+      value === "tr" || value === "True" ||
       (typeof value === "string" && value.toLowerCase() === "true")
     ) {
       activeFaults.push({ tag, value, machineType: machineConfig.type });

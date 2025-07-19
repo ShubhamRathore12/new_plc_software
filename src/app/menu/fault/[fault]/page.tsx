@@ -460,6 +460,8 @@ const gtpl_117_faultCodes = [
 
 const gtpl_117_faultTags = [
   { tag: "COMPRESSOR_CIRCUIT_BREAKER_FAULT", value: data?.Compressor_circuit_breaker_fault },
+    { tag: "COND_FAN1_CIRCUIT_BREAKER_FAULT_I2_2", value: data?.Cond_fan1_circuit_breaker_fault_I2_2 },
+
   { tag: "CONDENSER_FAN1_DOOR_OPEN", value: data?.Condenser_fan1_door_open },
   { tag: "BLOWER_DRIVE_FAULT", value: data?.Blower_drive_fault },
   { tag: "BLOWER_CIRCUIT_BREAKER_FAULT", value: data?.Blower_circuit_breaker_fault },
@@ -553,6 +555,7 @@ const gpl_115_faultTags = [
   { tag: "DELTA_NOT_ACHIEVED_IN_AERATION_MODE", value: data?.Delta_not_achieved_in_aeration_mode },
   { tag: "WARNING_LP_TRANSDUCER_FAILURE", value: data?.Warning_LP_transducer_failure },
   { tag: "WARNING_HP_TRANSDUCER_FAILURE", value: data?.Warning_HP_transducer_failure },
+ 
       { tag: "created_at", value: data?.created_at },
 ];
 
@@ -613,7 +616,7 @@ const isS7_1200 = s7_1200_machines.some((machine) =>
   //   ) || "S7-1200";
 
   const modelType = isGPL_117
-  ? "GTPL-117"
+  ? "GTPL-117-gT-320E-S7-1200"
   : isGPL_115
   ? "GPL-115"
   : isS7_200
