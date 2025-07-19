@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { apiRequest } from "@/lib/api";
 
 const NOTIFICATION_COOLDOWN = 60 * 60 * 1000; // 1 hour in milliseconds
 const LOCAL_STORAGE_KEY = "faultNotificationTimestamps";
@@ -38,16 +39,10 @@ const setStoredTimestamps = (timestamps: Record<string, number>) => {
 // Function to send the notification email
 const sendNotificationEmail = async (machineName: string, fault: Fault) => {
   try {
-    const response = await fetch("/api/send-fault-email", {
+    await apiRequest("/api/send-fault-email", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ machineName, fault }),
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "API request failed");
-    }
 
     console.log(`Notification sent for fault: ${fault.tag}`);
     return true;
