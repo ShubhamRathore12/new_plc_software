@@ -30,7 +30,8 @@ export const useAutoData = (autoType: string) => {
     "GTPL-115-gT-180E-S7-1200" :  "GTPL_115_GT_180E_S7_1200",
    "GTPL-117-gT-320E-S7-1200" :"GTPL_117_GT_320E_S7_1200",
    "GTPL-116-gT-240E-S7-1200" :"GTPL_116_GT_240E_S7_1200",
-   "GTPL-114-gT-140E-S7-1200":"GTPL_114_GT_140E_S7_1200"
+   "GTPL-114-gT-140E-S7-1200":"GTPL_114_GT_140E_S7_1200",
+   "GTPL-121-gT-1000T-S7-1200":"GTPL_121_GT1000T"
   };
 
   const deviceNameToStatusKey: Record<string, string> = {

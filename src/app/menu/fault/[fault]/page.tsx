@@ -508,7 +508,7 @@ const gtpl_117_faultTags = [
   { tag: "WARNING_LP_TRANSDUCER_FAILURE", value: data?.Warning_LP_transducer_failure },
   { tag: "WARNING_HP_TRANSDUCER_FAILURE", value: data?.Warning_HP_transducer_failure },
   { tag: "COND_FAN_DRIVE_CIRCUIT_BREAKER_FAULT", value: data?.Cond_fan_drive_circuit_breaker_fault },
-  { tag: "CREATED_AT", value: data?.created_at },
+
 ];
 
 
