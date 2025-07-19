@@ -195,8 +195,9 @@ export default function RegistrationForm() {
     try {
       const payload: any = {
         ...values,
-        email: values.accountType === "manufacturer" ? values.email : undefined,
+        email:values.email,
         monitorAccess: values.monitorAccess || [],
+        locations: values.locations || [],
       };
 
       const response = await fetch("/api/register", {
@@ -206,7 +207,7 @@ export default function RegistrationForm() {
       });
 
       const data = await response.json();
-      toast.success("🎉 User created successfully!");
+      // toast.success("🎉 User created successfully!");
       if (response.status === 200 || response.status === 201) {
         toast.success("🎉 User created successfully!", {
           description: "The account has been registered.",

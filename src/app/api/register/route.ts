@@ -36,6 +36,10 @@ export async function POST(req: Request) {
       ? monitorAccess.join(",")
       : "";
 
+      const locationStr = Array.isArray(location) 
+  ? location.join(",")
+  : "";
+
     await pool.query(
       `INSERT INTO kabu_users 
        (accountType, firstName, lastName, username, email, phoneNumber, company, password, monitorAccess, location) 
@@ -45,12 +49,12 @@ export async function POST(req: Request) {
         firstName,
         lastName,
         username,
-        email || null,
+        email,
         phoneNumber,
         company,
         password,
         monitorAccessStr,
-        location || null, // Add location to the values
+        locationStr, // Add location to the values
       ]
     );
 
