@@ -160,7 +160,7 @@ if (downloadAll) {
   const stream = new ReadableStream({
     start(controller) {
       // Send the buffer in chunks
-      const chunkSize = 1024 * 1024; // 1MB chunks
+      const chunkSize = 1024 * 1024 *20; // 1MB chunks
       let position = 0;
       
       const pushNextChunk = () => {
