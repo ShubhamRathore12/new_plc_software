@@ -97,3 +97,87 @@ export const createFaultEmailTemplate = (
     </html>
   `;
 };
+
+export const createContactEmailTemplate = (
+  name: string,
+  email: string,
+  message: string,
+) => {
+  return `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Contact Form Submission</title>
+      <style>
+        body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+          background-color: #f4f4f5;
+          color: #18181b;
+          margin: 0;
+          padding: 0;
+        }
+        .container {
+          max-width: 600px;
+          margin: 40px auto;
+          background-color: #ffffff;
+          border: 1px solid #e4e4e7;
+          border-radius: 8px;
+          overflow: hidden;
+        }
+        .header {
+          background-color: #2563eb;
+          color: #ffffff;
+          padding: 24px;
+          text-align: center;
+        }
+        .content {
+          padding: 32px;
+        }
+        .content h2 {
+          font-size: 20px;
+          color: #18181b;
+          margin-top: 0;
+        }
+        .content p {
+          font-size: 16px;
+          line-height: 1.5;
+          margin: 8px 0;
+        }
+        .message {
+          background-color: #f3f4f6;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          padding: 20px;
+          white-space: pre-wrap;
+        }
+        .footer {
+          background-color: #f4f4f5;
+          padding: 24px;
+          text-align: center;
+          font-size: 12px;
+          color: #71717a;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1>New Contact Form Submission</h1>
+        </div>
+        <div class="content">
+          <h2>Details</h2>
+          <p><strong>Name:</strong> ${name}</p>
+          <p><strong>Email:</strong> ${email}</p>
+          <p><strong>Message:</strong></p>
+          <div class="message">${message.replace(/\n/g, '<br>')}</div>
+        </div>
+        <div class="footer">
+          <p>Sent from PLC Software contact form.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+};

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { apiRequest } from "@/lib/api";
 
 export default function Home() {
   const [email, setEmail] = useState("");
@@ -17,16 +18,11 @@ export default function Home() {
     setResponseMsg("");
 
     try {
-      const res = await fetch("/api/notify", {
+      const data = await apiRequest("/api/notify", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify({ email, subject, message, phone, smsMessage }),
       });
-
-      const data = await res.json();
-      if (res.ok) {
+      if (data && !data.error) {
         setResponseMsg("Notification sent successfully!");
       } else {
         setResponseMsg("Error: " + (data.error || "Unknown error"));

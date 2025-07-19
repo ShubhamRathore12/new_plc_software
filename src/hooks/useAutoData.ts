@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "@/lib/utils";
 import { useMachineStatusFeed } from "./useMachineStatusFeed";
+import { apiRequest } from "@/lib/api";
 
 interface AutoData {
   [key: string]: any;
@@ -65,17 +66,9 @@ export const useAutoData = (autoType: string) => {
     }
 
     try {
-      const response = await fetch(
+      const result = await apiRequest(
         `/api/fetchData?table=${encodeURIComponent(table)}`
       );
-
-      if (!response.ok) {
-        throw new Error(
-          `HTTP error! ${response.status}: ${response.statusText}`
-        );
-      }
-
-      const result = await response.json();
 
       if (result?.data) {
         setData([result.data]);

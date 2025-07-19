@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { apiRequest } from "@/lib/api";
 
 type MessageLog = {
   message: string;
@@ -51,8 +52,7 @@ export const useMachineStatusFeed = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("/api/machine/status-public");
-      const result = await res.json();
+      const result = await apiRequest("/api/machine/status-public");
 
       if (result.success && Array.isArray(result.data)) {
         const machines: MachineDataEntry[] = result.data.map(
