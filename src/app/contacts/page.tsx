@@ -5,6 +5,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import dynamic from "next/dynamic";
 import { useState } from "react";
 import { useLanguage } from "@/providers/language-provider";
+import { apiRequest } from "@/lib/api";
 
 const Contact3D = dynamic(() => import("@/components/Contact3D"), {
   ssr: false,
@@ -33,20 +34,17 @@ export default function ContactPage() {
     setStatus("");
 
     try {
-      const response = await fetch("/api/send-email", {
+      const data = await apiRequest("/api/send-email", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to send email");
+      if (data && data.success) {
+        setStatus("Message sent successfully!");
+        setFormData({ name: "", email: "", message: "" });
+      } else {
+        setStatus("Failed to send message. Try again later.");
       }
-
-      setStatus("Message sent successfully!");
-      setFormData({ name: "", email: "", message: "" });
     } catch (error) {
       console.error("Error sending email:", error);
       setStatus("Failed to send message. Try again later.");

@@ -1,54 +1,54 @@
-import { NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { NextResponse } from "next/server";
+import { Resend } from "resend";
+import { createContactEmailTemplate } from "@/lib/email-templates";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
   try {
     const { name, email, message } = await request.json();
 
-    // Create a transporter object using SMTP transport
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: true, // true for 465, false for other ports
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASSWORD,
-      },
-    });
+    if (!name || !email || !message) {
+      return NextResponse.json(
+        { message: "Missing required fields." },
+        { status: 400 }
+      );
+    }
 
-    // Email options
-    const mailOptions = {
-      from: `"PLC Software" <${process.env.SMTP_FROM_EMAIL}>`,
-      replyTo: email,
-      to: process.env.SMTP_TO_EMAIL, // Your business email
+    const fromEmail = process.env.EMAIL_FROM;
+    const toEmail = process.env.EMAIL_TO;
+
+    if (!fromEmail || !toEmail) {
+      return NextResponse.json(
+        { message: "Email sender or recipient is not configured in environment variables." },
+        { status: 500 }
+      );
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: `onboarding@resend.dev`,
+      to: [toEmail],
       subject: `New message from ${name} - PLC Software Contact Form`,
-      text: message,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h1 style="color: #2563eb;">New Contact Form Submission</h1>
-          <p><strong style="color: #4b5563;">Name:</strong> ${name}</p>
-          <p><strong style="color: #4b5563;">Email:</strong> ${email}</p>
-          <p><strong style="color: #4b5563;">Message:</strong></p>
-          <p style="background: #f3f4f6; padding: 16px; border-radius: 8px;">${message.replace(/\n/g, '<br>')}</p>
-          <p style="margin-top: 24px; font-size: 12px; color: #6b7280;">
-            Sent from PLC Software contact form
-          </p>
-        </div>
-      `,
-    };
-
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
-
-    return NextResponse.json({ 
-      success: true,
-      messageId: info.messageId 
+      html: createContactEmailTemplate(name, email, message),
+      reply_to: email,
     });
-    
+
+    if (error) {
+      console.error("Resend API Error:", error);
+      return NextResponse.json(
+        { message: "Failed to send email via Resend.", error: error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({ success: true, data }, { status: 200 });
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error("Error sending email:", error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      {
+        message: "Failed to send email.",
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
       { status: 500 }
     );
   }
