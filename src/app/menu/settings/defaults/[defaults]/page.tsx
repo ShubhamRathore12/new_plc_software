@@ -234,6 +234,14 @@ export default function DefaultsPage() {
     Value_to_Display_EVAP_ACT_SPEED,
   } = data || {};
 
+
+  const hideDeltaA = [
+  "GTPL-114-gT-140E-S7-1200",
+  "GTPL-115-gT-140E-S7-1200",
+  "GTPL-119-gT-140E-S7-1200",
+  "GTPL-120-gT-140E-S7-1200",
+];
+
   return (
     <PageTransition>
       <div className="flex flex-col min-h-screen">
@@ -298,31 +306,30 @@ export default function DefaultsPage() {
                       <div>°C</div>
                     </motion.div>
                   )}
-
-                  <motion.div
-                    className="grid grid-cols-3 items-center gap-4"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    <Label htmlFor="delta-a" className="text-right font-medium">
-                      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" ? "(T)" : "(A)"}
-                    </Label>
-                    <Input
-                      id="delta-a"
-                      type="number"
-                      value={
-                        HEATING_MODE_SET_TH_FOR_HEATING_MODE ||
-                        data?.DELTA_SET ||
-                        data?.Delta_T_set_point
-                      }
-                      // onChange={(e) =>
-                      //   setDeltaA(Number.parseInt(e.target.value) || 0)
-                      // }
-                      className="col-span-1"
-                    />
-                    <div>°C</div>
-                  </motion.div>
+{hideDeltaA.includes(String(defaults)) ? null : (
+  <motion.div
+    className="grid grid-cols-3 items-center gap-4"
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.4 }}
+  >
+    <Label htmlFor="delta-a" className="text-right font-medium">
+      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" ? "(T)" : "(A)"}
+    </Label>
+    <Input
+      id="delta-a"
+      type="number"
+      value={
+        HEATING_MODE_SET_TH_FOR_HEATING_MODE ||
+        data?.DELTA_SET ||
+        data?.Delta_T_set_point
+      }
+      className="col-span-1"
+    />
+    <div>°C</div>
+  </motion.div>
+)}
+                  
 
                   <motion.div
                     className="grid grid-cols-3 items-center gap-4"
