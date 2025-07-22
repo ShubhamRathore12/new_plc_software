@@ -70,7 +70,7 @@ export async function GET(req: Request) {
       
       // Check each tag in the record
       for (const tag of tags) {
-        const value = record[tag];
+        const value = (record as { [key: string]: any })[tag];
         
         // If the tag is active
         if (isActiveValue(value, machineConfig.type)) {
@@ -79,7 +79,7 @@ export async function GET(req: Request) {
             activeTags.push({
               tag,
               value,
-              createdAt: record.created_at || record.createdAt || record.timestamp || new Date().toISOString()
+              createdAt: (record as any).created_at || (record as any).createdAt || (record as any).timestamp || new Date().toISOString()
             });
           }
         }
