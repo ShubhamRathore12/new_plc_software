@@ -128,24 +128,37 @@ export default function Home() {
             initial="hidden"
             animate="show"
           >
-            {menuItems
-              .filter(
-                (item) => !monitorAccessItems.includes(item.path.toLowerCase())
-              )
-              .map((item) => (
-                <motion.div key={item.title}>
-                  <Card
-                    onClick={() => router.push(`/menu/${item.path}/${device}`)}
-                    className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer h-full"
-                  >
-                    <CardContent className="p-6 flex flex-col items-center text-center">
-                      
-                  <item.icon className="h-12 w-12 mb-4 text-primary" />
-                      <h2 className="text-xl font-semibold">{item.title}</h2>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+        {menuItems.map((item) => {
+  const pathMatch = monitorAccessItems.includes(item.path.toLowerCase());
+  const titleMatch = monitorAccessItems.includes(item.title.toLowerCase());
+  const isDisabled = pathMatch || titleMatch;
+  const shouldHide = isDisabled ;
+
+  if (shouldHide) return null;
+
+  return (
+    <motion.div key={item.title}>
+      <Card
+        onClick={() => {
+          if (!isDisabled) {
+            router.push(`/menu/${item.path}/${device}`);
+          }
+        }}
+        className={`transition-all h-full cursor-pointer ${
+          isDisabled
+            ? "opacity-50 cursor-not-allowed pointer-events-none"
+            : "hover:shadow-md hover:border-primary/50"
+        }`}
+      >
+        <CardContent className="p-6 flex flex-col items-center text-center">
+          <item.icon className="h-12 w-12 mb-4 text-primary" />
+          <h2 className="text-xl font-semibold">{item.title}</h2>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
+})}
+
           </motion.div>
         </main>
       </div>

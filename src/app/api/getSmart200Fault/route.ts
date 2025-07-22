@@ -327,8 +327,27 @@ const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG]
     let whereClause = "";
 
     if (search) {
-      whereClause = "WHERE machine_name LIKE ?";
-      values.push(`%${search}%`);
+      // Search for matching tag names (not values) - filter tags that contain the search term
+      const tags = machineConfig.tags;
+      const matchingTags = tags.filter(tag => 
+        tag.toLowerCase().includes(search.toLowerCase())
+      );
+      
+      if (matchingTags.length > 0) {
+        // Build conditions to find records where any matching tag is active
+        const searchConditions = matchingTags.map(tag => {
+          if (machineConfig.type === "S7-200") {
+            return `(\`${tag}\` = 'tr' OR \`${tag}\` = 'True' OR \`${tag}\` = true OR \`${tag}\` = 1)`;
+          } else {
+            return `(\`${tag}\` = 'true' OR \`${tag}\` = 'True' OR \`${tag}\` = true OR \`${tag}\` = 1 OR \`${tag}\` = '1')`;
+          }
+        }).join(' OR ');
+        
+        whereClause = `WHERE (${searchConditions})`;
+      } else {
+        // No matching tags found, return empty results
+        whereClause = "WHERE 1 = 0";
+      }
     }
 
     const [[{ count }]]: any = await pool.query(
