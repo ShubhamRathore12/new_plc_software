@@ -237,9 +237,9 @@ export default function DefaultsPage() {
 
   const hideDeltaA = [
   "GTPL-114-gT-140E-S7-1200",
-  "GTPL-115-gT-140E-S7-1200",
-  "GTPL-119-gT-140E-S7-1200",
-  "GTPL-120-gT-140E-S7-1200",
+  "GTPL-115-gT-180E-S7-1200",
+  "GTPL-119-gT-180E-S7-1200",
+  "GTPL-120-gT-180E-S7-1200",
 ];
 
   return (
