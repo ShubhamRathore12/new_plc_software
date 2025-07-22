@@ -155,15 +155,63 @@ export default function AutoPage() {
     },
     "GTPL-119-gT-180E-S7-1200": {
       serialNumber: "GTPL_119",
-      ...commonS7_200Config,
+   temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
     },
     "GTPL-120-gT-180E-S7-1200": {
       serialNumber: "GTPL_120",
-      ...commonS7_200Config,
+    temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
     },
     "GTPL-121-gT-1000T-S7-1200": {
       serialNumber: "GTPL_121",
-      ...commonS7_200Config,
+  temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
     },
     "GTPL-118-gT-80E-P-S7-200": {
       serialNumber: "GTPL-109",
