@@ -8,7 +8,7 @@ function isActiveValue(value: any, machineType: string): boolean {
         return false;
     }
 
-    if (machineType === "S7-200") {
+    if (machineType.endsWith("200")) {
         // For S7-200: check for boolean or "tr"
         return (
             value === "tr" ||

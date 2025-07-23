@@ -711,7 +711,7 @@ export default function FaultLogsPaginated({
 
     try {
       // Use the new searchActiveFaults API endpoint
-      const url = new URL("/api/getSmart200Fault", window.location.origin);
+      const url = new URL("/api/getActiveFaults", window.location.origin);
       url.searchParams.append("machineName", machineName);
       url.searchParams.append("page", pageNum.toString());
       url.searchParams.append("limit", PAGE_SIZE.toString());
