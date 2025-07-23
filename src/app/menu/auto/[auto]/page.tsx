@@ -1,13 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
 import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import {
   PageTransition,
   AnimatedContainer,
@@ -15,22 +12,37 @@ import {
 import { ConnectionStatus } from "@/components/ui/connection-status";
 import Home from "@/components/diagram-controls";
 import { useAutoData } from "@/hooks/useAutoData";
-import AutoDiagram from "@/components/AutoDiagram";
-import HVACDashboard from "../../../../components/AutoDiagram";
+import AutoDiagram1 from "@/components/AutoDiagram1";
 import Fan from "../../../../../public/images/fan.png";
 import useIsMobile from "@/hooks/useIsMobile";
-import MobileAutoDiagram from "@/components/MobileAutoDiagram";
-import AutoDiagram1 from "@/components/AutoDiagram1";
+
+// Types for machine configuration
+interface SensorConfig {
+  key: string;
+  label: string;
+}
+
+interface MachineConfig {
+  serialNumber: string;
+  temperatureSensors: Record<string, SensorConfig>;
+  controls: Record<string, SensorConfig>;
+  compressor: {
+    time: string;
+    hp: string;
+    lp: string;
+  };
+}
 
 export default function AutoPage() {
   const router = useRouter();
   const { auto } = useParams();
   const { data, isConnected, error, formatValue } = useAutoData(auto as string);
+  const isMobile = useIsMobile();
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
 
-  // Configuration for different machines
+  // Common configuration for S7-200 machines
   const commonS7_200Config = {
     temperatureSensors: {
       TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
@@ -52,69 +64,8 @@ export default function AutoPage() {
     },
   };
 
-  const machineConfig = {
-    "GTPL-122-gT-1000T-S7-1200": {
-      serialNumber: "GTPL_122_S7_1200",
-      temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-114-gT-140E-S7-1200": {
-      serialNumber: "GTPL_114",
-       temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-115-gT-180E-S7-1200": {
-      serialNumber: "GTPL_115",
-     temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-116-gT-240E-S7-1200": {
-    serialNumber: "GTPL_116",
+  // Common configuration for S7-1200 machines
+  const commonS7_1200Config = {
     temperatureSensors: {
       T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
       T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
@@ -132,115 +83,30 @@ export default function AutoPage() {
       hp: "HP_value",
       lp: "LP_value",
     },
-  },
-    "GTPL-117-gT-320E-S7-1200": {
-      serialNumber: "GTPL_117",
-       temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-119-gT-180E-S7-1200": {
-      serialNumber: "GTPL_119",
-   temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-120-gT-180E-S7-1200": {
-      serialNumber: "GTPL_120",
-    temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-121-gT-1000T-S7-1200": {
-      serialNumber: "GTPL_121",
-  temperatureSensors: {
-        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      },
-      controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-        BLOWER: { key: "Blower_speed", label: "Blower" },
-      },
-      compressor: {
-        time: "Compressor_timer",
-        hp: "HP_value",
-        lp: "LP_value",
-      },
-    },
-    "GTPL-118-gT-80E-P-S7-200": {
-      serialNumber: "GTPL-109",
-      ...commonS7_200Config,
-    },
-    "GTPL-108-gT-40E-P-S7-200": {
-      serialNumber: "GTPL_108",
-      ...commonS7_200Config,
-    },
-    "GTPL-109-gT-40E-P-S7-200": {
-      serialNumber: "GTPL_109",
-      ...commonS7_200Config,
-    },
-    "GTPL-110-gT-40E-P-S7-200": {
-      serialNumber: "GTPL_110",
-      ...commonS7_200Config,
-    },
-    "GTPL-111-gT-80E-P-S7-200": {
-      serialNumber: "GTPL_111",
-      ...commonS7_200Config,
-    },
-    "GTPL-112-gT-80E-P-S7-200": {
-      serialNumber: "GTPL_112",
-      ...commonS7_200Config,
-    },
-    "GTPL-113-gT-80E-P-S7-200": {
-      serialNumber: "GTPL_113",
-      ...commonS7_200Config,
-    },
+  };
+
+  // Machine configurations using common configs to reduce repetition
+  const machineConfig: Record<string, MachineConfig> = {
+    // S7-1200 machines - using common config
+    "GTPL-122-gT-1000T-S7-1200": { serialNumber: "GTPL_122_S7_1200", ...commonS7_1200Config },
+    "GTPL-114-gT-140E-S7-1200": { serialNumber: "GTPL_114", ...commonS7_1200Config },
+    "GTPL-115-gT-180E-S7-1200": { serialNumber: "GTPL_115", ...commonS7_1200Config },
+    "GTPL-116-gT-240E-S7-1200": { serialNumber: "GTPL_116", ...commonS7_1200Config },
+    "GTPL-117-gT-320E-S7-1200": { serialNumber: "GTPL_117", ...commonS7_1200Config },
+    "GTPL-119-gT-180E-S7-1200": { serialNumber: "GTPL_119", ...commonS7_1200Config },
+    "GTPL-120-gT-180E-S7-1200": { serialNumber: "GTPL_120", ...commonS7_1200Config },
+    "GTPL-121-gT-1000T-S7-1200": { serialNumber: "GTPL_121", ...commonS7_1200Config },
+
+    // S7-200 machines - using common config
+    "GTPL-118-gT-80E-P-S7-200": { serialNumber: "GTPL-109", ...commonS7_200Config },
+    "GTPL-108-gT-40E-P-S7-200": { serialNumber: "GTPL_108", ...commonS7_200Config },
+    "GTPL-109-gT-40E-P-S7-200": { serialNumber: "GTPL_109", ...commonS7_200Config },
+    "GTPL-110-gT-40E-P-S7-200": { serialNumber: "GTPL_110", ...commonS7_200Config },
+    "GTPL-111-gT-80E-P-S7-200": { serialNumber: "GTPL_111", ...commonS7_200Config },
+    "GTPL-112-gT-80E-P-S7-200": { serialNumber: "GTPL_112", ...commonS7_200Config },
+    "GTPL-113-gT-80E-P-S7-200": { serialNumber: "GTPL_113", ...commonS7_200Config },
+
+    // Special case machine
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
       temperatureSensors: {
@@ -264,40 +130,51 @@ export default function AutoPage() {
     },
   };
 
-  const currentConfig =
-    machineConfig[auto as keyof typeof machineConfig] ||
-    machineConfig["GTPL-122-gT-1000T-S7-1200"];
+  // Get current machine configuration or use default
+  const currentConfig = machineConfig[auto as string] || machineConfig["GTPL-122-gT-1000T-S7-1200"];
 
+  // Check if machine is S7-200 type for conditional rendering
+  const isS7_200 = (auto as string)?.includes("S7-200");
+
+  // Navigation and control handlers
   const handleBack = () => router.push(`/menu/${auto}`);
 
-  const handleStart = async () => {
+  const handleControl = async (command: string, tag: string) => {
     await fetch("/api/control", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ command: "START", tag: "AUTO_PROCESS_PB" }),
+      body: JSON.stringify({ command, tag }),
     });
   };
 
-  const handleStop = async () => {
-    await fetch("/api/control", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ command: "STOP", tag: "AUTO_PROCESS_STOP_PB" }),
+  const handleStart = () => handleControl("START", "AUTO_PROCESS_PB");
+  const handleStop = () => handleControl("STOP", "AUTO_PROCESS_STOP_PB");
+  const handleToggleAutoAeration = (checked: boolean) =>
+    handleControl(checked ? "ENABLE" : "DISABLE", "AUTO_AERATION_ENA");
+
+  // Render sensor data dynamically
+  const renderSensorData = (
+    sensorConfig: Record<string, SensorConfig>,
+    unit: string = "°C",
+    showCondition?: (key: string, control: SensorConfig) => boolean
+  ) => {
+    return Object.entries(sensorConfig).map(([key, sensor]) => {
+      // Skip rendering if showCondition is provided and returns false
+      if (showCondition && !showCondition(key, sensor)) return null;
+
+      const value = data?.[sensor.key];
+      if (value === undefined || value === null) return null;
+
+      return (
+        <div key={key} className="flex justify-between">
+          <span>{sensor.label}</span>
+          <span className="font-medium">
+            {formatValue(value, unit)}
+          </span>
+        </div>
+      );
     });
   };
-
-  const handleToggleAutoAeration = async (checked: boolean) => {
-    await fetch("/api/control", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        command: checked ? "ENABLE" : "DISABLE",
-        tag: "AUTO_AERATION_ENA",
-      }),
-    });
-  };
-
-  const isMobile = useIsMobile();
 
   return (
     <PageTransition>
@@ -310,7 +187,7 @@ export default function AutoPage() {
             </h1>
             <p className="text-muted-foreground">
               SR. NO. {auto}
-           
+
             </p>
           </AnimatedContainer>
 
@@ -362,72 +239,31 @@ export default function AutoPage() {
 
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Temperature</h2>
+                  <h2 className="text-xl font-semibold mb-4">System Status</h2>
                   <div className="space-y-2">
-                    {Object.entries(currentConfig.temperatureSensors).map(
-                      ([key, sensor]) => {
-                        const value = data?.[sensor.key];
-                        return value !== undefined && value !== null && (
-                          <div key={key} className="flex justify-between">
-                            <span>{sensor.label}</span>
-                            <span className="font-medium">
-                              {formatValue(value, "°C")}
-                            </span>
-                          </div>
-                        );
-                      }
-                    )}
-                    {/* <div className="flex justify-between">
-                      <span>TH - T1</span>
+                    {/* Temperature Sensors */}
+                    {renderSensorData(currentConfig.temperatureSensors, "°C")}
+
+                    {/* Control Systems */}
+                    {renderSensorData(currentConfig.controls, "%", (key, control) => {
+                      // Don't show Heater if machine is S7-200 type
+                      if (control.label === "Heater" && isS7_200) return false;
+                      return true;
+                    })}
+
+                    {/* Compressor Data */}
+                    <div className="flex justify-between">
+                      <span>LP</span>
                       <span className="font-medium">
-                        {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
+                        {formatValue(data?.[currentConfig.compressor.lp])}
                       </span>
-                    </div> */}
-              {Object.entries(currentConfig.controls).map(([key, control]) => {
-  // Don't show Heater if machine ends with S7-200
-  if (
-    control.label === "Heater" &&
-    (auto as string)?.endsWith("200")
-  ) {
-    return null;
-  }
-
-  return (
-    <div key={key} className="flex justify-between">
-      <span>{control.label}</span>
-      <span className="font-medium">
-        {formatValue(data?.[control.key], "%")}
-      </span>
-    </div>
-  );
-})}
-
-              <div className="flex justify-between">
-  <span>LP</span>
-  <span className="font-medium">
-    {formatValue(data?.[currentConfig.compressor.lp])}
-  </span>
-</div>
-<div className="flex justify-between">
-  <span>HP</span>
-  <span className="font-medium">
-    {formatValue(data?.[currentConfig.compressor.hp])}
-  </span>
-</div>
-
-
-                    {/* <div className="flex justify-between">
-                      <span>Mode Status</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>HP</span>
                       <span className="font-medium">
-                        {formatValue(data?.mode_status, "%")}
+                        {formatValue(data?.[currentConfig.compressor.hp])}
                       </span>
-                    </div> */}
-                    {/* <div className="flex justify-between">
-                      <span>Water Pressure</span>
-                      <span className="font-medium">
-                        {formatValue(data?.water_pressure, "%")}
-                      </span>
-                    </div> */}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

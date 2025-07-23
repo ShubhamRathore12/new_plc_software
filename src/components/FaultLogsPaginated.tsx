@@ -812,13 +812,17 @@ export default function FaultLogsPaginated({
     return () => clearInterval(intervalId);
   }, [currentPage, machineName, debouncedSearch]);
 
+  function getMachinePrefix(machineName: string): string {
+    return machineName.split("-")[0]; 
+  }
+
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-800">
-              Active {machineName} Tags Monitor
+              Active {getMachinePrefix(machineName)} Tags Monitor
             </h2>
             <LanguageSelector />
           </div>
