@@ -97,16 +97,19 @@ export default function AnalogPage() {
     "GTPL-115-gT-180E-S7-1200": {
       displayName: "GTPL-115-gT-180E-S7-1200",
       inputs: {
-        AIW72: "LP_value",
-        AIW74: "HP_value",
-        AIW112: "T0_1_air_outlet_temp",
-        AIW114: "T0_2_air_outlet_temp",
-        AIW116: "T1_1_cold_air_temp",
-        AIW118: "T1_2_cold_air_temp",
-        AIW120: "T2_1_ambient_temp",
-        AIW122: "T2_2_ambient_temp",
-        AIW124: "TH_1_supply_air_temp",
-        AIW126: "TH_2_supply_air_temp",
+        "Suction pressure": "LP_value",
+        
+      "Discharge pressure": "HP_value",
+         "T0 probe #1 (Afterheater)" : "T0_1_air_outlet_temp",
+           
+      "T0 probe #2 (Afterheater)": "T0_2_air_outlet_temp",
+      "T1 probe #1 (Cold Air)": "T1_1_cold_air_temp",
+        
+      "T1 probe #2 (Cold Air)": "T1_2_cold_air_temp",
+        "T2 probe #1 (Ambient Air)": "T2_1_ambient_temp",
+        "T2 probe #2 (Ambient Air)": "T2_2_ambient_temp",
+        "TH probe #1 (Supply Air)": "TH_1_supply_air_temp",
+        "TH probe #2 (Supply Air)": "TH_2_supply_air_temp",
       },
       outputs: {
         AQW72: "Blower_speed",
@@ -120,16 +123,16 @@ export default function AnalogPage() {
     "default": {
       displayName: "Default Machine",
       inputs: {
-        AIW72: "LP",
-        AIW74: "HP",
-        AIW112: "AIR_OUTLET_TEMP",
-        AIW114: "AIR_OUTLET_TEMP",
-        AIW116: "COLD_AIR_TEMP_T1",
-        AIW118: "COLD_AIR_TEMP_T1",
-        AIW120: "AMBIENT_AIR_TEMP_T2",
-        AIW122: "AMBIENT_AIR_TEMP_T2",
-        AIW124: "AFTER_HEATER_TEMP_Th",
-        AIW126: "AFTER_HEATER_TEMP_Th",
+        "Suction pressure": "LP",
+        "Discharge pressure": "HP",
+        "T0 probe #1 (Afterheater)": "AIR_OUTLET_TEMP",
+        "T0 probe #2 (Afterheater)": "AIR_OUTLET_TEMP",
+        "T1 probe #1 (Cold Air)": "COLD_AIR_TEMP_T1",
+        "T1 probe #2 (Cold Air)": "COLD_AIR_TEMP_T1",
+        "T2 probe #1 (Ambient Air)": "AMBIENT_AIR_TEMP_T2",
+        "T2 probe #2 (Ambient Air)": "AMBIENT_AIR_TEMP_T2",
+        "TH probe #1 (Supply Air)": "AFTER_HEATER_TEMP_Th",
+        "TH probe #2 (Supply Air)": "AFTER_HEATER_TEMP_Th",
       },
       outputs: {
         AQW72: "BLOWER_RPM",
