@@ -85,7 +85,7 @@ export default function AnalogPage() {
     {  description: "Cond. Fan speed", value: "55", unit: "%" },
     {  description: "Hot gas valve", value: "0", unit: "%" },
     {  description: "Afterheat valve", value: "42", unit: "%" },
-    {  description: "Heater drive", value: "65", unit: "%" },
+ 
   ];
 
   const sharedS7_1200_config = {
@@ -107,7 +107,7 @@ export default function AnalogPage() {
       "Cond. Fan speed": "CONDENSER_RPM",
       "Hot gas valve": "Hot_valve_speed",
       "Afterheat valve": "AHT_vale_speed",
-      "Heater drive": "Heater_speed",
+      
     },
   };
   
@@ -144,7 +144,7 @@ export default function AnalogPage() {
         "Cond. Fan speed": "CONDENSER_RPM",
         "Hot gas valve": "HOT_GAS_VALVE_RPM",
         "Afterheat valve": "AFTER_HEAT_VALVE_RPM",
-        "Heater drive": "HEATER_DRIVE",
+
       }
     }
   };
@@ -210,29 +210,34 @@ export default function AnalogPage() {
                   </div>
                 ))}
 
-                {/* Analog Outputs */}
-                <div className="space-y-4">
-                  <h2 className="text-lg font-semibold">Analog Output</h2>
-                  <div className="space-y-2 pl-4">
-                    {analogOutputs.map((item) => {
-                      const liveKey = analogOutputValueMap[item.description];
-                      const liveValue = liveKey ? data?.[liveKey] : undefined;
+  {/* Analog Outputs */}
+<div className="space-y-4 mt-6">
+  <h2 className="text-lg font-semibold">Analog Output</h2>
+  <div className="space-y-2 pl-4">
+    {analogOutputs.map((item) => {
+      const liveKey = analogOutputValueMap[item.description];
+      const liveValue = liveKey ? data?.[liveKey] : undefined;
+      const displayValue = formatValue(liveValue) ?? "--";
 
-                      return (
-                        <div
-                          key={item.description}
-                          className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
-                        >
-                          
-                          <div className="flex-1">{item.description}</div>
-                          <div className="font-medium text-right w-20">
-                            {formatValue(liveValue) ?? item.value} {item.unit}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+      return (
+        <div
+          key={item.description}
+          className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
+        >
+          
+          <div className="flex-1">{item.description}</div>
+          <div className="font-medium text-right w-20">
+            {formatValue(liveValue) ?? item.value} {item.unit}
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
+
+
+
               </div>
             </ScrollArea>
 
