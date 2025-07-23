@@ -48,7 +48,8 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db")
 
- 
+  const isCompressorOn = data?.COMPRESSOR_ON === 'tr';
+
   
 
   return (
@@ -388,7 +389,16 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               </div>
               <div className="absolute -bottom-8 bg-red-600 text-white px-2 py-1 text-center rounded text-xs left-1/2 transform -translate-x-1/2">
             <div className="font-bold">
-  {compressorTime !== null ? `${compressorTime.toFixed(0)}s` : "N/A"}
+            <span className="flex items-center gap-1">
+  <span
+    className={`h-2 w-2 rounded-full ${
+      isCompressorOn
+        ? "bg-green-500 group-hover:bg-green-600"
+        : "bg-red-500 group-hover:bg-red-600"
+    } shadow-sm transition-colors duration-300`}
+  />
+  {isCompressorOn ? 'ON' : 'OFF'}
+</span>
 </div>
 
               </div>

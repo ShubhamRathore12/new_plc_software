@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,7 +33,7 @@ export default function AerationWithHeatingPage() {
   ); // ✅ FETCH VIA HOOK
 
   const [isRunning, setIsRunning] = useState(false);
-  const [continuousMode, setContinuousMode] = useState(false);
+
   const [runningTime, setRunningTime] = useState({ hours: 0, minutes: 0 });
   const [duration, setDuration] = useState(12);
   const [deltaTemp, setDeltaTemp] = useState(8);
@@ -69,6 +69,11 @@ export default function AerationWithHeatingPage() {
       if (interval) clearInterval(interval);
     };
   }, [isRunning]);
+
+
+  
+ 
+  
 
   const handleStart = () => setIsRunning(true);
   const handleStop = () => {
@@ -133,13 +138,13 @@ export default function AerationWithHeatingPage() {
                     <div className="flex items-center space-x-2">
                       <Switch
                         id="continuous-mode"
-                        checked={continuousMode || data?.Continuous_mode}
-                        onCheckedChange={setContinuousMode}
+                        checked={data?.CONTINUOUS_MODE == 'tr' || data?.Continuous_mode == 'tr'}
+            
                       />
                       <Label htmlFor="continuous-mode">CONTINUOUS MODE</Label>
                     </div>
 
-                    {!continuousMode && (
+                    {!data?.CONTINUOUS_MODE || !data?.Continuous_mode && (
                       <motion.div
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}

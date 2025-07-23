@@ -154,7 +154,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
       {/* T2 Temperature Display */}
       <div className="absolute left-[350px] top-[320px]">
   <div className="flex flex-row items-center px-2 py-1 gap-2">
-    <div className="text-sm font-bold text-gray-700">
+    <div className="text-sm font-bold text-gray-900">
       T2:
     </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">

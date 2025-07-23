@@ -176,7 +176,7 @@ export default function AerationWithoutHeatingPage() {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    {String(devices).endsWith('200') ? (
+                    {/* {String(devices).endsWith('200') ? (
                       <div className="flex justify-between">
                         <span>T0 (Cold Air)</span>
                         <span className="font-medium">
@@ -188,6 +188,18 @@ export default function AerationWithoutHeatingPage() {
                         <span>T1 (Cold Air)</span>
                         <span className="font-medium">
                           {formatValue(AI_COLD_AIR_TEMP || data?.T1_temp_mean, "°C")}
+                        </span>
+                      </div>
+                    )} */}
+
+{devices === "GTPL-122-gT-1000T-S7-1200" ? null : (
+                      <div className="flex justify-between">
+                        <span>TH (Supply Air)</span>
+                        <span className="font-medium">
+                          {formatValue(
+                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean,
+                            "°C"
+                          )}
                         </span>
                       </div>
                     )}
@@ -212,17 +224,7 @@ export default function AerationWithoutHeatingPage() {
                         )}
                       </span>
                     </div>
-                    {devices === "GTPL-122-gT-1000T-S7-1200" ? null : (
-                      <div className="flex justify-between">
-                        <span>TH</span>
-                        <span className="font-medium">
-                          {formatValue(
-                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean,
-                            "°C"
-                          )}
-                        </span>
-                      </div>
-                    )}
+                 
                   </div>
                 </CardContent>
               </Card>
