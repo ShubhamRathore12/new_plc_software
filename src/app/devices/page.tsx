@@ -447,7 +447,7 @@ export default function DevicesPage() {
                               <span
                                 className={`text-xs font-semibold ${isMachineRunning ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
                               >
-                                {isMachineRunning ? t("Running") : t("Stopped")}
+                                {isMachineRunning ? t("Active") : t("InActive")}
                               </span>
                             </div>
                           </div>
