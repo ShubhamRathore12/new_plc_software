@@ -88,39 +88,44 @@ export default function AnalogPage() {
     {  description: "Heater drive", value: "65", unit: "%" },
   ];
 
-  // Machine-specific variable mappings
+  const sharedS7_1200_config = {
+    displayName: "S7-1200 Machine",
+    inputs: {
+      "Suction pressure": "LP_value",
+      "Discharge pressure": "HP_value",
+      "T0 probe #1 (Afterheater)": "T0_1_air_outlet_temp",
+      "T0 probe #2 (Afterheater)": "T0_2_air_outlet_temp",
+      "T1 probe #1 (Cold Air)": "T1_1_cold_air_temp",
+      "T1 probe #2 (Cold Air)": "T1_2_cold_air_temp",
+      "T2 probe #1 (Ambient Air)": "T2_1_ambient_temp",
+      "T2 probe #2 (Ambient Air)": "T2_2_ambient_temp",
+      "TH probe #1 (Supply Air)": "TH_1_supply_air_temp",
+      "TH probe #2 (Supply Air)": "TH_2_supply_air_temp",
+    },
+    outputs: {
+      "Blower speed": "Blower_speed",
+      "Cond. Fan speed": "CONDENSER_RPM",
+      "Hot gas valve": "Hot_valve_speed",
+      "Afterheat valve": "AHT_vale_speed",
+      "Heater drive": "Heater_speed",
+    },
+  };
+  
   const machineConfigs: Record<string, {
     inputs: Record<string, string>;
     outputs: Record<string, string>;
     displayName: string;
   }> = {
-    "GTPL-115-gT-180E-S7-1200": {
-      displayName: "GTPL-115-gT-180E-S7-1200",
-      inputs: {
-        "Suction pressure": "LP_value",
-        
-      "Discharge pressure": "HP_value",
-         "T0 probe #1 (Afterheater)" : "T0_1_air_outlet_temp",
-           
-      "T0 probe #2 (Afterheater)": "T0_2_air_outlet_temp",
-      "T1 probe #1 (Cold Air)": "T1_1_cold_air_temp",
-        
-      "T1 probe #2 (Cold Air)": "T1_2_cold_air_temp",
-        "T2 probe #1 (Ambient Air)": "T2_1_ambient_temp",
-        "T2 probe #2 (Ambient Air)": "T2_2_ambient_temp",
-        "TH probe #1 (Supply Air)": "TH_1_supply_air_temp",
-        "TH probe #2 (Supply Air)": "TH_2_supply_air_temp",
-      },
-      outputs: {
-        AQW72: "Blower_speed",
-        AQW74: "CONDENSER_RPM", // Keep existing if not specified
-        AQW80: "Hot_valve_speed",
-        AQW82: "AHT_vale_speed",
-        AQW84: "Heater_speed",
-      }
-    },
-    // Default/Legacy machine configuration
-    "default": {
+    // All these machines share the same configuration
+    "GTPL-115-gT-180E-S7-1200": sharedS7_1200_config,
+    "GTPL-30-gT-180E-S7-1200": sharedS7_1200_config,
+    "GTPL-119-gT-180E-S7-1200": sharedS7_1200_config,
+    "GTPL-120-gT-180E-S7-1200": sharedS7_1200_config,
+    "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
+    "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
+  
+    // Fallback/default
+    default: {
       displayName: "Default Machine",
       inputs: {
         "Suction pressure": "LP",
@@ -135,14 +140,15 @@ export default function AnalogPage() {
         "TH probe #2 (Supply Air)": "AFTER_HEATER_TEMP_Th",
       },
       outputs: {
-        AQW72: "BLOWER_RPM",
-        AQW74: "CONDENSER_RPM",
-        AQW80: "HOT_GAS_VALVE_RPM",
-        AQW82: "AFTER_HEAT_VALVE_RPM",
-        AQW84: "HEATER_DRIVE",
+        "Blower speed": "BLOWER_RPM",
+        "Cond. Fan speed": "CONDENSER_RPM",
+        "Hot gas valve": "HOT_GAS_VALVE_RPM",
+        "Afterheat valve": "AFTER_HEAT_VALVE_RPM",
+        "Heater drive": "HEATER_DRIVE",
       }
     }
   };
+  
  const router = useRouter();
   const { seaction } = useParams();
   const device = seaction?.toString();
