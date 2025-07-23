@@ -39,16 +39,16 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     return () => clearInterval(interval);
   }, [compressorTime]);
 
-  const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true"
+  const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true" || data?.['Chiller_healthy_on_Q1_1'] === "True"
 
-  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true"
+  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true" || data?.['Chiller_Fault_on_Q2_0'] === "True"
 
-  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.["System_warnning_(Q1.0)"] === "true"
+  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.["System_warnning_(Q1.0)"] === "true" || data?.['Collective_Trouble_Signal_on_Q2_1'] === 'True'
 
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db")
 
-  const isCompressorOn = data?.COMPRESSOR_ON === 'tr';
+  const isCompressorOn = data?.COMPRESSOR_ON === 'tr' || data?.Compressor_on_Q0_4 === "True";
 
   
 
@@ -91,17 +91,17 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
 
         {/* Temperature Display Boxes - Fixed to container */}
         <div className="absolute top-4 right-[35rem] space-y-2 z-10">
-          {machineName.endsWith('1200') ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T0 = {formatValue(data?.T0_temp_mean, "°C")}
-            </div>
-          ) : (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T1 = {formatValue(data?.T1_SET_POINT || data?.T1_temp_mean, "°C")}
-            </div>
-          )}
+        {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) ? (
+  <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+    T0 = {formatValue(data?.T0_temp_mean, "°C")}
+  </div>
+) : (
+  <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+    T1 = {formatValue(data?.T1_SET_POINT || data?.T1_temp_mean, "°C")}
+  </div>
+)}
 
-          {machineName.endsWith('1200') ? (
+          {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T Delta = {formatValue(data.Delta_T_set_point || data?.Th_T1, "°C")}
             </div>
@@ -181,7 +181,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               <line x1="170" y1="180" x2="200" y2="120" stroke="black" strokeWidth="2" />
 
               {/* Vertical drops from main line to thermometers */}
-              {!machineName.endsWith('1200') && (
+              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) && (
                 <line x1="280" y1="120" x2="280" y2="150" stroke="black" strokeWidth="2" />
               )}
               <line x1="380" y1="120" x2="380" y2="150" stroke="black" strokeWidth="2" />
@@ -200,7 +200,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
             </svg>
 
             {/* Thermometers - Fixed positioning */}
-            {!machineName.endsWith('1200') && (
+            {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) && (
               <div
                 className="absolute z-10"
                 style={{
@@ -288,12 +288,12 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   style={{
     left: "calc(200px * 100% / 1200px)",
     top: "calc(430px * 100% / 600px)",
-    transform: machineName.endsWith('1200')
+    transform: ['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name))
       ? "translate(230%,650%)"
       : "translateY(620%)",
   }}
 >
-              {!machineName.endsWith('1200') && (
+              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) && (
                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
                   <div className="text-sm font-bold">{formatValue(data.Value_to_Display_HEATER || data?.Heater_speed, "%")}</div>
@@ -343,37 +343,71 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
 
             {/* Condenser Fan */}
             <div
-              className="absolute z-10"
-              style={{
-                left: "calc(800px * 100% / 1200px)",
-                top: "calc(150px * 100% / 600px)",
-                transform: "translateX(1620%)",
-              }}
-            >
-              <div className="w-12 h-64 mt-36 bg-pink-200 border-2 border-red-300 rounded-lg relative">
-                <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
-                <div className="absolute top-2 right-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                </div>
-                <div className="absolute left-16 top-1/2 transform -translate-y-1/2">
-                  <div className="flex items-center">
-                    <div className="w-full h-full rounded-full flex items-center justify-center">
-                      <Image  src={
-                        machineName.endsWith('1200')
-                          ? Fan1200
-                          : Fan
-                      } alt="Fan" className="w-90 h-90 object-contain"  width={70} height={80}/>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
-                <div className="text-xs font-bold">Condensor</div>
-                <div className="text-xs">
-                  {formatValue(data.Value_to_Display_COND_ACT_SPEED || data?.CONDENSER_RPM || data?.Cond_fan_speed, "%")}
-                </div>
-              </div>
-            </div>
+  className="absolute z-10"
+  style={{
+    left: "calc(800px * 100% / 1200px)",
+    top: "calc(150px * 100% / 600px)",
+    transform: "translateX(1620%)",
+  }}
+>
+  <div className="w-12 h-64 mt-36 bg-pink-200 border-2 border-red-300 rounded-lg relative">
+    <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
+    <div className="absolute top-2 right-2">
+      <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+    </div>
+
+    {/* ✅ Ensure parent is relative and image wrapper is sized */}
+    {['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200'].some(name => machineName.includes(name)) ? (
+  <>
+    <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
+      <div className="w-20 h-20 relative">
+        <Image
+          src={Fan}
+          alt="Fan"
+          fill
+          className="object-contain"
+        />
+      </div>
+    </div>
+    <div className="absolute left-16 top-[10rem] transform -translate-y-1/2">
+      <div className="w-20 h-20 relative">
+        <Image
+          src={Fan}
+          alt="Fan"
+          fill
+          className="object-contain"
+        />
+      </div>
+    </div>
+  </>
+) : (
+  <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
+    <div className="w-20 h-20 relative">
+      <Image
+        src={Fan}
+        alt="Fan"
+        fill
+        className="object-contain"
+      />
+    </div>
+  </div>
+)}
+
+  </div>
+
+  <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
+    <div className="text-xs font-bold">Condensor</div>
+    <div className="text-xs">
+      {formatValue(
+        data?.Value_to_Display_COND_ACT_SPEED ||
+        data?.CONDENSER_RPM ||
+        data?.Cond_fan_speed,
+        "%"
+      )}
+    </div>
+  </div>
+</div>
+
 
             {/* Compressor Unit */}
             <div

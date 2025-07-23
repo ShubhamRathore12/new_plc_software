@@ -83,18 +83,25 @@ export default function AutoPage() {
       hp: "HP_value",
       lp: "LP_value",
     },
+ 
   };
+
+ 
+ 
+
+  
+  
 
   // Machine configurations using common configs to reduce repetition
   const machineConfig: Record<string, MachineConfig> = {
     // S7-1200 machines - using common config
     "GTPL-122-gT-1000T-S7-1200": { serialNumber: "GTPL_122_S7_1200", ...commonS7_1200Config },
-    "GTPL-114-gT-140E-S7-1200": { serialNumber: "GTPL_114", ...commonS7_1200Config },
-    "GTPL-115-gT-180E-S7-1200": { serialNumber: "GTPL_115", ...commonS7_1200Config },
-    "GTPL-116-gT-240E-S7-1200": { serialNumber: "GTPL_116", ...commonS7_1200Config },
-    "GTPL-117-gT-320E-S7-1200": { serialNumber: "GTPL_117", ...commonS7_1200Config },
-    "GTPL-119-gT-180E-S7-1200": { serialNumber: "GTPL_119", ...commonS7_1200Config },
-    "GTPL-120-gT-180E-S7-1200": { serialNumber: "GTPL_120", ...commonS7_1200Config },
+   
+  
+   
+  
+   
+   
     "GTPL-121-gT-1000T-S7-1200": { serialNumber: "GTPL_121", ...commonS7_1200Config },
 
     // S7-200 machines - using common config
@@ -106,7 +113,138 @@ export default function AutoPage() {
     "GTPL-112-gT-80E-P-S7-200": { serialNumber: "GTPL_112", ...commonS7_200Config },
     "GTPL-113-gT-80E-P-S7-200": { serialNumber: "GTPL_113", ...commonS7_200Config },
 
-    // Special case machine
+    "GTPL-30-gT-180E-S7-1200": {
+      serialNumber: "GTPL_114",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat Air Temp(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air Temp(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient Air Temp(T2)" },
+        TH:{key:"TH_temp_mean" ,label:"Supply Air Temp(TH)"}
+       
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        Heater :{key:'Heater_speed',label:"Heater"},
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-115-gT-180E-S7-1200": {
+      serialNumber: "GTPL_114",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat Air Temp(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air Temp(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient Air Temp(T2)" },
+        TH:{key:"TH_temp_mean" ,label:"Supply Air Temp(TH)"}
+       
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        Heater :{key:'Heater_speed',label:"Heater"},
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-119-gT-180E-S7-1200": {
+      serialNumber: "GTPL_114",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat Air Temp(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air Temp(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient Air Temp(T2)" },
+        TH:{key:"TH_temp_mean" ,label:"Supply Air Temp(TH)"}
+       
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        Heater :{key:'Heater_speed',label:"Heater"},
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-120-gT-180E-S7-1200": {
+      serialNumber: "GTPL_114",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat Air Temp(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air Temp(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient Air Temp(T2)" },
+        TH:{key:"TH_temp_mean" ,label:"Supply Air Temp(TH)"}
+       
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        Heater :{key:'Heater_speed',label:"Heater"},
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-116-gT-240E-S7-1200": {
+      serialNumber: "GTPL_114",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat Air Temp(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air Temp(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient Air Temp(T2)" },
+        TH:{key:"TH_temp_mean" ,label:"Supply Air Temp(TH)"}
+       
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        Heater :{key:'Heater_speed',label:"Heater"},
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-117-gT-320E-S7-1200": {
+      serialNumber: "GTPL_114",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat Air Temp(T0)" },
+        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air Temp(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient Air Temp(T2)" },
+        TH:{key:"TH_temp_mean" ,label:"Supply Air Temp(TH)"}
+       
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        Heater :{key:'Heater_speed',label:"Heater"},
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
       temperatureSensors: {
@@ -239,7 +377,7 @@ export default function AutoPage() {
 
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">System Status</h2>
+                  <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
                     {/* Temperature Sensors */}
                     {renderSensorData(currentConfig.temperatureSensors, "°C")}
@@ -255,13 +393,13 @@ export default function AutoPage() {
                     <div className="flex justify-between">
                       <span>LP</span>
                       <span className="font-medium">
-                        {formatValue(data?.[currentConfig.compressor.lp])}
+                        {formatValue(data?.[currentConfig.compressor.lp])} psi
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>HP</span>
                       <span className="font-medium">
-                        {formatValue(data?.[currentConfig.compressor.hp])}
+                        {formatValue(data?.[currentConfig.compressor.hp])} psi
                       </span>
                     </div>
                   </div>

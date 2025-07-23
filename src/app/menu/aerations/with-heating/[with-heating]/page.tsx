@@ -244,14 +244,14 @@ export default function AerationWithHeatingPage() {
                         </span>
                       </div>
                     )}
-         {Value_to_Display_HEATER !== null && !String(devices).includes('200') && (
+         
   <div className="flex justify-between">
-    <span>HTR</span>
+    <span>Heater</span>
     <span className="font-medium">
       {formatValue(Value_to_Display_HEATER || data?.Heater_speed, "%")}
     </span>
   </div>
-)}
+
 
 
                   </div>

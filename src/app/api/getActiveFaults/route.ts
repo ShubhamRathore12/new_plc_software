@@ -59,7 +59,7 @@ export async function GET(req: Request) {
 
         // Get records for this machine (limit to 1000 for performance)
         const [records] = await pool.query(
-            `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT 1000`
+            `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT 2000`
         );
 
         if (!Array.isArray(records) || records.length === 0) {

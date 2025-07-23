@@ -84,9 +84,9 @@ export async function GET() {
       };
 
       // Check for condenser fan status in all machines
-      const rawCondFan = record?.COND_FAN_ON || record?.cond_fan_on;
+      const rawCondFan = record?.COND_FAN_ON || record?.cond_fan_on || record?.Compressor_on_Q0_4;
       if (rawCondFan !== undefined) {
-        const condFanOn = rawCondFan === 1 || rawCondFan === "tr" || rawCondFan === "true" || rawCondFan === true;
+        const condFanOn = rawCondFan === 1 || rawCondFan === "tr" || rawCondFan === "true" || rawCondFan === true || rawCondFan === 'True';
         baseResponse.condFanOn = condFanOn;
       }
 
