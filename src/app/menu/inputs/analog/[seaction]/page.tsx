@@ -104,7 +104,7 @@ export default function AnalogPage() {
     },
     outputs: {
       "Blower speed": "Blower_speed",
-      "Cond. Fan speed": "CONDENSER_RPM",
+      "Cond. Fan speed": "Cond_fan_speed",
       "Hot gas valve": "Hot_valve_speed",
       "Afterheat valve": "AHT_vale_speed",
       
