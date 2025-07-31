@@ -91,6 +91,7 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.1.2",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/js-cookie": "^3.0.6",
@@ -102,10 +103,11 @@
     "@types/react-dom": "^19",
     "@types/three": "^0.175.0",
     "@types/ws": "^8.18.1",
+    "cssnano": "^6.0.1",
     "eslint": "^9",
     "eslint-config-next": "15.2.4",
     "tailwindcss": "^4",
     "typescript": "^5",
-    "cssnano": "^6.0.1"
+    "ultracite": "5.1.2"
   }
 }

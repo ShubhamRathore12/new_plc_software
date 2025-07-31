@@ -22,22 +22,6 @@ import useIsMobile from "@/hooks/useIsMobile";
 import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 import AutoDiagram1 from "@/components/AutoDiagram1";
 
-interface SensorConfig {
-  key: string;
-  label: string;
-}
-
-interface MachineConfig {
-  serialNumber: string;
-  temperatureSensors: Record<string, SensorConfig>;
-  controls: Record<string, SensorConfig>;
-  compressor: {
-    time: string;
-    hp: string;
-    lp: string;
-  };
-}
-
 export default function AutoPage() {
   const router = useRouter();
   const { auto } = useParams();
@@ -47,8 +31,7 @@ export default function AutoPage() {
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
 
   // Configuration for different machines
-  const commonS7_200Config: MachineConfig = {
-    serialNumber: "",
+  const commonS7_200Config = {
     temperatureSensors: {
       TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
       T0: { key: "AIR_OUTLET_TEMP", label: "After Heat(T0)" },
@@ -287,28 +270,32 @@ export default function AutoPage() {
 
   const handleBack = () => router.push(`/menu/${auto}`);
 
-  const sendControlCommand = async (command: string, tag: string) => {
-  await fetch("/api/control", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ command, tag }),
-  });
-};
+  const handleStart = async () => {
+    await fetch("/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ command: "START", tag: "AUTO_PROCESS_PB" }),
+    });
+  };
 
-const handleStart = async () => {
-  await sendControlCommand("START", "AUTO_PROCESS_PB");
-};
+  const handleStop = async () => {
+    await fetch("/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ command: "STOP", tag: "AUTO_PROCESS_STOP_PB" }),
+    });
+  };
 
-const handleStop = async () => {
-  await sendControlCommand("STOP", "AUTO_PROCESS_STOP_PB");
-};
-
-const handleToggleAutoAeration = async (checked: boolean) => {
-  await sendControlCommand(
-    checked ? "ENABLE" : "DISABLE",
-    "AUTO_AERATION_ENA"
-  );
-};
+  const handleToggleAutoAeration = async (checked: boolean) => {
+    await fetch("/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        command: checked ? "ENABLE" : "DISABLE",
+        tag: "AUTO_AERATION_ENA",
+      }),
+    });
+  };
 
   const isMobile = useIsMobile();
 
@@ -377,21 +364,19 @@ const handleToggleAutoAeration = async (checked: boolean) => {
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">Temperature</h2>
                   <div className="space-y-2">
-                    const renderSensorValue = (sensor: SensorConfig, unit: string = "°C") => {
-  const value = data?.[sensor.key];
-  return value !== undefined && value !== null && (
-    <div className="flex justify-between">
-      <span>{sensor.label}</span>
-      <span className="font-medium">
-        {formatValue(value, unit)}
-      </span>
-    </div>
-  );
-};
-
-{Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => (
-  renderSensorValue(sensor)
-))}
+                    {Object.entries(currentConfig.temperatureSensors).map(
+                      ([key, sensor]) => {
+                        const value = data?.[sensor.key];
+                        return value !== undefined && value !== null && (
+                          <div key={key} className="flex justify-between">
+                            <span>{sensor.label}</span>
+                            <span className="font-medium">
+                              {formatValue(value, "°C")}
+                            </span>
+                          </div>
+                        );
+                      }
+                    )}
                     {/* <div className="flex justify-between">
                       <span>TH - T1</span>
                       <span className="font-medium">
@@ -399,10 +384,22 @@ const handleToggleAutoAeration = async (checked: boolean) => {
                       </span>
                     </div> */}
               {Object.entries(currentConfig.controls).map(([key, control]) => {
-  if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
+  // Don't show Heater if machine ends with S7-200
+  if (
+    control.label === "Heater" &&
+    (auto as string)?.endsWith("200")
+  ) {
     return null;
   }
-  return renderSensorValue(control, "%");
+
+  return (
+    <div key={key} className="flex justify-between">
+      <span>{control.label}</span>
+      <span className="font-medium">
+        {formatValue(data?.[control.key], "%")}
+      </span>
+    </div>
+  );
 })}
 
               <div className="flex justify-between">
