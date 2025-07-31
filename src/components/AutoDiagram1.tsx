@@ -97,7 +97,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   </div>
 ) : (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-    T1 = {formatValue(data?.T1_temp_mean || data?.T1_SET_POINT , "°C")}
+    T1 = {formatValue(data?.T1_set_point ||data?.T1_temp_mean || data?.T1_SET_POINT , "°C")}
   </div>
 )}
 
