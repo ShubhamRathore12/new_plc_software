@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         hostname: "rotechfans.in",
         pathname: "/wp-content/uploads/**",
       },
+      {
+        protocol: "https",
+        hostname: "tse4.mm.bing.net",
+        pathname: "/th/id/**",
+      },
     ],
   },
 };

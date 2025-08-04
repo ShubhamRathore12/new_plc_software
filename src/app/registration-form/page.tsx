@@ -380,6 +380,7 @@ export default function RegistrationForm() {
             {/* Account Type Tabs */}
             <Tabs
               value={accountType}
+     
               onValueChange={(value) =>
                 form.setValue(
                   "accountType",
@@ -619,7 +620,7 @@ export default function RegistrationForm() {
                 />
 
                 {/* Submit */}
-                <Button type="submit" className="w-full" disabled={isLoading}>
+                <Button type="submit" className="w-full" disabled={isLoading || data?.user?.firstName === "Prosafe" }>
                   {isLoading
                     ? formatText(t("registering"))
                     : formatText(t("register"))}

@@ -32,6 +32,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import DashboardLayout from "@/components/layout/dashboard-layout";
+import { useDataStore } from "@/lib/store";
 
 const { RangePicker } = DatePicker;
 
@@ -88,6 +89,8 @@ export default function TableWithDownload() {
   });
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const { data:storeData } = useDataStore() as { data: any };
+
 
   const fetchData = async (table: TableName, dateRange?: [Dayjs, Dayjs] | null) => {
     setLoading(true);
@@ -247,7 +250,7 @@ const downloadAllData = async () => {
           <div className="flex gap-2 ml-auto">
             <Button
               onClick={downloadExcel}
-              disabled={!data.length || loading}
+              disabled={!data.length || loading || storeData?.user?.firstName === "Prosafe"}
             >
               {loading && <Spin size="small" className="mr-2" />}
               Download Excel
@@ -262,7 +265,7 @@ const downloadAllData = async () => {
             </Button> */}
             <Button
               onClick={downloadAllData}
-              disabled={!dateRange || isDownloading}
+              disabled={!dateRange || isDownloading ||  storeData?.user?.firstName === "Prosafe"}
             >
               {isDownloading && <Spin size="small" className="mr-2" />}
               Download All (Date Range)

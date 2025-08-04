@@ -60,13 +60,25 @@ export default function Sidebar() {
   const handleNavigation = (href: string) => {
     router.push(href);
   };
+console.log(data);
 
   return (
     <div className="w-64 bg-[#1e293b] text-white min-h-screen dark:bg-gray-800 dark:text-white relative">
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center space-x-2">
-          <Image src={Img} alt="logo" width={100} height={100} />
-          <span className="font-semibold">Grain Technik</span>
+          <Image 
+            src={data?.user?.firstName === "Prosafe" 
+              ? "https://tse4.mm.bing.net/th/id/OIP.ce32nMlZhhVQW72b6lMcawAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
+              : Img} 
+            alt="logo" 
+            width={100} 
+            height={100}
+            priority
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = '/logo.jpeg';
+            }}
+          />
+          <span className="font-semibold">{data?.user?.firstName === "Prosafe" ? "Prosafe":"Grain Techniks"}</span>
         </div>
       </div>
 
@@ -103,7 +115,22 @@ export default function Sidebar() {
       </div>
 
       <div className="absolute bottom-0 left-0 right-0 p-4">
-        <Image src={Img} alt="logo" width={500} height={100} />
+        {data?.user?.firstName === "Prosafe" 
+              ?     <Image 
+          src="https://tse4.mm.bing.net/th/id/OIP.ce32nMlZhhVQW72b6lMcawAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" 
+          alt="logo" 
+          width={200} 
+          height={50}
+          priority
+        /> 
+              :     <Image 
+          src={Img} 
+          alt="logo" 
+          width={500} 
+          height={100}
+          priority
+        />}
+   
       </div>
     </div>
   );

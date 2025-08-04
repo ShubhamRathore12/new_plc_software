@@ -193,6 +193,48 @@ const GPL_117_TAGS = [
   "Warning_HP_transducer_failure",
 ];
 
+// Tags for GTPL-30 (gplt_144 table)
+const GTPL_30_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Ambient_air_sensor_1open",
+  "COND_FAN_OVERLOAD",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_over_50C",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
+  "Low_pressure_1_fault",
+  "COMP_FBK_ERROR",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_47C",
+  "Condenser_fan_2_TOP_fault",
+  "Condenser_fan_3_TOP_fault",
+  "Condenser_fan_4_TOP_fault",
+  "Condenser_fan_2_circuit_breaker_fault",
+  "Condenser_fan_3_circuit_breaker_fault",
+  "Condenser_fan_4_circuit_breaker_fault",
+  "Condenser_fan_5_TOP_fault",
+  "Condenser_fan_6_TOP_fault",
+  "Condenser_fan_5_circuit_breaker_fault",
+  "Condenser_fan_6_circuit_breaker_fault",
+  "Condenser_fan_1_circuit_breaker_fault",
+  "Condenser_fan_1_TOP_fault",
+  "Ambient_air_sensor_1_short_circuit",
+  "Ambient_air_sensor_2_open",
+  "Ambient_air_sensor_2_short_circuit",
+  "Cold_air_sensor_1_open",
+  "Cold_air_sensor_1_short_circuit",
+  "Cold_air_sensor_2_open",
+  "Cold_air_sensor_2_short_circuit",
+  "Air_outlet_sensor_1_open",
+  "Air_outlet_sensor_1_short_circuit",
+  "Air_outlet_sensor_2_open",
+  "Air_outlet_sensor_2_short_circuit"
+];
+
 const S7_200_MACHINES = [
   "GTPL-118-gT-80E-P-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
@@ -212,15 +254,18 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
   let tags: string[] = [];
 
   // Select appropriate tag list based on machine name
- if (
-  machineName === "GTPL-115-gT-180E-P-S7-1200" ||
-  machineName === "GTPL-114-gT-140E-P-S7-1200" ||
-  machineName === "GTPL-119-gT-180E-S7-1200 " ||
-  machineName === "GTPL-120-gT-180E-P-S7-1200"
-) {
-  tags = GPL_115_TAGS;
-}
- else if (machineName === "GTPL-117-gT-320E-S7-1200" ||"GTPL-116-gT-320E-S7-1200") {
+  if (machineName === "GTPL-30-gT-180E-S7-1200") {
+    tags = GTPL_30_TAGS;
+  }
+  else if (
+    machineName === "GTPL-115-gT-180E-P-S7-1200" ||
+    machineName === "GTPL-114-gT-140E-P-S7-1200" ||
+    machineName === "GTPL-119-gT-180E-S7-1200 " ||
+    machineName === "GTPL-120-gT-180E-P-S7-1200"
+  ) {
+    tags = GPL_115_TAGS;
+  }
+  else if (machineName === "GTPL-117-gT-320E-S7-1200" || machineName === "GTPL-116-gT-320E-S7-1200") {
     tags = GPL_117_TAGS;
   }
   else if (S7_200_MACHINES.includes(machineName)) {
@@ -251,7 +296,7 @@ function extractActiveTags(data: any, machineName: string): TagData[] {
       isActive =
         value === "tr" || value === true || value === "true" || value === 1 || value === "True";
     } else {
-      // For S7-1200: check for boolean or "1"/"true"
+      // For S7-1200 and GTPL-30: check for boolean or "1"/"true"
       isActive =
         value === true || value === "true" || value === 1 || value === "1" || value === "True";
     }
@@ -311,6 +356,7 @@ function LanguageSelector() {
     </div>
   );
 }
+
 function getTagCategory(tag: string): string {
   const lower = tag.toLowerCase();
   if (lower.includes("fault") || lower.includes("error") || lower.includes("alarm")) {
@@ -613,9 +659,25 @@ function DebugDataDisplay({
     );
   }
 
-  const tags = S7_200_MACHINES.includes(machineName)
-    ? S7_200_TAGS
-    : S7_1200_TAGS;
+  // Select appropriate tag list for debugging based on machine name
+  let tags: string[] = [];
+  if (machineName === "GTPL-30-gT-180E-S7-1200") {
+    tags = GTPL_30_TAGS;
+  } else if (
+    machineName === "GTPL-115-gT-180E-P-S7-1200" ||
+    machineName === "GTPL-114-gT-140E-P-S7-1200" ||
+    machineName === "GTPL-119-gT-180E-S7-1200 " ||
+    machineName === "GTPL-120-gT-180E-P-S7-1200"
+  ) {
+    tags = GPL_115_TAGS;
+  } else if (machineName === "GTPL-117-gT-320E-S7-1200" || machineName === "GTPL-116-gT-320E-S7-1200") {
+    tags = GPL_117_TAGS;
+  } else if (S7_200_MACHINES.includes(machineName)) {
+    tags = S7_200_TAGS;
+  } else {
+    tags = S7_1200_TAGS;
+  }
+
   const sampleRecord = data[0] || {};
 
   return (
@@ -639,6 +701,11 @@ function DebugDataDisplay({
           </h4>
           <p className="text-sm text-yellow-600">
             Records found: {data.length}
+            {machineName === "GTPL-30-gT-180E-S7-1200" && (
+              <span className="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                Using GTPL_144 table tags
+              </span>
+            )}
           </p>
         </div>
 
@@ -676,6 +743,15 @@ function DebugDataDisplay({
   );
 }
 
+// Helper function to get table name for machine
+function getTableNameForMachine(machineName: string): string {
+  if (machineName === "GTPL-30-gT-180E-S7-1200") {
+    return "gplt_144";
+  }
+  // Add other machine to table mappings here if needed
+  return "default_table";
+}
+
 export default function FaultLogsPaginated({
   machineName,
 }: {
@@ -702,9 +778,6 @@ export default function FaultLogsPaginated({
     totalPages: 0,
   });
 
-
-
-
   const fetchLogs = async (pageNum: number, search = "") => {
     setLoading(true);
     setError(null);
@@ -715,6 +788,11 @@ export default function FaultLogsPaginated({
       url.searchParams.append("machineName", machineName);
       url.searchParams.append("page", pageNum.toString());
       url.searchParams.append("limit", PAGE_SIZE.toString());
+
+      // Add table name parameter for GTPL-30
+      if (machineName === "GTPL-30-gT-180E-S7-1200") {
+        url.searchParams.append("tableName", "gplt_144");
+      }
 
       // Add search parameter if provided
       if (search && search.trim()) {
@@ -823,6 +901,11 @@ export default function FaultLogsPaginated({
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-bold text-gray-800">
               Active {getMachinePrefix(machineName)} Tags Monitor
+              {machineName === "GTPL-30-gT-180E-S7-1200" && (
+                <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
+                  (gplt_144 table)
+                </span>
+              )}
             </h2>
             <LanguageSelector />
           </div>
