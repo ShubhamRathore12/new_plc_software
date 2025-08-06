@@ -55,6 +55,25 @@ const ALLOWED_TABLES = [
   "gtpl_122_s7_1200_01",
 ] as const;
 
+// Display name mapping
+const TABLE_DISPLAY_NAMES: Record<string, string> = {
+  "GTPL_108_gT_40E_P_S7_200_Germany": "GTPL-108-gT-40E-P-S7-200-Germany",
+  "GTPL_109_gT_40E_P_S7_200_Germany": "GTPL-109-gT-40E-P-S7-200-Germany",
+  "GTPL_110_gT_40E_P_S7_200_Germany": "GTPL-110-gT-40E-P-S7-200-Germany",
+  "GTPL_111_gT_80E_P_S7_200_Germany": "GTPL-111-gT-80E-P-S7-200-Germany",
+  "GTPL_112_gT_80E_P_S7_200_Germany": "GTPL-112-gT-80E-P-S7-200-Germany",
+  "GTPL_113_gT_80E_P_S7_200_Germany": "GTPL-113-gT-80E-P-S7-200-Germany",
+  "kabomachinedatasmart200": "Kabo Machine Data Smart 200",
+  "GTPL_114_GT_140E_S7_1200": "GTPL-30-gT-180E-S7-1200",
+  "GTPL_115_GT_180E_S7_1200": "GTPL-115-GT-180E-S7-1200",
+  "GTPL_119_GT_180E_S7_1200": "GTPL-119-GT-180E-S7-1200",
+  "GTPL_120_GT_180E_S7_1200": "GTPL-120-GT-180E-S7-1200",
+  "GTPL_116_GT_240E_S7_1200": "GTPL-116-GT-240E-S7-1200",
+  "GTPL_117_GT_320E_S7_1200": "GTPL-117-GT-320E-S7-1200",
+  "GTPL_121_GT1000T": "GTPL-121-GT1000T",
+  "gtpl_122_s7_1200_01": "GTPL-122-S7-1200-01",
+};
+
 type TableName = typeof ALLOWED_TABLES[number];
 
 interface Pagination {
@@ -90,7 +109,6 @@ export default function TableWithDownload() {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
   const { data:storeData } = useDataStore() as { data: any };
-
 
   const fetchData = async (table: TableName, dateRange?: [Dayjs, Dayjs] | null) => {
     setLoading(true);
@@ -234,7 +252,7 @@ const downloadAllData = async () => {
               <SelectContent>
                 {ALLOWED_TABLES.map(table => (
                   <SelectItem key={table} value={table}>
-                    {table}
+                    {TABLE_DISPLAY_NAMES[table] || table}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -288,7 +306,7 @@ const downloadAllData = async () => {
         </span>
       </div>
       <p className="text-center text-sm text-gray-500">
-        Downloading {selectedTable} data...
+        Downloading {TABLE_DISPLAY_NAMES[selectedTable] || selectedTable} data...
         {downloadProgress < 100 ? " Please wait" : " Complete!"}
       </p>
     </div>
