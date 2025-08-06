@@ -1,0 +1,447 @@
+
+export const S7_200_TAGS = [
+    "AFTER_HEAT_TEMP_MORE_THAN_50",
+    "AFTER_HEAT_TEMP_SENSOR_TH_OPEN",
+    "AFTER_HEAT_TEMP_SENSOR_TH_SHORT_CIRCUIT",
+    "AIR_OUTLET_TEMP_SENSOR_T0_OPEN",
+    "AIR_OUTLET_TEMP_SENSOR_T0_SHORT_CIRCUIT",
+    "AMBIENT_TEMP_LESS_THAN_4",
+    "AMBIENT_TEMP_LOW_THAN_SET_TEMP",
+    "AMBIENT_TEMP_OVER_40",
+    "AMBIENT_TEMP_OVER_43",
+    "AMBIENT_TEMP_SENSOR_T2_OPEN",
+    "AMBIENT_TEMP_SENSOR_T2_SHORT_CIRCUIT",
+    "ANTI_FREEZE_PROTECTION",
+    "BLOWER_CIRCUIT_BREAKER_FAULT",
+    "BLOWER_DRIVE_FAULT",
+    "C0ND_FAN_TOP",
+    "COLD_AIR_TEMP_SENSOR_T1_OPEN",
+    "COLD_AIR_TEMP_SENSOR_T1_SHORT_CIRCUIT",
+    "COMPRESSOR_CIRCUIT_BREA_FAULT",
+    "COND_FAN_CIRCUIT_BREAKE_FAULT",
+    "CONDENSER_FAN_DOOR_OPEN",
+    "HEATER_CIRCUIT_BREAKER_FAULT",
+    "HEATER_RCCCB_TRIP_FAULT",
+    "HEATER_TOP_FAULT",
+    "HIGH_PRESSURE_FAULT",
+    "HIGH_PRESSURE_FAULT_LOCKED",
+    "HP_TRANSDUCEER_FAILURE",
+    "LOW_PRESSURE_FAULT",
+    "LOW_PRESSURE_FAULT_LOCKED",
+    "LP_TRANSDUCER_FAILURE",
+    "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
+    "THREE_PHASE_MONITORING_FAULT"
+];
+
+// S7-1200 specific tags
+export const S7_1200_TAGS = [
+    "Compressor_circuit_breaker_fault",
+    "Oil_pressure_low",
+    "Blower_drive_fault",
+    "Blower_circuit_breaker_fault",
+    "Ambient_air_sensor_1open",
+    "COND_FAN_OVERLOAD",
+    "Three_phase_monitor_fault",
+    "High_pressure_fault",
+    "Ambient_temp_lower_than_set_temp",
+    "Ambient_temp_over_50C",
+    "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
+    "Low_pressure_1_fault",
+    "COMP_FBK_ERROR",
+    "Low_pressure_2_fault",
+    "Ambient_temp_over_47C",
+    "Condenser_fan_2_TOP_fault",
+    "Condenser_fan_3_TOP_fault",
+    "Condenser_fan_4_TOP_fault",
+    "Condenser_fan_2_circuit_breaker_fault",
+    "Condenser_fan_3_circuit_breaker_fault",
+    "Condenser_fan_4_circuit_breaker_fault",
+    "Condenser_fan_5_TOP_fault",
+    "Condenser_fan_6_TOP_fault",
+    "Condenser_fan_5_circuit_breaker_fault",
+    "Condenser_fan_6_circuit_breaker_fault",
+    "Condenser_fan_1_circuit_breaker_fault",
+    "Condenser_fan_1_TOP_fault",
+    "Ambient_air_sensor_1_short_circuit",
+    "Ambient_air_sensor_2_open",
+    "Ambient_air_sensor_2_short_circuit",
+    "Cold_air_sensor_1_open",
+    "Cold_air_sensor_1_short_circuit",
+    "Cold_air_sensor_2_open",
+    "Cold_air_sensor_2_short_circuit",
+    "Air_outlet_sensor_1_open",
+    "Air_outlet_sensor_1_short_circuit",
+    "Air_outlet_sensor_2_open",
+    "Air_outlet_sensor_2_short_circuit"
+];
+
+export const GPL_115_TAGS = [
+    "Compressor_circuit_breaker_fault",
+    "Condenser_fan_door_open",
+    "Blower_drive_fault",
+    "Blower_circuit_breaker_fault",
+    "Three_phase_monitor_fault",
+    "Low_Pressure_Fault",
+    "Ambient_temp_lower_than_set_temp",
+    "Ambient_temp_Over_43C",
+    "Compressor_motor_overheat",
+    "Low_pressure_fault_Locked",
+    "High_pressure_fault_Locked",
+    "Ambient_temp_Over_40C",
+    "Ambient_temp_Less_than_4C",
+    "Cond_Fan_circuit_breaker_fault",
+    "Cond_Fan_drive_fault",
+    "Cond_Fan_TOP",
+    "Ambient_Temp_Sensor_T2_1_Open",
+    "Ambient_Temp_Sensor_T2_1_Short_Circuit",
+    "Ambient_Temp_Sensor_T2_2_Open",
+    "Ambient_Temp_Sensor_T2_2_Short_Circuit",
+    "Air_Outlet_Temp_Sensor_T0_1_Open",
+    "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit",
+    "Air_Outlet_Temp_Sensor_T0_2_Open",
+    "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit",
+    "Cold_Air_Temp_Sensor_T1_1_Open",
+    "Cold_Air_Temp_Sensor_T1_1_Short_Circuit",
+    "Cold_Air_Temp_Sensor_T1_2_Open",
+    "Cold_Air_Temp_Sensor_T1_2_Short_Circuit",
+    "Air_After_Heater_Temp_Sensor_TH_1_Open",
+    "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit",
+    "Air_After_Heater_Temp_Sensor_TH_2_Open",
+    "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit",
+    "High_Pressure_Fault",
+    "Heater_TOP_fault",
+    "Heater_drive_Fault",
+    "Heater_circuit_breaker_fault",
+    "Heater_RCCB_fault",
+    "Anti_Freeze_Protection",
+    "TH_Temp_more_than_50C",
+    "Delta_not_achieved_in_aeration_mode",
+    "Warning_LP_transducer_failure",
+    "Warning_HP_transducer_failure",
+];
+
+export const GPL_117_TAGS = [
+    "Compressor_circuit_breaker_fault",
+    "Cond_fan1_circuit_breaker_fault_I2_2",
+    "Condenser_fan1_door_open",
+    "Blower_drive_fault",
+    "Blower_circuit_breaker_fault",
+    "Heater_circuit_breaker_fault",
+    "Three_phase_monitor_fault",
+    "Low_Pressure_Fault",
+    "Ambient_temp_lower_than_set_temp",
+    "Ambient_temp_Over_43C",
+    "Compressor_motor_overheat",
+    "Heater_RCCB_fault",
+    "Cond_Fan2_circuit_breaker_fault",
+    "Low_pressure_fault_Locked",
+    "Anti_Freeze_Protection",
+    "High_pressure_fault_Locked",
+    "Ambient_temp_Over_40C",
+    "Ambient_temp_Less_than_4C",
+    "Cond_Fan_1_TOP",
+    "Cond_Fan1_circuit_breaker_fault",
+    "Cond_Fan_drive_fault",
+    "Cond_Fan_2_TOP",
+    "Ambient_Temp_Sensor_T2_1_Open",
+    "Ambient_Temp_Sensor_T2_1_Short_Circuit",
+    "Ambient_Temp_Sensor_T2_2_Open",
+    "Ambient_Temp_Sensor_T2_2_Short_Circuit",
+    "Air_Outlet_Temp_Sensor_T0_1_Open",
+    "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit",
+    "Air_Outlet_Temp_Sensor_T0_2_Open",
+    "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit",
+    "Cold_Air_Temp_Sensor_T1_1_Open",
+    "Cold_Air_Temp_Sensor_T1_1_Short_Circuit",
+    "Cold_Air_Temp_Sensor_T1_2_Open",
+    "Cold_Air_Temp_Sensor_T1_2_Short_Circuit",
+    "Air_After_Heater_Temp_Sensor_TH_1_Open",
+    "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit",
+    "Air_After_Heater_Temp_Sensor_TH_2_Open",
+    "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit",
+    "High_Pressure_Fault",
+    "Comp_Oil_Low",
+    "Heater_TOP_fault",
+    "Heater_drive_Fault",
+    "Condenser_fan2_door_open",
+    "TH_Temp_more_than_50C",
+    "Delta_not_achieved_in_aeration_mode",
+    "Warning_LP_transducer_failure",
+    "Warning_HP_transducer_failure",
+];
+
+// Machine configuration type
+interface MachineConfig {
+    table: string;
+    tags: string[];
+    type: string;
+}
+
+// Machine configuration mapping
+export const MACHINE_CONFIG: Record<string, MachineConfig> = {
+    // S7-200
+    "GTPL-118-gT-80E-P-S7-200": { table: "kabomachinedatasmart200", tags: S7_200_TAGS, type: "S7-200" },
+    "GTPL-108-gT-40E-P-S7-200": { table: "GTPL_108_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+    "GTPL-109-gT-40E-P-S7-200": { table: "GTPL_109_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+    "GTPL-110-gT-40E-P-S7-200": { table: "GTPL_110_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+    "GTPL-111-gT-80E-P-S7-200": { table: "GTPL_111_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+    "GTPL-112-gT-80E-P-S7-200": { table: "GTPL_112_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+    "GTPL-113-gT-80E-P-S7-200": { table: "GTPL_113_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+
+    // S7-1200 (including GTPL-115)
+    "GTPL-122-gT-1000T-S7-1200": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
+    "Gtpl-S7-1200-02": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
+    "GTPL-30-gT-180E-S7-1200": { table: "GTPL_114_GT_140E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
+    "GTPL-115-gT-180E-S7-1200": { table: "GTPL_115_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
+    "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+    "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
+    "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+    "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+    "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
+};
+
+// Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
+export const MACHINE_NAME_ALIASES: Record<string, string> = {
+    "GPL-115": "GTPL-115-gT-180E-S7-1200",
+    "GPL-117": "GTPL-117-gT-320E-S7-1200",
+    "GPL-30": "GTPL-30-gT-180E-S7-1200",
+};
+
+// Fault code type
+interface FaultCode {
+    code: number;
+    description: string;
+}
+
+// Fault codes for different machine types
+export const FAULT_CODES: Record<string, FaultCode[]> = {
+    "S7-200": [
+        { code: 1, description: "Compressor circuit breaker fault" },
+        { code: 2, description: "Condenser fan door open" },
+        { code: 3, description: "Blower drive fault" },
+        { code: 4, description: "Blower circuit breaker fault" },
+        { code: 6, description: "Heater circuit breaker fault" },
+        { code: 7, description: "Three phase monitor fault" },
+        { code: 8, description: "Low Pressure Fault" },
+        { code: 9, description: "Ambient temp lower than set temp" },
+        { code: 10, description: "Ambient temp. Over 43°C" },
+        { code: 12, description: "Heater RCCB fault" },
+        { code: 13, description: "Cond Fan circuit breaker fault" },
+        { code: 14, description: "Low pressure fault : Locked" },
+        { code: 15, description: "Anti Freeze Protection" },
+        { code: 16, description: "High pressure fault : Locked" },
+        { code: 17, description: "Ambient temp. Over 40°C" },
+        { code: 18, description: "Ambient temp. Less than 4°C" },
+        { code: 19, description: "Cond Fan TOP" },
+        { code: 23, description: "Ambient Temp Sensor T2 Open" },
+        { code: 24, description: "Ambient Temp Sensor T2 Short Circuit" },
+        { code: 27, description: "Air Outlet Temp Sensor T0 Open" },
+        { code: 28, description: "Air Outlet Temp Sensor T0 Short Circuit" },
+        { code: 31, description: "Cold Air Temp Sensor T1 Open" },
+        { code: 32, description: "Cold Air Temp Sensor T1 short circuit" },
+        { code: 35, description: "Air After Heater Temp Sensor TH Open" },
+        { code: 36, description: "Air After Heater Temp Sensor TH short circuit" },
+        { code: 39, description: "High Pressure Fault" },
+        { code: 41, description: "Heater TOP fault" },
+        { code: 44, description: "TH Air After Heater Temp more than 50 °C" },
+        { code: 45, description: "Warning : Delta value not achieved in aeration mode" },
+        { code: 48, description: "Warning : LP transducer failure" },
+        { code: 49, description: "Warning : HP transducer failure" },
+    ],
+    "S7-1200": [
+        { code: 1, description: "Compressor_circuit_breaker_fault" },
+        { code: 2, description: "Oil_pressure_low" },
+        { code: 3, description: "Blower_drive_fault" },
+        { code: 4, description: "Blower_circuit_breaker_fault" },
+        { code: 5, description: "Ambient_air_sensor_1open" },
+        { code: 6, description: "COND_FAN_OVERLOAD" },
+        { code: 7, description: "Three_phase_monitor_fault" },
+        { code: 8, description: "High_pressure_fault" },
+        { code: 9, description: "Ambient_temp._lower_than_set_temp." },
+        { code: 10, description: "Ambient_temp._over_50°C" },
+        { code: 11, description: "COMP._MODULE_FEEDBACK_ERROR_(Si-I1)" },
+        { code: 14, description: "Low_pressure_1_fault" },
+        { code: 15, description: "COMP_FBK_ERROR" },
+        { code: 16, description: "Low_pressure_2_fault" },
+        { code: 17, description: "Ambient_temp._over_47°C" },
+        { code: 18, description: "Condenser_fan_2_TOP_fault" },
+        { code: 19, description: "Condenser_fan_3_TOP_fault" },
+        { code: 20, description: "Condenser_fan_4_TOP_fault" },
+        { code: 21, description: "Condenser_fan_2_circuit_breaker_fault" },
+        { code: 22, description: "Condenser_fan_3_circuit_breaker_fault" },
+        { code: 23, description: "Condenser_fan_4_circuit_breaker_fault" },
+        { code: 24, description: "Condenser_fan_5_TOP_fault" },
+        { code: 25, description: "Condenser_fan_6_TOP_fault" },
+        { code: 26, description: "Condenser_fan_5_circuit_breaker_fault" },
+        { code: 27, description: "Condenser_fan_6_circuit_breaker_fault" },
+        { code: 30, description: "Condenser_fan_1_circuit_breaker_fault" },
+        { code: 31, description: "Condenser_fan_1_TOP_fault" },
+        { code: 32, description: "Ambient_air_sensor_1_short_circuit" },
+        { code: 33, description: "Ambient_air_sensor_2_open" },
+        { code: 34, description: "Ambient_air_sensor_2_short_circuit" },
+        { code: 35, description: "Cold_air_sensor_1_open" },
+        { code: 36, description: "Cold_air_sensor_1_short_circuit" },
+        { code: 37, description: "Cold_air_sensor_2_open" },
+        { code: 38, description: "Cold_air_sensor_2_short_circuit" },
+        { code: 39, description: "Air_outlet_sensor_1_open" },
+        { code: 40, description: "Air_outlet_sensor_1_short_circuit" },
+        { code: 41, description: "Air_outlet_sensor_2_open" },
+        { code: 42, description: "Air_outlet_sensor_2_short_circuit" },
+    ],
+    "GPL-115": [
+        { code: 1, description: "Compressor_circuit_breaker_fault" },
+        { code: 2, description: "Condenser_fan_door_open" },
+        { code: 3, description: "Blower_drive_fault" },
+        { code: 4, description: "Blower_circuit_breaker_fault" },
+        { code: 6, description: "Heater_circuit_breaker_fault" },
+        { code: 7, description: "Three_phase_monitor_fault" },
+        { code: 8, description: "Low_Pressure_Fault" },
+        { code: 9, description: "Ambient_temp_lower_than_set_temp" },
+        { code: 10, description: "Ambient_temp_Over_43C" },
+        { code: 11, description: "Compressor_motor_overheat" },
+        { code: 12, description: "Heater_RCCB_fault" },
+        { code: 14, description: "Low_pressure_fault_Locked" },
+        { code: 15, description: "Anti_Freeze_Protection" },
+        { code: 16, description: "High_pressure_fault_Locked" },
+        { code: 17, description: "Ambient_temp_Over_40C" },
+        { code: 18, description: "Ambient_temp_Less_than_4C" },
+        { code: 20, description: "Cond_Fan_circuit_breaker_fault" },
+        { code: 21, description: "Cond_Fan_drive_fault" },
+        { code: 22, description: "Cond_Fan_TOP" },
+        { code: 23, description: "Ambient_Temp_Sensor_T2_1_Open" },
+        { code: 24, description: "Ambient_Temp_Sensor_T2_1_Short_Circuit" },
+        { code: 25, description: "Ambient_Temp_Sensor_T2_2_Open" },
+        { code: 26, description: "Ambient_Temp_Sensor_T2_2_Short_Circuit" },
+        { code: 27, description: "Air_Outlet_Temp_Sensor_T0_1_Open" },
+        { code: 28, description: "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit" },
+        { code: 29, description: "Air_Outlet_Temp_Sensor_T0_2_Open" },
+        { code: 30, description: "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit" },
+        { code: 31, description: "Cold_Air_Temp_Sensor_T1_1_Open" },
+        { code: 32, description: "Cold_Air_Temp_Sensor_T1_1_Short_Circuit" },
+        { code: 33, description: "Cold_Air_Temp_Sensor_T1_2_Open" },
+        { code: 34, description: "Cold_Air_Temp_Sensor_T1_2_Short_Circuit" },
+        { code: 35, description: "Air_After_Heater_Temp_Sensor_TH_1_Open" },
+        { code: 36, description: "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit" },
+        { code: 37, description: "Air_After_Heater_Temp_Sensor_TH_2_Open" },
+        { code: 38, description: "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit" },
+        { code: 39, description: "High_Pressure_Fault" },
+        { code: 41, description: "Heater_TOP_fault" },
+        { code: 42, description: "Heater_drive_Fault" },
+        { code: 44, description: "TH_Temp_more_than_50C" },
+        { code: 45, description: "Delta_not_achieved_in_aeration_mode" },
+        { code: 48, description: "Warning_LP_transducer_failure" },
+        { code: 49, description: "Warning_HP_transducer_failure" },
+    ],
+    "GPL-117": [
+        { code: 1, description: "Compressor_circuit_breaker_fault" },
+        { code: 2, description: "Condenser_fan1_door_open" },
+        { code: 3, description: "Blower_drive_fault" },
+        { code: 4, description: "Blower_circuit_breaker_fault" },
+        { code: 6, description: "Heater_circuit_breaker_fault" },
+        { code: 7, description: "Three_phase_monitor_fault" },
+        { code: 8, description: "Low_Pressure_Fault" },
+        { code: 9, description: "Ambient_temp_lower_than_set_temp" },
+        { code: 10, description: "Ambient_temp_Over_43C" },
+        { code: 11, description: "Compressor_motor_overheat" },
+        { code: 12, description: "Heater_RCCB_fault" },
+        { code: 13, description: "Cond_Fan2_circuit_breaker_fault" },
+        { code: 14, description: "Low_pressure_fault_Locked" },
+        { code: 15, description: "Anti_Freeze_Protection" },
+        { code: 16, description: "High_pressure_fault_Locked" },
+        { code: 17, description: "Ambient_temp_Over_40C" },
+        { code: 18, description: "Ambient_temp_Less_than_4C" },
+        { code: 19, description: "Cond_Fan_1_TOP" },
+        { code: 20, description: "Cond_Fan1_circuit_breaker_fault" },
+        { code: 21, description: "Cond_Fan_drive_fault" },
+        { code: 22, description: "Cond_Fan_2_TOP" },
+        { code: 23, description: "Ambient_Temp_Sensor_T2_1_Open" },
+        { code: 24, description: "Ambient_Temp_Sensor_T2_1_Short_Circuit" },
+        { code: 25, description: "Ambient_Temp_Sensor_T2_2_Open" },
+        { code: 26, description: "Ambient_Temp_Sensor_T2_2_Short_Circuit" },
+        { code: 27, description: "Air_Outlet_Temp_Sensor_T0_1_Open" },
+        { code: 28, description: "Air_Outlet_Temp_Sensor_T0_1_Short_Circuit" },
+        { code: 29, description: "Air_Outlet_Temp_Sensor_T0_2_Open" },
+        { code: 30, description: "Air_Outlet_Temp_Sensor_T0_2_Short_Circuit" },
+        { code: 31, description: "Cold_Air_Temp_Sensor_T1_1_Open" },
+        { code: 32, description: "Cold_Air_Temp_Sensor_T1_1_Short_Circuit" },
+        { code: 33, description: "Cold_Air_Temp_Sensor_T1_2_Open" },
+        { code: 34, description: "Cold_Air_Temp_Sensor_T1_2_Short_Circuit" },
+        { code: 35, description: "Air_After_Heater_Temp_Sensor_TH_1_Open" },
+        { code: 36, description: "Air_After_Heater_Temp_Sensor_TH_1_Short_Circuit" },
+        { code: 37, description: "Air_After_Heater_Temp_Sensor_TH_2_Open" },
+        { code: 38, description: "Air_After_Heater_Temp_Sensor_TH_2_Short_Circuit" },
+        { code: 39, description: "High_Pressure_Fault" },
+        { code: 40, description: "Comp_Oil_Low" },
+        { code: 41, description: "Heater_TOP_fault" },
+        { code: 42, description: "Heater_drive_Fault" },
+        { code: 43, description: "Condenser_fan2_door_open" },
+        { code: 44, description: "TH_Temp_more_than_50C" },
+        { code: 45, description: "Delta_not_achieved_in_aeration_mode" },
+        { code: 48, description: "Warning_LP_transducer_failure" },
+        { code: 49, description: "Warning_HP_transducer_failure" },
+    ],
+};
+
+// Helper functions
+export function resolveMachineName(machineName: string): string {
+    return MACHINE_NAME_ALIASES[machineName] || machineName;
+}
+
+export function getMachineConfig(machineName: string) {
+    const resolvedName = resolveMachineName(machineName);
+    return MACHINE_CONFIG[resolvedName];
+}
+
+export function getFaultCodesForMachine(machineName: string) {
+    const resolvedName = resolveMachineName(machineName);
+    const config = MACHINE_CONFIG[resolvedName];
+
+    if (!config) return FAULT_CODES["S7-1200"]; // Default fallback
+
+    // Determine fault code type based on machine configuration
+    if (resolvedName.includes("GPL-115") || resolvedName.includes("GTPL-30")) {
+        return FAULT_CODES["GPL-115"];
+    } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117")) {
+        return FAULT_CODES["GPL-117"];
+    } else if (config.type === "S7-200") {
+        return FAULT_CODES["S7-200"];
+    } else {
+        return FAULT_CODES["S7-1200"];
+    }
+}
+
+export function getTagsForMachine(machineName: string, data: any) {
+    const resolvedName = resolveMachineName(machineName);
+    const config = MACHINE_CONFIG[resolvedName];
+
+    if (!config) return [];
+
+    // Map the tags to include values from data
+    return config.tags.map(tag => ({
+        tag,
+        value: data?.[tag],
+    })).concat([
+        { tag: "created_at", value: data?.created_at }
+    ]);
+}
+
+export function isActiveTag(value: any): boolean {
+    if (!value) return false;
+    const normalized = value.toString().toLowerCase();
+    return normalized === "true" || normalized === "tr" || normalized === "True";
+}
+
+export function getMachineType(machineName: string): string {
+    const resolvedName = resolveMachineName(machineName);
+    const config = MACHINE_CONFIG[resolvedName];
+
+    if (!config) return "Unknown";
+
+    if (resolvedName.includes("GPL-115") || resolvedName.includes("GTPL-30")) {
+        return "GPL-115";
+    } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117")) {
+        return "GPL-117";
+    } else {
+        return config.type;
+    }
+}

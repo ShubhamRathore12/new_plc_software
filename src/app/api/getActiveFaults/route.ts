@@ -1,7 +1,6 @@
 import { pool } from "@/lib/db";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
-
 // Helper function to check if a value is considered "active"
 function isActiveValue(value: any, machineType: string): boolean {
     if (value === undefined || value === null || value === "") {
@@ -62,6 +61,8 @@ export async function GET(req: Request) {
             `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT 2000`
         );
 
+
+
         if (!Array.isArray(records) || records.length === 0) {
             return new Response(
                 JSON.stringify({
@@ -79,20 +80,19 @@ export async function GET(req: Request) {
         for (const record of records as any[]) {
             const recordActiveTags = [];
 
-            // Check each tag in the record
             for (const tag of tags) {
                 const value = record[tag];
 
                 if (isActiveValue(value, machineType)) {
-                    // If search is provided, only include tags that match the search term
                     if (!search || tag.toLowerCase().includes(search.toLowerCase())) {
                         const tagData = {
                             tag,
                             value,
-                            createdAt: record.created_at ||
+                            createdAt:
+                                record.created_at ||
                                 record.createdAt ||
                                 record.timestamp ||
-                                new Date().toISOString()
+                                new Date().toISOString(),
                         };
 
                         recordActiveTags.push(tagData);
@@ -101,13 +101,11 @@ export async function GET(req: Request) {
                 }
             }
 
-            // Only include records with active tags
-            if (recordActiveTags.length > 0) {
-                processedRecords.push({
-                    ...record,
-                    activeTags: recordActiveTags
-                });
-            }
+            // ✅ Always push the record (even if activeTags is empty)
+            processedRecords.push({
+                ...record,
+                activeTags: recordActiveTags,
+            });
         }
 
         return new Response(
@@ -127,7 +125,7 @@ export async function GET(req: Request) {
         return new Response(
             JSON.stringify({
                 error: "Failed to fetch active faults",
-                details: err.message
+                details: err.message,
             }),
             { status: 500, headers: { "Content-Type": "application/json" } }
         );

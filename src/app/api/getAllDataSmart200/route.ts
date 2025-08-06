@@ -89,110 +89,49 @@ export async function GET(req: Request) {
       }
     }
 
-    // Handle download all with SheetJS
-    // if (downloadAll) {
-    //   // First get total count with date filter applied
-    //   const [countResult]: any = await pool.query(countQuery, queryParams);
-    //   const total = countResult[0]?.total || 0;
+    // Handle download all with SheetJS - FIXED VERSION
+    if (downloadAll) {
+      // First get total count with date filter applied
+      const [countResult]: any = await pool.query(countQuery, queryParams);
+      const total = countResult[0]?.total || 0;
 
-    //   if (total === 0) {
-    //     return new Response(
-    //       JSON.stringify({ error: "No data found for the selected date range" }),
-    //       { status: 404, headers: { "Content-Type": "application/json" } }
-    //     );
-    //   }
+      if (total === 0) {
+        return new Response(
+          JSON.stringify({ error: "No data found for the selected date range" }),
+          { status: 404, headers: { "Content-Type": "application/json" } }
+        );
+      }
 
-    //   // Fetch all data with date filter applied
-    //   const [rows]: any = await pool.query(
-    //     `${dataQuery} ORDER BY id DESC`,
-    //     queryParams
-    //   );
+      // Fetch all data with date filter applied
+      const [rows]: any = await pool.query(
+        `${dataQuery} ORDER BY id DESC`,
+        queryParams
+      );
 
-    //   // Create workbook
-    //   const workbook = XLSX.utils.book_new();
-    //   const worksheet = XLSX.utils.json_to_sheet(rows);
-    //   XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+      // Create workbook
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(rows);
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
 
-    //   // Generate Excel file buffer
-    //   const excelBuffer = XLSX.write(workbook, {
-    //     bookType: "xlsx",
-    //     type: "buffer",
-    //   });
+      // Generate Excel file buffer
+      const excelBuffer = XLSX.write(workbook, {
+        bookType: "xlsx",
+        type: "buffer",
+      });
 
-    //   return new Response(excelBuffer, {
-    //     headers: {
-    //       "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    //       "Content-Disposition": `attachment; filename="${table}_export_${fromDate || 'start'}_to_${toDate || 'end'}.xlsx"`,
-    //     },
-    //   });
-    // }
-    // Handle download all with SheetJS
-if (downloadAll) {
-  // First get total count with date filter applied
-  const [countResult]: any = await pool.query(countQuery, queryParams);
-  const total = countResult[0]?.total || 0;
-
-  if (total === 0) {
-    return new Response(
-      JSON.stringify({ error: "No data found for the selected date range" }),
-      { status: 404, headers: { "Content-Type": "application/json" } }
-    );
-  }
-
-  // Fetch all data with date filter applied
-  const [rows]: any = await pool.query(
-    `${dataQuery} ORDER BY id DESC`,
-    queryParams
-  );
-
-  // Create workbook
-  const workbook = XLSX.utils.book_new();
-  const worksheet = XLSX.utils.json_to_sheet(rows);
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-
-  // Generate Excel file buffer
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "buffer",
-  });
-
-  // Create a readable stream for progress tracking
-  const stream = new ReadableStream({
-    start(controller) {
-      // Send the buffer in chunks
-      const chunkSize = 1024 * 1024 *20; // 1MB chunks
-      let position = 0;
-      
-      const pushNextChunk = () => {
-        if (position >= excelBuffer.length) {
-          controller.close();
-          return;
-        }
-
-        const chunk = excelBuffer.slice(position, position + chunkSize);
-        controller.enqueue(chunk);
-        position += chunkSize;
-        
-        // Calculate progress (for server-side logging)
-        const progress = Math.round((position / excelBuffer.length) * 100);
-        console.log(`Export progress: ${progress}%`);
-        
-        // Schedule next chunk
-        setTimeout(pushNextChunk, 0);
-      };
-
-      pushNextChunk();
+      // Return the complete buffer without streaming
+      return new Response(excelBuffer, {
+        headers: {
+          "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "Content-Disposition": `attachment; filename="${table}_export_${fromDate || 'start'}_to_${toDate || 'end'}.xlsx"`,
+          "Content-Length": excelBuffer.length.toString(),
+          // Add cache control headers to prevent caching issues
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          "Pragma": "no-cache",
+          "Expires": "0"
+        },
+      });
     }
-  });
-
-  return new Response(stream, {
-    headers: {
-      "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      "Content-Disposition": `attachment; filename="${table}_export_${fromDate || 'start'}_to_${toDate || 'end'}.xlsx"`,
-      "Content-Length": excelBuffer.length.toString(),
-    },
-  });
-}
 
     // Normal paginated response
     dataQuery += ` ORDER BY id DESC LIMIT ? OFFSET ?`;
