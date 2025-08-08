@@ -27,9 +27,10 @@ export async function GET(req: Request) {
     const fromDate = searchParams.get("fromDate");
     const toDate = searchParams.get("toDate");
     const downloadAll = searchParams.get("downloadAll") === "true";
-    const limit = downloadAll ? 10000 : 100;
+    const limit = downloadAll ? 50000 : 100; // Increased limit for download
     const offset = (page - 1) * limit;
 
+    // Validate table name
     if (!ALLOWED_TABLES.includes(table)) {
       return new Response(
         JSON.stringify({
@@ -44,203 +45,235 @@ export async function GET(req: Request) {
     }
 
     // Check timestamp column
-    let timestampColumn = '';
+    let timestampColumn = "";
     try {
-      const [checkLower]: any = await pool.query(
+      const checkLowerResult = await pool.query(
         `SHOW COLUMNS FROM \`${table}\` LIKE 'created_at'`
       );
-      if (checkLower.length > 0) {
-        timestampColumn = 'created_at';
+      const checkLower = Array.isArray(checkLowerResult) ? checkLowerResult[0] : checkLowerResult;
+      
+      if (checkLower && Array.isArray(checkLower) && checkLower.length > 0) {
+        timestampColumn = "created_at";
       } else {
-        const [checkUpper]: any = await pool.query(
+        const checkUpperResult = await pool.query(
           `SHOW COLUMNS FROM \`${table}\` LIKE 'created_At'`
         );
-        if (checkUpper.length > 0) {
-          timestampColumn = 'created_At';
+        const checkUpper = Array.isArray(checkUpperResult) ? checkUpperResult[0] : checkUpperResult;
+        
+        if (checkUpper && Array.isArray(checkUpper) && checkUpper.length > 0) {
+          timestampColumn = "created_At";
         }
       }
     } catch (err) {
       console.error("Error checking timestamp columns:", err);
     }
 
-    // Base queries
+    // Build queries
     let countQuery = `SELECT COUNT(*) as total FROM \`${table}\``;
     let dataQuery = `SELECT * FROM \`${table}\``;
-    const queryParams: any[] = [];
+    const queryParams: string[] = [];
 
-    // Date filtering - apply to both count and data queries
+    // Add date filtering
     if (timestampColumn && (fromDate || toDate)) {
-      let dateCondition = '';
+      const dateConditions: string[] = [];
       
       if (fromDate) {
-        dateCondition += `\`${timestampColumn}\` >= ?`;
+        dateConditions.push(`\`${timestampColumn}\` >= ?`);
         queryParams.push(fromDate);
       }
       
       if (toDate) {
-        if (fromDate) dateCondition += ' AND ';
-        dateCondition += `\`${timestampColumn}\` <= ?`;
+        dateConditions.push(`\`${timestampColumn}\` <= ?`);
         queryParams.push(toDate);
       }
 
-      if (dateCondition) {
-        countQuery += ` WHERE ${dateCondition}`;
-        dataQuery += ` WHERE ${dateCondition}`;
+      if (dateConditions.length > 0) {
+        const whereClause = ` WHERE ${dateConditions.join(" AND ")}`;
+        countQuery += whereClause;
+        dataQuery += whereClause;
       }
     }
 
-    // Handle Excel download with proper formatting
+    // Handle Excel download
     if (downloadAll) {
-      // First get total count with date filter applied
-      const [countResult]: any = await pool.query(countQuery, queryParams);
-      const total = countResult[0]?.total || 0;
+      try {
+        // Get total count
+        const countResult = await pool.query(countQuery, queryParams);
+        const countData = Array.isArray(countResult) ? countResult[0] : countResult;
+        const totalRows:any = Array.isArray(countData) && countData.length > 0 ? countData[0] : { total: 0 };
+        const total =  totalRows.total ;
 
-      if (total === 0) {
+        if (total === 0) {
+          return new Response(
+            JSON.stringify({ error: "No data found for the selected date range" }),
+            { 
+              status: 404, 
+              headers: { "Content-Type": "application/json" } 
+            }
+          );
+        }
+
+        // Fetch data
+        const dataResult = await pool.query(
+          `${dataQuery} ORDER BY id DESC LIMIT ${limit}`,
+          queryParams
+        );
+        const rows = Array.isArray(dataResult) ? dataResult[0] : dataResult;
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+          return new Response(
+            JSON.stringify({ error: "No data found" }),
+            { 
+              status: 404, 
+              headers: { "Content-Type": "application/json" } 
+            }
+          );
+        }
+
+        // Process data for Excel
+        const processedData = rows.map((row: any) => {
+          const processedRow: any = {};
+          
+          for (const key in row) {
+            if (row.hasOwnProperty(key)) {
+              const value = row[key];
+              
+              if (value === null || value === undefined) {
+                processedRow[key] = "";
+              } else if (typeof value === "boolean") {
+                processedRow[key] = value ? "TRUE" : "FALSE";
+              } else if (value instanceof Date) {
+                processedRow[key] = value.toISOString().replace("T", " ").substring(0, 19);
+              } else if (typeof value === "number") {
+                processedRow[key] = value;
+              } else {
+                processedRow[key] = String(value);
+              }
+            }
+          }
+          
+          return processedRow;
+        });
+
+        // Create Excel file
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(processedData);
+        
+        // Set column widths
+        if (processedData.length > 0) {
+          const columnKeys = Object.keys(processedData[0]);
+          const columnWidths = columnKeys.map(key => {
+            const maxLength = Math.max(
+              key.length,
+              ...processedData.slice(0, 100).map(row => String(row[key] || "").length)
+            );
+            return { wch: Math.min(Math.max(maxLength + 2, 10), 50) };
+          });
+          worksheet["!cols"] = columnWidths;
+        }
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
+
+        // Generate file
+        const excelBuffer = XLSX.write(workbook, {
+          bookType: "xlsx",
+          type: "buffer"
+        });
+
+        // Create filename
+        const timestamp = new Date().toISOString().split("T")[0];
+        const dateRange = `${fromDate || "start"}_to_${toDate || "end"}`;
+        const filename = `${table}_export_${dateRange}_${timestamp}.xlsx`;
+
+        return new Response(excelBuffer, {
+          headers: {
+            "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Content-Disposition": `attachment; filename="${filename}"`,
+            "Content-Length": excelBuffer.length.toString(),
+          },
+        });
+
+      } catch (downloadError) {
+        console.error("Download error:", downloadError);
         return new Response(
-          JSON.stringify({ error: "No data found for the selected date range" }),
-          { status: 404, headers: { "Content-Type": "application/json" } }
+          JSON.stringify({ 
+            error: "Failed to generate Excel file",
+            details: String(downloadError)
+          }),
+          { 
+            status: 500, 
+            headers: { "Content-Type": "application/json" } 
+          }
         );
       }
-
-      // Fetch all data with date filter applied
-      const [rows]: any = await pool.query(
-        `${dataQuery} ORDER BY id DESC`,
-        queryParams
-      );
-
-      // Process data for Excel formatting
-      const processedData = rows.map((row: any) => {
-        const processedRow: any = {};
-        
-        Object.keys(row).forEach(key => {
-          let value = row[key];
-          
-          // Handle different data types properly
-          if (value === null || value === undefined) {
-            processedRow[key] = "";
-          } else if (typeof value === 'boolean') {
-            processedRow[key] = value ? "TRUE" : "FALSE";
-          } else if (value instanceof Date) {
-            // Format dates properly
-            processedRow[key] = value.toISOString().split('T')[0] + ' ' + 
-                               value.toTimeString().split(' ')[0];
-          } else if (typeof value === 'number') {
-            // Preserve numbers as numbers for Excel calculations
-            processedRow[key] = value;
-          } else if (typeof value === 'string') {
-            // Clean strings and preserve text formatting
-            processedRow[key] = value.trim();
-          } else {
-            // Convert other types to string
-            processedRow[key] = String(value);
-          }
-        });
-        
-        return processedRow;
-      });
-
-      // Create workbook with proper formatting
-      const workbook = XLSX.utils.book_new();
-      
-      // Convert to worksheet with proper column widths
-      const worksheet = XLSX.utils.json_to_sheet(processedData);
-      
-      // Auto-size columns based on content
-      const columnWidths: any = {};
-      processedData.forEach((row: any) => {
-        Object.keys(row).forEach(key => {
-          const value = String(row[key] || '');
-          const currentWidth = columnWidths[key] || 10;
-          columnWidths[key] = Math.max(currentWidth, Math.min(value.length + 2, 50));
-        });
-      });
-      
-      // Apply column widths
-      const cols = Object.keys(columnWidths).map(key => ({ wch: columnWidths[key] }));
-      worksheet['!cols'] = cols;
-      
-      // Set worksheet properties
-      worksheet['!autofilter'] = { ref: XLSX.utils.encode_range({
-        s: { c: 0, r: 0 },
-        e: { c: Object.keys(processedData[0] || {}).length - 1, r: processedData.length }
-      })};
-
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-
-      // Generate Excel file buffer with proper formatting options
-      const excelBuffer = XLSX.write(workbook, {
-        bookType: "xlsx",
-        type: "buffer",
-        cellStyles: true,
-     
-        cellDates: true
-      });
-
-      // Create filename with timestamp
-      const timestamp = new Date().toISOString().split('T')[0];
-      const filename = `${table}_export_${fromDate || 'start'}_to_${toDate || 'end'}_${timestamp}.xlsx`;
-
-      return new Response(excelBuffer, {
-        headers: {
-          "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-          "Content-Disposition": `attachment; filename="${filename}"`,
-          "Content-Length": excelBuffer.length.toString(),
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          "Pragma": "no-cache",
-          "Expires": "0"
-        },
-      });
     }
 
-    // Paginated response
-    const countQueryParams = [...queryParams];
-    const dataQueryParams = [...queryParams, limit, offset];
-    
-    dataQuery += ` ORDER BY id DESC LIMIT ? OFFSET ?`;
+    // Regular paginated response
+    try {
+      // Get count
+      const countResult = await pool.query(countQuery, queryParams);
+      const countData = Array.isArray(countResult) ? countResult[0] : countResult;
+      const totalRows:any = Array.isArray(countData) && countData.length > 0 ? countData[0] : { total: 0 };
+      const total:any = totalRows.total || 0;
 
-    // Execute queries with correct parameters
-    const [countResult]: any = await pool.query(countQuery, countQueryParams);
-    const total = countResult[0]?.total || 0;
+      // Get paginated data
+      const paginatedQuery = `${dataQuery} ORDER BY id DESC LIMIT ? OFFSET ?`;
+      const paginatedParams = [...queryParams, limit, offset];
+      
+      const dataResult = await pool.query(paginatedQuery, paginatedParams);
+      const rows = Array.isArray(dataResult) ? dataResult[0] : dataResult;
 
-    const [rows]: any = await pool.query(dataQuery, dataQueryParams);
+      const response = {
+        table: table,
+        data: Array.isArray(rows) ? rows : [],
+        total: Number(total),
+        page: page,
+        limit: limit,
+        totalPages: Math.ceil(total / limit),
+        timestampColumn: timestampColumn || null,
+        dateFilter: {
+          fromDate: fromDate || null,
+          toDate: toDate || null,
+          applied: Boolean(timestampColumn && (fromDate || toDate))
+        }
+      };
 
-    // Ensure all response data is JSON serializable
-    const response = {
-      table: String(table),
-      data: rows || [],
-      total: Number(total),
-      page: Number(page),
-      limit: Number(limit),
-      totalPages: Math.ceil(total / limit),
-      timestampColumn: timestampColumn || null,
-      dateFilter: {
-        fromDate: fromDate || null,
-        toDate: toDate || null,
-        applied: Boolean(timestampColumn && (fromDate || toDate))
-      }
-    };
+      return new Response(JSON.stringify(response), {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
-    return new Response(JSON.stringify(response), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    } catch (queryError) {
+      console.error("Query error:", queryError);
+      return new Response(
+        JSON.stringify({ 
+          error: "Database query failed",
+          details: String(queryError)
+        }),
+        { 
+          status: 500, 
+          headers: { "Content-Type": "application/json" } 
+        }
+      );
+    }
+
   } catch (err: any) {
-    console.error("DB fetch error:", err?.message || err);
+    console.error("General error:", err);
     
-    // Ensure error response is valid JSON
-    const errorResponse = {
-      error: "Database error",
-      message: err?.message || "Unknown error occurred",
-      timestamp: new Date().toISOString()
-    };
-    
-    return new Response(JSON.stringify(errorResponse), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: "Internal server error",
+        message: err?.message || "Unknown error occurred",
+        timestamp: new Date().toISOString()
+      }),
+      {
+        status: 500,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
   }
 }
