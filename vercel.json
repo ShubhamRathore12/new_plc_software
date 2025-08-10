@@ -1,0 +1,6 @@
+{
+  "functions": {
+    "app/api/**/*": { "maxDuration": 300, "runtime": "nodejs18.x" },
+    "api/**/*": { "maxDuration": 300, "runtime": "nodejs18.x" }
+  }
+}

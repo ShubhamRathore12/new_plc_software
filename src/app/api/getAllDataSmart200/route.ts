@@ -1,6 +1,7 @@
 import { pool } from "@/lib/db";
 import * as XLSX from "xlsx";
-
+export const runtime = 'nodejs';
+export const maxDuration = 300; 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
   "GTPL_109_gT_40E_P_S7_200_Germany",
