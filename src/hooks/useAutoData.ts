@@ -33,7 +33,8 @@ export const useAutoData = (autoType: string) => {
    "GTPL-30-gT-180E-S7-1200":"GTPL_114_GT_140E_S7_1200",
    "GTPL-121-gT-1000T-S7-1200":"GTPL_121_GT1000T",
    "GTPL-119-gT-180E-S7-1200":"GTPL_119_GT_180E_S7_1200",
-   "GTPL-120-gT-180E-S7-1200":'GTPL_120_GT_180E_S7_1200'
+   "GTPL-120-gT-180E-S7-1200":'GTPL_120_GT_180E_S7_1200',
+   "GTPL-124-GT-450T-S7-1200":"GTPL_124_GT_450T_S7_1200"
   };
 
   const deviceNameToStatusKey: Record<string, string> = {
@@ -51,7 +52,9 @@ export const useAutoData = (autoType: string) => {
      "GTPL-114-gT-140E-S7-1200":"gtpl_114",
      "GTPL-116-gT-240E-S7-1200":"gtpl_116",
      "GTPL-119-gT-180E-S7-1200":"gtpl_119",
-     "GTPL-120-gT-180E-S7-1200":"gtpl_120"
+     "GTPL-120-gT-180E-S7-1200":"gtpl_120",
+     "GTPL-124-GT-450T-S7-1200":"gtpl_124"
+
     
     
   };

@@ -262,6 +262,7 @@ export default function AutoPage() {
         lp: "AI_SUC_PRESSURE",
       },
     },
+  
   };
 
   const currentConfig =

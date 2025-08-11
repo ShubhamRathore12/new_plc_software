@@ -170,6 +170,42 @@ export const GPL_117_TAGS = [
     "Warning_HP_transducer_failure",
 ];
 
+export const GPL_124_TAGS = [
+    "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_below_set",
+  "Ambient_temp_above_45",
+  "Compressor_motor_temp_high",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_above_43",
+  "Cond_fan2_TOP_fault",
+  "Cond_fan3_TOP_fault",
+  "Cond_fan4_TOP_fault",
+  "Cond_fan2_cb_fault",
+  "Cond_fan3_cb_fault",
+  "Cond_fan4_cb_fault",
+  "Cond_fan1_cb_fault",
+  "Cond_fan1_TOP_fault",
+  "T2_1_sensor_open",
+  "T2_1_sensor_short",
+  "T2_2_sensor_open",
+  "T2_2_sensor_short",
+  "T1_1_sensor_open",
+  "T1_1_sensor_short",
+  "T1_2_sensor_open",
+  "T1_2_sensor_short",
+  "T0_1_sensor_open",
+  "T0_1_sensor_short",
+  "T0_2_sensor_open",
+  "T0_2_sensor_short"
+];
+
 // Machine configuration type
 interface MachineConfig {
     table: string;
@@ -197,8 +233,10 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
     "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
     "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-    "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
-};
+        "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: GPL_124_TAGS, type: "S7-1200" },
+        "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT450T", tags: GPL_124_TAGS, type: "S7-1200" },
+
+    };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
@@ -380,6 +418,42 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
         { code: 48, description: "Warning_LP_transducer_failure" },
         { code: 49, description: "Warning_HP_transducer_failure" },
     ],
+    "GTPL-124":[
+  { code: 1, description: "Compressor_circuit_breaker_fault" },
+  { code: 2, description: "Oil_pressure_low" },
+  { code: 3, description: "Blower_drive_fault" },
+  { code: 4, description: "Blower_circuit_breaker_fault" },
+  { code: 5, description: "Three_phase_monitor_fault" },
+  { code: 6, description: "High_pressure_fault" },
+  { code: 7, description: "Ambient_temp_below_set" },
+  { code: 8, description: "Ambient_temp_above_45" },
+  { code: 9, description: "Compressor_motor_temp_high" },
+  { code: 10, description: "Low_pressure_1_fault" },
+  { code: 11, description: "Compressor_feedback_error" },
+  { code: 12, description: "Low_pressure_2_fault" },
+  { code: 13, description: "Ambient_temp_above_43" },
+  { code: 14, description: "Cond_fan2_TOP_fault" },
+  { code: 15, description: "Cond_fan3_TOP_fault" },
+  { code: 16, description: "Cond_fan4_TOP_fault" },
+  { code: 17, description: "Cond_fan2_cb_fault" },
+  { code: 18, description: "Cond_fan3_cb_fault" },
+  { code: 19, description: "Cond_fan4_cb_fault" },
+  { code: 20, description: "Cond_fan1_cb_fault" },
+  { code: 21, description: "Cond_fan1_TOP_fault" },
+  { code: 22, description: "T2_1_sensor_open" },
+  { code: 23, description: "T2_1_sensor_short" },
+  { code: 24, description: "T2_2_sensor_open" },
+  { code: 25, description: "T2_2_sensor_short" },
+  { code: 26, description: "T1_1_sensor_open" },
+  { code: 27, description: "T1_1_sensor_short" },
+  { code: 28, description: "T1_2_sensor_open" },
+  { code: 29, description: "T1_2_sensor_short" },
+  { code: 30, description: "T0_1_sensor_open" },
+  { code: 31, description: "T0_1_sensor_short" },
+  { code: 32, description: "T0_2_sensor_open" },
+  { code: 33, description: "T0_2_sensor_short" }
+]
+
 };
 
 // Helper functions
@@ -403,7 +477,10 @@ export function getFaultCodesForMachine(machineName: string) {
         return FAULT_CODES["GPL-115"];
     } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117")) {
         return FAULT_CODES["GPL-117"];
-    } else if (config.type === "S7-200") {
+    } else if (resolvedName.includes("GPL-124") || resolvedName.includes("GTPL-124")) {
+        return FAULT_CODES["GPL-124"];
+    } 
+    else if (config.type === "S7-200") {
         return FAULT_CODES["S7-200"];
     } else {
         return FAULT_CODES["S7-1200"];
@@ -441,7 +518,10 @@ export function getMachineType(machineName: string): string {
         return "GPL-115";
     } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117")) {
         return "GPL-117";
-    } else {
+    }     else if (resolvedName.includes("GPL-124")) {
+        return "GPL-124";
+    } 
+    else {
         return config.type;
     }
 }

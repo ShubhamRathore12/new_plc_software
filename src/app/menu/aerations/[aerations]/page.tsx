@@ -18,7 +18,7 @@ export default function AerationPage() {
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
-    if (device === "GTPL-122-gT-1000T-S7-1200") {
+    if (device === "GTPL-122-gT-1000T-S7-1200" || device=== "GTPL-124-GT-450T-S7-1200") {
       setShouldRender(false); // prevent cards from rendering
       router.push(`/menu/aerations/without-heating/${device}`);
     }

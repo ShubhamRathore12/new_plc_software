@@ -194,10 +194,10 @@ export default function AerationWithoutHeatingPage() {
 
 {devices === "GTPL-122-gT-1000T-S7-1200" ? null : (
                       <div className="flex justify-between">
-                        <span>TH (Supply Air)</span>
+                        <span>{devices === "GTPL-124-GT-450T-S7-1200" ? "T0" : "TH"} (Supply Air)</span>
                         <span className="font-medium">
                           {formatValue(
-                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean,
+                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean || data?.T0_temp_mean,
                             "°C"
                           )}
                         </span>
