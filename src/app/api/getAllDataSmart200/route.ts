@@ -1,11 +1,13 @@
 // app/api/export/route.ts
-
 import { pool } from "@/lib/db";
 import * as XLSX from "xlsx";
+import type { RowDataPacket } from "mysql2";
 
 // Avoid cached/empty files in Next.js
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+// Let this route run longer on Vercel (up to 60s on Pro/Team plans)
+export const maxDuration = 60;
 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -38,7 +40,7 @@ const PREFERRED_NUMERIC_ORDER = [
   "Fault_code","FS","UF","RHP","BLWR_pct","RMR_pct","CNPR_pct","AHT_pct","HCSR_pct",
 ];
 
-const PRETTY_HEADER_MAP: Record<string,string> = {
+const PRETTY_HEADER_MAP: Record<string, string> = {
   id: "Record#",
   created_at: "Date & Time (IST)",
   created_at_date: "Date",
@@ -110,7 +112,7 @@ function isTrueish(v: any) {
 }
 function looksLikeFaultKey(k: string) {
   const low = k.toLowerCase();
-  return FAULT_PATTERNS.some(p => low.includes(p));
+  return FAULT_PATTERNS.some((p) => low.includes(p));
 }
 function toNum(v: any) {
   if (v === null || v === undefined || v === "") return "";
@@ -122,13 +124,19 @@ function toNum(v: any) {
 function formatInIST(date: Date): string {
   const parts = new Intl.DateTimeFormat("en-GB", {
     timeZone: "Asia/Kolkata",
-    year: "numeric", month: "2-digit", day: "2-digit",
-    hour: "2-digit", minute: "2-digit", second: "2-digit",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
     hour12: false,
-  }).formatToParts(date).reduce<Record<string,string>>((acc, p) => {
-    if (p.type !== "literal") acc[p.type] = p.value;
-    return acc;
-  }, {});
+  })
+    .formatToParts(date)
+    .reduce<Record<string, string>>((acc, p) => {
+      if (p.type !== "literal") acc[p.type] = p.value;
+      return acc;
+    }, {});
   return `${parts.year}-${parts.month}-${parts.day} ${parts.hour}:${parts.minute}:${parts.second}`;
 }
 
@@ -159,16 +167,16 @@ export async function GET(req: Request) {
     const all = searchParams.get("all") !== "false";
     // If filters return 0 rows, fallback to latest N rows automatically
     const FALLBACK_LIMIT = Number(searchParams.get("fallbackLimit") || 500);
+    // Hard cap to prevent huge exports (can be overridden via ?limit=)
+    const LIMIT = Number(searchParams.get("limit") || 5000);
 
     if (!table || !ALLOWED_TABLES.includes(table as any)) {
       return Response.json({ error: "Invalid or missing table name" }, { status: 400 });
     }
 
-    // Inclusive date filter (start-of-day .. end-of-day)
-    let baseQuery = `SELECT * FROM \`${table}\``;
+    // Build WHERE once; use for COUNT(*) and SELECT
     const params: any[] = [];
     const where: string[] = [];
-
     if (fromDate) {
       where.push(`created_at >= CONCAT(?, ' 00:00:00')`);
       params.push(fromDate);
@@ -177,16 +185,31 @@ export async function GET(req: Request) {
       where.push(`created_at < DATE_ADD(CONCAT(?, ' 00:00:00'), INTERVAL 1 DAY)`);
       params.push(toDate);
     }
-    if (where.length) baseQuery += ` WHERE ${where.join(" AND ")}`;
-    baseQuery += ` ORDER BY id DESC`;
 
-    let [rows] = await pool.query(baseQuery, params);
+    const whereSql = where.length ? ` WHERE ${where.join(" AND ")}` : "";
 
-    // Fallback to latest N if filters returned nothing
+    // COUNT first (fast if there's an index on created_at)
+    const [countRows] = await pool.query<RowDataPacket[]>(
+      `SELECT COUNT(*) AS cnt FROM \`${table}\`${whereSql}`,
+      params
+    );
+    const cnt = (countRows[0] as { cnt: number }).cnt;
+
+    // Main SELECT is always ordered + limited to keep execution predictable
+    const [rowsRaw] = await pool.query<RowDataPacket[]>(
+      `SELECT * FROM \`${table}\`${whereSql} ORDER BY id DESC LIMIT ?`,
+      [...params, LIMIT]
+    );
+
+    // Fallback to latest N if the filter returned nothing
+    let rows: RowDataPacket[] = rowsRaw;
     let usedFallback = false;
     if (!Array.isArray(rows) || rows.length === 0) {
-      const fallbackQuery = `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ?`;
-      [rows] = await pool.query(fallbackQuery, [FALLBACK_LIMIT]);
+      const [fallbackRows] = await pool.query<RowDataPacket[]>(
+        `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ?`,
+        [FALLBACK_LIMIT]
+      );
+      rows = fallbackRows;
       usedFallback = true;
     }
 
@@ -216,7 +239,7 @@ export async function GET(req: Request) {
         headerKeys.forEach((k, ci) => {
           const isTempOrFloat =
             /temp|value|uf|rhp/i.test(k) ||
-            ["T2_temp_mean","T1_temp_mean","T0_temp_mean","TH_temp_mean"].includes(k);
+            ["T2_temp_mean", "T1_temp_mean", "T0_temp_mean", "TH_temp_mean"].includes(k);
           const z = isTempOrFloat ? "0.00" : "0";
           for (let r = rng.s.r + 1; r <= rng.e.r; r++) {
             const addr = XLSX.utils.encode_cell({ r, c: ci });
@@ -226,10 +249,30 @@ export async function GET(req: Request) {
           }
         });
         const headRows = addNote ? 2 : 1;
-        ws["!autofilter"] = { ref: XLSX.utils.encode_range({ r: 0, c: 0 }, { r: rng.e.r, c: rng.e.c }) };
-        (ws as any)["!freeze"] = { xSplit: 0, ySplit: headRows, topLeftCell: headRows === 2 ? "A3" : "A2", state: "frozen" };
+        ws["!autofilter"] = {
+          ref: XLSX.utils.encode_range({ r: 0, c: 0 }, { r: rng.e.r, c: rng.e.c }),
+        };
+        (ws as any)["!freeze"] = {
+          xSplit: 0,
+          ySplit: headRows,
+          topLeftCell: headRows === 2 ? "A3" : "A2",
+          state: "frozen",
+        };
       }
     };
+
+    // Build note(s) to show in the sheet
+    const limitedNote =
+      cnt > LIMIT ? `Note: ${cnt} rows matched. Export limited to latest ${LIMIT} rows.` : undefined;
+
+    const combinedNote = [
+      usedFallback
+        ? `Note: Your filters returned 0 rows. Showing latest ${FALLBACK_LIMIT} records instead.`
+        : "",
+      limitedNote || "",
+    ]
+      .filter(Boolean)
+      .join("  ");
 
     if (all) {
       // Pretty mode (id, created_at (IST), Date, Time + ordered numeric + Faults)
@@ -237,7 +280,7 @@ export async function GET(req: Request) {
         const { full, date, time } = normalizeCreatedAt(r.created_at);
 
         const base: Record<string, any> = {
-          id: r.id ?? "",
+          id: (r as any).id ?? "",
           created_at: full,
           created_at_date: date,
           created_at_time: time,
@@ -245,7 +288,7 @@ export async function GET(req: Request) {
 
         const numericKeysInRow = Object.keys(r).filter((k) => {
           if (k === "id" || k === "created_at") return false;
-          return toNum(r[k]) !== "";
+          return toNum((r as any)[k]) !== "";
         });
 
         const ordered = [
@@ -253,7 +296,9 @@ export async function GET(req: Request) {
           ...numericKeysInRow.filter((k) => !PREFERRED_NUMERIC_ORDER.includes(k)),
         ];
 
-        ordered.forEach((k) => { if (k in r) base[k] = toNum(r[k]); });
+        ordered.forEach((k) => {
+          if (k in r) base[k] = toNum((r as any)[k]);
+        });
 
         const faults: string[] = [];
         for (const [k, v] of Object.entries(r)) {
@@ -266,52 +311,56 @@ export async function GET(req: Request) {
 
       const fixed = ["id", "created_at", "created_at_date", "created_at_time"];
       const dynamic = normalized.length
-        ? Array.from(new Set(prettyRows.flatMap((row) =>
-            Object.keys(row).filter((k) => !fixed.includes(k) && k !== "Faults")
-          )))
+        ? Array.from(
+            new Set(
+              prettyRows.flatMap((row) =>
+                Object.keys(row).filter((k) => !fixed.includes(k) && k !== "Faults")
+              )
+            )
+          )
         : [...PREFERRED_NUMERIC_ORDER];
       const headerKeys = [...fixed, ...dynamic, "Faults"];
 
-      const note = usedFallback
-        ? `Note: Your filters returned 0 rows. Showing latest ${FALLBACK_LIMIT} records instead.`
-        : undefined;
-
       ws = XLSX.utils.json_to_sheet(
-        prettyRows.length ? prettyRows : [Object.fromEntries(headerKeys.map(k => [k, ""]))],
+        prettyRows.length
+          ? prettyRows
+          : [Object.fromEntries(headerKeys.map((k) => [k, ""]))],
         { header: headerKeys }
       );
-      finalizeSheet(ws, headerKeys, note);
+      finalizeSheet(ws, headerKeys, combinedNote || undefined);
     } else {
       // Raw dump, but ensure created_at is a stable IST/string (no timezone shifts)
       const rawRows = normalized.map((r) => {
-        const { full } = normalizeCreatedAt(r.created_at);
+        const { full } = normalizeCreatedAt((r as any).created_at);
         return { ...r, created_at: full };
       });
-
-      const note = usedFallback
-        ? `Note: Your filters returned 0 rows. Showing latest ${FALLBACK_LIMIT} records instead.`
-        : undefined;
 
       if (rawRows.length) {
         ws = XLSX.utils.json_to_sheet(rawRows);
         const headerKeys = Object.keys(rawRows[0]);
-        finalizeSheet(ws, headerKeys, note);
+        finalizeSheet(ws, headerKeys, combinedNote || undefined);
       } else {
         const headerKeys = ["id", "created_at"];
-        ws = XLSX.utils.json_to_sheet([Object.fromEntries(headerKeys.map(k => [k, ""]))], { header: headerKeys });
-        finalizeSheet(ws, headerKeys, note ?? "No records for selected filters");
+        ws = XLSX.utils.json_to_sheet(
+          [Object.fromEntries(headerKeys.map((k) => [k, ""]))],
+          { header: headerKeys }
+        );
+        finalizeSheet(ws, headerKeys, combinedNote || "No records for selected filters");
       }
     }
 
     XLSX.utils.book_append_sheet(wb, ws, "Data");
 
     const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
-    const filename = `${searchParams.get("table")}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+    const filename = `${searchParams.get("table")}_${new Date()
+      .toISOString()
+      .slice(0, 10)}.xlsx`;
 
     return new Response(buffer, {
       status: 200,
       headers: {
-        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Type":
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         "Content-Disposition": `attachment; filename="${filename}"`,
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Expose-Headers": "Content-Disposition",
@@ -319,10 +368,16 @@ export async function GET(req: Request) {
       },
     });
   } catch (err: any) {
-    return Response.json({ error: err.message || "Internal error" }, {
-      status: 500,
-      headers: { "Access-Control-Allow-Origin": "*", "Cache-Control": "no-store, max-age=0" },
-    });
+    return Response.json(
+      { error: err.message || "Internal error" },
+      {
+        status: 500,
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Cache-Control": "no-store, max-age=0",
+        },
+      }
+    );
   }
 }
 
