@@ -478,7 +478,7 @@ export function getFaultCodesForMachine(machineName: string) {
     } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117")) {
         return FAULT_CODES["GPL-117"];
     } else if (resolvedName.includes("GPL-124") || resolvedName.includes("GTPL-124")) {
-        return FAULT_CODES["GPL-124"];
+        return FAULT_CODES["GTPL-124"];
     } 
     else if (config.type === "S7-200") {
         return FAULT_CODES["S7-200"];
