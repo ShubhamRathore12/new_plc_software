@@ -193,6 +193,9 @@ export default function DevicesPage() {
       plc: "S7-1200",
       chillerModel: "gT-1000T",
     },
+
+
+    
      {
       name: "GTPL-124-GT-450T-S7-1200",
       location: "Germany",
