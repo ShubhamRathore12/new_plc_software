@@ -195,7 +195,20 @@ export default function DevicesPage() {
     },
 
 
+
+
+
+
+
+
+
+
+
+
+
     
+
+
      {
       name: "GTPL-124-GT-450T-S7-1200",
       location: "Germany",
