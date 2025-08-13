@@ -170,6 +170,42 @@ export const GPL_117_TAGS = [
   "Warning_HP_transducer_failure",
 ];
 
+export const GPL_124_TAGS = [
+    "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_below_set",
+  "Ambient_temp_above_45",
+  "Compressor_motor_temp_high",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_above_43",
+  "Cond_fan2_TOP_fault",
+  "Cond_fan3_TOP_fault",
+  "Cond_fan4_TOP_fault",
+  "Cond_fan2_cb_fault",
+  "Cond_fan3_cb_fault",
+  "Cond_fan4_cb_fault",
+  "Cond_fan1_cb_fault",
+  "Cond_fan1_TOP_fault",
+  "T2_1_sensor_open",
+  "T2_1_sensor_short",
+  "T2_2_sensor_open",
+  "T2_2_sensor_short",
+  "T1_1_sensor_open",
+  "T1_1_sensor_short",
+  "T1_2_sensor_open",
+  "T1_2_sensor_short",
+  "T0_1_sensor_open",
+  "T0_1_sensor_short",
+  "T0_2_sensor_open",
+  "T0_2_sensor_short"
+];
+
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
@@ -191,6 +227,12 @@ export const MACHINE_CONFIG = {
   "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-132-GT-650T-S7-1200": { table: "GTPL_132_GT650T", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-131-GT-650T-S7-1200": { table: "GTPL_131_GT650T", tags: S7_1200_TAGS, type: "S7-1200" },
+  "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT450T", tags: GPL_124_TAGS, type: "S7-1200" },
+
+
+
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
