@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Fan1200 from "../../public/images/fan.jpg";
 import Fan from "../../public/images/fan.png";
+import Fan1 from "../../public/images/124.png";
+
 import { useEffect, useState } from "react";
 
 export default function AutoDiagram1({ blower, data, formatValue, machineName }: any) {
@@ -181,7 +183,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
               <line x1="170" y1="180" x2="200" y2="120" stroke="black" strokeWidth="2" />
 
               {/* Vertical drops from main line to thermometers */}
-              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) && (
+              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) && (
                 <line x1="280" y1="120" x2="280" y2="150" stroke="black" strokeWidth="2" />
               )}
               <line x1="380" y1="120" x2="380" y2="150" stroke="black" strokeWidth="2" />
@@ -200,7 +202,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
             </svg>
 
             {/* Thermometers - Fixed positioning */}
-            {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) && (
+            {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) && (
               <div
                 className="absolute z-10"
                 style={{
@@ -357,41 +359,44 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     </div>
 
     {/* ✅ Ensure parent is relative and image wrapper is sized */}
-    {['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
-  <>
-    <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
-      <div className="w-20 h-20 relative">
-        <Image
-          src={Fan}
-          alt="Fan"
-          fill
-          className="object-contain"
-        />
-      </div>
-    </div>
-    <div className="absolute left-16 top-[10rem] transform -translate-y-1/2">
-      <div className="w-20 h-20 relative">
-        <Image
-          src={Fan}
-          alt="Fan"
-          fill
-          className="object-contain"
-        />
-      </div>
-    </div>
-  </>
-) : (
+  {machineName.includes("GTPL-124-GT-450T-S7-1200") ? (
+  // Show Fan1 if machineName contains 124
   <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
     <div className="w-20 h-20 relative">
       <Image
-        src={Fan}
-        alt="Fan"
+        src={Fan1}  // <-- use Fan1 here
+        alt="Fan1"
         fill
         className="object-contain"
       />
     </div>
   </div>
+) : (
+  // Otherwise, same old logic
+  ['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200'].some(name =>
+    machineName.includes(name)
+  ) ? (
+    <>
+      <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
+        <div className="w-20 h-20 relative">
+          <Image src={Fan} alt="Fan" fill className="object-contain" />
+        </div>
+      </div>
+      <div className="absolute left-16 top-[10rem] transform -translate-y-1/2">
+        <div className="w-20 h-20 relative">
+          <Image src={Fan} alt="Fan" fill className="object-contain" />
+        </div>
+      </div>
+    </>
+  ) : (
+    <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
+      <div className="w-20 h-20 relative">
+        <Image src={Fan} alt="Fan" fill className="object-contain" />
+      </div>
+    </div>
+  )
 )}
+
 
   </div>
 
