@@ -364,7 +364,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
     <div className="w-20 h-20 relative">
       <Image
-        src={Fan1}  // <-- use Fan1 here
+        src={Fan1}  
         alt="Fan1"
         fill
         className="object-contain"
