@@ -91,9 +91,9 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
 
         {/* Temperature Display Boxes - Fixed to container */}
         <div className="absolute top-4 right-[35rem] space-y-2 z-10">
-        {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) ? (
+        {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-    T0 = {formatValue(data?.T0_temp_mean, "°C")}
+    T0 = {formatValue(data?.T0_temp_mean || data?.AIR_OUTLET_TEMP, "°C")}
   </div>
 ) : (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
@@ -101,7 +101,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   </div>
 )}
 
-          {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) ? (
+          {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T Delta = {formatValue(data.Delta_T_set_point || data?.Th_T1, "°C")}
             </div>
