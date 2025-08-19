@@ -357,7 +357,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     </div>
 
     {/* ✅ Ensure parent is relative and image wrapper is sized */}
-    {['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200'].some(name => machineName.includes(name)) ? (
+    {['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
   <>
     <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
       <div className="w-20 h-20 relative">
