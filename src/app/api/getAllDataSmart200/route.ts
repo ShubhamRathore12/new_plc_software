@@ -398,7 +398,7 @@ import type { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-export const maxDuration = 2000;
+export const maxDuration = 20000;
 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -416,6 +416,9 @@ const ALLOWED_TABLES = [
   "GTPL_117_GT_320E_S7_1200",
   "GTPL_121_GT1000T",
   "gtpl_122_s7_1200_01",
+    "GTPL_124_GT_450T_S7_1200",
+  'GTPL_131_GT_650T_S7_1200',
+  "GTPL_132_GT_650T_S7_1200"
 ] as const;
 
 const PREFERRED_NUMERIC_ORDER = [
@@ -546,10 +549,10 @@ export async function GET(req: Request) {
 
     // pretty by default; pass all=false for raw dump
     const all = searchParams.get("all") !== "false";
-    const FALLBACK_LIMIT = Number(searchParams.get("fallbackLimit") || 10000);
+    const FALLBACK_LIMIT = Number(searchParams.get("fallbackLimit") || 700000);
 
     // NEW: dynamic limit + ordering
-    const MAX_AUTO_LIMIT = Number(process.env.EXPORT_MAX_LIMIT || 200_000);
+    const MAX_AUTO_LIMIT = Number(process.env.EXPORT_MAX_LIMIT || 7000_000);
     const userLimitStr = (searchParams.get("limit") || "").toLowerCase();
     const hasDateFilter = !!(fromDate || toDate);
     const order = (searchParams.get("order") || "desc").toLowerCase() === "asc" ? "ASC" : "DESC";
@@ -589,9 +592,9 @@ export async function GET(req: Request) {
       effectiveLimit =
         Number.isFinite(parsed) && parsed > 0
           ? Math.min(parsed, MAX_AUTO_LIMIT)
-          : Math.min(5000, MAX_AUTO_LIMIT);
+          : Math.min(200000, MAX_AUTO_LIMIT);
     } else {
-      effectiveLimit = Math.min(5000, MAX_AUTO_LIMIT);
+      effectiveLimit = Math.min(200000, MAX_AUTO_LIMIT);
     }
 
     // Main SELECT, ordered + limited

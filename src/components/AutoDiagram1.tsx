@@ -41,16 +41,19 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     return () => clearInterval(interval);
   }, [compressorTime]);
 
-  const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true" || data?.['Chiller_healthy_on_Q1_1'] === "True"
+  const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true" || data?.['Chiller_healthy_on_Q1_1'] === "True" || data?.['Chiller_healthy_on'] === "True" ||  data?.['Chiller_healthy'] === "True"
 
-  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true" || data?.['Chiller_Fault_on_Q2_0'] === "True"
 
-  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.["System_warnning_(Q1.0)"] === "true" || data?.['Collective_Trouble_Signal_on_Q2_1'] === 'True'
+  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true" || data?.['Chiller_Fault_on_Q2_0'] === "True"  || data?.['Chiller_Fault_on'] === "True" || data?.['Chiller_Fault'] === "True"
+
+
+  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.["System_warnning_(Q1.0)"] === "true" || data?.['Collective_Trouble_Signal_on_Q2_1'] === 'True' || data?.['Collective_Trouble_Signal_on'] === "True" || data?.['Collective_Trouble_Signal'] === "True"
+
 
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db")
 
-  const isCompressorOn = data?.COMPRESSOR_ON === 'tr' || data?.Compressor_on_Q0_4 === "True";
+  const isCompressorOn = data?.COMPRESSOR_ON === 'tr' || data?.Compressor_on_Q0_4 === "True" || data?.Compressor_start === "True" ||  data?.COMPRESSOR_ON === 'True'
 
   
 

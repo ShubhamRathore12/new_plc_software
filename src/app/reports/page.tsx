@@ -53,6 +53,9 @@ const ALLOWED_TABLES = [
   "GTPL_117_GT_320E_S7_1200",
   "GTPL_121_GT1000T",
   "gtpl_122_s7_1200_01",
+    "GTPL_124_GT_450T_S7_1200",
+  'GTPL_131_GT_650T_S7_1200',
+  "GTPL_132_GT_650T_S7_1200"
 ] as const;
 
 // Display name mapping
@@ -72,6 +75,12 @@ const TABLE_DISPLAY_NAMES: Record<string, string> = {
   "GTPL_117_GT_320E_S7_1200": "GTPL-117-GT-320E-S7-1200",
   "GTPL_121_GT1000T": "GTPL-121-GT1000T",
   "gtpl_122_s7_1200_01": "GTPL-122-S7-1200-01",
+    "GTPL_124_GT_450T_S7_1200":'GTPL-124-GT-450T-S7-1200',
+
+  'GTPL_131_GT_650T_S7_1200':'GTPL-131-GT-650T-S7-1200',
+
+  "GTPL_132_GT_650T_S7_1200":'GTPL-132-GT-650T-S7-1200',
+
 };
 
 type TableName = typeof ALLOWED_TABLES[number];
@@ -83,7 +92,7 @@ export default function TableWithDownload() {
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [pagination, setPagination] = useState<any>({
     page: 1,
-    limit: 1000,
+    limit: 100,
     total: 0,
   });
   const [downloadProgress, setDownloadProgress] = useState(0);
