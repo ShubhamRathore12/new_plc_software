@@ -6,7 +6,7 @@ import type { RowDataPacket } from "mysql2";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 // Increased timeout for large exports (60s max on Vercel Pro)
-export const maxDuration = 900; // 15 minutes for unlimited exports
+export const maxDuration = 60;
 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -45,8 +45,7 @@ const PREFERRED_NUMERIC_ORDER = [
 const PRETTY_HEADER_MAP: Record<string, string> = {
   id: "Record#",
   created_at: "Date & Time (IST)",
-  created_at_date: "Date",
-  created_at_time: "Time",
+ 
   T2_1_ambient_temp: "T2-1 Ambient Temp (°C)",
   T2_2_ambient_temp: "T2-2 Ambient Temp (°C)",
   T1_1_cold_air_temp: "T1-1 Cold Air Temp (°C)",
@@ -75,23 +74,9 @@ const PRETTY_HEADER_MAP: Record<string, string> = {
   AHT_vale_speed: "AHT Valve Speed (%)",
   AHT_valve_speed: "AHT Valve Speed (%)",
   Heater_speed: "Heater Speed (%)",
-  Cond_fan_speed: "Cond Fan Speed (%)",
-  Blower_speed_set_in_manual: "Blower Speed (Manual)",
-  Cond_fan_speed_set_in_manual: "Cond Fan Speed (Manual)",
-  Hot_gas_valve_set_in_manual: "Hot Gas Valve (Manual)",
-  AHT_valve_set_in_manual: "AHT Valve (Manual)",
-  Heater_set_in_manual: "Heater (Manual)",
-  Running_hours: "Total Running Hours",
-  Running_hours_min: "Total Running Minutes",
+  
   Fault_code: "Fault Code",
-  UF: "UF*",
-  RHP: "RHP",
-  BLWR_pct: "BLWR%",
-  RMR_pct: "RMR%",
-  CNPR_pct: "CNPR%",
-  AHT_pct: "AHT%",
-  HCSR_pct: "HCSR%",
-  FS: "FS",
+
   Faults: "Faults",
 };
 
@@ -101,10 +86,6 @@ const FAULT_PATTERNS = [
 
 // Optimized chunked processing for large datasets
 const CHUNK_SIZE = 10000; // Process 10k rows at a time to manage memory
-
-// No limits - allow any date range and unlimited records
-const MAX_DATE_RANGE_DAYS = 365; // Allow up to 1 year
-const MAX_RECORDS_LIMIT = Number.MAX_SAFE_INTEGER; // No record limit
 
 function isTrueish(v: any) {
   if (typeof v === "boolean") return v;
@@ -157,65 +138,6 @@ function normalizeCreatedAt(raw: any): { full: string; date: string; time: strin
   return { full: "", date: "", time: "" };
 }
 
-// Function to calculate date difference in days
-function getDateDifference(fromDate: string, toDate: string): number {
-  const from = new Date(fromDate);
-  const to = new Date(toDate);
-  const timeDiff = to.getTime() - from.getTime();
-  return Math.ceil(timeDiff / (1000 * 3600 * 24));
-}
-
-// Function to validate date range - no restrictions, just use what user provides
-function validateAndAdjustDateRange(fromDate: string | null, toDate: string | null): {
-  adjustedFromDate: string;
-  adjustedToDate: string;
-  isAdjusted: boolean;
-  warningMessage?: string;
-} {
-  let adjustedFromDate: string;
-  let adjustedToDate: string;
-  let isAdjusted = false;
-  let warningMessage: string | undefined;
-
-  // If no dates provided, get ALL data (no date restriction)
-  if (!fromDate && !toDate) {
-    // Set very wide range to get all data
-    adjustedFromDate = "2020-01-01"; // Start from 2020
-    const today = new Date();
-    adjustedToDate = today.toISOString().split('T')[0];
-    isAdjusted = true;
-    warningMessage = `No date range specified. Exporting ALL available data.`;
-  }
-  // If only fromDate provided, set toDate to today
-  else if (fromDate && !toDate) {
-    adjustedFromDate = fromDate;
-    const today = new Date();
-    adjustedToDate = today.toISOString().split('T')[0];
-    isAdjusted = true;
-    warningMessage = `Only start date provided. End date set to today.`;
-  }
-  // If only toDate provided, set fromDate to very early date
-  else if (!fromDate && toDate) {
-    adjustedToDate = toDate;
-    adjustedFromDate = "2020-01-01";
-    isAdjusted = true;
-    warningMessage = `Only end date provided. Start date set to 2020-01-01.`;
-  }
-  // Both dates provided - use as is, no restrictions
-  else {
-    adjustedFromDate = fromDate!;
-    adjustedToDate = toDate!;
-    // No date range limits - accept any range
-  }
-
-  return {
-    adjustedFromDate,
-    adjustedToDate,
-    isAdjusted,
-    warningMessage
-  };
-}
-
 // Process data in chunks to handle large datasets efficiently
 async function processDataInChunks(
   table: string,
@@ -228,24 +150,17 @@ async function processDataInChunks(
   const allProcessedRows: any[] = [];
   let offset = 0;
 
-  console.log(`Starting chunked processing: ${effectiveLimit} total records, ${CHUNK_SIZE} per chunk`);
-
   while (offset < effectiveLimit) {
     const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
     
-    console.log(`Processing chunk: ${offset + 1} to ${offset + currentChunkSize}`);
-    
     const [chunkRows] = await pool.query<RowDataPacket[]>(
-      `SELECT * FROM \`${table}\`${whereSql} ORDER BY created_at ${order} LIMIT ? OFFSET ?`,
+      `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
       [...params, currentChunkSize, offset]
     );
 
     if (!Array.isArray(chunkRows) || chunkRows.length === 0) {
-      console.log(`No more data found at offset ${offset}`);
       break;
     }
-
-    console.log(`Retrieved ${chunkRows.length} rows in current chunk`);
 
     // Normalize current chunk
     const normalizedChunk = (chunkRows as any[]).map((r) => {
@@ -261,10 +176,9 @@ async function processDataInChunks(
       const prettyChunk = normalizedChunk.map((r) => {
         const { full, date, time } = normalizeCreatedAt(r.created_at);
         const base: Record<string, any> = {
-          id: r.id ?? "",
+    
           created_at: full,
-          created_at_date: date,
-          created_at_time: time,
+       
         };
 
         const numericKeysInRow = Object.keys(r).filter((k) => {
@@ -300,13 +214,12 @@ async function processDataInChunks(
 
     offset += currentChunkSize;
 
-    // Progress logging for large exports
-    if (offset % (CHUNK_SIZE * 2) === 0 || offset >= effectiveLimit) {
-      console.log(`Progress: ${offset} / ${effectiveLimit} records processed (${((offset/effectiveLimit)*100).toFixed(1)}%)`);
+    // Optional: Add progress logging for large exports
+    if (offset % (CHUNK_SIZE * 5) === 0) {
+      console.log(`Processed ${offset} / ${effectiveLimit} records`);
     }
   }
 
-  console.log(`Chunked processing complete: ${allProcessedRows.length} total rows processed`);
   return allProcessedRows;
 }
 
@@ -314,66 +227,86 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const table = searchParams.get("table");
-    const fromDateParam = searchParams.get("fromDate");
-    const toDateParam = searchParams.get("toDate");
+    const fromDate = searchParams.get("fromDate");
+    const toDate = searchParams.get("toDate");
 
     const all = searchParams.get("all") !== "false";
+    
+    // Set limits for 1 lakh to 3 lakh records
+    const MIN_LIMIT = 100000; // 1 lakh
+    const MAX_LIMIT = 300000;  // 3 lakh
+    const FALLBACK_LIMIT = MIN_LIMIT;
+
+    const userLimitStr = (searchParams.get("limit") || "").toLowerCase();
+    const hasDateFilter = !!(fromDate || toDate);
     const order = (searchParams.get("order") || "desc").toLowerCase() === "asc" ? "ASC" : "DESC";
 
     if (!table || !ALLOWED_TABLES.includes(table as any)) {
       return Response.json({ error: "Invalid or missing table name" }, { status: 400 });
     }
 
-    // Validate and adjust date range
-    const { adjustedFromDate, adjustedToDate, isAdjusted, warningMessage } = 
-      validateAndAdjustDateRange(fromDateParam, toDateParam);
-
-    console.log(`Date range: ${adjustedFromDate} to ${adjustedToDate}`);
-    if (isAdjusted && warningMessage) {
-      console.log(`Date adjustment: ${warningMessage}`);
-    }
-
-    // Build WHERE clause with adjusted dates (inclusive of both start and end dates)
+    // Build WHERE clause for date filtering
     const params: any[] = [];
     const where: string[] = [];
     
-    where.push(`created_at >= CONCAT(?, ' 00:00:00')`);
-    params.push(adjustedFromDate);
+    if (fromDate) {
+      // Include all data from start of fromDate (00:00:00)
+      where.push(`created_at >= ?`);
+      params.push(`${fromDate} 00:00:00`);
+      console.log(`From date filter: ${fromDate} 00:00:00`);
+    }
     
-    where.push(`created_at <= CONCAT(?, ' 23:59:59')`);
-    params.push(adjustedToDate);
-    
-    let whereSql = ` WHERE ${where.join(" AND ")}`;
+    if (toDate) {
+      // Include all data until end of toDate (23:59:59)
+      where.push(`created_at <= ?`);
+      params.push(`${toDate} 23:59:59`);
+      console.log(`To date filter: ${toDate} 23:59:59`);
+    }
 
-    // Debug: Check what data exists in the table
-    console.log("Checking date range in table...");
-    const [dateRangeRows] = await pool.query<RowDataPacket[]>(
-      `SELECT 
-        MIN(created_at) as earliest_date, 
-        MAX(created_at) as latest_date,
-        COUNT(*) as total_records
-       FROM \`${table}\``
-    );
-    const dateRange = dateRangeRows[0] as { earliest_date: Date; latest_date: Date; total_records: number };
-    console.log(`Table ${table} contains:`);
-    console.log(`- Earliest record: ${dateRange.earliest_date}`);
-    console.log(`- Latest record: ${dateRange.latest_date}`);
-    console.log(`- Total records: ${dateRange.total_records}`);
-    console.log(`- Requested range: ${adjustedFromDate} to ${adjustedToDate}`);
+    const whereSql = where.length ? ` WHERE ${where.join(" AND ")}` : "";
+    console.log(`Final WHERE clause: ${whereSql}`);
+    console.log(`Parameters:`, params);
 
-    // Get total count for the date range
-    console.log("Getting count for date range...");
+    // Get total count
+    console.log("Getting count...");
     const [countRows] = await pool.query<RowDataPacket[]>(
       `SELECT COUNT(*) AS cnt FROM \`${table}\`${whereSql}`,
       params
     );
+    
     const totalCount = (countRows[0] as { cnt: number }).cnt;
-    console.log(`Total matching records in ${MAX_DATE_RANGE_DAYS}-day range: ${totalCount}`);
+    console.log(`Total matching records: ${totalCount}`);
 
-    // For unlimited exports, use ALL available data in the date range
-    let effectiveLimit = totalCount; // No artificial limits
+    // If we have date filters and no records found, provide helpful feedback
+    if (hasDateFilter && totalCount === 0) {
+      console.log("No records found for date range, checking available date range...");
+      const [dateRangeRows] = await pool.query<RowDataPacket[]>(
+        `SELECT MIN(created_at) as min_date, MAX(created_at) as max_date FROM \`${table}\``
+      );
+      const dateRange = dateRangeRows[0] as { min_date: Date | null, max_date: Date | null };
+      console.log(`Available date range: ${dateRange.min_date} to ${dateRange.max_date}`);
+    }
 
-    console.log(`Processing ALL ${effectiveLimit} records in date range (unlimited export)...`);
+    // Determine effective limit - for date filters, use actual count if reasonable
+    let effectiveLimit: number;
+    if (hasDateFilter && totalCount > 0 && totalCount <= MAX_LIMIT) {
+      // When filtering by date, use all available records up to MAX_LIMIT
+      effectiveLimit = totalCount;
+      console.log(`Using all ${totalCount} records within date range`);
+    } else if (userLimitStr === "auto" || (hasDateFilter && userLimitStr === "")) {
+      // Auto mode: use all records within our range
+      effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
+    } else if (userLimitStr) {
+      const parsed = Number(userLimitStr);
+      effectiveLimit = Number.isFinite(parsed) && parsed > 0
+        ? Math.min(Math.max(parsed, MIN_LIMIT), MAX_LIMIT)
+        : MIN_LIMIT;
+    } else {
+      // Default to minimum 1 lakh or actual count if smaller
+      effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
+    }
+
+    console.log(`Processing ${effectiveLimit} records...`);
 
     // Process data in chunks
     let processedRows = await processDataInChunks(
@@ -384,6 +317,21 @@ export async function GET(req: Request) {
       effectiveLimit,
       all
     );
+
+    // Fallback if no data found and no date filter
+    let usedFallback = false;
+    if (processedRows.length === 0 && !hasDateFilter) {
+      console.log("No data found, using fallback...");
+      processedRows = await processDataInChunks(
+        table,
+        "",
+        [],
+        "DESC",
+        FALLBACK_LIMIT,
+        all
+      );
+      usedFallback = true;
+    }
 
     console.log(`Creating Excel with ${processedRows.length} rows...`);
 
@@ -431,16 +379,23 @@ export async function GET(req: Request) {
 
     // Generate status notes
     const notes = [];
-    if (isAdjusted && warningMessage) {
-      notes.push(warningMessage);
+    if (usedFallback) {
+      notes.push(`No data found with your filters. Showing latest ${FALLBACK_LIMIT} records instead.`);
     }
-    const daysDiff = Math.abs(getDateDifference(adjustedFromDate, adjustedToDate));
-    notes.push(`Data exported for date range: ${adjustedFromDate} to ${adjustedToDate} (${daysDiff} days, unlimited)`);
-    if (processedRows.length > 0) {
-      notes.push(`ALL records exported: ${processedRows.length.toLocaleString()} out of ${totalCount.toLocaleString()} total`);
+    if (hasDateFilter && processedRows.length === 0) {
+      notes.push(`No records found for the specified date range (${fromDate || 'start'} to ${toDate || 'end'}).`);
+    }
+    if (totalCount > effectiveLimit) {
+      notes.push(`${totalCount} total records found. Export limited to ${effectiveLimit} records.`);
+    }
+    if (hasDateFilter && processedRows.length > 0) {
+      notes.push(`Date filter applied: ${processedRows.length} records from ${fromDate || 'start'} to ${toDate || 'end'}.`);
+    }
+    if (processedRows.length >= MIN_LIMIT) {
+      notes.push(`Large dataset: ${processedRows.length} records exported successfully.`);
     }
 
-    const combinedNote = notes.join(" | ");
+    const combinedNote = notes.join(" ");
 
     // Create worksheet based on format
     if (all && processedRows.length > 0) {
@@ -455,11 +410,11 @@ export async function GET(req: Request) {
       const headerKeys = [...fixed, ...dynamic, "Faults"];
 
       ws = XLSX.utils.json_to_sheet(processedRows, { header: headerKeys });
-      finalizeSheet(ws, headerKeys, combinedNote);
+      finalizeSheet(ws, headerKeys, combinedNote || undefined);
     } else if (processedRows.length > 0) {
       ws = XLSX.utils.json_to_sheet(processedRows);
       const headerKeys = Object.keys(processedRows[0]);
-      finalizeSheet(ws, headerKeys, combinedNote);
+      finalizeSheet(ws, headerKeys, combinedNote || undefined);
     } else {
       // Empty sheet
       const headerKeys = ["id", "created_at"];
@@ -467,7 +422,10 @@ export async function GET(req: Request) {
         [Object.fromEntries(headerKeys.map((k) => [k, ""]))],
         { header: headerKeys }
       );
-      finalizeSheet(ws, headerKeys, `No records found for date range: ${adjustedFromDate} to ${adjustedToDate}`);
+      const emptyNote = hasDateFilter 
+        ? `No records found for date range: ${fromDate || 'start'} to ${toDate || 'end'}`
+        : "No records found for selected criteria";
+      finalizeSheet(ws, headerKeys, emptyNote);
     }
 
     XLSX.utils.book_append_sheet(wb, ws, "Data");
@@ -476,7 +434,10 @@ export async function GET(req: Request) {
     const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
     
     const recordCount = processedRows.length;
-    const filename = `${table}_${adjustedFromDate}_to_${adjustedToDate}_${recordCount}records.xlsx`;
+    const dateRangeStr = hasDateFilter 
+      ? `_${fromDate || 'start'}_to_${toDate || 'end'}`
+      : `_${new Date().toISOString().slice(0, 10)}`;
+    const filename = `${table}${dateRangeStr}_${recordCount}records.xlsx`;
 
     console.log(`Export complete: ${filename}`);
 

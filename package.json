@@ -51,6 +51,7 @@
     "cmdk": "^1.1.1",
     "emailjs-com": "^3.2.0",
     "embla-carousel-react": "^8.5.2",
+    "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "framer-motion": "^12.6.2",
     "gsap": "^3.12.7",
