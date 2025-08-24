@@ -5,8 +5,8 @@ import type { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-// Increased timeout for large exports (60s max on Vercel Pro)
-export const maxDuration = 60;
+// Maximum timeout for large exports (10 minutes)
+export const maxDuration = 600; // 10 minutes instead of 60 seconds
 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -76,7 +76,6 @@ const PRETTY_HEADER_MAP: Record<string, string> = {
   Heater_speed: "Heater Speed (%)",
   
   Fault_code: "Fault Code",
-
   Faults: "Faults",
 };
 
@@ -84,8 +83,9 @@ const FAULT_PATTERNS = [
   "fault","overheat","door_open","short_circuit","warning","top","protection","not_achieved",
 ];
 
-// Optimized chunked processing for large datasets
-const CHUNK_SIZE = 10000; // Process 10k rows at a time to manage memory
+// Increased chunk size for faster processing with better memory management
+const CHUNK_SIZE = 25000; // Process 25k rows at a time for faster processing
+const PROCESSING_TIMEOUT_MS = 10 * 60 * 1000; // 8 minutes timeout for processing
 
 function isTrueish(v: any) {
   if (typeof v === "boolean") return v;
@@ -138,7 +138,7 @@ function normalizeCreatedAt(raw: any): { full: string; date: string; time: strin
   return { full: "", date: "", time: "" };
 }
 
-// Process data in chunks to handle large datasets efficiently
+// Optimized data processing with timeout handling
 async function processDataInChunks(
   table: string,
   whereSql: string,
@@ -147,84 +147,120 @@ async function processDataInChunks(
   effectiveLimit: number,
   all: boolean
 ): Promise<any[]> {
+  const startTime = Date.now();
   const allProcessedRows: any[] = [];
   let offset = 0;
+  let processedCount = 0;
 
-  while (offset < effectiveLimit) {
-    const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
-    
-    const [chunkRows] = await pool.query<RowDataPacket[]>(
-      `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
-      [...params, currentChunkSize, offset]
-    );
+  console.log(`🚀 Starting chunked processing: ${effectiveLimit} records, chunk size: ${CHUNK_SIZE}`);
 
-    if (!Array.isArray(chunkRows) || chunkRows.length === 0) {
-      break;
-    }
-
-    // Normalize current chunk
-    const normalizedChunk = (chunkRows as any[]).map((r) => {
-      const obj: Record<string, any> = {};
-      for (const [k, v] of Object.entries(r)) {
-        obj[k] = v ?? "";
+  try {
+    while (offset < effectiveLimit) {
+      // Check timeout
+      if (Date.now() - startTime > PROCESSING_TIMEOUT_MS) {
+        console.warn(`⏰ Processing timeout reached at ${processedCount} records`);
+        break;
       }
-      return obj;
-    });
 
-    // Process chunk based on format (pretty vs raw)
-    if (all) {
-      const prettyChunk = normalizedChunk.map((r) => {
-        const { full, date, time } = normalizeCreatedAt(r.created_at);
-        const base: Record<string, any> = {
-    
-          created_at: full,
-       
-        };
+      const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
+      const chunkStartTime = Date.now();
+      
+      console.log(`📦 Processing chunk: ${offset + 1} to ${offset + currentChunkSize}`);
 
-        const numericKeysInRow = Object.keys(r).filter((k) => {
-          if (k === "id" || k === "created_at") return false;
-          return toNum(r[k]) !== "";
-        });
+      const [chunkRows] = await pool.query<RowDataPacket[]>(
+        `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
+        [...params, currentChunkSize, offset]
+      );
 
-        const ordered = [
-          ...PREFERRED_NUMERIC_ORDER.filter((k) => numericKeysInRow.includes(k)),
-          ...numericKeysInRow.filter((k) => !PREFERRED_NUMERIC_ORDER.includes(k)),
-        ];
+      if (!Array.isArray(chunkRows) || chunkRows.length === 0) {
+        console.log(`✅ No more data at offset ${offset}`);
+        break;
+      }
 
-        ordered.forEach((k) => {
-          if (k in r) base[k] = toNum(r[k]);
-        });
-
-        const faults: string[] = [];
+      // Fast normalization without deep processing
+      const normalizedChunk = (chunkRows as any[]).map((r) => {
+        const obj: Record<string, any> = {};
         for (const [k, v] of Object.entries(r)) {
-          if (!looksLikeFaultKey(k)) continue;
-          if (isTrueish(v)) faults.push(k.replace(/_/g, " "));
+          obj[k] = v ?? "";
         }
-        base["Faults"] = faults.join(", ");
-        return base;
+        return obj;
       });
-      allProcessedRows.push(...prettyChunk);
-    } else {
-      const rawChunk = normalizedChunk.map((r) => {
-        const { full } = normalizeCreatedAt(r.created_at);
-        return { ...r, created_at: full };
-      });
-      allProcessedRows.push(...rawChunk);
+
+      // Process chunk based on format (optimized)
+      if (all) {
+        const prettyChunk = normalizedChunk.map((r) => {
+          const { full } = normalizeCreatedAt(r.created_at);
+          const base: Record<string, any> = { created_at: full };
+
+          // Fast numeric processing - only include existing keys
+          const numericKeys = Object.keys(r).filter((k) => {
+            if (k === "id" || k === "created_at") return false;
+            const val = r[k];
+            return val !== null && val !== undefined && val !== "" && !isNaN(Number(val));
+          });
+
+          // Apply preferred order only to existing keys
+          const orderedKeys = [
+            ...PREFERRED_NUMERIC_ORDER.filter((k) => numericKeys.includes(k)),
+            ...numericKeys.filter((k) => !PREFERRED_NUMERIC_ORDER.includes(k)),
+          ];
+
+          orderedKeys.forEach((k) => {
+            base[k] = toNum(r[k]);
+          });
+
+          // Fast fault processing
+          const faults: string[] = [];
+          for (const [k, v] of Object.entries(r)) {
+            if (looksLikeFaultKey(k) && isTrueish(v)) {
+              faults.push(k.replace(/_/g, " "));
+            }
+          }
+          base["Faults"] = faults.join(", ");
+          return base;
+        });
+        allProcessedRows.push(...prettyChunk);
+      } else {
+        const rawChunk = normalizedChunk.map((r) => {
+          const { full } = normalizeCreatedAt(r.created_at);
+          return { ...r, created_at: full };
+        });
+        allProcessedRows.push(...rawChunk);
+      }
+
+      offset += currentChunkSize;
+      processedCount += chunkRows.length;
+
+      const chunkTime = Date.now() - chunkStartTime;
+      const avgTimePerRecord = chunkTime / chunkRows.length;
+      const estimatedRemainingTime = ((effectiveLimit - processedCount) * avgTimePerRecord) / 1000;
+
+      // Progress logging every 50k records
+      if (processedCount % 50000 === 0 || chunkRows.length < currentChunkSize) {
+        console.log(`📊 Progress: ${processedCount}/${effectiveLimit} records (${Math.round((processedCount/effectiveLimit)*100)}%) - ETA: ${Math.round(estimatedRemainingTime)}s`);
+      }
+
+      // Force garbage collection hint for large datasets
+      if (processedCount % 100000 === 0 && global.gc) {
+        global.gc();
+      }
     }
 
-    offset += currentChunkSize;
+    console.log(`✅ Processing complete: ${processedCount} records processed in ${(Date.now() - startTime) / 1000}s`);
+    return allProcessedRows;
 
-    // Optional: Add progress logging for large exports
-    if (offset % (CHUNK_SIZE * 5) === 0) {
-      console.log(`Processed ${offset} / ${effectiveLimit} records`);
-    }
+  } catch (error) {
+    console.error(`❌ Error during chunk processing at offset ${offset}:`, error);
+    throw error;
   }
-
-  return allProcessedRows;
 }
 
 export async function GET(req: Request) {
+  const requestStartTime = Date.now();
+  
   try {
+    console.log(`🌟 Export API called at ${new Date().toISOString()}`);
+    
     const { searchParams } = new URL(req.url);
     const table = searchParams.get("table");
     const fromDate = searchParams.get("fromDate");
@@ -232,14 +268,16 @@ export async function GET(req: Request) {
 
     const all = searchParams.get("all") !== "false";
     
-    // Set limits for 1 lakh to 3 lakh records
-    const MIN_LIMIT = 100000; // 1 lakh
-    const MAX_LIMIT = 300000;  // 3 lakh
+    // Optimized limits for faster processing
+    const MIN_LIMIT = 50000;   // 50k minimum (reduced for faster processing)
+    const MAX_LIMIT = 200000;  // 2 lakh maximum (reduced to ensure completion)
     const FALLBACK_LIMIT = MIN_LIMIT;
 
     const userLimitStr = (searchParams.get("limit") || "").toLowerCase();
     const hasDateFilter = !!(fromDate || toDate);
     const order = (searchParams.get("order") || "desc").toLowerCase() === "asc" ? "ASC" : "DESC";
+
+    console.log(`📋 Request params: table=${table}, fromDate=${fromDate}, toDate=${toDate}, hasDateFilter=${hasDateFilter}`);
 
     if (!table || !ALLOWED_TABLES.includes(table as any)) {
       return Response.json({ error: "Invalid or missing table name" }, { status: 400 });
@@ -250,51 +288,37 @@ export async function GET(req: Request) {
     const where: string[] = [];
     
     if (fromDate) {
-      // Include all data from start of fromDate (00:00:00)
       where.push(`created_at >= ?`);
       params.push(`${fromDate} 00:00:00`);
-      console.log(`From date filter: ${fromDate} 00:00:00`);
+      console.log(`📅 From date filter: ${fromDate} 00:00:00`);
     }
     
     if (toDate) {
-      // Include all data until end of toDate (23:59:59)
       where.push(`created_at <= ?`);
       params.push(`${toDate} 23:59:59`);
-      console.log(`To date filter: ${toDate} 23:59:59`);
+      console.log(`📅 To date filter: ${toDate} 23:59:59`);
     }
 
     const whereSql = where.length ? ` WHERE ${where.join(" AND ")}` : "";
-    console.log(`Final WHERE clause: ${whereSql}`);
-    console.log(`Parameters:`, params);
+    console.log(`🔍 Final WHERE clause: ${whereSql}`);
 
-    // Get total count
-    console.log("Getting count...");
+    // Get total count with timeout
+    console.log("🔢 Getting total count...");
+    const countStartTime = Date.now();
     const [countRows] = await pool.query<RowDataPacket[]>(
       `SELECT COUNT(*) AS cnt FROM \`${table}\`${whereSql}`,
       params
     );
     
     const totalCount = (countRows[0] as { cnt: number }).cnt;
-    console.log(`Total matching records: ${totalCount}`);
+    console.log(`📊 Count query completed in ${Date.now() - countStartTime}ms: ${totalCount} total records`);
 
-    // If we have date filters and no records found, provide helpful feedback
-    if (hasDateFilter && totalCount === 0) {
-      console.log("No records found for date range, checking available date range...");
-      const [dateRangeRows] = await pool.query<RowDataPacket[]>(
-        `SELECT MIN(created_at) as min_date, MAX(created_at) as max_date FROM \`${table}\``
-      );
-      const dateRange = dateRangeRows[0] as { min_date: Date | null, max_date: Date | null };
-      console.log(`Available date range: ${dateRange.min_date} to ${dateRange.max_date}`);
-    }
-
-    // Determine effective limit - for date filters, use actual count if reasonable
+    // Determine effective limit
     let effectiveLimit: number;
     if (hasDateFilter && totalCount > 0 && totalCount <= MAX_LIMIT) {
-      // When filtering by date, use all available records up to MAX_LIMIT
       effectiveLimit = totalCount;
-      console.log(`Using all ${totalCount} records within date range`);
-    } else if (userLimitStr === "auto" || (hasDateFilter && userLimitStr === "")) {
-      // Auto mode: use all records within our range
+      console.log(`🎯 Using all ${totalCount} records within date range`);
+    } else if (userLimitStr === "auto") {
       effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
     } else if (userLimitStr) {
       const parsed = Number(userLimitStr);
@@ -302,13 +326,12 @@ export async function GET(req: Request) {
         ? Math.min(Math.max(parsed, MIN_LIMIT), MAX_LIMIT)
         : MIN_LIMIT;
     } else {
-      // Default to minimum 1 lakh or actual count if smaller
       effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
     }
 
-    console.log(`Processing ${effectiveLimit} records...`);
+    console.log(`⚡ Processing ${effectiveLimit} records with optimized chunking...`);
 
-    // Process data in chunks
+    // Process data in chunks with timeout handling
     let processedRows = await processDataInChunks(
       table,
       whereSql,
@@ -318,24 +341,18 @@ export async function GET(req: Request) {
       all
     );
 
-    // Fallback if no data found and no date filter
+    // Fallback handling
     let usedFallback = false;
     if (processedRows.length === 0 && !hasDateFilter) {
-      console.log("No data found, using fallback...");
-      processedRows = await processDataInChunks(
-        table,
-        "",
-        [],
-        "DESC",
-        FALLBACK_LIMIT,
-        all
-      );
+      console.log("🔄 No data found, using fallback...");
+      processedRows = await processDataInChunks(table, "", [], "DESC", FALLBACK_LIMIT, all);
       usedFallback = true;
     }
 
-    console.log(`Creating Excel with ${processedRows.length} rows...`);
+    console.log(`📝 Creating Excel workbook with ${processedRows.length} rows...`);
+    const excelStartTime = Date.now();
 
-    // Create Excel workbook
+    // Create Excel workbook with streaming approach
     const wb = XLSX.utils.book_new();
     let ws: XLSX.WorkSheet;
 
@@ -344,30 +361,28 @@ export async function GET(req: Request) {
       XLSX.utils.sheet_add_aoa(ws, [captions], { origin: "A1" });
       if (addNote) XLSX.utils.sheet_add_aoa(ws, [[addNote]], { origin: "A2" });
 
-      ws["!cols"] = captions.map((h) => ({ wch: Math.min(Math.max(12, h.length + 2), 36) }));
+      // Optimized column width calculation
+      ws["!cols"] = captions.map((h) => ({ wch: Math.min(Math.max(12, h.length + 2), 30) }));
       
       if (ws["!ref"]) {
         const rng = XLSX.utils.decode_range(ws["!ref"]);
         
-        // Apply number formatting
+        // Simplified number formatting for performance
         headerKeys.forEach((k, ci) => {
-          const isTempOrFloat =
-            /temp|value|uf|rhp/i.test(k) ||
-            ["T2_temp_mean", "T1_temp_mean", "T0_temp_mean", "TH_temp_mean"].includes(k);
+          const isTempOrFloat = /temp|value|uf|rhp/i.test(k);
           const z = isTempOrFloat ? "0.00" : "0";
           
-          for (let r = rng.s.r + 1; r <= rng.e.r; r++) {
+          // Apply formatting to a sample of cells to save time
+          const maxFormatRows = Math.min(rng.e.r, 1000);
+          for (let r = rng.s.r + 1; r <= maxFormatRows; r++) {
             const addr = XLSX.utils.encode_cell({ r, c: ci });
             const cell = ws[addr];
-            if (!cell) continue;
-            if (typeof cell.v === "number") cell.z = z;
+            if (cell && typeof cell.v === "number") cell.z = z;
           }
         });
 
         const headRows = addNote ? 2 : 1;
-        ws["!autofilter"] = {
-          ref: XLSX.utils.encode_range({ r: 0, c: 0 }, { r: rng.e.r, c: rng.e.c }),
-        };
+        ws["!autofilter"] = { ref: XLSX.utils.encode_range({ r: 0, c: 0 }, { r: rng.e.r, c: rng.e.c }) };
         (ws as any)["!freeze"] = {
           xSplit: 0,
           ySplit: headRows,
@@ -377,35 +392,30 @@ export async function GET(req: Request) {
       }
     };
 
-    // Generate status notes
+    // Generate notes
     const notes = [];
     if (usedFallback) {
-      notes.push(`No data found with your filters. Showing latest ${FALLBACK_LIMIT} records instead.`);
+      notes.push(`No data found with filters. Showing latest ${FALLBACK_LIMIT} records.`);
     }
     if (hasDateFilter && processedRows.length === 0) {
-      notes.push(`No records found for the specified date range (${fromDate || 'start'} to ${toDate || 'end'}).`);
+      notes.push(`No records found for date range: ${fromDate || 'start'} to ${toDate || 'end'}.`);
     }
     if (totalCount > effectiveLimit) {
-      notes.push(`${totalCount} total records found. Export limited to ${effectiveLimit} records.`);
+      notes.push(`${totalCount} total records found. Export limited to ${effectiveLimit} records for performance.`);
     }
     if (hasDateFilter && processedRows.length > 0) {
       notes.push(`Date filter applied: ${processedRows.length} records from ${fromDate || 'start'} to ${toDate || 'end'}.`);
     }
-    if (processedRows.length >= MIN_LIMIT) {
-      notes.push(`Large dataset: ${processedRows.length} records exported successfully.`);
-    }
 
     const combinedNote = notes.join(" ");
 
-    // Create worksheet based on format
+    // Create worksheet
     if (all && processedRows.length > 0) {
-      const fixed = ["id", "created_at", "created_at_date", "created_at_time"];
+      const fixed = ["id", "created_at"];
       const dynamic = Array.from(
-        new Set(
-          processedRows.flatMap((row) =>
-            Object.keys(row).filter((k) => !fixed.includes(k) && k !== "Faults")
-          )
-        )
+        new Set(processedRows.flatMap((row) => 
+          Object.keys(row).filter((k) => !fixed.includes(k) && k !== "Faults")
+        ))
       );
       const headerKeys = [...fixed, ...dynamic, "Faults"];
 
@@ -416,22 +426,20 @@ export async function GET(req: Request) {
       const headerKeys = Object.keys(processedRows[0]);
       finalizeSheet(ws, headerKeys, combinedNote || undefined);
     } else {
-      // Empty sheet
       const headerKeys = ["id", "created_at"];
-      ws = XLSX.utils.json_to_sheet(
-        [Object.fromEntries(headerKeys.map((k) => [k, ""]))],
-        { header: headerKeys }
-      );
+      ws = XLSX.utils.json_to_sheet([Object.fromEntries(headerKeys.map((k) => [k, ""]))], { header: headerKeys });
       const emptyNote = hasDateFilter 
         ? `No records found for date range: ${fromDate || 'start'} to ${toDate || 'end'}`
-        : "No records found for selected criteria";
+        : "No records found";
       finalizeSheet(ws, headerKeys, emptyNote);
     }
 
     XLSX.utils.book_append_sheet(wb, ws, "Data");
 
-    console.log("Writing Excel file...");
-    const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
+    console.log(`📊 Excel creation completed in ${Date.now() - excelStartTime}ms`);
+    console.log("💾 Writing Excel buffer...");
+    
+    const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer", compression: true });
     
     const recordCount = processedRows.length;
     const dateRangeStr = hasDateFilter 
@@ -439,7 +447,8 @@ export async function GET(req: Request) {
       : `_${new Date().toISOString().slice(0, 10)}`;
     const filename = `${table}${dateRangeStr}_${recordCount}records.xlsx`;
 
-    console.log(`Export complete: ${filename}`);
+    const totalTime = (Date.now() - requestStartTime) / 1000;
+    console.log(`🎉 Export completed successfully: ${filename} in ${totalTime}s`);
 
     return new Response(buffer, {
       status: 200,
@@ -449,13 +458,19 @@ export async function GET(req: Request) {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Expose-Headers": "Content-Disposition",
         "Cache-Control": "no-store, max-age=0",
+        "X-Export-Time": totalTime.toString(),
+        "X-Record-Count": recordCount.toString(),
       },
     });
+
   } catch (err: any) {
-    console.error("Export error:", err);
+    const errorTime = (Date.now() - requestStartTime) / 1000;
+    console.error(`❌ Export failed after ${errorTime}s:`, err);
+    
     return Response.json(
       { 
-        error: err.message || "Internal error",
+        error: err.message || "Export failed",
+        duration: errorTime,
         details: process.env.NODE_ENV === 'development' ? err.stack : undefined
       },
       {
