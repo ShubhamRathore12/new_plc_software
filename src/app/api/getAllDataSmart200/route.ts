@@ -5,8 +5,8 @@ import type { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-// Maximum timeout for large exports (10 minutes)
-export const maxDuration = 600; // 10 minutes instead of 60 seconds
+// Maximum timeout for Vercel hobby plan (60 seconds max)
+export const maxDuration = 60; // 60 seconds for hobby plan
 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -83,9 +83,9 @@ const FAULT_PATTERNS = [
   "fault","overheat","door_open","short_circuit","warning","top","protection","not_achieved",
 ];
 
-// Increased chunk size for faster processing with better memory management
-const CHUNK_SIZE = 25000; // Process 25k rows at a time for faster processing
-const PROCESSING_TIMEOUT_MS = 10 * 60 * 1000; // 8 minutes timeout for processing
+// Optimized chunk size for 60-second limit
+const CHUNK_SIZE = 50000; // Process 50k rows at a time for maximum speed
+const PROCESSING_TIMEOUT_MS = 45 * 1000; // 45 seconds timeout for processing (15s buffer)
 
 function isTrueish(v: any) {
   if (typeof v === "boolean") return v;
@@ -235,13 +235,13 @@ async function processDataInChunks(
       const avgTimePerRecord = chunkTime / chunkRows.length;
       const estimatedRemainingTime = ((effectiveLimit - processedCount) * avgTimePerRecord) / 1000;
 
-      // Progress logging every 50k records
-      if (processedCount % 50000 === 0 || chunkRows.length < currentChunkSize) {
+      // Progress logging every 25k records for 60s window
+      if (processedCount % 25000 === 0 || chunkRows.length < currentChunkSize) {
         console.log(`📊 Progress: ${processedCount}/${effectiveLimit} records (${Math.round((processedCount/effectiveLimit)*100)}%) - ETA: ${Math.round(estimatedRemainingTime)}s`);
       }
 
-      // Force garbage collection hint for large datasets
-      if (processedCount % 100000 === 0 && global.gc) {
+      // Force garbage collection hint for memory optimization
+      if (processedCount % 50000 === 0 && global.gc) {
         global.gc();
       }
     }
@@ -268,9 +268,9 @@ export async function GET(req: Request) {
 
     const all = searchParams.get("all") !== "false";
     
-    // Optimized limits for faster processing
-    const MIN_LIMIT = 50000;   // 50k minimum (reduced for faster processing)
-    const MAX_LIMIT = 200000;  // 2 lakh maximum (reduced to ensure completion)
+    // Aggressive limits for 60-second processing
+    const MIN_LIMIT = 25000;   // 25k minimum (optimized for 60s)
+    const MAX_LIMIT = 100000;  // 1 lakh maximum (ensures completion in 60s)
     const FALLBACK_LIMIT = MIN_LIMIT;
 
     const userLimitStr = (searchParams.get("limit") || "").toLowerCase();
@@ -329,7 +329,7 @@ export async function GET(req: Request) {
       effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
     }
 
-    console.log(`⚡ Processing ${effectiveLimit} records with optimized chunking...`);
+    console.log(`⚡ Processing ${effectiveLimit} records (optimized for 60s limit)...`);
 
     // Process data in chunks with timeout handling
     let processedRows = await processDataInChunks(
@@ -401,7 +401,7 @@ export async function GET(req: Request) {
       notes.push(`No records found for date range: ${fromDate || 'start'} to ${toDate || 'end'}.`);
     }
     if (totalCount > effectiveLimit) {
-      notes.push(`${totalCount} total records found. Export limited to ${effectiveLimit} records for performance.`);
+      notes.push(`${totalCount} total records found. Export limited to ${effectiveLimit} records (Vercel 60s limit).`);
     }
     if (hasDateFilter && processedRows.length > 0) {
       notes.push(`Date filter applied: ${processedRows.length} records from ${fromDate || 'start'} to ${toDate || 'end'}.`);
