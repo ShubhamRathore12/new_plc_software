@@ -252,10 +252,12 @@ export async function GET(req: Request) {
       params.push(fromDate);
     
     }
-    if (toDate) {
-    where.push(`created_at <= CONCAT(?, ' 23:59:00')`)
-      params.push(toDate);
-    }
+ if (toDate) {
+  // Changed: Use < instead of <= to exclude the toDate entirely
+  // This will include records only up to 23:59:59 of the day BEFORE toDate
+  where.push(`created_at < CONCAT(?, ' 00:00:00')`);
+  params.push(toDate);
+}
 
     
     const whereSql = where.length ? ` WHERE ${where.join(" AND ")}` : "";
