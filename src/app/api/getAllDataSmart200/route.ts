@@ -250,19 +250,26 @@ export async function GET(req: Request) {
     
     // Debug logging
     console.log('Date filters received:', { fromDate, toDate });
-    
-    if (fromDate) {
-      // Ensure we start from the very beginning of the fromDate (00:00:00)
-      where.push(`created_at >= ?`);
-      params.push(`${fromDate} 00:00:00`);
-      console.log('From date filter:', `created_at >= '${fromDate} 00:00:00'`);
-    }
-    if (toDate) {
-      // Include the entire toDate (up to 23:59:59.999)
-      where.push(`created_at <= ?`);
-      params.push(`${toDate} 23:59:59.999`);
-      console.log('To date filter:', `created_at <= '${toDate} 23:59:59.999'`);
-    }
+function toUtcFromIstDateStart(dateStr: string): string {
+  const istDate = new Date(`${dateStr}T00:00:00+05:30`);
+  return istDate.toISOString().slice(0, 19).replace("T", " ");
+}
+
+function toUtcFromIstDateEnd(dateStr: string): string {
+  const istDate = new Date(`${dateStr}T00:00:00+05:30`);
+  istDate.setDate(istDate.getDate() + 1); // Move to next day at 00:00 IST
+  return istDate.toISOString().slice(0, 19).replace("T", " ");
+}
+
+if (fromDate) {
+  where.push(`created_at >= ?`);
+  params.push(toUtcFromIstDateStart(fromDate)); // 26 IST → 25.5 UTC
+}
+if (toDate) {
+  where.push(`created_at < ?`);
+  params.push(toUtcFromIstDateEnd(toDate)); // 29 IST → 28.5 UTC
+}
+
 
     const whereSql = where.length ? ` WHERE ${where.join(" AND ")}` : "";
 
