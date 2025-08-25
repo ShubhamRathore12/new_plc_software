@@ -176,9 +176,10 @@ async function processDataInChunks(
       const prettyChunk = normalizedChunk.map((r) => {
         const { full, date, time } = normalizeCreatedAt(r.created_at);
         const base: Record<string, any> = {
-    
+          id: r.id,
           created_at: full,
-       
+          created_at_date: date,
+          created_at_time: time,
         };
 
         const numericKeysInRow = Object.keys(r).filter((k) => {
@@ -232,10 +233,9 @@ export async function GET(req: Request) {
 
     const all = searchParams.get("all") !== "false";
     
-    // Set limits for 1 lakh to 3 lakh records
-    const MIN_LIMIT = 100000; // 1 lakh
-    const MAX_LIMIT = 300000;  // 3 lakh
-    const FALLBACK_LIMIT = MIN_LIMIT;
+    // Updated limits - remove minimum enforcement for date-filtered queries
+    const DEFAULT_MAX_LIMIT = 300000;  // 3 lakh max for non-filtered queries
+    const FALLBACK_LIMIT = 100000;    // 1 lakh fallback when no data found
 
     const userLimitStr = (searchParams.get("limit") || "").toLowerCase();
     const hasDateFilter = !!(fromDate || toDate);
@@ -247,23 +247,30 @@ export async function GET(req: Request) {
 
     const params: any[] = [];
     const where: string[] = [];
+    
+    // Debug logging
+    console.log('Date filters received:', { fromDate, toDate });
+    
     if (fromDate) {
-      where.push(`created_at >= CONCAT(?, ' 00:00:00')`);
-      params.push(fromDate);
-    
+      // Ensure we start from the very beginning of the fromDate (00:00:00)
+      where.push(`created_at >= ?`);
+      params.push(`${fromDate} 00:00:00`);
+      console.log('From date filter:', `created_at >= '${fromDate} 00:00:00'`);
     }
- if (toDate) {
-  // Changed: Use < instead of <= to exclude the toDate entirely
-  // This will include records only up to 23:59:59 of the day BEFORE toDate
-  where.push(`created_at < CONCAT(?, ' 00:00:00')`);
-  params.push(toDate);
-}
+    if (toDate) {
+      // Include the entire toDate (up to 23:59:59.999)
+      where.push(`created_at <= ?`);
+      params.push(`${toDate} 23:59:59.999`);
+      console.log('To date filter:', `created_at <= '${toDate} 23:59:59.999'`);
+    }
 
-    
     const whereSql = where.length ? ` WHERE ${where.join(" AND ")}` : "";
 
     // Get total count
     console.log("Getting count...");
+    console.log("Where clause:", whereSql);
+    console.log("Parameters:", params);
+    
     const [countRows] = await pool.query<RowDataPacket[]>(
       `SELECT COUNT(*) AS cnt FROM \`${table}\`${whereSql}`,
       params
@@ -271,19 +278,47 @@ export async function GET(req: Request) {
     const totalCount = (countRows[0] as { cnt: number }).cnt;
     console.log(`Total matching records: ${totalCount}`);
 
-    // Determine effective limit (minimum 1 lakh, maximum 3 lakh)
+    // Debug: Show date range of actual data
+    if (hasDateFilter && totalCount > 0) {
+      const [dateRangeRows] = await pool.query<RowDataPacket[]>(
+        `SELECT 
+          MIN(DATE(created_at)) as earliest_date,
+          MAX(DATE(created_at)) as latest_date,
+          MIN(created_at) as earliest_datetime,
+          MAX(created_at) as latest_datetime
+         FROM \`${table}\`${whereSql}`,
+        params
+      );
+      console.log('Actual date range in filtered data:', dateRangeRows[0]);
+    }
+
+    // FIXED: Determine effective limit based on actual data availability
     let effectiveLimit: number;
-    if (userLimitStr === "auto" || (hasDateFilter && userLimitStr === "")) {
-      // Auto mode: use all records within our range
-      effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
-    } else if (userLimitStr) {
-      const parsed = Number(userLimitStr);
-      effectiveLimit = Number.isFinite(parsed) && parsed > 0
-        ? Math.min(Math.max(parsed, MIN_LIMIT), MAX_LIMIT)
-        : MIN_LIMIT;
+    
+    if (hasDateFilter) {
+      // For date-filtered queries, use the actual count (no minimum enforcement)
+      if (userLimitStr === "auto" || userLimitStr === "") {
+        effectiveLimit = totalCount; // Use all matching records
+      } else if (userLimitStr) {
+        const parsed = Number(userLimitStr);
+        effectiveLimit = Number.isFinite(parsed) && parsed > 0
+          ? Math.min(parsed, totalCount, DEFAULT_MAX_LIMIT)
+          : totalCount;
+      } else {
+        effectiveLimit = totalCount;
+      }
     } else {
-      // Default to minimum 1 lakh
-      effectiveLimit = Math.min(Math.max(totalCount, MIN_LIMIT), MAX_LIMIT);
+      // For non-filtered queries, apply the original logic
+      if (userLimitStr === "auto" || userLimitStr === "") {
+        effectiveLimit = Math.min(totalCount, DEFAULT_MAX_LIMIT);
+      } else if (userLimitStr) {
+        const parsed = Number(userLimitStr);
+        effectiveLimit = Number.isFinite(parsed) && parsed > 0
+          ? Math.min(parsed, DEFAULT_MAX_LIMIT)
+          : Math.min(totalCount, DEFAULT_MAX_LIMIT);
+      } else {
+        effectiveLimit = Math.min(totalCount, DEFAULT_MAX_LIMIT);
+      }
     }
 
     console.log(`Processing ${effectiveLimit} records...`);
@@ -298,10 +333,10 @@ export async function GET(req: Request) {
       all
     );
 
-    // Fallback if no data found
+    // FIXED: Only use fallback if no date filter is applied and no data found
     let usedFallback = false;
-    if (processedRows.length === 0) {
-      console.log("No data found with filters, using fallback...");
+    if (processedRows.length === 0 && !hasDateFilter) {
+      console.log("No data found, using fallback...");
       processedRows = await processDataInChunks(
         table,
         "",
@@ -362,11 +397,14 @@ export async function GET(req: Request) {
     if (usedFallback) {
       notes.push(`No data found with your filters. Showing latest ${FALLBACK_LIMIT} records instead.`);
     }
-    if (totalCount > effectiveLimit) {
+    if (hasDateFilter && processedRows.length === 0) {
+      notes.push(`No records found for the selected date range: ${fromDate || 'beginning'} to ${toDate || 'end'}.`);
+    }
+    if (!hasDateFilter && totalCount > effectiveLimit) {
       notes.push(`${totalCount} total records found. Export limited to ${effectiveLimit} records.`);
     }
-    if (processedRows.length >= MIN_LIMIT) {
-      notes.push(`Large dataset: ${processedRows.length} records exported successfully.`);
+    if (hasDateFilter && processedRows.length > 0) {
+      notes.push(`Found ${processedRows.length} records for date range: ${fromDate || 'beginning'} to ${toDate || 'end'}.`);
     }
 
     const combinedNote = notes.join(" ");
@@ -396,7 +434,10 @@ export async function GET(req: Request) {
         [Object.fromEntries(headerKeys.map((k) => [k, ""]))],
         { header: headerKeys }
       );
-      finalizeSheet(ws, headerKeys, "No records found for selected criteria");
+      finalizeSheet(ws, headerKeys, hasDateFilter 
+        ? `No records found for date range: ${fromDate || 'beginning'} to ${toDate || 'end'}`
+        : "No records found for selected criteria"
+      );
     }
 
     XLSX.utils.book_append_sheet(wb, ws, "Data");
@@ -405,7 +446,8 @@ export async function GET(req: Request) {
     const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
     
     const recordCount = processedRows.length;
-    const filename = `${table}_${new Date().toISOString().slice(0, 10)}_${recordCount}records.xlsx`;
+    const dateRange = hasDateFilter ? `_${fromDate || 'start'}_to_${toDate || 'end'}` : '';
+    const filename = `${table}${dateRange}_${new Date().toISOString().slice(0, 10)}_${recordCount}records.xlsx`;
 
     console.log(`Export complete: ${filename}`);
 
