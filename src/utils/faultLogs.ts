@@ -1,9 +1,10 @@
-export const PAGE_SIZE = 200;
+export const PAGE_SIZE = 2500;
 
 export interface TagData {
   tag: string;
   value: boolean | string | number | null | undefined;
   createdAt: string;
+  created_at?:string
 }
 
 export interface Stats {

@@ -14,16 +14,14 @@ export default function TagDataRow({ tagData }: { tagData: TagData }) {
     }
   };
 
-  const isActiveValue = (value: any) => {
-    return (
-      value === true ||
-      value === 1 ||
-      value === "true" ||
-      value === "1" ||
-      value === "True"
-    );
-  };
+  const isTruthyValue =
+    tagData.value === "True" || tagData.value === "true" || tagData.value === "tr";
 
+  if (!isTruthyValue) return null; // ❌ Don't render anything if not truthy
+
+
+  console.log(tagData,"tag");
+  
   return (
     <tr className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-4 py-3 text-sm font-medium">{tagData.tag}</td>
@@ -31,11 +29,9 @@ export default function TagDataRow({ tagData }: { tagData: TagData }) {
         {tFault(tagData.tag) || formatTagName(tagData.tag)}
       </td>
       <td className="px-4 py-3 text-sm">
-        {isActiveValue(tagData.value) && (
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            {String(tagData.value)}
-          </span>
-        )}
+        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+          {String(tagData.value)}
+        </span>
       </td>
       <td className="px-4 py-3 text-sm">
         <span

@@ -10,6 +10,7 @@ interface AutoData {
 export const useAutoData = (autoType: string) => {
   const { status } = useMachineStatusFeed();
 
+    
   const [data, setData] = useState<AutoData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -67,8 +68,12 @@ export const useAutoData = (autoType: string) => {
     const table = autoTypeToTableMap[autoType];
     const statusKey = deviceNameToStatusKey[autoType];
 
+
     
   const deviceStatus = statusKey ? (status as any)?.[statusKey] : {};
+  console.log(status,"status");
+  
+  
   const isMachineRunning = deviceStatus?.machineStatus ?? false;
 
     if (!table) {
