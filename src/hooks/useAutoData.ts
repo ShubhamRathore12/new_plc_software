@@ -67,9 +67,15 @@ export const useAutoData = (autoType: string) => {
     const table = autoTypeToTableMap[autoType];
     const statusKey = deviceNameToStatusKey[autoType];
 
-    const deviceStatus = statusKey ? (status as any)?.[statusKey] : {};
-    const isMachineRunning = deviceStatus?.machineStatus ?? false;
-
+    
+  const deviceStatus = statusKey ? (status as any)?.[statusKey] : {};
+  const isMachineRunning = deviceStatus?.machineStatus ?? false;
+  if (!isMachineRunning) {
+    setData([]);
+    setIsConnected(false);
+    setError(null);
+    return;
+  }
     if (!table) {
       setError("❌ Unknown table mapping for device: " + autoType);
       console.error("No table mapping found for:", autoType);
