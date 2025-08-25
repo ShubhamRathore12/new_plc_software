@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
-import { DatePicker, Spin } from "antd";
+import { DatePicker, Spin, message } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dialog";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useDataStore } from "@/lib/store";
+import { toast } from "sonner";
 
 const { RangePicker } = DatePicker;
 
@@ -53,7 +54,7 @@ const ALLOWED_TABLES = [
   "GTPL_117_GT_320E_S7_1200",
   "GTPL_121_GT1000T",
   "gtpl_122_s7_1200_01",
-    "GTPL_124_GT_450T_S7_1200",
+  "GTPL_124_GT_450T_S7_1200",
   'GTPL_131_GT_650T_S7_1200',
   "GTPL_132_GT_650T_S7_1200"
 ] as const;
@@ -75,12 +76,9 @@ const TABLE_DISPLAY_NAMES: Record<string, string> = {
   "GTPL_117_GT_320E_S7_1200": "GTPL-117-GT-320E-S7-1200",
   "GTPL_121_GT1000T": "GTPL-121-GT1000T",
   "gtpl_122_s7_1200_01": "GTPL-122-S7-1200-01",
-    "GTPL_124_GT_450T_S7_1200":'GTPL-124-GT-450T-S7-1200',
-
-  'GTPL_131_GT_650T_S7_1200':'GTPL-131-GT-650T-S7-1200',
-
-  "GTPL_132_GT_650T_S7_1200":'GTPL-132-GT-650T-S7-1200',
-
+  "GTPL_124_GT_450T_S7_1200": 'GTPL-124-GT-450T-S7-1200',
+  'GTPL_131_GT_650T_S7_1200': 'GTPL-131-GT-650T-S7-1200',
+  "GTPL_132_GT_650T_S7_1200": 'GTPL-132-GT-650T-S7-1200',
 };
 
 type TableName = typeof ALLOWED_TABLES[number];
@@ -99,8 +97,23 @@ export default function TableWithDownload() {
   const [isDownloading, setIsDownloading] = useState(false);
   const { data: storeData } = useDataStore() as { data: any };
 
-
-  
+  // Function to validate date range (max 3 days)
+  const validateDateRange = (dates: [Dayjs, Dayjs] | null): boolean => {
+    if (!dates || !dates[0] || !dates[1]) return true;
+    
+    const [startDate, endDate] = dates;
+    const daysDifference = endDate.diff(startDate, 'day');
+    
+    if (daysDifference > 3) {
+     toast.error(
+         "Please select a date range of maximum 3 days. Higher date ranges may result in large amounts of data.",
+       
+      );
+      return false;
+    }
+    
+    return true;
+  };
 
   // CHANGED: fetchData now decides endpoint based on dateRange
   const fetchData = async (
@@ -136,7 +149,8 @@ export default function TableWithDownload() {
     } catch (err) {
       console.error("Fetch error:", err);
       setData([]);
-      setPagination((p:any) => ({ ...p, total: 0 }));
+      setPagination((p: any) => ({ ...p, total: 0 }));
+      message.error("Failed to fetch data. Please try again.");
     }
     setLoading(false);
   };
@@ -144,6 +158,12 @@ export default function TableWithDownload() {
   // Keep your downloadAllData as-is
   const downloadAllData = async () => {
     if (!dateRange) return;
+    
+    // Validate date range before downloading
+    if (!validateDateRange(dateRange)) {
+      return;
+    }
+    
     setIsDownloading(true);
     setDownloadProgress(0);
     try {
@@ -185,9 +205,11 @@ export default function TableWithDownload() {
       link.click();
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
+      
+      message.success("Data downloaded successfully!");
     } catch (err) {
       console.error("Download error:", err);
-      alert(err instanceof Error ? err.message : "An error occurred while downloading the data.");
+      message.error(err instanceof Error ? err.message : "An error occurred while downloading the data.");
     } finally {
       setIsDownloading(false);
     }
@@ -203,11 +225,21 @@ export default function TableWithDownload() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTable, dateRange, pagination.page]);
 
-  const handleDateChange: any = (dates:any) => {
+  const handleDateChange: any = (dates: any) => {
     // Reset to page 1 whenever date filter toggles
-    setPagination((p:any) => ({ ...p, page: 1 }));
+    setPagination((p: any) => ({ ...p, page: 1 }));
+    
     if (dates && dates[0] && dates[1]) {
-      setDateRange([dates[0], dates[1]]);
+      const dateRangeToValidate: [Dayjs, Dayjs] = [dates[0], dates[1]];
+      
+      // Validate the date range
+      if (validateDateRange(dateRangeToValidate)) {
+        setDateRange(dateRangeToValidate);
+      } else {
+        // Don't set the date range if validation fails
+        setDateRange(null);
+        return;
+      }
     } else {
       setDateRange(null);
     }
@@ -219,6 +251,7 @@ export default function TableWithDownload() {
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
     XLSX.writeFile(workbook, `${selectedTable}_data.xlsx`);
+    message.success("Excel file downloaded successfully!");
   };
 
   const downloadPDF = async () => {
@@ -232,17 +265,18 @@ export default function TableWithDownload() {
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
     pdf.save(`${selectedTable}_data.pdf`);
+    message.success("PDF file downloaded successfully!");
   };
 
   const keys = data.length ? Object.keys(data[0]) : [];
 
   const disabledDate = (current: Dayjs) => {
-  const today = dayjs();
-  const fiveDaysAgo = today.subtract(5, 'day');
-  
-  // Disable future dates (after today) and dates older than 5 days ago
-  return current && (current.isAfter(today, 'day') || current.isBefore(fiveDaysAgo, 'day'));
-};
+    const today = dayjs();
+    const fiveDaysAgo = today.subtract(60, 'day');
+    
+    // Disable future dates (after today) and dates older than 60 days ago
+    return current && (current.isAfter(today, 'day') || current.isBefore(fiveDaysAgo, 'day'));
+  };
 
   return (
     <DashboardLayout>
@@ -263,7 +297,13 @@ export default function TableWithDownload() {
               </SelectContent>
             </Select>
 
-            <RangePicker   disabledDate={disabledDate} onChange={handleDateChange} className="w-[300px]" format="YYYY-MM-DD" />
+            <RangePicker 
+              disabledDate={disabledDate} 
+              onChange={handleDateChange} 
+              className="w-[300px]" 
+              format="YYYY-MM-DD"
+              placeholder={['Start Date', 'End Date']}
+            />
           </div>
 
           <div className="flex gap-2 ml-auto">
@@ -283,6 +323,19 @@ export default function TableWithDownload() {
             </Button>
           </div>
         </div>
+
+        {/* Date Range Info */}
+        {dateRange && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+            <p className="text-sm text-blue-700">
+              <strong>Selected Date Range:</strong> {dateRange[0].format("YYYY-MM-DD")} to {dateRange[1].format("YYYY-MM-DD")} 
+              ({dateRange[1].diff(dateRange[0], 'day') + 1} day{dateRange[1].diff(dateRange[0], 'day') !== 0 ? 's' : ''})
+            </p>
+            <p className="text-xs text-blue-600 mt-1">
+              Maximum allowed range is 3 days to manage data volume effectively.
+            </p>
+          </div>
+        )}
 
         {/* Download Progress Dialog */}
         <Dialog open={isDownloading} onOpenChange={setIsDownloading}>
@@ -363,7 +416,7 @@ export default function TableWithDownload() {
                 onClick={() => {
                   if (pagination.page > 1) {
                     const newPage = pagination.page - 1;
-                    setPagination((prev:any) => ({ ...prev, page: newPage }));
+                    setPagination((prev: any) => ({ ...prev, page: newPage }));
                     if (!dateRange) fetchData(selectedTable, null, newPage);
                   }
                 }}
@@ -376,7 +429,7 @@ export default function TableWithDownload() {
                 onClick={() => {
                   if (pagination.page * pagination.limit < pagination.total) {
                     const newPage = pagination.page + 1;
-                    setPagination((prev:any) => ({ ...prev, page: newPage }));
+                    setPagination((prev: any) => ({ ...prev, page: newPage }));
                     if (!dateRange) fetchData(selectedTable, null, newPage);
                   }
                 }}
