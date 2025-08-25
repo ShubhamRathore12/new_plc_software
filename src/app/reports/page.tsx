@@ -236,6 +236,14 @@ export default function TableWithDownload() {
 
   const keys = data.length ? Object.keys(data[0]) : [];
 
+  const disabledDate = (current: Dayjs) => {
+  const today = dayjs();
+  const fiveDaysAgo = today.subtract(5, 'day');
+  
+  // Disable future dates (after today) and dates older than 5 days ago
+  return current && (current.isAfter(today, 'day') || current.isBefore(fiveDaysAgo, 'day'));
+};
+
   return (
     <DashboardLayout>
       <div className="p-4">
@@ -255,7 +263,7 @@ export default function TableWithDownload() {
               </SelectContent>
             </Select>
 
-            <RangePicker onChange={handleDateChange} className="w-[300px]" format="YYYY-MM-DD" />
+            <RangePicker   disabledDate={disabledDate} onChange={handleDateChange} className="w-[300px]" format="YYYY-MM-DD" />
           </div>
 
           <div className="flex gap-2 ml-auto">
