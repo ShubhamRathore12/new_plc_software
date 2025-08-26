@@ -193,8 +193,11 @@ export default function AerationWithoutHeatingPage() {
                     )} */}
 
 {devices === "GTPL-122-gT-1000T-S7-1200" ? null : (
-                      <div className="flex justify-between">
-                        <span>{devices === "GTPL-124-GT-450T-S7-1200" ? "T0" : "TH"} (Supply Air)</span>
+                      null
+                    )}
+
+                    <div className="flex justify-between">
+                        <span>{devices === "GTPL-124-GT-450T-S7-1200" ||  devices === "GTPL-122-gT-1000T-S7-1200" ? "T0" : "TH"} (Supply Air)</span>
                         <span className="font-medium">
                           {formatValue(
                             AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean || data?.T0_temp_mean,
@@ -202,7 +205,6 @@ export default function AerationWithoutHeatingPage() {
                           )}
                         </span>
                       </div>
-                    )}
 
                     <div className="flex justify-between">
                       <span>T2 (Ambient)</span>

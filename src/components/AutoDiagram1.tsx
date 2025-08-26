@@ -98,7 +98,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
         <div className="absolute top-4 right-[35rem] space-y-2 z-10">
         {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-    T0 = {formatValue(data?.T0_temp_mean || data?.AIR_OUTLET_TEMP, "°C")}
+    T0 = {formatValue(data?.T0_set_point || data?.AIR_OUTLET_TEMP, "°C")}
   </div>
 ) : (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
@@ -308,7 +308,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                 <div className="text-xs font-bold">AHT</div>
                 <div className="text-sm font-bold">
                   {formatValue(
-                    data.Value_to_Display_AHT_VALE_OPEN || data.AFTER_HEAT_VALVE_RPM || data?.AHT_vale_speed,
+                    data.Value_to_Display_AHT_VALE_OPEN || data.AFTER_HEAT_VALVE_RPM || data?.AHT_vale_speed || data?.AHT_valve_speed,
                     "%",
                   )}
                 </div>
@@ -341,7 +341,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                 />
                 <div className="text-xs font-bold mt-1">BLOWER</div>
                 <div className="text-sm font-bold">
-                  {formatValue(data?.Blower_speed || data?.BLOWER_RPM || data?.Value_to_Display_BLOWER, "%")}
+                  {formatValue(data?.Blower_speed || data?.BLOWER_RPM || data?.Value_to_Display_BLOWER || data?.Blower_speed, "%")}
                 </div>
               </div>
             </div>
@@ -376,20 +376,20 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   </div>
 ) : (
   // Otherwise, same old logic
-  ['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200'].some(name =>
+  ['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200','GTPL-122-gT-1000T-S7-1200'].some(name =>
     machineName.includes(name)
   ) ? (
     <>
       <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
         <div className="w-20 h-20 relative">
-          <Image src={Fan} alt="Fan" fill className="object-contain" />
+          <Image src={Fan1200} alt="Fan" fill className="object-contain" />
         </div>
       </div>
-      <div className="absolute left-16 top-[10rem] transform -translate-y-1/2">
+      {/* <div className="absolute left-16 top-[10rem] transform -translate-y-1/2">
         <div className="w-20 h-20 relative">
           <Image src={Fan} alt="Fan" fill className="object-contain" />
         </div>
-      </div>
+      </div> */}
     </>
   ) : (
     <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
