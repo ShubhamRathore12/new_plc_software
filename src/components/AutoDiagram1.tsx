@@ -376,7 +376,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   </div>
 ) : (
   // Otherwise, same old logic
-  ['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200','GTPL-122-gT-1000T-S7-1200'].some(name =>
+  ['GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200','GTPL-122-gT-1000T-S7-1200','GTPL-121-gT-1000T-S7-1200'].some(name =>
     machineName.includes(name)
   ) ? (
     <>

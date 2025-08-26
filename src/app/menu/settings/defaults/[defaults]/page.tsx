@@ -241,7 +241,8 @@ export default function DefaultsPage() {
   "GTPL-119-gT-180E-S7-1200",
   "GTPL-120-gT-180E-S7-1200",
   'GTPL-30-gT-180E-S7-1200',
-  'GTPL-116-gT-240E-S7-1200'
+  'GTPL-116-gT-240E-S7-1200',
+  'GTPL-117-gT-320E-S7-1200'
 
 ];
 
@@ -264,7 +265,8 @@ export default function DefaultsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" ? (
+                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" || defaults === 
+                    'GTPL-121-gT-1000T-S7-1200' ? (
                       <Label htmlFor="t1" className="text-right font-medium">
                         T0
                       </Label>
@@ -277,17 +279,17 @@ export default function DefaultsPage() {
                     <Input
                       id="t1"
                       type="number"
-                      value={
+                      value={data?.T0_set_point ||
                         SETTINGS_T1_REF_FR_T0 ||
-                        data?.T1_SET_POINT ||
-                        data?.T0_set_point
+                        data?.T1_SET_POINT 
+                        
                         ||data?.T1_set_point
                       }
                       className="col-span-1"
                     />
                     <div>°C</div>
                   </motion.div>
-                  {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" ? null : (
+                  {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" || defaults === 'GTPL-121-gT-1000T-S7-1200' ? null : (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
