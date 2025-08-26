@@ -240,6 +240,8 @@ export default function DefaultsPage() {
   "GTPL-115-gT-180E-S7-1200",
   "GTPL-119-gT-180E-S7-1200",
   "GTPL-120-gT-180E-S7-1200",
+  'GTPL-30-gT-180E-S7-1200',
+  'GTPL-116-gT-240E-S7-1200'
 
 ];
 
@@ -315,7 +317,7 @@ export default function DefaultsPage() {
     transition={{ delay: 0.4 }}
   >
     <Label htmlFor="delta-a" className="text-right font-medium">
-      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" ? "(T)" : "(A)"}
+      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200"  ? "(T)" : "(A)"}
     </Label>
     <Input
       id="delta-a"

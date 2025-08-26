@@ -308,7 +308,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                 <div className="text-xs font-bold">AHT</div>
                 <div className="text-sm font-bold">
                   {formatValue(
-                    data.Value_to_Display_AHT_VALE_OPEN || data.AFTER_HEAT_VALVE_RPM || data?.AHT_vale_speed || data?.AHT_valve_speed,
+                   data?.AHT_vale_speed || data.Value_to_Display_AHT_VALE_OPEN  || data.AFTER_HEAT_VALVE_RPM || data?.AHT_valve_speed,
                     "%",
                   )}
                 </div>

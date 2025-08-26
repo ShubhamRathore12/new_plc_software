@@ -99,10 +99,12 @@ export default function AutoPage() {
       serialNumber: "GTPL_115",
      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+
+        // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
@@ -119,10 +121,12 @@ export default function AutoPage() {
     serialNumber: "GTPL_116",
     temperatureSensors: {
       T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-      T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+      // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
       T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
       T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-      "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+
+      // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
     },
     controls: {
       AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
@@ -139,10 +143,12 @@ export default function AutoPage() {
       serialNumber: "GTPL_117",
        temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-        T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+
+        // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
