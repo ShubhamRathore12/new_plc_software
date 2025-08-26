@@ -3,30 +3,37 @@ import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-
+  
   // Resolve machine name (with alias map)
   const rawMachineName = searchParams.get("machineName")?.trim() || "";
   const machineName = MACHINE_NAME_ALIASES[rawMachineName] || rawMachineName;
-
-  // Optional: override table via query (you were doing this for GTPL-30)
+  
+  // Optional: override table via query
   const overrideTable = searchParams.get("tableName")?.trim();
-
-  // Pagination params
-  const pageParam = parseInt(searchParams.get("page") || "1", 10);
-  const limitParam = parseInt(searchParams.get("limit") || "200", 10);
-  const page = Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
-  const limit =
-    Number.isFinite(limitParam) && limitParam > 0
-      ? Math.min(limitParam, 2000) // hard cap to be safe
-      : 200;
+  
+  // Pagination params - ensure proper parsing
+  const pageParam = searchParams.get("page");
+  const limitParam = searchParams.get("limit");
+  
+  const page = pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
+  const limit = limitParam ? Math.min(Math.max(1, parseInt(limitParam, 10)), 2000) : 200;
+  
+  // Ensure page and limit are valid numbers
+  if (!Number.isInteger(page) || !Number.isInteger(limit)) {
+    return new Response(
+      JSON.stringify({
+        error: "Invalid pagination parameters",
+        page: pageParam,
+        limit: limitParam,
+      }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+  
   const offset = (page - 1) * limit;
-
-  // (Optional) NOTE: We ignore `search` here since this endpoint is now "normal".
-  // If you later want server-side search, we can add a safe WHERE builder for specific columns.
-
-  const machineConfig =
-    MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
-
+  
+  const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
+  
   if (!machineConfig) {
     return new Response(
       JSON.stringify({
@@ -36,32 +43,55 @@ export async function GET(req: Request) {
       { status: 400, headers: { "Content-Type": "application/json" } }
     );
   }
-
+  
   try {
     const table = overrideTable || machineConfig.table;
-
+    
+    console.log(`Fetching data for machine: ${machineName}, table: ${table}, page: ${page}, limit: ${limit}, offset: ${offset}`);
+    
     // 1) Total count
     const [countRows] = (await pool.query(
       `SELECT COUNT(*) AS cnt FROM \`${table}\``
     )) as any[];
     const total: number = countRows?.[0]?.cnt ?? 0;
     const totalPages = Math.max(1, Math.ceil(total / limit));
-
-    // 2) Page data (ordered newest first)
+    
+    console.log(`Total records: ${total}, Total pages: ${totalPages}`);
+    
+    // Validate page number against total pages
+    if (page > totalPages && total > 0) {
+      return new Response(
+        JSON.stringify({
+          error: `Page ${page} does not exist. Maximum page is ${totalPages}`,
+          total,
+          totalPages,
+          requestedPage: page,
+        }),
+        { status: 400, headers: { "Content-Type": "application/json" } }
+      );
+    }
+    
+    // 2) Page data (without ORDER BY for better performance)
     const [rows] = (await pool.query(
-      `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ? OFFSET ?`,
+      `SELECT * FROM \`${table}\` LIMIT ? OFFSET ?`,
       [limit, offset]
     )) as any[];
-
+    
+    const data = Array.isArray(rows) ? rows : [];
+    console.log(`Returned ${data.length} records for page ${page}`);
+    
     return new Response(
       JSON.stringify({
-        data: Array.isArray(rows) ? rows : [],
+        data,
         total,
         totalPages,
         page,
         limit,
+        offset,
         machineName,
         machineType: machineConfig.type,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );

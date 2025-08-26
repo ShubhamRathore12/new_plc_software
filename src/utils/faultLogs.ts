@@ -1,4 +1,4 @@
-export const PAGE_SIZE = 2500;
+export const PAGE_SIZE = 200;
 
 export interface TagData {
   tag: string;

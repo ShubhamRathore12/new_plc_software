@@ -266,7 +266,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
                 <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
                   <div className="text-xs font-bold p-1 text-center">T1</div>
                   <div className="text-xs p-1 text-center">
-                    {formatValue(data?.COLD_AIR_TEMP_T1 || data?.T1_temp_mean, "°C")}
+                    {formatValue(data?.COLD_AIR_TEMP_T1 || data?.T1_temp_mean || data?.T1_temp_mean, "°C")}
                   </div>
                 </div>
               </div>
