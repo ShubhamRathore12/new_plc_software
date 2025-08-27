@@ -314,10 +314,10 @@ export default function OperatingHoursPage() {
                     <AlertDialogFooter>
                       <AlertDialogCancel>{t("CANCEL")}</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={() => {
-                          setHours(0);
-                          setMinutes(0);
-                        }}
+                        // onClick={() => {
+                        //   setHours(0);
+                        //   setMinutes(0);
+                        // }}
                       >
                         {t("RESET")}
                       </AlertDialogAction>
