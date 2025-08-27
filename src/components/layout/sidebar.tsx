@@ -78,7 +78,7 @@ console.log(data);
               (e.target as HTMLImageElement).src = '/logo.jpeg';
             }}
           />
-          <span className="font-semibold">{data?.user?.firstName === "Prosafe" ? "Prosafe":"Grain Techniks"}</span>
+          <span className="font-semibold">{data?.user?.firstName === "Prosafe" ? "Prosafe":"Grain Technik"}</span>
         </div>
       </div>
 
