@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useParams, useRouter } from "next/navigation";
 import { useAutoData } from "@/hooks/useAutoData";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function InputsPage() {
   const router = useRouter();
@@ -138,6 +139,8 @@ const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
 
     return selectedList.map((item) => {
       const isFault = isStatusFault(item.status);
+
+      const {t} = useLanguage()
 
       return (
         <div

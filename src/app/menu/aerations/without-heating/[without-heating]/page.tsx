@@ -207,7 +207,7 @@ export default function AerationWithoutHeatingPage() {
      devices === "GTPL-122-gT-1000T-S7-1200" || 
      devices === "GTPL-121-gT-1000T-S7-1200" 
       ? t("T0") 
-      : t("TH")} ({t("After Heat(T0)")})
+      : t("TH")} ({t("After Heat")})
   </span>
   <span className="font-medium">
     {formatValue(
