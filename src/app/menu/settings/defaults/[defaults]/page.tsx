@@ -13,10 +13,12 @@ import {
   AnimatedContainer,
 } from "@/components/ui/animated-container";
 import { useAutoData } from "../../../../../hooks/useAutoData";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function DefaultsPage() {
   const router = useRouter();
   const { defaults } = useParams();
+  const {t} = useLanguage()
 
   const { data, isConnected, error, formatValue } = useAutoData(
     defaults as string
@@ -251,8 +253,8 @@ export default function DefaultsPage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">DEFAULTS</h1>
-            <p className="text-muted-foreground">System default parameters</p>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">     {t("DEFAULTS")}</h1>
+            <p className="text-muted-foreground">{t("SYSTEM_DEFAULT_PARAMETERS")}</p>
           </AnimatedContainer>
 
           <AnimatedContainer delay={1}>

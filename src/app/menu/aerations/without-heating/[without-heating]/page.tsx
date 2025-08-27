@@ -19,6 +19,7 @@ import { useAutoData } from "@/hooks/useAutoData";
 import Home from "@/components/aeration-control";
 import AerationwithHeating from "@/components/AerationwithHeating";
 import useIsMobile from "@/hooks/useIsMobile";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function AerationWithoutHeatingPage() {
   const router = useRouter();
@@ -31,6 +32,7 @@ export default function AerationWithoutHeatingPage() {
   const [duration, setDuration] = useState(12);
   const [runningHours, setRunningHours] = useState(0);
   const [runningMinutes, setRunningMinutes] = useState(0);
+  const {t} = useLanguage()
 
   const isRunning =
     data?.AERATION_WITHOUT_HEATER_START || data?.Aeration_start == 1;
@@ -64,8 +66,8 @@ export default function AerationWithoutHeatingPage() {
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
               {String(devices)?.endsWith("1200")
-                ? "AERATION"
-                : "AERATION W/O HEATING"}
+                ? t("AERATION")
+                : t("AERATION W/O HEATING")}
             </h1>
             {!isConnected && (
               <Badge variant="destructive">
@@ -107,7 +109,7 @@ export default function AerationWithoutHeatingPage() {
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">
-                    Aeration Control
+                    {t("Aeration Control")}
                   </h2>
 
                   <div className="space-y-6">
@@ -118,10 +120,12 @@ export default function AerationWithoutHeatingPage() {
                           checked={continuousMode}
                           disabled
                         />
-                        <Label htmlFor="continuous-mode">CONTINUOUS MODE</Label>
+                        <Label htmlFor="continuous-mode">
+                          {t("CONTINUOUS MODE")}
+                        </Label>
                       </div>
                     </div>
-{devices === "GTPL-115-gT-180E-S7-1200" ? null :  <Label className="mb-2 block">Set Duration</Label>}
+{devices === "GTPL-115-gT-180E-S7-1200" ? null :  <Label className="mb-2 block">{t("Set Duration")}</Label>}
          {devices === "GTPL-115-gT-180E-S7-1200" ? null :         
                     <div className="flex items-center space-x-2">
                       <Input
@@ -136,10 +140,10 @@ export default function AerationWithoutHeatingPage() {
                         min={1}
                         max={24}
                       />
-                      <span>h</span>
+                      <span>{t("h")}</span>
                     </div>
 }
-                    <Label className="mb-2 block">Running Time</Label>
+                    <Label className="mb-2 block">{t("Running Time")}</Label>
                     <div className="flex items-center space-x-4">
                       <Input
                         type="number"
@@ -151,7 +155,7 @@ export default function AerationWithoutHeatingPage() {
                         min={0}
                         max={23}
                       />
-                      <span>h</span>
+                      <span>{t("h")}</span>
                       <Input
                         type="number"
                         value={
@@ -166,7 +170,7 @@ export default function AerationWithoutHeatingPage() {
                         min={0}
                         max={59}
                       />
-                      <span>min</span>
+                      <span>{t("min")}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -174,7 +178,9 @@ export default function AerationWithoutHeatingPage() {
 
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Temperature</h2>
+                  <h2 className="text-xl font-semibold mb-4">
+                    {t("Temperature")}
+                  </h2>
                   <div className="space-y-2">
                     {/* {String(devices).endsWith('200') ? (
                       <div className="flex justify-between">
@@ -195,38 +201,42 @@ export default function AerationWithoutHeatingPage() {
 {devices === "GTPL-122-gT-1000T-S7-1200" ? null : (
                       null
                     )}
+<div className="flex justify-between">
+  <span>
+    {devices === "GTPL-124-GT-450T-S7-1200" || 
+     devices === "GTPL-122-gT-1000T-S7-1200" || 
+     devices === "GTPL-121-gT-1000T-S7-1200" 
+      ? t("T0") 
+      : t("TH")} ({t("After Heat(T0)")})
+  </span>
+  <span className="font-medium">
+    {formatValue(
+      AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed || data?.TH_temp_mean || data?.T0_temp_mean,
+      "°C"
+    )}
+  </span>
+</div>
 
-                    <div className="flex justify-between">
-                        <span>{devices === "GTPL-124-GT-450T-S7-1200" ||  devices === "GTPL-122-gT-1000T-S7-1200" || devices === 
-                        'GTPL-121-gT-1000T-S7-1200' ? "T0" : "TH"} (Supply Air)</span>
-                        <span className="font-medium">
-                          {formatValue(
-                            AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.Heater_speed ||data?.TH_temp_mean || data?.T0_temp_mean,
-                            "°C"
-                          )}
-                        </span>
-                      </div>
+<div className="flex justify-between">
+  <span>{t("Ambient(T2)")}</span>
+  <span className="font-medium">
+    {formatValue(
+      AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2 || data?.T2_temp_mean,
+      "°C"
+    )}
+  </span>
+</div>
 
-                    <div className="flex justify-between">
-                      <span>T2 (Ambient)</span>
-                      <span className="font-medium">
-                        {formatValue(
-                          AI_AMBIANT_TEMP ||
-                            data?.AMBIENT_AIR_TEMP_T2 ||
-                            data?.T2_temp_mean,
-                          "°C"
-                        )}
-                      </span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>BLOWER</span>
-                      <span className="font-medium">
-                        {formatValue(
-                          Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM ||data?.Blower_speed,
-                          "%"
-                        )}
-                      </span>
-                    </div>
+<div className="flex justify-between">
+  <span>{t("Blower")}</span>
+  <span className="font-medium">
+    {formatValue(
+      Value_to_Display_EVAP_ACT_SPEED || data?.BLOWER_RPM || data?.Blower_speed,
+      "%"
+    )}
+  </span>
+</div>
+
                  
                   </div>
                 </CardContent>

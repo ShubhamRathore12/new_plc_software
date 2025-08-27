@@ -1,39 +1,32 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
-import { Settings2, Clock, Sliders, Timer, Database } from "lucide-react";
+import { Settings2, Clock, Timer, Database } from "lucide-react";
 import { motion } from "framer-motion";
 import {
   PageTransition,
   AnimatedContainer,
 } from "@/components/ui/animated-container";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function SettingsPage() {
   const router = useRouter();
   const searchParams = useParams();
+  const { t } = useLanguage(); // translation hook
   const device = searchParams["settings"];
-  // const settingsItems = [
-  //   { icon: Settings2, title: "DEFAULTS", path: "defaults" },
-  //   { icon: Clock, title: "DATE & TIME", path: "date-time" },
-  //   // ...(device !== "S7-1200"
-  //   //   ? [{ icon: Sliders, title: "PID", path: "pid" }]
-  //   //   : []),
-  //   { icon: Timer, title: "OPERATING HOURS", path: "operating-hours" },
-  //   { icon: Database, title: "DATA LOG", path: "data-log" },
-  // ];
 
   const settingsItems = [
-  { icon: Settings2, title: "DEFAULTS", path: "defaults" },
-  { icon: Clock, title: "DATE & TIME", path: "date-time" },
-  { icon: Timer, title: "OPERATING HOURS", path: "operating-hours" },
-  { icon: Database, title: "DATA LOG", path: "data-log" },
-].filter((item) => {
-  if (String(device).includes('200') && item.title === "DATA LOG") {
-    return false;
-  }
-  return true;
-});
+    { icon: Settings2, title: "DEFAULTS", path: "defaults" },
+    { icon: Clock, title: "DATE_TIME", path: "date-time" },
+    { icon: Timer, title: "OPERATING_HOURS", path: "operating-hours" },
+    { icon: Database, title: "DATA_LOG", path: "data-log" },
+  ].filter((item) => {
+    if (String(device).includes("200") && item.title === "DATA_LOG") {
+      return false;
+    }
+    return true;
+  });
 
   const container = {
     hidden: { opacity: 0 },
@@ -56,8 +49,12 @@ export default function SettingsPage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">SETTINGS</h1>
-            <p className="text-muted-foreground">Configure system settings</p>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">
+              {t("SETTINGS")}
+            </h1>
+            <p className="text-muted-foreground">
+              {t("CONFIGURE_SYSTEM_SETTINGS")}
+            </p>
           </AnimatedContainer>
 
           <motion.div
@@ -84,7 +81,9 @@ export default function SettingsPage() {
                     >
                       <item.icon className="h-12 w-12 mb-4 text-primary" />
                     </motion.div>
-                    <h2 className="text-xl font-semibold">{item.title}</h2>
+                    <h2 className="text-xl font-semibold">
+                      {t(item.title)}
+                    </h2>
                   </CardContent>
                 </Card>
               </motion.div>

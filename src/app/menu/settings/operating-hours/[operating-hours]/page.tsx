@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useParams, useRouter } from "next/navigation";
 import { useAutoData } from "@/hooks/useAutoData";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function OperatingHoursPage() {
   const [hours, setHours] = useState(1234);
@@ -243,82 +244,82 @@ export default function OperatingHoursPage() {
     SET_TIME_SET_HOUR,
   } = data || {};
 
-  return (
+  const {t} = useLanguage()
+
+   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
-            OPERATING HOURS
+            {t("OPERATING_HOURS")}
           </h1>
-          <p className="text-muted-foreground">System runtime tracking</p>
+          <p className="text-muted-foreground">
+            {t("SYSTEM_RUNTIME_TRACKING")}
+          </p>
         </div>
 
         <Card className="max-w-md mx-auto">
           <CardContent className="p-6">
             <div className="space-y-6">
+              {/* Hours */}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="hours" className="text-right font-medium">
-                  HOURS
+                  {t("HOURS")}
                 </Label>
                 <Input
                   id="hours"
                   type="number"
-                  value={SET_TIME_SET_HOUR || data?.RUNNING_HOUR}
-                  onChange={(e) =>
-                    setHours(Number.parseInt(e.target.value) || 0)
-                  }
-                  className="col-span-2"
+                  value={data?.RUNNING_HOUR ?? hours}
                   readOnly
+                  className="col-span-2"
                 />
               </div>
 
+              {/* Minutes */}
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="minutes" className="text-right font-medium">
-                  MINUTES
+                  {t("MINUTES")}
                 </Label>
                 <div className="flex items-center gap-2 col-span-2">
                   <span>:</span>
                   <Input
                     id="minutes"
                     type="number"
-                    value={SET_TIME_SET_MINUTE || data?.RUNNING_MINUTE}
-                    onChange={(e) =>
-                      setMinutes(Number.parseInt(e.target.value) || 0)
-                    }
+                    value={data?.RUNNING_MINUTE ?? minutes}
                     readOnly
                   />
                 </div>
               </div>
 
+              {/* Buttons */}
               <div className="flex justify-between pt-4">
                 <Button
                   variant="outline"
                   onClick={() => router.push(`/menu/${defaults}`)}
                 >
-                  BACK
+                  {t("BACK")}
                 </Button>
 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive">RESET</Button>
+                    <Button variant="destructive">{t("RESET")}</Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Reset Operating Hours</AlertDialogTitle>
+                      <AlertDialogTitle>{t("RESET_OPERATING_HOURS")}</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to reset the operating hours
-                        counter? This action cannot be undone.
+                        {t("RESET_WARNING")}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogCancel>{t("CANCEL")}</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => {
                           setHours(0);
                           setMinutes(0);
                         }}
                       >
-                        Reset
+                        {t("RESET")}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -330,4 +331,5 @@ export default function OperatingHoursPage() {
       </main>
     </div>
   );
+
 }

@@ -22,6 +22,7 @@ import { useAutoData } from "@/hooks/useAutoData"; // ✅ USE HOOK
 import Home from "@/components/aeartionheating-control";
 import AerationHeating from "@/components/AerationHeating";
 import useIsMobile from "@/hooks/useIsMobile";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function AerationWithHeatingPage() {
   const router = useRouter();
@@ -39,6 +40,7 @@ export default function AerationWithHeatingPage() {
   const [deltaTemp, setDeltaTemp] = useState(8);
   const [runningHours, setRunningHours] = useState(0);
   const [runningMinutes, setRunningMinutes] = useState(0);
+  const {t} = useLanguage()
 
   const {
     AI_RH_Analog_Scale,
@@ -90,7 +92,7 @@ export default function AerationWithHeatingPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              AERATION WITH HEATING
+              {t("AERATION WITH HEATING")}
             </h1>
             {!isConnected && (
               <Badge variant="destructive">
@@ -132,7 +134,7 @@ export default function AerationWithHeatingPage() {
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">
-                    Aeration Control
+                      {t("Aeration Control")}
                   </h2>
                   <div className="space-y-6">
                     <div className="flex items-center space-x-2">
@@ -141,7 +143,7 @@ export default function AerationWithHeatingPage() {
                         checked={data?.CONTINUOUS_MODE == 'tr' || data?.Continuous_mode == 'tr'}
             
                       />
-                      <Label htmlFor="continuous-mode">CONTINUOUS MODE</Label>
+                      <Label htmlFor="continuous-mode">{t("Continuous Mode")}</Label>
                     </div>
 
                     {!data?.CONTINUOUS_MODE || !data?.Continuous_mode && (
@@ -151,7 +153,7 @@ export default function AerationWithHeatingPage() {
                         exit={{ height: 0, opacity: 0 }}
                         transition={{ duration: 0.3 }}
                       >
-                        <Label className="mb-2 block">Set Duration</Label>
+                        <Label className="mb-2 block">{t("Set Duration")}</Label>
                         <div className="flex items-center space-x-2">
                           <Input
                             type="number"
@@ -163,7 +165,7 @@ export default function AerationWithHeatingPage() {
                             min={1}
                             max={24}
                           />
-                          <span>h</span>
+                          <span>{t("h")}</span>
                         </div>
                       </motion.div>
                     )}
@@ -185,7 +187,7 @@ export default function AerationWithHeatingPage() {
                       </div>
                     </div>
 
-                    <Label className="mb-2 block">Running Time</Label>
+                    <Label className="mb-2 block">{t("Running Time")}</Label>
                     <div className="flex items-center space-x-4">
                       <Input
                         type="number"
@@ -197,7 +199,7 @@ export default function AerationWithHeatingPage() {
                         min={0}
                         max={23}
                       />
-                      <span>h</span>
+                      <span>{t("h")}</span>
                       <Input
                         type="number"
                         value={data?.RUNNING_MINUTE1 || runningMinutes || data?.Running_time_minute}
@@ -210,7 +212,7 @@ export default function AerationWithHeatingPage() {
                         min={0}
                         max={59}
                       />
-                      <span>min</span>
+                      <span>{t("min")}</span>
                     </div>
                   </div>
                 </CardContent>
@@ -218,11 +220,12 @@ export default function AerationWithHeatingPage() {
 
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Temperature</h2>
+                  <h2 className="text-xl font-semibold mb-4">{t("Temperature")}</h2>
                   <div className="space-y-2">
                     {AI_TH_Act !== null && (
                       <div className="flex justify-between">
-                        <span>{devices === 'GTPL-121-gT-1000T-S7-1200' ? "T0":"TH (Supply Air)"}</span>
+                        <span>{devices === 'GTPL-121-gT-1000T-S7-1200' ? t("T0") 
+      : t("TH")} ({t("After Heat(T0)")})</span>
                         <span className="font-medium">
                           {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean || data?.TH_temp_mean || data?.T0_temp_mean, "°C")}
                         </span>
@@ -239,7 +242,7 @@ export default function AerationWithHeatingPage() {
                     )}
                     {Value_to_Display_EVAP_ACT_SPEED !== null && (
                       <div className="flex justify-between">
-                        <span>BLOWER</span>
+                        <span>{t("BLOWER")}</span>
                         <span className="font-medium">
                           {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.Blower_speed, "%")}
                         </span>

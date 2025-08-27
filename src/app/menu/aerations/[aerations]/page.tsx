@@ -9,6 +9,7 @@ import {
   AnimatedContainer,
 } from "@/components/ui/animated-container";
 import { useParams, useRouter } from "next/navigation";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function AerationPage() {
   const router = useRouter();
@@ -16,6 +17,7 @@ export default function AerationPage() {
   const device = aerations?.toString();
 
   const [shouldRender, setShouldRender] = useState(true);
+  const {t } = useLanguage()
 
   useEffect(() => {
     if (device === "GTPL-122-gT-1000T-S7-1200" || device=== "GTPL-124-GT-450T-S7-1200" ||device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-132-GT-650T-S7-1200") {
@@ -31,8 +33,8 @@ export default function AerationPage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">AERATION</h1>
-            <p className="text-muted-foreground">Select an aeration mode</p>
+            <h1 className="text-3xl font-bold tracking-tight mb-2">{t("AERATION")}</h1>
+            <p className="text-muted-foreground">{t("Select an aeration mode")}</p>
           </AnimatedContainer>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
@@ -55,10 +57,10 @@ export default function AerationPage() {
                     <Wind className="h-16 w-16 mb-6 text-primary" />
                   </motion.div>
                   <h2 className="text-2xl font-semibold mb-4">
-                    AERATION W/O HEATING
+                    {t("AERATION W/O HEATING")}
                   </h2>
                   <p className="text-muted-foreground">
-                    Standard aeration process without additional heating
+                    {t("Standard aeration process without additional heating")}
                   </p>
                 </CardContent>
               </Card>
@@ -85,10 +87,10 @@ export default function AerationPage() {
                     <Thermometer className="h-8 w-8 text-red-500 absolute -bottom-2 -right-2" />
                   </motion.div>
                   <h2 className="text-2xl font-semibold mb-4">
-                    AERATION WITH HEATING
+                    {t("AERATION WITH HEATING")}
                   </h2>
                   <p className="text-muted-foreground">
-                    Enhanced aeration process with temperature control
+                    {t("Enhanced aeration process with temperature control")}
                   </p>
                 </CardContent>
               </Card>

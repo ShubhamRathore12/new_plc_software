@@ -21,11 +21,13 @@ import Fan from "../../../../../public/images/fan.png";
 import useIsMobile from "@/hooks/useIsMobile";
 import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 import AutoDiagram1 from "@/components/AutoDiagram1";
+import { useLanguage } from "@/providers/language-provider";
 
 export default function AutoPage() {
   const router = useRouter();
   const { auto } = useParams();
   const { data, isConnected, error, formatValue } = useAutoData(auto as string);
+  const { t } = useLanguage();
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
@@ -319,7 +321,7 @@ export default function AutoPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              SELECT AUTO
+             {t("SELECT AUTO")}
             </h1>
             <p className="text-muted-foreground">
               SR. NO. {auto}
@@ -373,77 +375,61 @@ export default function AutoPage() {
                 </CardContent>
               </Card> */}
 
-              <Card>
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Temperature</h2>
-                  <div className="space-y-2">
-                    {Object.entries(currentConfig.temperatureSensors).map(
-                      ([key, sensor]) => {
-                        const value = data?.[sensor.key];
-                        return  (
-                          <div key={key} className="flex justify-between">
-                            <span>{sensor.label}</span>
-                            <span className="font-medium">
-                              {formatValue(value, "°C")}
-                            </span>
-                          </div>
-                        );
-                      }
-                    )}
-                    {/* <div className="flex justify-between">
-                      <span>TH - T1</span>
-                      <span className="font-medium">
-                        {formatValue(data.AI_TH_Act || data?.Th_T1, "°C")}
-                      </span>
-                    </div> */}
-              {Object.entries(currentConfig.controls).map(([key, control]) => {
-  // Don't show Heater if machine ends with S7-200
-  if (
-    control.label === "Heater" &&
-    (auto as string)?.endsWith("200")
-  ) {
-    return null;
-  }
+         <Card>
+  <CardContent className="p-6">
+    {/* Heading with i18n */}
+    <h2 className="text-xl font-semibold mb-4">
+      {t("Temperature")}
+    </h2>
 
-  return (
-    <div key={key} className="flex justify-between">
-      <span>{control.label}</span>
-      <span className="font-medium">
-        {formatValue(data?.[control.key], "%")}
-      </span>
+    <div className="space-y-2">
+      {/* Temperature sensors */}
+      {Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => {
+        const value = data?.[sensor.key];
+        return (
+          <div key={key} className="flex justify-between">
+            <span>{t(sensor.label)}</span>
+            <span className="font-medium">
+              {formatValue(value, "°C")}
+            </span>
+          </div>
+        );
+      })}
+
+      {/* Controls */}
+      {Object.entries(currentConfig.controls).map(([key, control]) => {
+        // Example: don't show Heater if machine ends with 200
+        if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
+          return null;
+        }
+        return (
+          <div key={key} className="flex justify-between">
+            <span>{t(control.label)}</span>
+            <span className="font-medium">
+              {formatValue(data?.[control.key], "%")}
+            </span>
+          </div>
+        );
+      })}
+
+      {/* Compressor values */}
+      <div className="flex justify-between">
+        <span>{t("LP")}</span>
+        <span className="font-medium">
+          {formatValue(data?.[currentConfig.compressor.lp])}
+        </span>
+      </div>
+
+      <div className="flex justify-between">
+        <span>{t("HP")}</span>
+        <span className="font-medium">
+          {formatValue(data?.[currentConfig.compressor.hp])}
+        </span>
+      </div>
     </div>
-  );
-})}
+  </CardContent>
+</Card>
 
-              <div className="flex justify-between">
-  <span>LP</span>
-  <span className="font-medium">
-    {formatValue(data?.[currentConfig.compressor.lp])}
-  </span>
-</div>
-<div className="flex justify-between">
-  <span>HP</span>
-  <span className="font-medium">
-    {formatValue(data?.[currentConfig.compressor.hp])}
-  </span>
-</div>
-
-
-                    {/* <div className="flex justify-between">
-                      <span>Mode Status</span>
-                      <span className="font-medium">
-                        {formatValue(data?.mode_status, "%")}
-                      </span>
-                    </div> */}
-                    {/* <div className="flex justify-between">
-                      <span>Water Pressure</span>
-                      <span className="font-medium">
-                        {formatValue(data?.water_pressure, "%")}
-                      </span>
-                    </div> */}
-                  </div>
-                </CardContent>
-              </Card>
 
               <motion.div
                 className="flex gap-4"
@@ -453,7 +439,7 @@ export default function AutoPage() {
               >
                 {!isRunning ? (
                   <Button className="flex-1" onClick={handleStart}>
-                    START
+                    {t("Start")}
                   </Button>
                 ) : (
                   <Button
@@ -461,7 +447,7 @@ export default function AutoPage() {
                     className="flex-1"
                     onClick={handleStop}
                   >
-                    STOP
+                    {t("Back")}
                   </Button>
                 )}
 

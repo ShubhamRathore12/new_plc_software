@@ -100,9 +100,9 @@ export default function Home() {
             <div className="flex justify-center mb-4">
               <Logo size="lg" />
             </div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2">MENU</h1>
+            <h1 className="text-3xl font-bold tracking-tight mb-2"> {t("MENU")}</h1>
             <h1 className="text-3xl font-bold tracking-tight mb-2">{device}</h1>
-            <p className="text-muted-foreground">Select an option to continue</p>
+            <p className="text-muted-foreground"> {t("Select an option to continue")}</p>
 
             <div className="absolute right-0 top-0 flex items-center space-x-2">
               <span className="text-sm font-medium text-muted-foreground">

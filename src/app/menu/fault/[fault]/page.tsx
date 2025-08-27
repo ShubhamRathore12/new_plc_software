@@ -16,6 +16,7 @@ import {
   getMachineType,
   isActiveTag,
 } from "@/lib/faultConfig";
+import { useLanguage } from "@/providers/language-provider";
 
 interface FaultCode {
   code: number;
@@ -31,7 +32,7 @@ export default function FaultPage() {
   // Resolve machine name using the configuration
   const machineName = resolveMachineName(fault as string);
   const { data, isConnected, error, formatValue } = useAutoData(machineName);
-
+const {t} = useLanguage()
   // Get machine configuration
   const machineConfig = getMachineConfig(machineName);
   const machineType = getMachineType(machineName);
@@ -118,10 +119,10 @@ export default function FaultPage() {
         <main className="flex-1 container py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              Active Alarms - {machineType}
+              {t("Active Alarms")} - {machineType}
             </h1>
             <p className="text-muted-foreground">
-              Current active fault tags for {machineName}
+              {t("Current active fault tags for")} {machineName}
             </p>
             {!isConnected && (
               <div className="mt-2 p-2 bg-yellow-100 text-yellow-800 rounded">
@@ -141,13 +142,13 @@ export default function FaultPage() {
               variant="secondary"
               onClick={() => setCurrentView("faultCodes")}
             >
-              Fault Codes
+              {t("Fault Codes")}
             </Button>
             <Button
               variant="secondary"
               onClick={() => setCurrentView("allPaginatedLogs")}
             >
-              Alarm History
+              {t("Alarm History")}
             </Button>
           </div>
 
@@ -155,10 +156,10 @@ export default function FaultPage() {
             <CardContent className="p-6">
               <div className="mb-4">
                 <h3 className="text-lg font-semibold">
-                  Active Tags 
+                  {t("Active Tags")}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Showing currently active fault conditions
+                  {t("Showing currently active fault conditions")}
                 </p>
               </div>
               
@@ -182,16 +183,14 @@ export default function FaultPage() {
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
-            FAULT CODES - {machineType}
+            {t("Fault Codes")} - {machineType}
           </h1>
           <p className="text-muted-foreground">
-            System fault codes and descriptions for {machineName}
+            {t("System fault codes and descriptions for")} {machineName}
           </p>
           {machineConfig && (
             <div className="mt-2 flex gap-2">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                Table: {machineConfig.table}
-              </span>
+            
               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
                 Type: {machineConfig.type}
               </span>
@@ -203,13 +202,13 @@ export default function FaultPage() {
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-semibold">
-                Fault Codes ({faultCodes.length} total)
+                {t("Fault Codes")} ({faultCodes.length} {t("total")})
               </h3>
               <Button
                 variant="secondary"
                 onClick={() => setCurrentView("faultLogs")}
               >
-                View Active Alarms
+                {t("View Active Alarms")}
               </Button>
             </div>
 
