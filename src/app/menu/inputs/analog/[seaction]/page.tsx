@@ -85,6 +85,7 @@ export default function AnalogPage() {
     {  description: "Cond. Fan speed", value: "55", unit: "%" },
     {  description: "Hot gas valve", value: "0", unit: "%" },
     {  description: "Afterheat valve", value: "42", unit: "%" },
+      { description: "Heater", value: "0", unit: "%" },
  
   ];
 
@@ -93,6 +94,7 @@ export default function AnalogPage() {
     inputs: {
       "Suction pressure": "LP_value",
       "Discharge pressure": "HP_value",
+      
       "T0 probe #1 (Afterheater)": "T0_1_air_outlet_temp",
       "T0 probe #2 (Afterheater)": "T0_2_air_outlet_temp",
       "T1 probe #1 (Cold Air)": "T1_1_cold_air_temp",
@@ -101,12 +103,14 @@ export default function AnalogPage() {
       "T2 probe #2 (Ambient Air)": "T2_2_ambient_temp",
       "TH probe #1 (Supply Air)": "TH_1_supply_air_temp",
       "TH probe #2 (Supply Air)": "TH_2_supply_air_temp",
+       
     },
     outputs: {
       "Blower speed": "Blower_speed",
       "Cond. Fan speed": "Cond_fan_speed",
       "Hot gas valve": "Hot_valve_speed",
       "Afterheat valve": "AHT_vale_speed",
+       "Heater": "Heater_speed",
       
     },
   };
@@ -116,15 +120,16 @@ export default function AnalogPage() {
     outputs: Record<string, string>;
     displayName: string;
   }> = {
-    // All these machines share the same configuration
+   
     "GTPL-115-gT-180E-S7-1200": sharedS7_1200_config,
     "GTPL-30-gT-180E-S7-1200": sharedS7_1200_config,
     "GTPL-119-gT-180E-S7-1200": sharedS7_1200_config,
     "GTPL-120-gT-180E-S7-1200": sharedS7_1200_config,
     "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
     "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
+    'GTPL-124-GT-450T-S7-1200':sharedS7_1200_config,
   
-    // Fallback/default
+
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -138,12 +143,14 @@ export default function AnalogPage() {
         "T2 probe #2 (Ambient Air)": "AMBIENT_AIR_TEMP_T2",
         "TH probe #1 (Supply Air)": "AFTER_HEATER_TEMP_Th",
         "TH probe #2 (Supply Air)": "AFTER_HEATER_TEMP_Th",
+            
       },
       outputs: {
         "Blower speed": "BLOWER_RPM",
         "Cond. Fan speed": "Cond_fan_speed",
         "Hot gas valve": "HOT_GAS_VALVE_RPM",
         "Afterheat valve": "AFTER_HEAT_VALVE_RPM",
+         "Heater": "Heater_speed",
 
       }
     }
@@ -171,9 +178,9 @@ export default function AnalogPage() {
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">ANALOG</h1>
-          <h2 className="text-xl font-semibold text-blue-600 mb-2">
+          {/* <h2 className="text-xl font-semibold text-blue-600 mb-2">
             {currentMachineConfig.displayName}
-          </h2>
+          </h2> */}
           <p className="text-muted-foreground">
             Analog inputs and outputs
             {!isConnected && " (Disconnected)"}
@@ -189,7 +196,7 @@ export default function AnalogPage() {
                   <div key={section.section} className="space-y-4">
                     <h2 className="text-lg font-semibold">{section.section}</h2>
                     <div className="space-y-2 pl-4">
-                      {section.items.map((item) => {
+                      {/* {section.items.map((item) => {
                         const liveKey = analogInputValueMap[item.description];
                         const liveValue = liveKey ? data?.[liveKey] : undefined;
 
@@ -205,7 +212,34 @@ export default function AnalogPage() {
                             </div>
                           </div>
                         );
-                      })}
+                      })} */}
+                      {section.items
+  .filter((item) => {
+    // If machine is GTPL-115-gT-180E-S7-1200, remove TH probes
+    if (
+      device === "GTPL-124-GT-450T-S7-1200" 
+    ) {
+      return !item.description.startsWith("TH probe");
+    }
+    return true;
+  })
+  .map((item) => {
+    const liveKey = analogInputValueMap[item.description];
+    const liveValue = liveKey ? data?.[liveKey] : undefined;
+
+    return (
+      <div
+        key={item.description}
+        className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
+      >
+        <div className="flex-1">{item.description}</div>
+        <div className="font-medium text-right w-20">
+          {formatValue(liveValue) ?? item.value} {item.unit}
+        </div>
+      </div>
+    );
+  })}
+
                     </div>
                   </div>
                 ))}

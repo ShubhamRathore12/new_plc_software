@@ -199,8 +199,7 @@
   "Blower": "Blower",
   "LP": "LP",
   "HP": "HP",
-  "Start": "Start",
-  "Back": "Back",
+ 
    "AERATION W/O HEATING": "AERATION W/O HEATING",
   "Standard aeration process without additional heating": "Standard aeration process without additional heating",
   "AERATION WITH HEATING": "AERATION WITH HEATING",
@@ -250,7 +249,8 @@
   "RESET": "Reset",
   "RESET_OPERATING_HOURS": "Reset Operating Hours",
   "RESET_WARNING": "Are you sure you want to reset the operating hours counter? This action cannot be undone.",
-  "CANCEL": "Cancel"
+  "CANCEL": "Cancel",
+  "Supply Air": "Supply Air"
 
 
 }

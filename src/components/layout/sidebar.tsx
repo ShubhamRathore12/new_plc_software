@@ -7,7 +7,7 @@ import { useDataStore, useSidebarStore } from "@/lib/store";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Img from "../../../public/logo.jpeg";
+import Img from "../../../public/logo.png";
 import { useLanguage } from "@/providers/language-provider";
 
 // Define types
@@ -71,14 +71,14 @@ console.log(data);
               ? "https://tse4.mm.bing.net/th/id/OIP.ce32nMlZhhVQW72b6lMcawAAAA?rs=1&pid=ImgDetMain&o=7&rm=3"
               : Img} 
             alt="logo" 
-            width={100} 
-            height={100}
+            width={200} 
+            height={200}
             priority
             onError={(e) => {
               (e.target as HTMLImageElement).src = '/logo.jpeg';
             }}
           />
-          <span className="font-semibold">{data?.user?.firstName === "Prosafe" ? "Prosafe":"Grain Technik"}</span>
+          <span className="font-semibold">{data?.user?.firstName === "Prosafe" ? "Prosafe":null}</span>
         </div>
       </div>
 

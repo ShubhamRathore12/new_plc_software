@@ -199,8 +199,7 @@
   "Blower": "Gebläse",
   "LP": "LP",
   "HP": "HP",
-  "Start": "Start",
-  "Back": "Zurück",
+
   "AERATION W/O HEATING": "BELÜFTUNG OHNE HEIZUNG",
   "Standard aeration process without additional heating": "Standard-Belüftungsprozess ohne zusätzliche Heizung",
   "AERATION WITH HEATING": "BELÜFTUNG MIT HEIZUNG",
@@ -251,7 +250,8 @@
   "RESET": "Zurücksetzen",
   "RESET_OPERATING_HOURS": "Betriebsstunden zurücksetzen",
   "RESET_WARNING": "Sind Sie sicher, dass Sie den Betriebsstundenzähler zurücksetzen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
-  "CANCEL": "Abbrechen"
+  "CANCEL": "Abbrechen",
+   "Supply Air":"Zuluft" 
 
 
 

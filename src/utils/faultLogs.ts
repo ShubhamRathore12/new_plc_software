@@ -4,7 +4,7 @@ export interface TagData {
   tag: string;
   value: boolean | string | number | null | undefined;
   createdAt: string;
-  created_at?:string
+  created_at?: string;
 }
 
 export interface Stats {
@@ -246,7 +246,12 @@ export function extractTagDataFromRecords(
 
     for (const tag of tags) {
       const value = (record as any)[tag];
-      if (value !== undefined && value !== null && value !== "") {
+      if (
+        value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        isTrueLike(value)
+      ) {
         tagData.push({ tag, value, createdAt: timestamp });
       }
     }
@@ -274,4 +279,15 @@ export function getTableNameForMachine(machineName: string): string {
 
 export function getMachinePrefix(machineName: string): string {
   return machineName.split("-")[0];
+}
+
+// Helpers
+export function isTrueLike(value: unknown): boolean {
+  if (typeof value === "boolean") return value === true;
+  if (typeof value === "number") return value === 1;
+  if (typeof value === "string") {
+    const v = value.trim().toLowerCase();
+    return v === "true" || v === "tr" || v === "1" || v === "yes" || v === "on";
+  }
+  return false;
 }

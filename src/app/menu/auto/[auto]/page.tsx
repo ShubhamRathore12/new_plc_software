@@ -87,6 +87,8 @@ export default function AutoPage() {
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
+
+
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
@@ -413,6 +415,15 @@ export default function AutoPage() {
       })}
 
       {/* Compressor values */}
+{['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200', 'GTPL-121-gT-1000T-S7-1200', 'GTPL-124-GT-450T-S7-1200'].includes(auto as string) &&
+ <div className="flex justify-between">
+        <span>{t("Heater")}</span>
+        <span className="font-medium">
+          {formatValue(data?.Heater_speed, "%")}
+        </span>
+      </div>
+}
+          
       <div className="flex justify-between">
         <span>{t("LP")}</span>
         <span className="font-medium">
@@ -437,7 +448,7 @@ export default function AutoPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 2.6 }}
               >
-                {!isRunning ? (
+                {/* {!isRunning ? (
                   <Button className="flex-1" onClick={handleStart}>
                     {t("Start")}
                   </Button>
@@ -447,9 +458,9 @@ export default function AutoPage() {
                     className="flex-1"
                     onClick={handleStop}
                   >
-                    {t("Back")}
+                    {t("Stop")}
                   </Button>
-                )}
+                )} */}
 
                 {auto === "Gtpl-S7-1200-02" && (
                   <div className="flex items-center gap-2">

@@ -1,17 +1,26 @@
-import { PAGE_SIZE } from "@/utils/faultLogs";
-
 interface Props {
   currentPage: number;
   totalPages: number;
+  total: number;
   loading: boolean;
   onPageChange: (page: number) => void;
 }
 
-export default function PaginationControls({ currentPage, totalPages, loading, onPageChange }: Props) {
+export default function PaginationControls({
+  currentPage,
+  totalPages,
+  total,
+  loading,
+  onPageChange,
+}: Props) {
   const delta = 2;
   const visiblePages: number[] = [];
 
-  for (let i = Math.max(2, currentPage - delta); i <= Math.min(totalPages - 1, currentPage + delta); i++) {
+  for (
+    let i = Math.max(2, currentPage - delta);
+    i <= Math.min(totalPages - 1, currentPage + delta);
+    i++
+  ) {
     visiblePages.push(i);
   }
 
@@ -24,7 +33,7 @@ export default function PaginationControls({ currentPage, totalPages, loading, o
   return (
     <div className="flex items-center justify-between mt-6">
       <div className="text-sm text-gray-700">
-        Showing page {currentPage} of {totalPages} ({totalPages * PAGE_SIZE} total records)
+        Showing page {currentPage} of {totalPages} ({total} total records)
       </div>
       <div className="flex items-center space-x-2">
         <button
@@ -43,8 +52,8 @@ export default function PaginationControls({ currentPage, totalPages, loading, o
               page === currentPage
                 ? "bg-blue-600 text-white"
                 : page === "..."
-                ? "text-gray-400 cursor-default"
-                : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                  ? "text-gray-400 cursor-default"
+                  : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
             }`}
           >
             {page}

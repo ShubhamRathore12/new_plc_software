@@ -38,7 +38,7 @@ export default function OutputsPage() {
       ];
       
     } 
-    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === "GTPL-117-gT-320E-S7-1200") {
+    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === "GTPL-117-gT-320E-S7-1200" ||  deviceType === 'GTPL-30-gT-180E-S7-1200') {
     return [
   { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
   { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },
@@ -96,8 +96,7 @@ export default function OutputsPage() {
 
   const outputsData = getOutputsConfig(device || "");
 
-  // Function to get status from dynamic data
-// Function to get status from dynamic data based on device type
+
 const getStatus = (dataKey: string) => {
   if (!data) return false;
   const value = data[dataKey];
@@ -118,6 +117,32 @@ const getStatus = (dataKey: string) => {
   // Default fallback
   return value === true || value === 1 || value === "1" || value === "tr"|| value === "True" || value === "true";
 };
+
+const getStatusColor = (key: string, status: boolean) => {
+  switch (key) {
+    case "Chiller_healthy_on_Q1_1":
+      return status ? "bg-green-500" : "bg-red-500";
+
+    case "Chiller_Fault_on_Q2_0" :
+      return status ?   "bg-red-500" :"bg-green-500";
+
+       case "Chiller_fault_Q2_3" :
+      return status ?   "bg-red-500" :"bg-green-500";
+
+    case "Collective_Trouble_Signal_on_Q2_1":
+      return status ? "bg-yellow-500" : "bg-red-500";
+
+       case "Collective_trouble_signal_Q1_0":
+      return status ? "bg-yellow-500" : "bg-red-500";
+
+    case "Buzzer_on_Q2_2":
+      return status ?  "bg-red-500" :"bg-green-500" ;
+
+    default:
+      return status ? "bg-green-500" : "bg-gray-500"; 
+  }
+};
+
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -155,11 +180,7 @@ const getStatus = (dataKey: string) => {
                       <div className="font-mono text-sm">{output.id}</div>
                       <div className="flex-1">{output.description}</div>
                       <div
-                        className={`w-4 h-4 rounded-full ${
-                          status
-                            ? "bg-green-500"
-                            : "bg-red-500"
-                        }`}
+                      className={`w-4 h-4 rounded-full ${getStatusColor(output.dataKey, status)}`}
                       ></div>
                     </div>
                   );

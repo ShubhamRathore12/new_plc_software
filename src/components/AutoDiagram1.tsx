@@ -293,12 +293,12 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   style={{
     left: "calc(200px * 100% / 1200px)",
     top: "calc(430px * 100% / 600px)",
-    transform: ['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name))
+    transform: ['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-118-gT-80E-P-S7-200','GTPL-108-gT-40E-P-S7-200','GTPL-109-gT-40E-P-S7-200','GTPL-110-gT-40E-P-S7-200','GTPL-111-gT-80E-P-S7-200','GTPL-112-gT-80E-P-S7-200','GTPL-113-gT-80E-P-S7-200'].some(name => machineName.includes(name))
       ? "translate(230%,650%)"
       : "translateY(620%)",
   }}
 >
-              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].some(name => machineName.includes(name)) && (
+              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-118-gT-80E-P-S7-200','GTPL-108-gT-40E-P-S7-200','GTPL-109-gT-40E-P-S7-200','GTPL-110-gT-40E-P-S7-200','GTPL-111-gT-80E-P-S7-200','GTPL-112-gT-80E-P-S7-200','GTPL-113-gT-80E-P-S7-200'].some(name => machineName.includes(name)) && (
                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
                   <div className="text-sm font-bold">{formatValue(data.Value_to_Display_HEATER || data?.Heater_speed, "%")}</div>

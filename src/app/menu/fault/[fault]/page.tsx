@@ -119,7 +119,7 @@ const {t} = useLanguage()
         <main className="flex-1 container py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {t("Active Alarms")} - {machineType}
+              {t("Active Alarms")} 
             </h1>
             <p className="text-muted-foreground">
               {t("Current active fault tags for")} {machineName}
