@@ -41,13 +41,53 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
     return () => clearInterval(interval);
   }, [compressorTime]);
 
-  const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true" || data?.['Chiller_healthy_on_Q1_1'] === "True" || data?.['Chiller_healthy_on'] === "True" ||  data?.['Chiller_healthy'] === "True"
+  // Helper function to check if a value represents "true"
+const isTrueValue = (value:any) => {
+  if (!value) return false;
+  const normalizedValue = String(value).toLowerCase();
+  return normalizedValue === "true" || normalizedValue === "tr" || normalizedValue === "True";
+};
 
+// Green light conditions
+const greenLightFields = [
+  "GREEN_LIGHT",
+  "Chiller_healthy_(Q1.1)",
+  "Chiller_healthy_on_Q1_1",
+  "Chiller_healthy_on",
+  "Chiller_healthy"
+];
 
-  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true" || data?.['Chiller_Fault_on_Q2_0'] === "True"  || data?.['Chiller_Fault_on'] === "True" || data?.['Chiller_Fault'] === "True" || data?.['Chiller_fault_Q2_3'] === "True"
+// Red light conditions  
+const redLightFields = [
+  "RED_LIGHT",
+  "Chiller_fault_(Q2.3)",
+  "Chiller_Fault_on_Q2_0",
+  "Chiller_Fault_on",
+  "Chiller_Fault",
+  "Chiller_fault_Q2_3"
+];
 
+// Yellow light conditions
+const yellowLightFields = [
+  "YELLOW_LIGHT",
+  "System_warnning_(Q1.0)",
+  "Collective_Trouble_Signal_on_Q2_1",
+  "Collective_Trouble_Signal_on",
+  "Collective_Trouble_Signal",
+  "Collective_trouble_signal_Q1_0"
+];
 
-  const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.["System_warnning_(Q1.0)"] === "true" || data?.['Collective_Trouble_Signal_on_Q2_1'] === 'True' || data?.['Collective_Trouble_Signal_on'] === "True" || data?.['Collective_Trouble_Signal'] === "True" || data?.['Collective_trouble_signal_Q1_0'] === "True"
+// Check conditions
+const greenOn = greenLightFields.some(field => isTrueValue(data?.[field]));
+const redOn = redLightFields.some(field => isTrueValue(data?.[field]));
+const yellowOn = yellowLightFields.some(field => isTrueValue(data?.[field]));
+
+// Alternative: One-liner version if you prefer
+const checkTrueValue = (val:any) => val && ["true", "tr","True"].includes(String(val).toLowerCase());
+
+const greenOnAlt = greenLightFields.some(field => checkTrueValue(data?.[field]));
+const redOnAlt = redLightFields.some(field => checkTrueValue(data?.[field]));
+const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]));
 
 
   // Helper for lamp color
