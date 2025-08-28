@@ -44,7 +44,7 @@ export default function AutoDiagram1({ blower, data, formatValue, machineName }:
   const greenOn = data?.GREEN_LIGHT === "tr" || data?.["Chiller_healthy_(Q1.1)"] === "true" || data?.['Chiller_healthy_on_Q1_1'] === "True" || data?.['Chiller_healthy_on'] === "True" ||  data?.['Chiller_healthy'] === "True"
 
 
-  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true" || data?.['Chiller_Fault_on_Q2_0'] === "True"  || data?.['Chiller_Fault_on'] === "True" || data?.['Chiller_Fault'] === "True"
+  const redOn = data?.RED_LIGHT === "tr" || data?.["Chiller_fault_(Q2.3)"] === "true" || data?.['Chiller_Fault_on_Q2_0'] === "True"  || data?.['Chiller_Fault_on'] === "True" || data?.['Chiller_Fault'] === "True" || data?.['Chiller_fault_Q2_3'] === "True"
 
 
   const yellowOn = data?.YELLOW_LIGHT === "tr" || data?.["System_warnning_(Q1.0)"] === "true" || data?.['Collective_Trouble_Signal_on_Q2_1'] === 'True' || data?.['Collective_Trouble_Signal_on'] === "True" || data?.['Collective_Trouble_Signal'] === "True" || data?.['Collective_trouble_signal_Q1_0'] === "True"
