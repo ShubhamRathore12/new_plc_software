@@ -227,21 +227,22 @@ export default function RegistrationForm() {
   }
   const monitorOptions = [
     { value: "devices", label: formatText(t("devices")) },
-    { value: "notifications", label: formatText(t("notifications")) },
+    // { value: "notifications", label: formatText(t("notifications")) },
     { value: "contacts", label: formatText(t("contacts")) },
-    { value: "clusters", label: formatText(t("clusters")) },
+    // { value: "clusters", label: formatText(t("clusters")) },
     { value: "reports", label: formatText(t("reports")) },
-    { value: "triggers", label: formatText(t("triggers")) },
-    { value: "auto", label: formatText(t("auto")) },
-    { value: "aeration", label: formatText(t("aeration")) },
-    { value: "fault", label: formatText(t("fault")) },
-    { value: "settings", label: formatText(t("settings")) },
-    { value: "inputs", label: formatText(t("inputs")) },
-    { value: "outputs", label: formatText(t("outputs")) },
-    { value: "test", label: formatText(t("test")) },
-    { value: "screen-brightness", label: formatText(t("screen_brightness")) },
+    // { value: "triggers", label: formatText(t("triggers")) },
+    // { value: "auto", label: formatText(t("auto")) },
+    // { value: "aeration", label: formatText(t("aeration")) },
+    // { value: "fault", label: formatText(t("fault")) },
+    // { value: "settings", label: formatText(t("settings")) },
+    // { value: "inputs", label: formatText(t("inputs")) },
+    // { value: "outputs", label: formatText(t("outputs")) },
+    // { value: "test", label: formatText(t("test")) },
+    // { value: "screen-brightness", label: formatText(t("screen_brightness")) },
     { value: "manufacturer", label: formatText(t("manufacturer")) },
     { value: "customer", label: formatText(t("customer")) },
+    {value:"Registration",label:formatText(t("Registration"))},
 
     // ✅ Devices manually added here
     {
