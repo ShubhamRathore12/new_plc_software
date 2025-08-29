@@ -76,9 +76,39 @@ export async function GET(req: Request) {
       for (const [k, v] of Object.entries(row)) {
         if (v === null || v === undefined) obj[k] = "";
         else if (v instanceof Date) {
-          const indiaTime = new Date(v.getTime() + (330 * 60000)); // add 5.5 hours (330 minutes)
-          const indiaTimeString = indiaTime.toISOString().slice(0, 19).replace("T", " ");
-          obj[k] = indiaTimeString;
+          // Check if the table is for Germany machines or India machines
+          const germanyTables = [
+            "GTPL_108_gT_40E_P_S7_200_Germany",
+            "GTPL_109_gT_40E_P_S7_200_Germany", 
+            "GTPL_110_gT_40E_P_S7_200_Germany",
+            "GTPL_111_gT_80E_P_S7_200_Germany",
+            "GTPL_112_gT_80E_P_S7_200_Germany",
+            "GTPL_113_gT_80E_P_S7_200_Germany",
+            "GTPL_114_GT_140E_S7_1200",
+            "GTPL_115_GT_180E_S7_1200",
+            "GTPL_119_GT_180E_S7_1200",
+            "GTPL_120_GT_180E_S7_1200",
+            "GTPL_116_GT_240E_S7_1200",
+            "GTPL_117_GT_320E_S7_1200",
+            "GTPL_121_GT1000T",
+            "GTPL_124_GT_450T_S7_1200",
+            "GTPL_131_GT_650T_S7_1200",
+            "GTPL_132_GT_650T_S7_1200"
+          ];
+          const isGermanyMachine = germanyTables.includes(table);
+          
+          if (isGermanyMachine) {
+            // Convert to Germany time (3.5 hours behind India time)
+            // India is UTC+5:30, so Germany is UTC+2:00 (5:30 - 3:30 = 2:00)
+            const germanyTime = new Date(v.getTime() + (120 * 60000)); // add 2 hours (120 minutes)
+            const germanyTimeString = germanyTime.toISOString().slice(0, 19).replace("T", " ");
+            obj[k] = germanyTimeString;
+          } else {
+            // Convert to India time (IST: UTC+5:30)
+            const indiaTime = new Date(v.getTime() + (330 * 60000)); // add 5.5 hours (330 minutes)
+            const indiaTimeString = indiaTime.toISOString().slice(0, 19).replace("T", " ");
+            obj[k] = indiaTimeString;
+          }
         } else obj[k] = v;
       }
       return obj;
