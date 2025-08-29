@@ -14,6 +14,7 @@ import { useLanguage } from "@/providers/language-provider";
 interface UserData {
   monitorAccess?: string;
   firstName?: string;
+  accountType?: string;
 }
 
 interface StoreData {
@@ -61,7 +62,6 @@ export default function Sidebar() {
     router.push(href);
   };
 
-
   return (
     <div className="w-64 bg-[#1e293b] text-white min-h-screen dark:bg-gray-800 dark:text-white relative">
       <div className="p-4 border-b border-gray-700">
@@ -93,7 +93,15 @@ export default function Sidebar() {
         <nav className="space-y-1" key={language}>
           {menuItems
             .filter(
-              (item) => !monitorAccessItems.includes(item.label.toLowerCase())
+              (item) => {
+                // Hide items based on monitorAccess
+                const isHiddenByMonitorAccess = monitorAccessItems.includes(item.label.toLowerCase());
+                
+                // Hide overview for customer account type
+                const isOverviewHiddenForCustomer = item.label === "overview" && data?.user?.accountType === "customer";
+                
+                return !isHiddenByMonitorAccess && !isOverviewHiddenForCustomer;
+              }
             )
             .map((item, index) => {
               const active = pathname === item.href;
@@ -130,7 +138,6 @@ export default function Sidebar() {
           height={100}
           priority
         />}
-   
       </div>
     </div>
   );

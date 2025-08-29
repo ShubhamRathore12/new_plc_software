@@ -216,13 +216,13 @@ export default function DevicesPage() {
     },
   ];
 
-  const locations: Location[] = [
-    { name: t("All"), image: "/images/1200.jpg" },
-    ...Array.from(new Set(allDevices.map((d) => d.location))).map((loc) => ({
-      name: loc,
-      image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
-    })),
-  ];
+  // const locations: Location[] = [
+  //   { name: t("All"), image: "/images/1200.jpg" },
+  //   ...Array.from(new Set(allDevices.map((d) => d.location))).map((loc) => ({
+  //     name: loc,
+  //     image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
+  //   })),
+  // ];
 
   // const filteredDevices = allDevices.filter(
   //   (device) =>
@@ -231,16 +231,51 @@ export default function DevicesPage() {
   //     device.location === selectedLocation
   // );
 
-  const filteredDevices = allDevices.filter((device) => {
-    const matchesLocation =
-      selectedLocation === "" ||
-      selectedLocation === "All" ||
-      device.location === selectedLocation;
+  // const filteredDevices = allDevices.filter((device) => {
+  //   const matchesLocation =
+  //     selectedLocation === "" ||
+  //     selectedLocation === "All" ||
+  //     device.location === selectedLocation;
 
-    const isRestricted = accessArray.includes(device.name.toLowerCase());
+  //   const isRestricted = accessArray.includes(device.name.toLowerCase());
 
-    return matchesLocation && !isRestricted;
-  });
+  //   return matchesLocation && !isRestricted;
+  // });
+
+  // Replace the existing filteredDevices logic with this updated version
+
+const filteredDevices = allDevices.filter((device) => {
+  const matchesLocation =
+    selectedLocation === "" ||
+    selectedLocation === "All" ||
+    device.location === selectedLocation;
+
+  const isRestricted = accessArray.includes(device.name.toLowerCase());
+
+  // Hide Noida and Noida---kanpur locations if user's firstName is "carl"
+  const shouldHideNoidaLocations = 
+    data?.user?.firstName?.toLowerCase() === "carl" &&
+    (device.location === "Noida" || device.location === "Noida---kanpur");
+
+  return matchesLocation && !isRestricted && !shouldHideNoidaLocations;
+});
+
+// Also update the locations array to exclude Noida locations for carl
+const locations: Location[] = [
+  { name: t("All"), image: "/images/1200.jpg" },
+  ...Array.from(new Set(allDevices.map((d) => d.location)))
+    .filter((loc) => {
+      // Filter out Noida locations if user is carl
+      if (data?.user?.firstName?.toLowerCase() === "carl") {
+        return loc !== "Noida" && loc !== "Noida---kanpur";
+      }
+      return true;
+    })
+    .map((loc) => ({
+      name: loc,
+      image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
+    })),
+];
 
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
