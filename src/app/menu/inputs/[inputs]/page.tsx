@@ -82,7 +82,7 @@ export default function InputsPage() {
     { id: "4", description: "Heater drive fault", status: data?.HEATER_DRIVE_FAULT_I0_4 },
     { id: "5", description: "Condenser fan TOP fault", status: data?.CONDENSER_FAN_TOP_FAULT_I0_6 },
     { id: "6", description: "Condenser fan drive fault", status: data?.CONDENSER_FAN_DRIVE_FAULT_I0_7 },
-    { id: "7", description: "Blower circuit breaker (duplicate)", status: data?.BLOWER_CIRCUIT_BREAKER_I0_6 },
+    { id: "7", description: "Blower circuit breaker", status: data?.BLOWER_CIRCUIT_BREAKER_I0_6 },
     { id: "8", description: "Compressor circuit breaker fault", status: data?.COMPRESSOR_CIRCUIT_BREAKER_FAULT_I1_1 },
     { id: "9", description: "Compressor motor overheat", status: data?.COMPRESSOR_MOTOR_OVERHEAT_I1_2 },
     { id: "10", description: "Low pressure fault", status: data?.LOW_PRESSURE_FAULT_I1_3 },
