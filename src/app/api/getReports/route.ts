@@ -75,8 +75,11 @@ export async function GET(req: Request) {
       const obj: Record<string, any> = {};
       for (const [k, v] of Object.entries(row)) {
         if (v === null || v === undefined) obj[k] = "";
-        else if (v instanceof Date) obj[k] = v.toISOString().slice(0, 19).replace("T", " ");
-        else obj[k] = v;
+        else if (v instanceof Date) {
+          const indiaTime = new Date(v.getTime() + (330 * 60000)); // add 5.5 hours (330 minutes)
+          const indiaTimeString = indiaTime.toISOString().slice(0, 19).replace("T", " ");
+          obj[k] = indiaTimeString;
+        } else obj[k] = v;
       }
       return obj;
     });
