@@ -158,7 +158,7 @@ export default function InputsPage() {
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">INPUTS</h1>
-          <p className="text-muted-foreground">System input status for {device}</p>
+   
         </div>
 
         <Card>

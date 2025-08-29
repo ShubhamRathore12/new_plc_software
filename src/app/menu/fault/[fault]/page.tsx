@@ -183,19 +183,10 @@ const {t} = useLanguage()
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {t("Fault Codes")} - {machineType}
+            {t("Fault Codes")} 
           </h1>
-          <p className="text-muted-foreground">
-            {t("System fault codes and descriptions for")} {machineName}
-          </p>
-          {machineConfig && (
-            <div className="mt-2 flex gap-2">
-            
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                Type: {machineConfig.type}
-              </span>
-            </div>
-          )}
+     
+         
         </div>
 
         <Card>

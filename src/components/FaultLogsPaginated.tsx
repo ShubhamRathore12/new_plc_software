@@ -180,17 +180,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-2xl font-bold text-gray-800">
-              {getMachinePrefix(machineName)} Tags Monitor
-              {machineName === "GTPL-30-gT-180E-S7-1200" && (
-                <span className="ml-2 text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                  (gplt_144 table)
-                </span>
-              )}
-            </h2>
-            <LanguageSelector />
-          </div>
+      
 
           <StatisticsCards stats={stats} />
           <SearchBar

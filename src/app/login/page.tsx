@@ -38,8 +38,14 @@ export default function LoginPage() {
 
     try {
       const data = await loginUser(username, password);
+
       setData(data);
-      router.push("/dashboard");
+      if(data?.user.accountType === "customer")
+      {
+      router.push("/devices");
+
+      }
+    else  router.push("/dashboard");
       setLoading(false);
     } catch (error) {
       console.error("Login error:", error);

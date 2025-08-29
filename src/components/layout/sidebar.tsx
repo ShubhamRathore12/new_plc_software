@@ -60,7 +60,7 @@ export default function Sidebar() {
   const handleNavigation = (href: string) => {
     router.push(href);
   };
-console.log(data);
+
 
   return (
     <div className="w-64 bg-[#1e293b] text-white min-h-screen dark:bg-gray-800 dark:text-white relative">

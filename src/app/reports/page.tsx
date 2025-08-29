@@ -37,7 +37,53 @@ import { toast } from "sonner";
 
 const { RangePicker } = DatePicker;
 
-// All available table names
+// All available device names
+const allDevices = [
+  "GTPL-122-gT-1000T-S7-1200",
+  "GTPL-118-gT-80E-P-S7-200",
+  "GTPL-108-gT-40E-P-S7-200",
+  "GTPL-109-gT-40E-P-S7-200",
+  "GTPL-110-gT-40E-P-S7-200",
+  "GTPL-111-gT-80E-P-S7-200",
+  "GTPL-112-gT-80E-P-S7-200",
+  "GTPL-113-gT-80E-P-S7-200",
+  "GTPL-30-gT-180E-S7-1200",
+  "GTPL-115-gT-180E-S7-1200",
+  "GTPL-116-gT-240E-S7-1200",
+  "GTPL-117-gT-320E-S7-1200",
+  "GTPL-119-gT-180E-S7-1200",
+  "GTPL-120-gT-180E-S7-1200",
+  "GTPL-121-gT-1000T-S7-1200",
+  "GTPL-124-GT-450T-S7-1200",
+  "GTPL-131-GT-650T-S7-1200",
+  "GTPL-132-GT-650T-S7-1200",
+
+];
+
+// Create a mapping from device name to table name
+const DEVICE_TO_TABLE_MAP: Record<string, string> = {
+  "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
+   // Note: Add this to ALLOWED_TABLES if needed
+  "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
+  "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
+  "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
+  "GTPL-111-gT-80E-P-S7-200": "GTPL_111_gT_80E_P_S7_200_Germany",
+  "GTPL-112-gT-80E-P-S7-200": "GTPL_112_gT_80E_P_S7_200_Germany",
+  "GTPL-113-gT-80E-P-S7-200": "GTPL_113_gT_80E_P_S7_200_Germany",
+  "GTPL-30-gT-180E-S7-1200": "GTPL_114_GT_140E_S7_1200",
+  "GTPL-115-gT-180E-S7-1200": "GTPL_115_GT_180E_S7_1200",
+  "GTPL-116-gT-240E-S7-1200": "GTPL_116_GT_240E_S7_1200",
+  "GTPL-117-gT-320E-S7-1200": "GTPL_117_GT_320E_S7_1200",
+  "GTPL-119-gT-180E-S7-1200": "GTPL_119_GT_180E_S7_1200",
+  "GTPL-120-gT-180E-S7-1200": "GTPL_120_GT_180E_S7_1200",
+  "GTPL-121-gT-1000T-S7-1200": "GTPL_121_GT1000T",
+  "GTPL-124-GT-450T-S7-1200": "GTPL_124_GT_450T_S7_1200",
+  "GTPL-131-GT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
+  "GTPL-132-GT-650T-S7-1200": "GTPL_132_GT_650T_S7_1200",
+  "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
+};
+
+// All available table names (keep as reference)
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
   "GTPL_109_gT_40E_P_S7_200_Germany",
@@ -55,37 +101,14 @@ const ALLOWED_TABLES = [
   "GTPL_121_GT1000T",
   "gtpl_122_s7_1200_01",
   "GTPL_124_GT_450T_S7_1200",
-  'GTPL_131_GT_650T_S7_1200',
+  "GTPL_131_GT_650T_S7_1200",
   "GTPL_132_GT_650T_S7_1200"
 ] as const;
-
-// Display name mapping
-const TABLE_DISPLAY_NAMES: Record<string, string> = {
-  "GTPL_108_gT_40E_P_S7_200_Germany": "GTPL-108-gT-40E-P-S7-200-Germany",
-  "GTPL_109_gT_40E_P_S7_200_Germany": "GTPL-109-gT-40E-P-S7-200-Germany",
-  "GTPL_110_gT_40E_P_S7_200_Germany": "GTPL-110-gT-40E-P-S7-200-Germany",
-  "GTPL_111_gT_80E_P_S7_200_Germany": "GTPL-111-gT-80E-P-S7-200-Germany",
-  "GTPL_112_gT_80E_P_S7_200_Germany": "GTPL-112-gT-80E-P-S7-200-Germany",
-  "GTPL_113_gT_80E_P_S7_200_Germany": "GTPL-113-gT-80E-P-S7-200-Germany",
-  "kabomachinedatasmart200": "Kabo Machine Data Smart 200",
-  "GTPL_114_GT_140E_S7_1200": "GTPL-30-gT-180E-S7-1200",
-  "GTPL_115_GT_180E_S7_1200": "GTPL-115-GT-180E-S7-1200",
-  "GTPL_119_GT_180E_S7_1200": "GTPL-119-GT-180E-S7-1200",
-  "GTPL_120_GT_180E_S7_1200": "GTPL-120-GT-180E-S7-1200",
-  "GTPL_116_GT_240E_S7_1200": "GTPL-116-GT-240E-S7-1200",
-  "GTPL_117_GT_320E_S7_1200": "GTPL-117-GT-320E-S7-1200",
-  "GTPL_121_GT1000T": "GTPL-121-GT1000T",
-  "gtpl_122_s7_1200_01": "GTPL-122-S7-1200-01",
-  "GTPL_124_GT_450T_S7_1200": 'GTPL-124-GT-450T-S7-1200',
-  'GTPL_131_GT_650T_S7_1200': 'GTPL-131-GT-650T-S7-1200',
-  "GTPL_132_GT_650T_S7_1200": 'GTPL-132-GT-650T-S7-1200',
-};
 
 type TableName = typeof ALLOWED_TABLES[number];
 
 export default function TableWithDownload() {
   const [data, setData] = useState<Record<string, any>[]>([]);
-  const [selectedTable, setSelectedTable] = useState<TableName>(ALLOWED_TABLES[0]);
   const [loading, setLoading] = useState(true);
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [pagination, setPagination] = useState<any>({
@@ -96,6 +119,35 @@ export default function TableWithDownload() {
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
   const { data: storeData } = useDataStore() as { data: any };
+
+  const accessArray = (storeData?.user?.monitorAccess?.split(",") || []).map(
+    (name: string) => name.trim().toLowerCase()
+  );
+
+  // Get filtered devices (hide devices that match accessArray)
+  const filteredDevices = allDevices.filter((deviceName) => {
+    // If accessArray is empty, show all devices
+    if (accessArray.length === 0) return true;
+    
+    // Hide devices that match any value in accessArray (case-insensitive)
+    return !accessArray.some((access: string) => 
+      deviceName.toLowerCase().includes(access) ||
+      (DEVICE_TO_TABLE_MAP[deviceName] || "").toLowerCase().includes(access)
+    );
+  });
+
+  // Set default selected device to first available filtered device
+  const [selectedDevice, setSelectedDevice] = useState<string>("");
+
+  // Update selected device when filtered devices change
+  useEffect(() => {
+    if (filteredDevices.length > 0 && !selectedDevice) {
+      setSelectedDevice(filteredDevices[0]);
+    } else if (filteredDevices.length > 0 && !filteredDevices.includes(selectedDevice)) {
+      // If current selected device is now hidden, switch to first available
+      setSelectedDevice(filteredDevices[0]);
+    }
+  }, [filteredDevices, selectedDevice]);
 
   // Function to validate date range (max 3 days)
   const validateDateRange = (dates: [Dayjs, Dayjs] | null): boolean => {
@@ -117,10 +169,16 @@ export default function TableWithDownload() {
 
   // CHANGED: fetchData now decides endpoint based on dateRange
   const fetchData = async (
-    table: TableName,
+    deviceName: string,
     range?: [Dayjs, Dayjs] | null,
     pageOverride?: number
   ) => {
+    const tableName = DEVICE_TO_TABLE_MAP[deviceName];
+    if (!tableName) {
+      console.error("No table mapping found for device:", deviceName);
+      return;
+    }
+
     setLoading(true);
     try {
       let url: string;
@@ -128,13 +186,13 @@ export default function TableWithDownload() {
       if (range && range[0] && range[1]) {
         // DATE SELECTED -> keep existing API
         const [startDate, endDate] = range;
-        url = `/api/getAllDataSmart200?table=${encodeURIComponent(table)}&fromDate=${startDate.format(
+        url = `/api/getAllDataSmart200?table=${encodeURIComponent(tableName)}&fromDate=${startDate.format(
           "YYYY-MM-DD"
         )}&toDate=${endDate.format("YYYY-MM-DD")}`;
       } else {
         // NO DATE -> use getReport (hardcoded 100 rows) and pass page
         const page = pageOverride ?? pagination.page ?? 1;
-        url = `/api/getReports?table=${encodeURIComponent(table)}&page=${page}`;
+        url = `/api/getReports?table=${encodeURIComponent(tableName)}&page=${page}`;
       }
 
       const res = await fetch(url);
@@ -163,13 +221,16 @@ export default function TableWithDownload() {
     if (!validateDateRange(dateRange)) {
       return;
     }
+
+    const tableName = DEVICE_TO_TABLE_MAP[selectedDevice];
+    if (!tableName) return;
     
     setIsDownloading(true);
     setDownloadProgress(0);
     try {
       const [startDate, endDate] = dateRange;
       const url = `/api/getAllDataSmart200?table=${encodeURIComponent(
-        selectedTable
+        tableName
       )}&fromDate=${startDate.format("YYYY-MM-DD")}&toDate=${endDate.format(
         "YYYY-MM-DD"
       )}&downloadAll=true`;
@@ -200,7 +261,7 @@ export default function TableWithDownload() {
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.setAttribute("download", `${selectedTable}_export.xlsx`);
+      link.setAttribute("download", `${selectedDevice}_export.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.parentNode?.removeChild(link);
@@ -217,13 +278,15 @@ export default function TableWithDownload() {
 
   // CHANGED: also react to pagination.page when NO date
   useEffect(() => {
-    if (dateRange) {
-      fetchData(selectedTable, dateRange);
-    } else {
-      fetchData(selectedTable, null, pagination.page);
+    if (selectedDevice) {
+      if (dateRange) {
+        fetchData(selectedDevice, dateRange);
+      } else {
+        fetchData(selectedDevice, null, pagination.page);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTable, dateRange, pagination.page]);
+  }, [selectedDevice, dateRange, pagination.page]);
 
   const handleDateChange: any = (dates: any) => {
     // Reset to page 1 whenever date filter toggles
@@ -250,7 +313,7 @@ export default function TableWithDownload() {
     const worksheet = XLSX.utils.json_to_sheet(data);
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, "Data");
-    XLSX.writeFile(workbook, `${selectedTable}_data.xlsx`);
+    XLSX.writeFile(workbook, `${selectedDevice}_data.xlsx`);
     message.success("Excel file downloaded successfully!");
   };
 
@@ -264,7 +327,7 @@ export default function TableWithDownload() {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
     pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${selectedTable}_data.pdf`);
+    pdf.save(`${selectedDevice}_data.pdf`);
     message.success("PDF file downloaded successfully!");
   };
 
@@ -284,14 +347,14 @@ export default function TableWithDownload() {
         {/* Filters and Controls */}
         <div className="flex flex-col md:flex-row gap-4 mb-4 items-start md:items-center">
           <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-            <Select value={selectedTable} onValueChange={(value: TableName) => setSelectedTable(value)}>
+            <Select value={selectedDevice} onValueChange={(deviceName: string) => setSelectedDevice(deviceName)}>
               <SelectTrigger className="w-[300px]">
-                <SelectValue placeholder="Select a table" />
+                <SelectValue placeholder="Select a device" />
               </SelectTrigger>
               <SelectContent>
-                {ALLOWED_TABLES.map((table) => (
-                  <SelectItem key={table} value={table}>
-                    {TABLE_DISPLAY_NAMES[table] || table}
+                {filteredDevices.map((deviceName) => (
+                  <SelectItem key={deviceName} value={deviceName}>
+                    {deviceName}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -337,6 +400,8 @@ export default function TableWithDownload() {
           </div>
         )}
 
+    
+
         {/* Download Progress Dialog */}
         <Dialog open={isDownloading} onOpenChange={setIsDownloading}>
           <DialogContent>
@@ -349,7 +414,7 @@ export default function TableWithDownload() {
                 <span className="ml-2 text-sm font-medium text-gray-700">{downloadProgress}%</span>
               </div>
               <p className="text-center text-sm text-gray-500">
-                Downloading {TABLE_DISPLAY_NAMES[selectedTable] || selectedTable} data...
+                Downloading {selectedDevice} data...
                 {downloadProgress < 100 ? " Please wait" : " Complete!"}
               </p>
             </div>
@@ -417,7 +482,7 @@ export default function TableWithDownload() {
                   if (pagination.page > 1) {
                     const newPage = pagination.page - 1;
                     setPagination((prev: any) => ({ ...prev, page: newPage }));
-                    if (!dateRange) fetchData(selectedTable, null, newPage);
+                    if (!dateRange) fetchData(selectedDevice, null, newPage);
                   }
                 }}
                 disabled={pagination.page === 1}
@@ -430,7 +495,7 @@ export default function TableWithDownload() {
                   if (pagination.page * pagination.limit < pagination.total) {
                     const newPage = pagination.page + 1;
                     setPagination((prev: any) => ({ ...prev, page: newPage }));
-                    if (!dateRange) fetchData(selectedTable, null, newPage);
+                    if (!dateRange) fetchData(selectedDevice, null, newPage);
                   }
                 }}
                 disabled={pagination.page * pagination.limit >= pagination.total}

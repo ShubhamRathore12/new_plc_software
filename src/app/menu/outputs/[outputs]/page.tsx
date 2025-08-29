@@ -149,9 +149,7 @@ const getStatusColor = (key: string, status: boolean) => {
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">OUTPUTS</h1>
-          <p className="text-muted-foreground">
-            System output status {device && `- ${device}`}
-          </p>
+         
           {!isConnected && (
             <p className="text-red-500 text-sm mt-2">
               Connection lost - showing last known values
