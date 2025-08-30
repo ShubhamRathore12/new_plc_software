@@ -180,7 +180,7 @@ export default function AnalogPage() {
                           } 
                              if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200") {
                             return !item.description.startsWith("TH probe")
-                          }  if (device?.includes('200')){
+                          }  if (['118','108','109','110','111','112','113'].some(id => device?.includes(id))) {
                             return !item.description.startsWith("T0 probe #2 (Afterheater)") && !item.description.startsWith("T2 probe #2 (Ambient Air)") && !item.description.startsWith("TH probe #2 (Supply Air)") && !item.description.startsWith("T1 probe #2 (Cold Air)")
                           }
                           return true
@@ -208,31 +208,36 @@ export default function AnalogPage() {
                 {/* Analog Outputs */}
                 <div className="space-y-4 mt-6">
                   <h2 className="text-lg font-semibold">Analog Output</h2>
-                  <div className="space-y-2 pl-4">
-                    {analogOutputs
-                      .filter((item) => {
-                        if (device === "GTPL-124-GT-450T-S7-1200" || device === 'GTPL-121-gT-1000T-S7-1200' || device === 'GTPL-122-gT-1000T-S7-1200' || device === 'GTPL-131-GT-650T-S7-1200' || device === 'GTPL-132-GT-650T-S7-1200' || device?.endsWith('200')) {
-                          return item.description !== "Heater" && item.description !== "Cond. Fan speed"
-                        }  
-                        return true
-                      })
-                      .map((item) => {
-                        const liveKey = analogOutputValueMap[item.description]
-                        const liveValue = liveKey ? data?.[liveKey] : undefined
-
-                        return (
-                          <div
-                            key={item.description}
-                            className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
-                          >
-                            <div className="flex-1">{item.description}</div>
-                            <div className="font-medium text-right w-20">
-                              {formatValue(liveValue) ?? item.value} {item.unit}
-                            </div>
-                          </div>
-                        )
-                      })}
-                  </div>
+                 <div className="space-y-2 pl-4">
+  {analogOutputs
+    .filter((item) => {
+      if (device === "GTPL-124-GT-450T-S7-1200" || 
+          device === 'GTPL-121-gT-1000T-S7-1200' || 
+          device === 'GTPL-122-gT-1000T-S7-1200' || 
+          device === 'GTPL-131-GT-650T-S7-1200' || 
+          device === 'GTPL-132-GT-650T-S7-1200' || 
+          (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
+        return item.description !== "Heater" && item.description !== "Cond. Fan speed";
+      }
+      return true;
+    })
+    .map((item) => {
+      const liveKey = analogOutputValueMap[item.description];
+      const liveValue = liveKey ? data?.[liveKey] : undefined;
+      
+      return (
+        <div
+          key={item.description}
+          className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
+        >
+          <div className="flex-1">{item.description}</div>
+          <div className="font-medium text-right w-20">
+            {formatValue(liveValue) ?? item.value} {item.unit}
+          </div>
+        </div>
+      );
+    })}
+</div>
                 </div>
               </div>
             </ScrollArea>
