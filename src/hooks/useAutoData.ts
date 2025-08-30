@@ -71,7 +71,7 @@ export const useAutoData = (autoType: string) => {
 
     
   const deviceStatus = statusKey ? (status as any)?.[statusKey] : {};
-  console.log(status,"status");
+
   
   
   const isMachineRunning = deviceStatus?.machineStatus ?? false;

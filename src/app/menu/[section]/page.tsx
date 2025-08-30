@@ -11,6 +11,7 @@ import {
   ToggleLeft,
   ToggleRight,
   TestTube,
+  MonitorOff,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { PageTransition } from "@/components/ui/animated-container";
@@ -54,6 +55,14 @@ export default function Home() {
       setMonitorAccessItems([]);
     }
   }, [data?.user?.monitorAccess]);
+
+
+
+      
+
+ 
+      
+
 
   const handleToggle = (section: string | undefined |  any) => {
     if (!is3D) {

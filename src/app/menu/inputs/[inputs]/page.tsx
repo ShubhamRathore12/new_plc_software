@@ -11,12 +11,12 @@ export default function InputsPage() {
   const { inputs } = useParams();
   const device = inputs?.toString();
   const { t } = useLanguage(); // Move this to component level
-
-  const isGT80E = device?.includes("S7-200");
-  const isGtpl122 = device?.includes("S7-1200");
+const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => device?.includes(code));
+  const isGtpl122 = ['122','121'].some(code => device?.includes(code))
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
-  const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200" || device === "GTPL-30-gT-180E-S7-1200";
+  const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200"  || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
   const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
+  const isGTPL116 = device === "GTPL-116-gT-240E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200"
   
   const { data } = useAutoData(device as string);
 
@@ -95,6 +95,29 @@ export default function InputsPage() {
     { id: "17", description: "Condenser fan door open", status: data?.CONDENSER_FAN_DOOR_OPEN_I2_5 },
   ];
 
+  const gtpl_116_faultStatus = [
+  { id: "1", description: "Blower circuit breaker", status: data?.Blower_circuit_breaker },
+  { id: "2", description: "Blower drive", status: data?.Blower_drive },
+  { id: "3", description: "Blower in operation", status: data?.Blower_in_operation },
+  { id: "4", description: "Heater drive fault", status: data?.Heater_drive_fault },
+  { id: "5", description: "Condenser fan1 TOP fault", status: data?.Condenser_fan1_TOP_fault },
+  { id: "6", description: "Condenser fan2 TOP fault", status: data?.Condenser_fan2_TOP_fault },
+  { id: "7", description: "Condenser fan drive fault", status: data?.Condenser_fan_drive_fault },
+  { id: "8", description: "Compressor oil low", status: data?.Compressor_oil_low },
+  { id: "9", description: "Compressor circuit breaker fault", status: data?.Compressor_circuit_breaker_fault },
+  { id: "10", description: "Compressor motor overheat", status: data?.Compressor_motor_overheat },
+  { id: "11", description: "Low Pressure Fault", status: data?.Low_Pressure_Fault },
+  { id: "12", description: "High pressure fault", status: data?.High_pressure_fault },
+  { id: "13", description: "Three phase monitor fault", status: data?.Three_phase_monitor_fault },
+  { id: "14", description: "Heater TOP fault", status: data?.Heater_TOP_fault },
+  { id: "15", description: "Cond fan1 circuit breaker fault", status: data?.Cond_fan1_circuit_breaker_fault },
+  { id: "16", description: "Heater circuit breaker fault", status: data?.Heater_circuit_breaker_fault },
+  { id: "17", description: "Heater RCCB fault", status: data?.Heater_RCCB_fault },
+  { id: "18", description: "Condenser fan1 door open", status: data?.Condenser_fan1_door_open },
+  { id: "19", description: "Cond fan2 circuit breaker", status: data?.Cond_fan2_circuit_breaker },
+  { id: "20", description: "Condenser fan2 door open", status: data?.Condenser_fan2_door_open }
+];
+
   // Updated GTPL-124 fault status with corrected property names based on your actual data
   const gtpl_124_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker fault", status: data?.Compressor_circuit_breaker_I0_0 },
@@ -122,12 +145,13 @@ export default function InputsPage() {
 
   const renderList = () => {
     // Fixed the selection logic to include all device types
-    const selectedList = 
-      isGT80E ? s7_200_faultStatus :
-      isGtpl115 ? gtpl_115_faultStatus :
-      isGtpl124 ? gtpl_124_faultStatus :
-      (isGtpl122 || isGtpl1200_02) ? s7_1200_faultStatus : 
-      [];
+   const selectedList = 
+  isGT80E ? s7_200_faultStatus :
+  isGtpl115 ? gtpl_115_faultStatus :
+  isGtpl124 ? gtpl_124_faultStatus :
+  (isGtpl122 || isGtpl1200_02) ? s7_1200_faultStatus :
+  isGTPL116 ? gtpl_116_faultStatus :
+  [];
 
     return selectedList.map((item) => {
       const isFault = isStatusFault(item.status);
@@ -196,3 +220,5 @@ export default function InputsPage() {
     </div>
   );
 }
+
+

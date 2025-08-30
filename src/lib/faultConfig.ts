@@ -168,6 +168,7 @@ export const GPL_117_TAGS = [
     "Delta_not_achieved_in_aeration_mode",
     "Warning_LP_transducer_failure",
     "Warning_HP_transducer_failure",
+    "Cond_fan_drive_circuit_breaker_fault",
 ];
 
 export const GPL_124_TAGS = [
@@ -229,10 +230,10 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     "Gtpl-S7-1200-02": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
     "GTPL-30-gT-180E-S7-1200": { table: "GTPL_114_GT_140E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
     "GTPL-115-gT-180E-S7-1200": { table: "GTPL_115_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
-    "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+    "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
     "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
-    "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-    "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
+    "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
+    "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
         "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: GPL_124_TAGS, type: "S7-1200" },
         "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT450T", tags: GPL_124_TAGS, type: "S7-1200" },
 
@@ -473,9 +474,9 @@ export function getFaultCodesForMachine(machineName: string) {
     if (!config) return FAULT_CODES["S7-1200"]; // Default fallback
 
     // Determine fault code type based on machine configuration
-    if (resolvedName.includes("GPL-115") || resolvedName.includes("GTPL-30")) {
+    if (resolvedName === "GTPL-115-gT-180E-S7-1200" || resolvedName === "GTPL-30-gT-180E-S7-1200" || resolvedName === "GTPL-119-gT-180E-S7-1200" || resolvedName === "GTPL-120-gT-180E-S7-1200") {
         return FAULT_CODES["GPL-115"];
-    } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117")) {
+    } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117") || resolvedName.includes("GTPL-116")) {
         return FAULT_CODES["GPL-117"];
     } else if (resolvedName.includes("GPL-124") || resolvedName.includes("GTPL-124")) {
         return FAULT_CODES["GTPL-124"];
