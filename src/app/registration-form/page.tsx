@@ -305,6 +305,18 @@ export default function RegistrationForm() {
       value: "GTPL-121-gT-1000T-S7-1200",
       label: formatText("GTPL-121-gT-1000T-S7-1200"),
     },
+    {
+      value: "GTPL-124-GT-450T-S7-1200",
+      label: formatText("GTPL-124-GT-450T-S7-1200"),
+    },
+    {
+      value: "GTPL-131-GT-650T-S7-1200",
+      label: formatText("GTPL-131-GT-650T-S7-1200"),
+    },
+    {
+      value: "GTPL-132-GT-650T-S7-1200",
+      label: formatText("GTPL-132-GT-650T-S7-1200"),
+    },
   ];
 
   // Dynamic company and location options
