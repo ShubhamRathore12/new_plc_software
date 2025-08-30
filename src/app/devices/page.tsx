@@ -266,7 +266,7 @@ const locations: Location[] = [
   ...Array.from(new Set(allDevices.map((d) => d.location)))
     .filter((loc) => {
       // Filter out Noida locations if user is carl
-      if (data?.user?.firstName?.toLowerCase() === "carl") {
+      if (data?.user?.firstName?.toLowerCase() === "carl" || data?.user?.firstName?.toLowerCase() === "Weinzierl") {
         return loc !== "Noida" && loc !== "Noida---kanpur";
       }
       return true;
