@@ -122,13 +122,13 @@ export default function AnalogPage() {
         "Suction pressure": "LP",
         "Discharge pressure": "HP",
         "T0 probe #1 (Afterheater)": "AIR_OUTLET_TEMP",
-        "T0 probe #2 (Afterheater)": "AIR_OUTLET_TEMP",
+     
         "T1 probe #1 (Cold Air)": "COLD_AIR_TEMP_T1",
-        "T1 probe #2 (Cold Air)": "COLD_AIR_TEMP_T1",
+
         "T2 probe #1 (Ambient Air)": "AMBIENT_AIR_TEMP_T2",
-        "T2 probe #2 (Ambient Air)": "AMBIENT_AIR_TEMP_T2",
+
         "TH probe #1 (Supply Air)": "AFTER_HEATER_TEMP_Th",
-        "TH probe #2 (Supply Air)": "AFTER_HEATER_TEMP_Th",
+       
       },
       outputs: {
         "Blower speed": "BLOWER_RPM",
@@ -177,6 +177,11 @@ export default function AnalogPage() {
                           // If machine is GTPL-124-GT-450T-S7-1200, remove TH probes
                           if (device === "GTPL-124-GT-450T-S7-1200") {
                             return !item.description.startsWith("TH probe")
+                          } 
+                             if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200") {
+                            return !item.description.startsWith("TH probe")
+                          }  if (device?.includes('200')){
+                            return !item.description.startsWith("T0 probe #2 (Afterheater)") && !item.description.startsWith("T2 probe #2 (Ambient Air)") && !item.description.startsWith("TH probe #2 (Supply Air)") && !item.description.startsWith("T1 probe #2 (Cold Air)")
                           }
                           return true
                         })
@@ -207,8 +212,8 @@ export default function AnalogPage() {
                     {analogOutputs
                       .filter((item) => {
                         if (device === "GTPL-124-GT-450T-S7-1200" || device === 'GTPL-121-gT-1000T-S7-1200' || device === 'GTPL-122-gT-1000T-S7-1200' || device === 'GTPL-131-GT-650T-S7-1200' || device === 'GTPL-132-GT-650T-S7-1200' || device?.endsWith('200')) {
-                          return item.description !== "Heater"
-                        }
+                          return item.description !== "Heater" && item.description !== "Cond. Fan speed"
+                        }  
                         return true
                       })
                       .map((item) => {

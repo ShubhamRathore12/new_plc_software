@@ -113,7 +113,7 @@ export default function Home() {
             <h1 className="text-3xl font-bold tracking-tight mb-2">{device}</h1>
             <p className="text-muted-foreground"> {t("Select an option to continue")}</p>
 
-            <div className="absolute right-0 top-0 flex items-center space-x-2">
+            {/* <div className="absolute right-0 top-0 flex items-center space-x-2">
               <span className="text-sm font-medium text-muted-foreground">
                 {is3D ? "3D" : "2D"}
               </span>
@@ -127,7 +127,7 @@ export default function Home() {
                   <ToggleLeft className="h-6 w-6 text-primary" />
                 )}
               </button>
-            </div>
+            </div> */}
           </motion.div>
 
           {/* Menu Grid */}
