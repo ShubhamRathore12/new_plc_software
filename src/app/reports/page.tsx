@@ -57,7 +57,6 @@ const allDevices = [
   "GTPL-124-GT-450T-S7-1200",
   "GTPL-131-GT-650T-S7-1200",
   "GTPL-132-GT-650T-S7-1200",
-
 ];
 
 // Create a mapping from device name to table name
@@ -120,32 +119,46 @@ export default function TableWithDownload() {
   const [isDownloading, setIsDownloading] = useState(false);
   const { data: storeData } = useDataStore() as { data: any };
 
-  const accessArray = (storeData?.user?.monitorAccess?.split(",") || []).map(
-    (name: string) => name.trim().toLowerCase()
-  );
+  // UPDATED: Get access array and handle empty/null cases
+  const accessArray = (storeData?.user?.monitorAccess?.split(",") || [])
+    .map((name: string) => name.trim().toLowerCase())
+    .filter((name: string) => name.length > 0); // Remove empty strings
 
-  // Get filtered devices (hide devices that match accessArray)
-  const filteredDevices = allDevices.filter((deviceName) => {
+  // UPDATED: Get filtered devices with fallback to show all devices
+  const getFilteredDevices = () => {
     // If accessArray is empty, show all devices
-    if (accessArray.length === 0) return true;
-    
-    // Hide devices that match any value in accessArray (case-insensitive)
-    return !accessArray.some((access: string) => 
-      deviceName.toLowerCase().includes(access) ||
-      (DEVICE_TO_TABLE_MAP[deviceName] || "").toLowerCase().includes(access)
-    );
-  });
+    if (accessArray.length === 0) {
+      return allDevices;
+    }
 
-  // Set default selected device to first available filtered device
-  const [selectedDevice, setSelectedDevice] = useState<string>("");
+    // Filter devices based on access permissions
+    const filtered = allDevices.filter((deviceName) => {
+      // Hide devices that match any value in accessArray (case-insensitive)
+      return !accessArray.some((access: string) => 
+        deviceName.toLowerCase().includes(access) ||
+        (DEVICE_TO_TABLE_MAP[deviceName] || "").toLowerCase().includes(access)
+      );
+    });
 
-  // Update selected device when filtered devices change
+    // FALLBACK: If filtering results in no devices, show all devices
+    return filtered.length > 0 ? filtered : allDevices;
+  };
+
+  const filteredDevices = getFilteredDevices();
+
+  // UPDATED: Initialize with first device from filtered list
+  const [selectedDevice, setSelectedDevice] = useState<string>(filteredDevices[0] || "");
+
+  // UPDATED: Effect to handle device selection when filtered devices change
   useEffect(() => {
-    if (filteredDevices.length > 0 && !selectedDevice) {
-      setSelectedDevice(filteredDevices[0]);
-    } else if (filteredDevices.length > 0 && !filteredDevices.includes(selectedDevice)) {
-      // If current selected device is now hidden, switch to first available
-      setSelectedDevice(filteredDevices[0]);
+    if (filteredDevices.length > 0) {
+      // If no device is selected or current device is not in filtered list
+      if (!selectedDevice || !filteredDevices.includes(selectedDevice)) {
+        setSelectedDevice(filteredDevices[0]);
+      }
+    } else {
+      // No devices available, clear selection
+      setSelectedDevice("");
     }
   }, [filteredDevices, selectedDevice]);
 
@@ -399,8 +412,6 @@ export default function TableWithDownload() {
             </p>
           </div>
         )}
-
-    
 
         {/* Download Progress Dialog */}
         <Dialog open={isDownloading} onOpenChange={setIsDownloading}>
