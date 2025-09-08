@@ -207,6 +207,38 @@ export const GPL_124_TAGS = [
   "T0_2_sensor_short"
 ];
 
+export const GPL_132_TAGS = [
+  "Compressor circuit breaker fault",
+  "Oil pressure low",
+  "Blower drive fault",
+  "Blower circuit breaker fault",
+  "Three phase monitor fault",
+  "High pressure fault",
+  "Ambient temp. lower than set temp.",
+  "Ambient temp. over 45°C",
+  "Compressor module feedback error",
+  "Low pressure 1 fault",
+  "Compressor feedback error",
+  "Low pressure 2 fault",
+  "Ambient temp. over 43°C",
+  "Condenser fan 2 TOP fault",
+  "Condenser fan 2 circuit breaker fault",
+  "Condenser fan 1 circuit breaker fault",
+  "Condenser fan 1 TOP fault",
+  "Ambient air sensor T2.1 open",
+  "Ambient air sensor T2.1 short circuit",
+  "Ambient air sensor T2.2 open",
+  "Ambient air sensor T2.2 short circuit",
+  "Cold air sensor T1.1 open",
+  "Cold air sensor T1.1 short circuit",
+  "Cold air sensor T1.2 open",
+  "Cold air sensor T1.2 short circuit",
+  "Air outlet sensor T0.1 open",
+  "Air outlet sensor T0.1 short circuit",
+  "Air outlet sensor T0.2 open",
+  "Air outlet sensor T0.2 short circuit"
+];
+
 // Machine configuration type
 interface MachineConfig {
     table: string;
@@ -236,6 +268,8 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
         "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: GPL_124_TAGS, type: "S7-1200" },
         "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT450T", tags: GPL_124_TAGS, type: "S7-1200" },
+        "GTPL-132-GT-650T-S7-1200": { table: "GTPL_132_GT650T", tags: GPL_132_TAGS, type: "S7-1200" },
+
 
     };
 
@@ -453,6 +487,37 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
   { code: 31, description: "T0_1_sensor_short" },
   { code: 32, description: "T0_2_sensor_open" },
   { code: 33, description: "T0_2_sensor_short" }
+],
+"GTPL_132": [
+  { code: 1, description: "Compressor circuit breaker fault" },
+  { code: 2, description: "Oil pressure low" },
+  { code: 3, description: "Blower drive fault" },
+  { code: 4, description: "Blower circuit breaker fault" },
+  { code: 5, description: "Three phase monitor fault" },
+  { code: 6, description: "High pressure fault" },
+  { code: 7, description: "Ambient temp. lower than set temp." },
+  { code: 8, description: "Ambient temp. over 45°C" },
+  { code: 9, description: "Compressor module feedback error" },
+  { code: 10, description: "Low pressure 1 fault" },
+  { code: 11, description: "Compressor feedback error" },
+  { code: 12, description: "Low pressure 2 fault" },
+  { code: 13, description: "Ambient temp. over 43°C" },
+  { code: 14, description: "Condenser fan 2 TOP fault" },
+  { code: 15, description: "Condenser fan 2 circuit breaker fault" },
+  { code: 16, description: "Condenser fan 1 circuit breaker fault" },
+  { code: 17, description: "Condenser fan 1 TOP fault" },
+  { code: 18, description: "Ambient air sensor T2.1 open" },
+  { code: 19, description: "Ambient air sensor T2.1 short circuit" },
+  { code: 20, description: "Ambient air sensor T2.2 open" },
+  { code: 21, description: "Ambient air sensor T2.2 short circuit" },
+  { code: 22, description: "Cold air sensor T1.1 open" },
+  { code: 23, description: "Cold air sensor T1.1 short circuit" },
+  { code: 24, description: "Cold air sensor T1.2 open" },
+  { code: 25, description: "Cold air sensor T1.2 short circuit" },
+  { code: 26, description: "Air outlet sensor T0.1 open" },
+  { code: 27, description: "Air outlet sensor T0.1 short circuit" },
+  { code: 28, description: "Air outlet sensor T0.2 open" },
+  { code: 29, description: "Air outlet sensor T0.2 short circuit" }
 ]
 
 };
@@ -476,7 +541,10 @@ export function getFaultCodesForMachine(machineName: string) {
     // Determine fault code type based on machine configuration
     if (resolvedName === "GTPL-115-gT-180E-S7-1200" || resolvedName === "GTPL-30-gT-180E-S7-1200" || resolvedName === "GTPL-119-gT-180E-S7-1200" || resolvedName === "GTPL-120-gT-180E-S7-1200") {
         return FAULT_CODES["GPL-115"];
-    } else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117") || resolvedName.includes("GTPL-116")) {
+    }else if (resolvedName === "GTPL-132-GT-650T-S7-1200" ) {
+        return FAULT_CODES["GTPL_132"];
+    } 
+    else if (resolvedName.includes("GPL-117") || resolvedName.includes("GTPL-117") || resolvedName.includes("GTPL-116")) {
         return FAULT_CODES["GPL-117"];
     } else if (resolvedName.includes("GPL-124") || resolvedName.includes("GTPL-124")) {
         return FAULT_CODES["GTPL-124"];

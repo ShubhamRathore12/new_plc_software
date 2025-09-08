@@ -136,7 +136,7 @@ const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]
 
         {/* Temperature Display Boxes - Fixed to container */}
         <div className="absolute top-4 right-[35rem] space-y-2 z-10">
-        {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
+        {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-132-GT-650T-S7-1200'].some(name => machineName.includes(name)) ? (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
     T0 = {formatValue(data?.T0_set_point || data?.AIR_OUTLET_TEMP, "°C")}
   </div>
@@ -146,7 +146,7 @@ const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]
   </div>
 )}
 
-          {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) ? (
+          {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-132-GT-650T-S7-1200'].some(name => machineName.includes(name)) ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T Delta = {formatValue(data.Delta_T_set_point || data?.Th_T1, "°C")}
             </div>
@@ -226,7 +226,7 @@ const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]
               <line x1="170" y1="180" x2="200" y2="120" stroke="black" strokeWidth="2" />
 
               {/* Vertical drops from main line to thermometers */}
-              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) && (
+              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-132-GT-650T-S7-1200'].some(name => machineName.includes(name)) && (
                 <line x1="280" y1="120" x2="280" y2="150" stroke="black" strokeWidth="2" />
               )}
               <line x1="380" y1="120" x2="380" y2="150" stroke="black" strokeWidth="2" />
@@ -245,7 +245,7 @@ const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]
             </svg>
 
             {/* Thermometers - Fixed positioning */}
-            {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200'].some(name => machineName.includes(name)) && (
+            {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-132-GT-650T-S7-1200'].some(name => machineName.includes(name)) && (
               <div
                 className="absolute z-10"
                 style={{
@@ -333,12 +333,12 @@ const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]
   style={{
     left: "calc(200px * 100% / 1200px)",
     top: "calc(430px * 100% / 600px)",
-    transform: ['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-118-gT-80E-P-S7-200','GTPL-108-gT-40E-P-S7-200','GTPL-109-gT-40E-P-S7-200','GTPL-110-gT-40E-P-S7-200','GTPL-111-gT-80E-P-S7-200','GTPL-112-gT-80E-P-S7-200','GTPL-113-gT-80E-P-S7-200'].some(name => machineName.includes(name))
+    transform: ['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-118-gT-80E-P-S7-200','GTPL-108-gT-40E-P-S7-200','GTPL-109-gT-40E-P-S7-200','GTPL-110-gT-40E-P-S7-200','GTPL-111-gT-80E-P-S7-200','GTPL-112-gT-80E-P-S7-200','GTPL-113-gT-80E-P-S7-200',].some(name => machineName.includes(name))
       ? "translate(230%,650%)"
       : "translateY(620%)",
   }}
 >
-              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-118-gT-80E-P-S7-200','GTPL-108-gT-40E-P-S7-200','GTPL-109-gT-40E-P-S7-200','GTPL-110-gT-40E-P-S7-200','GTPL-111-gT-80E-P-S7-200','GTPL-112-gT-80E-P-S7-200','GTPL-113-gT-80E-P-S7-200'].some(name => machineName.includes(name)) && (
+              {!['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-118-gT-80E-P-S7-200','GTPL-108-gT-40E-P-S7-200','GTPL-109-gT-40E-P-S7-200','GTPL-110-gT-40E-P-S7-200','GTPL-111-gT-80E-P-S7-200','GTPL-112-gT-80E-P-S7-200','GTPL-113-gT-80E-P-S7-200',].some(name => machineName.includes(name)) && (
                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
                   <div className="text-sm font-bold">{formatValue(data.Value_to_Display_HEATER || data?.Heater_speed, "%")}</div>
