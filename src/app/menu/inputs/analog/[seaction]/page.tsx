@@ -116,6 +116,7 @@ export default function AnalogPage() {
     "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
     "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
     "GTPL-124-GT-450T-S7-1200": sharedS7_1200_config,
+    "GTPL-132-GT-650T-S7-1200":sharedS7_1200_config,
     default: {
       displayName: "Default Machine",
       inputs: {
