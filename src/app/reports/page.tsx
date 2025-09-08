@@ -82,6 +82,9 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
 };
 
+
+
+
 // All available table names (keep as reference)
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
