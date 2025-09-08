@@ -278,6 +278,7 @@ export const MACHINE_NAME_ALIASES: Record<string, string> = {
     "GPL-115": "GTPL-115-gT-180E-S7-1200",
     "GPL-117": "GTPL-117-gT-320E-S7-1200",
     "GPL-30": "GTPL-30-gT-180E-S7-1200",
+       "GPL-132": "GTPL-132-GT-650T-S7-1200",
 };
 
 // Fault code type

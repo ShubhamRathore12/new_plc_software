@@ -359,7 +359,29 @@ export default function OutputsPage() {
   { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
 ];
 
-    }else if (deviceType === "GTPL-124-GT-450T-S7-1200") {
+    } else if (deviceType === 'GTPL-132-GT-650T-S7-1200'){
+      return [
+        { id: "Q0.0", description: "Compressor_on", dataKey: "Compressor_on_Q0_0" },
+{ id: "Q0.1", description: "Compressor_motor_reset", dataKey: "Compressor_motor_reset_Q0_1" },
+{ id: "Q0.2", description: "CR valve 25% on", dataKey: "CR valve 25% on_Q0_2" },
+{ id: "Q0.3", description: "CR valve 50% on", dataKey: "CR valve 50% on_Q0_3" },
+{ id: "Q0.4", description: "Solenoid_valve_on", dataKey: "Solenoid_valve_on_Q0_4" },
+{ id: "Q0.5", description: "Hot_gas_valve_on", dataKey: "Hot_gas_valve_on_Q0_5" },
+{ id: "Q0.6", description: "After_heat_valve_on", dataKey: "After_heat_valve_on_Q0_6" },
+{ id: "Q0.7", description: "Blower_drive_on", dataKey: "Blower_drive_on_Q0_7" },
+{ id: "Q1.0", description: "Collective_trouble_signal", dataKey: "Collective_trouble_signal_Q1_0" },
+{ id: "Q1.1", description: "Chiller_healthy_on", dataKey: "Chiller_healthy_on_Q1_1" },
+{ id: "Q2.0", description: "Spare", dataKey: "Spare_Q2_0" },
+{ id: "Q2.1", description: "Condenser_fan1_on", dataKey: "Condenser_fan1_on_Q2_1" },
+{ id: "Q2.2", description: "CR valve 75% on", dataKey: "CR valve 75% on_Q2_2" },
+{ id: "Q2.3", description: "Chiller_fault", dataKey: "Chiller_fault_Q2_3" },
+{ id: "Q2.4", description: "Condenser_fan2_on", dataKey: "Condenser_fan2_on_Q2_4" },
+{ id: "Q2.5", description: "CR valve 100% on_on", dataKey: "CR valve 100% on_on_Q2_5" },
+{ id: "Q2.6", description: "Spare", dataKey: "Spare_Q2_6" },
+
+      ]
+    }    
+    else if (deviceType === "GTPL-124-GT-450T-S7-1200") {
   return [
     { id: "1",  description: "Compressor",                 dataKey: "Compressor_on_Q0_0" },
     { id: "2",  description: "Compressor motor reset",     dataKey: "Compressor_motor_reset_Q0_1" },

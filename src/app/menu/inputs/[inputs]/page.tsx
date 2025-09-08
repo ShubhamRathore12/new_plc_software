@@ -17,7 +17,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
   const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200"  || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
   const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
   const isGTPL116 = device === "GTPL-116-gT-240E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200"
-  
+  const isGTPL132 =device === 'GTPL-132-GT-650T-S7-1200'
   const { data } = useAutoData(device as string);
 
   // Helper to normalize all possible "fault" values - handles both boolean and string values
@@ -74,6 +74,27 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
     { id: "I3.2", description: "Cond fan 5 circuit breaker", status: data?.Cond_fan_5_circuit_breaker_ },
     { id: "I3.3", description: "Cond fan 6 circuit breaker", status: data?.Cond_fan_6_circuit_breaker_ },
   ];
+
+  const gtpl_132_faultStatus =[{ id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor circuit breaker _I0.0"] },
+{ id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor module feedback error_I0.1"] },
+{ id: "I0.2", description: "Compressor in operation", status: data?.["Compressor in operation_I0.2"] },
+{ id: "I0.3", description: "Compressor oil low_I0.3", status: data?.["Compressor oil low_I0.3"] },
+{ id: "I0.4", description: "Blower drive fault", status: data?.["Blower drive fault_I0.4"] },
+{ id: "I0.5", description: "Blower drive in operation", status: data?.["Blower drive in operation_I0.5"] },
+{ id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower circuit breaker_I0.6"] },
+{ id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser fan1 TOP fault_I0.7"] },
+{ id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser fan1 circuit breaker_I1.0"] },
+{ id: "I1.1", description: "Spare", status: data?.["Spare_I1.1"] },
+{ id: "I1.2", description: "Low pressure fault", status: data?.["Low pressure fault_I1.2"] },
+{ id: "I1.3", description: "High Pressure Fault", status: data?.["High Pressure Fault_I1.3"] },
+{ id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1.4"] },
+{ id: "I2.0", description: "Three phase monitor fault", status: data?.["Three phase monitor fault_I2.0"] },
+{ id: "I2.1", description: "Spare", status: data?.["Spare_I2.1"] },
+{ id: "I2.2", description: "Cond. fan2 TOP fault", status: data?.["Cond. fan2 TOP fault_I2.2"] },
+{ id: "I2.3", description: "Spare", status: data?.["Spare_I2.3"] },
+{ id: "I2.4", description: "Spare", status: data?.["Spare_I2.4"] },
+{ id: "I2.5", description: "Cond. fan2 circuit breaker fault", status: data?.["Cond. fan2 circuit breaker fault_I2.5"] },
+]
 
   const gtpl_115_faultStatus = [
     { id: "1", description: "Blower circuit breaker fault", status: data?.BLOWER_CIRCUIT_BREAKER_I0_0 },
@@ -151,6 +172,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
   isGtpl124 ? gtpl_124_faultStatus :
   (isGtpl122 || isGtpl1200_02) ? s7_1200_faultStatus :
   isGTPL116 ? gtpl_116_faultStatus :
+  isGTPL132 ? gtpl_132_faultStatus :
   [];
 
     return selectedList.map((item) => {
