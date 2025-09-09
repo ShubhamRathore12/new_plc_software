@@ -32,6 +32,8 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
     return false;
   };
 
+  
+
   const s7_200_faultStatus = [
     { id: "1", description: "Blower circuit breaker fault", status: data?.BLOWER_CIRCUIT_BREAKER_FAULT },
     { id: "2", description: "Blower drive fault", status: data?.BLOWER_DRIVE_FAULT },
@@ -179,6 +181,8 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
 
     return selectedList.map((item) => {
       const isFault = isStatusFault(item.status);
+      const isCondenserFan1TopFault = isGTPL132 && item.id === "I0.7"  || item.id === 'I0.2';
+      const shouldShowRed = isCondenserFan1TopFault ? !isFault : isFault;
 
       return (
         <div
@@ -190,9 +194,9 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
           <div className="flex items-center gap-2">
             <div
               className={`w-4 h-4 rounded-full ${
-                isFault ? "bg-red-500" : "bg-green-500"
+                shouldShowRed ? "bg-red-500" : "bg-green-500"
               }`}
-              title={isFault ? "Active" : "Inactive"}
+              title={shouldShowRed ? "Active" : "Inactive"}
             ></div>
           
           </div>
