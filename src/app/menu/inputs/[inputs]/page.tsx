@@ -22,10 +22,12 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
 
   // Helper to normalize all possible "fault" values - handles both boolean and string values
   const isStatusFault = (value: unknown): boolean => {
+    console.log(value,"value");
+    
     if (typeof value === 'boolean') return value;
     if (typeof value === 'string') {
       const lowerValue = value.toLowerCase();
-      return lowerValue === "true" || lowerValue === "tr";
+      return lowerValue === "true" || lowerValue === "tr" || lowerValue === "True";
     }
     return false;
   };
@@ -75,25 +77,25 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
     { id: "I3.3", description: "Cond fan 6 circuit breaker", status: data?.Cond_fan_6_circuit_breaker_ },
   ];
 
-  const gtpl_132_faultStatus =[{ id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor circuit breaker _I0.0"] },
-{ id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor module feedback error_I0.1"] },
-{ id: "I0.2", description: "Compressor in operation", status: data?.["Compressor in operation_I0.2"] },
-{ id: "I0.3", description: "Compressor oil low_I0.3", status: data?.["Compressor oil low_I0.3"] },
-{ id: "I0.4", description: "Blower drive fault", status: data?.["Blower drive fault_I0.4"] },
-{ id: "I0.5", description: "Blower drive in operation", status: data?.["Blower drive in operation_I0.5"] },
-{ id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower circuit breaker_I0.6"] },
-{ id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser fan1 TOP fault_I0.7"] },
-{ id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser fan1 circuit breaker_I1.0"] },
-{ id: "I1.1", description: "Spare", status: data?.["Spare_I1.1"] },
-{ id: "I1.2", description: "Low pressure fault", status: data?.["Low pressure fault_I1.2"] },
-{ id: "I1.3", description: "High Pressure Fault", status: data?.["High Pressure Fault_I1.3"] },
-{ id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1.4"] },
-{ id: "I2.0", description: "Three phase monitor fault", status: data?.["Three phase monitor fault_I2.0"] },
-{ id: "I2.1", description: "Spare", status: data?.["Spare_I2.1"] },
-{ id: "I2.2", description: "Cond. fan2 TOP fault", status: data?.["Cond. fan2 TOP fault_I2.2"] },
-{ id: "I2.3", description: "Spare", status: data?.["Spare_I2.3"] },
-{ id: "I2.4", description: "Spare", status: data?.["Spare_I2.4"] },
-{ id: "I2.5", description: "Cond. fan2 circuit breaker fault", status: data?.["Cond. fan2 circuit breaker fault_I2.5"] },
+  const gtpl_132_faultStatus =[{ id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor_circuit_breaker_I0_0"] },
+{ id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor_module_feedback_error_I0_1"] },
+{ id: "I0.2", description: "Compressor in operation", status: data?.["Compressor_in_operation_I0_2"] },
+{ id: "I0.3", description: "Compressor oil low", status: data?.["Compressor_oil_low_I0_3"] },
+{ id: "I0.4", description: "Blower drive fault", status: data?.["Blower_drive_fault_I0_4"] },
+{ id: "I0.5", description: "Blower drive in operation", status: data?.["Blower_drive_in_operation_I0_5"] },
+{ id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower_circuit_breaker_I0_6"] },
+{ id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser_fan1_TOP_fault_I0_7"] },
+{ id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser_fan1_circuit_breaker_I1_0"] },
+{ id: "I1.1", description: "Spare", status: data?.["Spare_I1_1"] },
+{ id: "I1.2", description: "Low pressure fault", status: data?.["Low_pressure_fault_I1_2"] },
+{ id: "I1.3", description: "High Pressure Fault", status: data?.["High_Pressure_Fault_I1_3"] },
+{ id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1_4"] },
+{ id: "I2.0", description: "Three phase monitor fault", status: data?.["Three_phase_monitor_fault_I2_0"] },
+{ id: "I2.1", description: "Spare", status: data?.["Spare_I2_1"] },
+{ id: "I2.2", description: "Condenser fan2 TOP fault", status: data?.["Condenser_fan2_TOP_fault_I2_2"] },
+{ id: "I2.3", description: "Spare", status: data?.["Spare_I2_3"] },
+{ id: "I2.4", description: "Spare", status: data?.["Spare_I2_4"] },
+{ id: "I2.5", description: "Condenser fan2 circuit breaker fault", status: data?.["Condenser_fan2_circuit_breaker_fault_I2_5"] },
 ]
 
   const gtpl_115_faultStatus = [

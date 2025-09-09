@@ -138,11 +138,11 @@ const yellowOnAlt = yellowLightFields.some(field => checkTrueValue(data?.[field]
         <div className="absolute top-4 right-[35rem] space-y-2 z-10">
         {['GTPL-122-gT-1000T-S7-1200', 'GTPL-121-gT-1000T-S7-1200','GTPL-124-GT-450T-S7-1200','GTPL-132-GT-650T-S7-1200'].some(name => machineName.includes(name)) ? (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-    T0 = {formatValue(data?.T0_set_point || data?.AIR_OUTLET_TEMP, "°C")}
+    T0 = {formatValue(data?.T0_set_point || data?.AIR_OUTLET_TEMP || data?.T1_set_point_in_paddy_aeging_mode, "°C")}
   </div>
 ) : (
   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-    T1 = {formatValue(data?.T1_set_point ||data?.T1_temp_mean || data?.T1_SET_POINT , "°C")}
+    T1 = {formatValue(data?.T1_set_point ||data?.T1_temp_mean || data?.T1_SET_POINT || data?.Delta_T_set_point_paddy_aeging_mode , "°C")}
   </div>
 )}
 
