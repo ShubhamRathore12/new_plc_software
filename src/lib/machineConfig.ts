@@ -227,7 +227,7 @@ export const MACHINE_CONFIG = {
   "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-132-GT-650T-S7-1200": { table: "GTPL_132_GT_650T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
+  "GTPL-132-AP-300-S7-1200": { table: "GTPL_132_GT_650T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
   "GTPL-131-GT-650T-S7-1200": { table: "GTPL_131_GT_650T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
   "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT_450T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
 

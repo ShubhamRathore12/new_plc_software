@@ -159,7 +159,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
   <div className="flex flex-row items-center px-2 py-1 gap-2">
     <div className="text-sm font-bold text-gray-700">
     {machineName === "GTPL-124-GT-450T-S7-1200" || machineName === "GTPL-122-gT-1000T-S7-1200" || machineName === 
-    'GTPL-121-gT-1000T-S7-1200' ? "T0" : "TH"}
+    'GTPL-121-gT-1000T-S7-1200' || machineName === 'GTPL-132-AP-300-S7-1200' ? "T0" : "TH"}
     </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
       {formatValue(

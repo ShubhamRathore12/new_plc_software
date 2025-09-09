@@ -116,7 +116,7 @@ export default function AnalogPage() {
     "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
     "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
     "GTPL-124-GT-450T-S7-1200": sharedS7_1200_config,
-    "GTPL-132-GT-650T-S7-1200":sharedS7_1200_config,
+    "GTPL-132-AP-300-S7-1200":sharedS7_1200_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -216,7 +216,7 @@ export default function AnalogPage() {
           device === 'GTPL-121-gT-1000T-S7-1200' || 
           device === 'GTPL-122-gT-1000T-S7-1200' || 
           device === 'GTPL-131-GT-650T-S7-1200' || 
-          device === 'GTPL-132-GT-650T-S7-1200' || 
+          device === 'GTPL-132-AP-300-S7-1200' || 
           (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
         return item.description !== "Heater" && item.description !== "Cond. Fan speed";
       }
