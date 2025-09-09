@@ -244,14 +244,14 @@ export default function Home() {
   };
 
   // Check if the device is the specific grain/paddy chilling device
-  const isGrainPaddyDevice = device === "GTPL-132-AP-300-S7-1200";
+  const isGrainPaddyDevice = device === "GTPL-132-300-AP-300-S7-1200";
 
   const getMenuItems = (): MenuItem[] => {
     if (isGrainPaddyDevice) {
       // For the specific device, show two auto options instead of one
       return [
-        { icon: Activity, title: `${t("auto")} - Grain Chilling`, path: "auto-grain" },
-        { icon: Activity, title: `${t("auto")} - Paddy Chilling`, path: "auto-paddy" },
+        { icon: Activity, title: `Grain Chilling Mode`, path: "auto-grain" },
+        { icon: Activity, title: `Paddy Ageing Mode`, path: "auto-paddy" },
         { icon: Wind, title: t("aeration"), path: "aerations" },
         { icon: AlertTriangle, title: t("fault"), path: "fault" },
         { icon: Settings, title: t("settings"), path: "settings" },

@@ -57,7 +57,7 @@ export default function AutoPaddyPage() {
   };
 
   const machineConfig = {
-    "GTPL-132-AP-300-S7-1200": {
+    "GTPL-132-300-AP-300-S7-1200": {
       serialNumber: "GTPL_132_PADDY",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
@@ -80,7 +80,7 @@ export default function AutoPaddyPage() {
 
   const currentConfig =
     machineConfig[autoPaddy as keyof typeof machineConfig] ||
-    machineConfig["GTPL-132-AP-300-S7-1200"];
+    machineConfig["GTPL-132-300-AP-300-S7-1200"];
 
   const handleBack = () => router.push(`/menu/${autoPaddy}`);
 
@@ -120,7 +120,7 @@ export default function AutoPaddyPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {t("PADDY CHILLING")} - {t("AUTO")}
+              {t("PADDY AGEING MODE")} - {t("AUTO")}
             </h1>
             <p className="text-muted-foreground">SR. NO. {autoPaddy}</p>
           </AnimatedContainer>
@@ -132,14 +132,14 @@ export default function AutoPaddyPage() {
                   <Home
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-AP-300-S7-1200"
+                    machineName="GTPL-132-300-AP-300-S7-1200"
                   />
                 ) : (
                   <AutoDiagram1
                     blower={Fan}
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-AP-300-S7-1200"
+                    machineName="GTPL-132-300-AP-300-S7-1200"
                   />
                 )}
               </div>

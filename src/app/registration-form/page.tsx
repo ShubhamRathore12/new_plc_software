@@ -314,8 +314,8 @@ export default function RegistrationForm() {
       label: formatText("GTPL-131-GT-650T-S7-1200"),
     },
     {
-      value: "GTPL-132-AP-300-S7-1200",
-      label: formatText("GTPL-132-AP-300-S7-1200"),
+      value: "GTPL-132-300-AP-300-S7-1200",
+      label: formatText("GTPL-132-300-AP-300-S7-1200"),
     },
   ];
 

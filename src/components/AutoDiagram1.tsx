@@ -163,7 +163,7 @@ export default function AutoDiagram1({
             "GTPL-122-gT-1000T-S7-1200",
             "GTPL-121-gT-1000T-S7-1200",
             "GTPL-124-GT-450T-S7-1200",
-            "GTPL-132-AP-300-S7-1200",
+            "GTPL-132-300-AP-300-S7-1200",
           ].some((name) => machineName.includes(name)) ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T0 ={" "}
@@ -205,7 +205,7 @@ export default function AutoDiagram1({
             "GTPL-122-gT-1000T-S7-1200",
             "GTPL-121-gT-1000T-S7-1200",
             "GTPL-124-GT-450T-S7-1200",
-            "GTPL-132-AP-300-S7-1200",
+            "GTPL-132-300-AP-300-S7-1200",
           ].some((name) => machineName.includes(name)) ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T Delta ={" "}
@@ -220,14 +220,16 @@ export default function AutoDiagram1({
                   ? formatValue(
                       data.Delta_T_set_point ||
                         data?.Th_T1 ||
-                        data?.Delta_T_set_point_in_paddy_aeging_mode,
+                        data?.
+Delta_T_set_point_paddy_aeging_mode,
                       "°C"
                     )
                   : formatValue(
                       data.Delta_T_set_point ||
                         data?.Th_T1 ||
                         data?.Delta_T_set_point_in_grain_chilling_mode ||
-                        data?.Delta_T_set_point_in_paddy_aeging_mode,
+                        data?.
+Delta_T_set_point_paddy_aeging_mode,
                       "°C"
                     )}
             </div>
@@ -342,7 +344,7 @@ export default function AutoDiagram1({
                 "GTPL-122-gT-1000T-S7-1200",
                 "GTPL-121-gT-1000T-S7-1200",
                 "GTPL-124-GT-450T-S7-1200",
-                "GTPL-132-AP-300-S7-1200",
+                "GTPL-132-300-AP-300-S7-1200",
               ].some((name) => machineName.includes(name)) && (
                 <line
                   x1="280"
@@ -422,7 +424,7 @@ export default function AutoDiagram1({
               "GTPL-122-gT-1000T-S7-1200",
               "GTPL-121-gT-1000T-S7-1200",
               "GTPL-124-GT-450T-S7-1200",
-              "GTPL-132-AP-300-S7-1200",
+              "GTPL-132-300-AP-300-S7-1200",
             ].some((name) => machineName.includes(name)) && (
               <div
                 className="absolute z-10"
@@ -538,6 +540,7 @@ export default function AutoDiagram1({
                   "GTPL-111-gT-80E-P-S7-200",
                   "GTPL-112-gT-80E-P-S7-200",
                   "GTPL-113-gT-80E-P-S7-200",
+                  'GTPL-132-300-AP-300-S7-1200'
                 ].some((name) => machineName.includes(name))
                   ? "translate(230%,650%)"
                   : "translateY(620%)",
@@ -554,6 +557,7 @@ export default function AutoDiagram1({
                 "GTPL-111-gT-80E-P-S7-200",
                 "GTPL-112-gT-80E-P-S7-200",
                 "GTPL-113-gT-80E-P-S7-200",
+                'GTPL-132-300-AP-300-S7-1200'
               ].some((name) => machineName.includes(name)) && (
                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>

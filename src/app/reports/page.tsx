@@ -56,7 +56,7 @@ const allDevices = [
   "GTPL-121-gT-1000T-S7-1200",
   "GTPL-124-GT-450T-S7-1200",
   "GTPL-131-GT-650T-S7-1200",
-  "GTPL-132-AP-300-S7-1200",
+  "GTPL-132-300-AP-300-S7-1200",
 ];
 
 // Create a mapping from device name to table name
@@ -78,7 +78,7 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-121-gT-1000T-S7-1200": "GTPL_121_GT1000T",
   "GTPL-124-GT-450T-S7-1200": "GTPL_124_GT_450T_S7_1200",
   "GTPL-131-GT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
-  "GTPL-132-AP-300-S7-1200": "GTPL_132_GT300AP",
+  "GTPL-132-300-AP-300-S7-1200": "GTPL_132_GT300AP",
   "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
 };
 
