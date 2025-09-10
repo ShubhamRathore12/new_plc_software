@@ -406,7 +406,17 @@ export default function AutoPage() {
 
     <div className="space-y-2">
       {/* Temperature sensors */}
-    
+      {Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => {
+        const value = data?.[sensor.key];
+        return (
+          <div key={key} className="flex justify-between">
+            <span>{t(sensor.label)}</span>
+            <span className="font-medium">
+              {formatValue(value, "°C")}
+            </span>
+          </div>
+        );
+      })}
 
       {/* Controls */}
       {Object.entries(currentConfig.controls).map(([key, control]) => {
