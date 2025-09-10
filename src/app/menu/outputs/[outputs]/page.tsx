@@ -374,7 +374,7 @@ export default function OutputsPage() {
 { id: "Q2.0", description: "Spare", dataKey: "Spare_Q2_0" },
 { id: "Q2.1", description: "Condenser_fan1_on", dataKey: "Condenser_fan1_on_Q2_1" },
 { id: "Q2.2", description: "CR valve 75% on", dataKey: "CR valve 75% on_Q2_2" },
-{ id: "Q2.3", description: "Chiller_fault", dataKey: "Chiller_fault_Q2_3" },
+{ id: "Q2.3", description: "Chiller_fault", dataKey: "Chiller_Fault_Q2_3" },
 { id: "Q2.4", description: "Condenser_fan2_on", dataKey: "Condenser_fan2_on_Q2_4" },
 { id: "Q2.5", description: "CR_valve_100%_on", dataKey: "CR_valve_100%_on_Q2_5" },
 { id: "Q2.6", description: "Spare", dataKey: "Spare_Q2_6" },
@@ -478,6 +478,8 @@ const getStatus = (dataKey: string) => {
 };
 
 const getStatusColor = (key: string, status: boolean) => {
+
+  
   switch (key) {
     case "Chiller_healthy_on_Q1_1":
       return status ? "bg-green-500" : "bg-red-500";
@@ -486,8 +488,9 @@ const getStatusColor = (key: string, status: boolean) => {
       return status ?   "bg-red-500" :"bg-green-500";
 
        case "Chiller_fault_Q2_3" :
-      return status ?   "bg-red-500" :"bg-green-500";
-
+      return status ? "bg-red-500" :"bg-green-500";
+       case "Chiller_Fault_Q2_3" :
+      return status ? "bg-red-500" :"bg-green-500";
     case "Collective_Trouble_Signal_on_Q2_1":
       return status ? "bg-yellow-500" : "bg-red-500";
 

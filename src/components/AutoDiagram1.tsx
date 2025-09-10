@@ -69,17 +69,19 @@ export default function AutoDiagram1({
     "Chiller_healthy_on",
     "Chiller_healthy",
   ];
-
+console.log('Chiller_fault_Q2_3 value:', data?.Chiller_Fault_Q2_3
+);
   // Red light conditions
-  const redLightFields = [
-    "RED_LIGHT",
-    "Chiller_fault_(Q2.3)",
-    "Chiller_Fault_on_Q2_0",
-    "Chiller_Fault_on",
-    "Chiller_Fault",
-    "Chiller_fault_Q2_3",
-    
-  ];
+ const redLightFields = [
+  "RED_LIGHT",
+  "Chiller_fault_Q2_3",   // lowercase version
+  "Chiller_Fault_Q2_3",   // uppercase version
+  "Chiller_fault_(Q2.3)",
+  "Chiller_Fault_on_Q2_0",
+  "Chiller_Fault_on",
+  "Chiller_Fault",
+  "chiller_fault",        // Add this if your data has this field too
+];
 
   // Yellow light conditions
   const yellowLightFields = [
