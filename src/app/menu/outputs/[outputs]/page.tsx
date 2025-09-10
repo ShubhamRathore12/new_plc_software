@@ -495,10 +495,10 @@ const getStatusColor = (key: string, status: boolean) => {
       return status ? "bg-yellow-500" : "bg-red-500";
 
        case "Collective_trouble_signal_Q1_0":
-      return status ?"bg-yellow-500" : "bg-green-500"  ;
+      return status ?"bg-yellow-500" : "bg-green-500";
 
     case "Buzzer_on_Q2_2":
-      return status ?  "bg-red-500" :"bg-green-500" ;
+      return status ?  "bg-red-500" :"bg-green-500";
 
    
 

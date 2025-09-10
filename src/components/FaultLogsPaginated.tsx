@@ -51,65 +51,81 @@ export default function FaultLogsPaginated({ machineName }: Props) {
     setError(null);
 
     try {
-      const url = new URL("/api/getActiveFaults", window.location.origin);
-      url.searchParams.append("machineName", machineName);
-      url.searchParams.append("page", pageNum.toString());
-      url.searchParams.append("limit", PAGE_SIZE.toString());
+      // We need enough true-like tag entries to cover the requested page of tag results.
+      // Accumulate tag entries across API pages until we have enough to slice the requested page.
+      let accumulated: TagData[] = [];
+      let collectedRaw: any[] = [];
 
+      // First fetch page 1 to get totalPages
+      const firstUrl = new URL("/api/getActiveFaults", window.location.origin);
+      firstUrl.searchParams.append("machineName", machineName);
+      firstUrl.searchParams.append("page", "1");
+      firstUrl.searchParams.append("limit", PAGE_SIZE.toString());
       if (machineName === "GTPL-30-gT-180E-S7-1200") {
-        url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
+        firstUrl.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
       }
-        
-
       if (search && search.trim()) {
-        url.searchParams.append("search", search.trim());
+        firstUrl.searchParams.append("search", search.trim());
       }
-
-      const res = await fetch(url.toString());
-      if (!res.ok)
-        throw new Error(`API Error: ${res.status} - ${await res.text()}`);
-      const result = await res.json();
-
-      let dataArray: any[] = [];
-      let total = 0;
-      let totalPages = 1;
-      let resolvedPage = pageNum;
-
-      if (Array.isArray(result?.data)) {
-        dataArray = result.data;
-        setRawData(result.data);
-        total = result.total || result.data.length;
-        totalPages = result.totalPages || 1;
-        resolvedPage = result.page || pageNum;
-      }
-
-      let computedTagData: TagData[] = [];
-      if (dataArray.length > 0) {
-        computedTagData = extractTagDataFromRecords(dataArray, machineName);
-      }
-
-      if (search && search.trim()) {
-        const q = search.trim().toLowerCase();
-        computedTagData = computedTagData.filter((t) =>
-          t.tag.toLowerCase().includes(q)
+      const firstRes = await fetch(firstUrl.toString());
+      if (!firstRes.ok)
+        throw new Error(
+          `API Error: ${firstRes.status} - ${await firstRes.text()}`
         );
+      const firstResult = await firstRes.json();
+      const totalPages = Number(firstResult?.totalPages || 1);
+
+      // Determine how many tag entries we need to cover the requested tag page
+      const endIdxNeeded = pageNum * PAGE_SIZE;
+
+      // Iterate through API pages until we have enough tag entries or exhaust pages
+      for (let apiPage = 1; apiPage <= totalPages; apiPage++) {
+        const url = new URL("/api/getActiveFaults", window.location.origin);
+        url.searchParams.append("machineName", machineName);
+        url.searchParams.append("page", apiPage.toString());
+        url.searchParams.append("limit", PAGE_SIZE.toString());
+        if (machineName === "GTPL-30-gT-180E-S7-1200") {
+          url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
+        }
+        if (search && search.trim()) {
+          url.searchParams.append("search", search.trim());
+        }
+
+        const res = await fetch(url.toString());
+        if (!res.ok)
+          throw new Error(`API Error: ${res.status} - ${await res.text()}`);
+        const result = await res.json();
+
+        const batchRows: any[] = Array.isArray(result?.data) ? result.data : [];
+        if (apiPage === 1) setRawData(batchRows);
+
+        // Extract tag entries from this batch
+        let batchTags = extractTagDataFromRecords(batchRows, machineName);
+        if (search && search.trim()) {
+          const q = search.trim().toLowerCase();
+          batchTags = batchTags.filter((t) => t.tag.toLowerCase().includes(q));
+        }
+
+        accumulated = accumulated.concat(batchTags);
+        collectedRaw = collectedRaw.concat(batchRows);
+
+        if (accumulated.length >= endIdxNeeded) break;
       }
 
-      // Client-side pagination based on true-like filtered tags
-      const totalTrue = computedTagData.length;
+      // Compute final pagination based on total accumulated tag entries
+      const totalTrue = accumulated.length;
       const totalPagesTrue = Math.max(1, Math.ceil(totalTrue / PAGE_SIZE));
-      const safePage = Math.min(Math.max(1, resolvedPage), totalPagesTrue);
+      const safePage = Math.min(Math.max(1, pageNum), totalPagesTrue);
       const startIdx = (safePage - 1) * PAGE_SIZE;
       const endIdx = startIdx + PAGE_SIZE;
-      const pageSlice = computedTagData.slice(startIdx, endIdx);
+      const pageSlice = accumulated.slice(startIdx, endIdx);
 
-      setAllTagData(computedTagData);
-      const faultCount = totalTrue; // all entries represent faults
+      setAllTagData(accumulated);
       setTagData(pageSlice);
       setStats({
         total: totalTrue,
         activeTags: pageSlice.length,
-        faultTags: faultCount,
+        faultTags: totalTrue,
         currentPage: safePage,
         totalPages: totalPagesTrue,
       });
@@ -181,8 +197,6 @@ export default function FaultLogsPaginated({ machineName }: Props) {
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
-      
-
           <StatisticsCards stats={stats} />
           <SearchBar
             searchTerm={searchTerm}

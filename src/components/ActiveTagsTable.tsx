@@ -22,6 +22,9 @@ export function ActiveTagsTable({ tags }: ActiveTagsTableProps) {
   const activeTags = tags.filter((tag) => isActiveTag(tag.value));
   const createdAtTag = tags.find((t) => t.tag === "created_at");
 
+  console.log(activeTags);
+  
+
   return (
     <ScrollArea className="h-[500px] pr-4">
       <Table>

@@ -30,7 +30,7 @@ export const S7_200_TAGS = [
   "LOW_PRESSURE_FAULT_LOCKED",
   "LP_TRANSDUCER_FAILURE",
   "SET_POINT_NOT_ACHIEVED_IN_AERATION_MODE",
-  "THREE_PHASE_MONITORING_FAULT"
+  "THREE_PHASE_MONITORING_FAULT",
 ];
 
 // S7-1200 specific tags
@@ -72,7 +72,7 @@ export const S7_1200_TAGS = [
   "Air_outlet_sensor_1_open",
   "Air_outlet_sensor_1_short_circuit",
   "Air_outlet_sensor_2_open",
-  "Air_outlet_sensor_2_short_circuit"
+  "Air_outlet_sensor_2_short_circuit",
 ];
 
 export const GPL_115_TAGS = [
@@ -171,7 +171,7 @@ export const GPL_117_TAGS = [
 ];
 
 export const GPL_124_TAGS = [
-    "Compressor_circuit_breaker_fault",
+  "Compressor_circuit_breaker_fault",
   "Oil_pressure_low",
   "Blower_drive_fault",
   "Blower_circuit_breaker_fault",
@@ -203,7 +203,7 @@ export const GPL_124_TAGS = [
   "T0_1_sensor_open",
   "T0_1_sensor_short",
   "T0_2_sensor_open",
-  "T0_2_sensor_short"
+  "T0_2_sensor_short",
 ];
 
 export const GPL_132_TAGS = [
@@ -235,41 +235,114 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_1_open",
   "Air_outlet_sensor_T0_1_short_circuit",
   "Air_outlet_sensor_T0_2_open",
-  "Air_outlet_sensor_T0_2_short_circuit"
+  "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
-  "GTPL-118-gT-80E-P-S7-200": { table: "kabomachinedatasmart200", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-108-gT-40E-P-S7-200": { table: "GTPL_108_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-109-gT-40E-P-S7-200": { table: "GTPL_109_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-110-gT-40E-P-S7-200": { table: "GTPL_110_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-111-gT-80E-P-S7-200": { table: "GTPL_111_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-112-gT-80E-P-S7-200": { table: "GTPL_112_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-113-gT-80E-P-S7-200": { table: "GTPL_113_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-118-gT-80E-P-S7-200": {
+    table: "kabomachinedatasmart200",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
+  "GTPL-108-gT-40E-P-S7-200": {
+    table: "GTPL_108_gT_40E_P_S7_200_Germany",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
+  "GTPL-109-gT-40E-P-S7-200": {
+    table: "GTPL_109_gT_40E_P_S7_200_Germany",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
+  "GTPL-110-gT-40E-P-S7-200": {
+    table: "GTPL_110_gT_40E_P_S7_200_Germany",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
+  "GTPL-111-gT-80E-P-S7-200": {
+    table: "GTPL_111_gT_80E_P_S7_200_Germany",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
+  "GTPL-112-gT-80E-P-S7-200": {
+    table: "GTPL_112_gT_80E_P_S7_200_Germany",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
+  "GTPL-113-gT-80E-P-S7-200": {
+    table: "GTPL_113_gT_80E_P_S7_200_Germany",
+    tags: S7_200_TAGS,
+    type: "S7-200",
+  },
 
   // S7-1200 (including GTPL-115)
-  "GTPL-122-gT-1000T-S7-1200": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
-  "Gtpl-S7-1200-02": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-30-gT-180E-S7-1200": { table: "GTPL_114_GT_140E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
-  "GTPL-115-gT-180E-S7-1200": { table: "GTPL_115_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
-  "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
-  "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-132-300-AP-300-S7-1200": { table: "GTPL_132_GT300AP", tags: GPL_132_TAGS, type: "S7-1200" },
-  "GTPL-131-GT-650T-S7-1200": { table: "GTPL_131_GT_650T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
-  "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT_450T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
-
-
-
+  "GTPL-122-gT-1000T-S7-1200": {
+    table: "gtpl_122_s7_1200_01",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
+  "Gtpl-S7-1200-02": {
+    table: "gtpl_122_s7_1200_01",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-30-gT-180E-S7-1200": {
+    table: "GTPL_114_GT_140E_S7_1200",
+    tags: GPL_115_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-115-gT-180E-S7-1200": {
+    table: "GTPL_115_GT_180E_S7_1200",
+    tags: GPL_115_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-116-gT-240E-S7-1200": {
+    table: "GTPL_116_GT_240E_S7_1200",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-117-gT-320E-S7-1200": {
+    table: "GTPL_117_GT_320E_S7_1200",
+    tags: GPL_117_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-119-gT-180E-S7-1200": {
+    table: "GTPL_119_GT_180E_S7_1200",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-120-gT-180E-S7-1200": {
+    table: "GTPL_120_GT_180E_S7_1200",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-121-gT-1000T-S7-1200": {
+    table: "GTPL_121_GT1000T",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-132-300-AP-300-S7-1200": {
+    table: "GTPL_132_GT300AP",
+    tags: GPL_132_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-131-GT-650T-S7-1200": {
+    table: "GTPL_131_GT_650T_S7_1200",
+    tags: GPL_124_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-124-GT-450T-S7-1200": {
+    table: "GTPL_124_GT_450T_S7_1200",
+    tags: GPL_124_TAGS,
+    type: "S7-1200",
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
-  "GPL-132":'GTPL-132-300-AP-300-S7-1200'
+  // "GPL-132":'GTPL-132-300-AP-300-S7-1200'
 };

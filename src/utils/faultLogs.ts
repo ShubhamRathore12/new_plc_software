@@ -1,3 +1,5 @@
+import { machine } from "os";
+
 export const PAGE_SIZE = 200;
 
 export interface TagData {
@@ -198,6 +200,38 @@ export const GTPL_30_TAGS = [
   ...GPL_115_TAGS,
 ];
 
+export const GPL_132_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp.",
+  "Ambient_temp_over_45°C",
+  "Compressor_module_feedback_error",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_43°C",
+  "Condenser_fan_2_TOP_fault",
+  "Condenser_fan_2_circuit_breaker_fault",
+  "Condenser_fan_1_circuit_breaker_fault",
+  "Condenser_fan_1_TOP_fault",
+  "Ambient_air_sensor_T2_1_open",
+  "Ambient_air_sensor_T2_1_short_circuit",
+  "Ambient_air_sensor_T2_2_open",
+  "Ambient_air_sensor_T2_2_short_circuit",
+  "Cold_air_sensor_T1_1_open",
+  "Cold_air_sensor_T1_1_short_circuit",
+  "Cold air sensor T1_2 open",
+  "Cold_air_sensor_T1_2_short_circuit",
+  "Air_outlet_sensor_T0_1_open",
+  "Air_outlet_sensor_T0_1_short_circuit",
+  "Air_outlet_sensor_T0_2_open",
+  "Air_outlet_sensor_T0_2_short_circuit",
+];
+
 export const S7_200_MACHINES = [
   "GTPL-118-gT-80E-P-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
@@ -222,6 +256,7 @@ export function getTagsForMachine(machineName: string): string[] {
     machineName === "GTPL-116-gT-320E-S7-1200"
   )
     return GPL_117_TAGS;
+  if (machineName === "GTPL-132-300-AP-300-S7-1200") return GPL_132_TAGS;
   if (S7_200_MACHINES.includes(machineName)) return S7_200_TAGS;
   return S7_1200_TAGS;
 }
@@ -245,7 +280,7 @@ export function extractTagDataFromRecords(
       new Date().toISOString();
 
     for (const tag of tags) {
-      const value = (record as any)[tag];
+      const value = getRecordValueForTag(record as any, tag);
       if (
         value !== undefined &&
         value !== null &&
@@ -258,6 +293,63 @@ export function extractTagDataFromRecords(
   }
 
   return tagData;
+}
+
+// Try to resolve DB field names that may not match tag text exactly
+function getRecordValueForTag(record: Record<string, any>, tag: string) {
+  const candidates = generateTagKeyCandidates(tag);
+  for (const key of candidates) {
+    if (key in record) return record[key];
+  }
+  return undefined;
+}
+
+function generateTagKeyCandidates(tag: string): string[] {
+  const originals: string[] = [tag];
+
+  // Normalize spaces to underscores and collapse repeats
+  const underscore = tag.replace(/\s+/g, "_");
+  originals.push(underscore);
+
+  // Remove degree symbol and variants of C
+  const noDegree = underscore.replace(/[°º]/g, "");
+  const cVariants = [noDegree.replace(/C/g, "C"), noDegree.replace(/C/g, "")];
+
+  // Replace dots with underscores and strip trailing punctuation
+  const dotToUnderscore = cVariants.map((t) =>
+    t.replace(/[.]/g, "_").replace(/[_,.]+$/g, "")
+  );
+
+  // Ensure only [A-Za-z0-9_] and collapse multiple underscores
+  const cleaned = dotToUnderscore.concat(originals).map((t) =>
+    t
+      .replace(/[^A-Za-z0-9_]/g, "_")
+      .replace(/_+/g, "_")
+      .replace(/^_+|_+$/g, "")
+  );
+
+  // Lowercase and original case variants
+  const withCase = Array.from(
+    new Set(
+      cleaned
+        .concat(cleaned.map((t) => t.toLowerCase()))
+        .concat(cleaned.map((t) => t.toUpperCase()))
+    )
+  );
+
+  // Also try removing stray trailing characters like a final underscore
+  const trimmed = withCase.map((t) => t.replace(/_+$/g, ""));
+
+  // Deduplicate while preserving order
+  const seen = new Set<string>();
+  const result: string[] = [];
+  for (const k of [tag, ...originals, ...cleaned, ...withCase, ...trimmed]) {
+    if (!seen.has(k)) {
+      seen.add(k);
+      result.push(k);
+    }
+  }
+  return result;
 }
 
 export function formatTagName(tag: string): string {
