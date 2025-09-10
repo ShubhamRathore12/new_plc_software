@@ -46,7 +46,7 @@ export default function AutoPaddyPage() {
         // TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
       },
       controls: {
-        // AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
       },
