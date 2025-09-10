@@ -423,6 +423,8 @@ export default function AutoPage() {
         // Example: don't show Heater if machine ends with 200
         if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
           return null;
+        }   if (control.label === "Supply Air(TH)" && (auto as string)?.includes("GTPL-132-300-AP-300-S7-1200")) {
+          return null;
         }
         return (
           <div key={key} className="flex justify-between">
