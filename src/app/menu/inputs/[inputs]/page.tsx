@@ -89,7 +89,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
 { id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser_fan1_TOP_fault_I0_7"] },
 { id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser_fan1_circuit_breaker_I1_0"] },
 { id: "I1.1", description: "Spare", status: data?.["Spare_I1_1"] },
-{ id: "I1.2", description: "Low pressure fault", status: data?.["Low_pressure_fault_I1_2"] },
+{ id: "I1.2", description: "Low pressure fault", status: data?.Low_pressure_fault_I1_2 },
 { id: "I1.3", description: "High Pressure Fault", status: data?.["High_Pressure_Fault_I1_3"] },
 { id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1_4"] },
 { id: "I2.0", description: "Three phase monitor fault", status: data?.["Three_phase_monitor_fault_I2_0"] },
@@ -181,7 +181,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
 
     return selectedList.map((item) => {
       const isFault = isStatusFault(item.status);
-      const isCondenserFan1TopFault = isGTPL132 &&  item.id === 'I0.2';
+      const isCondenserFan1TopFault = isGTPL132 &&  item.id === 'I0.2' ||  item.id ==='I1.2';
       const shouldShowRed = isCondenserFan1TopFault ? !isFault : isFault;
 
       return (
