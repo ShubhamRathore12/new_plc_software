@@ -206,6 +206,38 @@ export const GPL_124_TAGS = [
   "T0_2_sensor_short"
 ];
 
+export const GPL_132_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp.",
+  "Ambient_temp_over_45°C",
+  "Compressor_module_feedback_error",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_43°C",
+  "Condenser_fan_2_TOP_fault",
+  "Condenser_fan_2_circuit_breaker_fault",
+  "Condenser_fan_1_circuit_breaker_fault",
+  "Condenser_fan_1_TOP_fault",
+  "Ambient_air_sensor_T2_1_open",
+  "Ambient_air_sensor_T2_1_short_circuit",
+  "Ambient_air_sensor_T2_2_open",
+  "Ambient_air_sensor_T2_2_short_circuit",
+  "Cold_air_sensor_T1_1_open",
+  "Cold_air_sensor_T1_1_short_circuit",
+  "Cold air sensor T1_2 open",
+  "Cold_air_sensor_T1_2_short_circuit",
+  "Air_outlet_sensor_T0_1_open",
+  "Air_outlet_sensor_T0_1_short_circuit",
+  "Air_outlet_sensor_T0_2_open",
+  "Air_outlet_sensor_T0_2_short_circuit"
+];
+
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
@@ -227,7 +259,7 @@ export const MACHINE_CONFIG = {
   "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
   "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
-  "'GTPL-132-300-AP-300-S7-1200'": { table: "GTPL_132_GT_650T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
+  "GTPL-132-300-AP-300-S7-1200": { table: "GTPL_132_GT300AP", tags: GPL_132_TAGS, type: "S7-1200" },
   "GTPL-131-GT-650T-S7-1200": { table: "GTPL_131_GT_650T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
   "GTPL-124-GT-450T-S7-1200": { table: "GTPL_124_GT_450T_S7_1200", tags: GPL_124_TAGS, type: "S7-1200" },
 
@@ -239,4 +271,5 @@ export const MACHINE_CONFIG = {
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
+  "GPL-132":'GTPL-132-300-AP-300-S7-1200'
 };

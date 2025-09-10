@@ -209,6 +209,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    
     "GTPL-121-gT-1000T-S7-1200": {
       serialNumber: "GTPL_121",
   temperatureSensors: {
@@ -256,6 +257,25 @@ export default function AutoPage() {
     "GTPL-113-gT-80E-P-S7-200": {
       serialNumber: "GTPL_113",
       ...commonS7_200Config,
+    },
+       "GTPL-132-300-AP-300-S7-1200": {
+      serialNumber: "GTPL_132",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
     },
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",

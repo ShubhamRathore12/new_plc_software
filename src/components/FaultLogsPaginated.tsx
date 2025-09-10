@@ -59,9 +59,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       if (machineName === "GTPL-30-gT-180E-S7-1200") {
         url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
       }
-        if (machineName === "GTPL-132-300-AP-300-S7-1200") {
-        url.searchParams.append("tableName", "GTPL_132_GT300AP");
-      }
+        
 
       if (search && search.trim()) {
         url.searchParams.append("search", search.trim());

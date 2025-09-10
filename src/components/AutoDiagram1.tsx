@@ -78,6 +78,7 @@ export default function AutoDiagram1({
     "Chiller_Fault_on",
     "Chiller_Fault",
     "Chiller_fault_Q2_3",
+    
   ];
 
   // Yellow light conditions
