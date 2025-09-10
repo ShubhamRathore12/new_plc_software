@@ -181,7 +181,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
 
     return selectedList.map((item) => {
       const isFault = isStatusFault(item.status);
-      const isCondenserFan1TopFault = isGTPL132 && item.id === "I0.7"  || item.id === 'I0.2';
+      const isCondenserFan1TopFault = isGTPL132 &&  item.id === 'I0.2';
       const shouldShowRed = isCondenserFan1TopFault ? !isFault : isFault;
 
       return (
