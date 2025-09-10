@@ -34,27 +34,7 @@ export default function AutoPaddyPage() {
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
 
-  // Configuration for different machines - focusing on paddy chilling
-  const commonS7_200Config = {
-    temperatureSensors: {
-      TH: { key: "AFTER_HEATER_TEMP_Th", label: "Supply Air(TH)" },
-      T0: { key: "AIR_OUTLET_TEMP", label: "After Heat(T0)" },
-      T1: { key: "COLD_AIR_TEMP_T1", label: "Cold Air(T1)" },
-      T2: { key: "AMBIENT_AIR_TEMP_T2", label: "Ambient(T2)" },
-    },
-    controls: {
-      HTR: { key: "AFTER_HEAT_VALVE_RPM", label: "Heater" },
-      AHT: { key: "AFTER_HEAT_VALVE_RPM", label: "After Heat(AHT)" },
-      HGS: { key: "HOT_GAS_VALVE_RPM", label: "Hot Gas(HGS)" },
-      BLOWER: { key: "BLOWER_RPM", label: "Blower" },
-      COND: { key: "CONDENSER_RPM", label: "Condenser" },
-    },
-    compressor: {
-      time: "COMPRESSOR_TIME",
-      hp: "HP",
-      lp: "LP",
-    },
-  };
+ 
 
   const machineConfig = {
     "GTPL-132-300-AP-300-S7-1200": {
@@ -63,10 +43,10 @@ export default function AutoPaddyPage() {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        // TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
       },
       controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        // AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
       },

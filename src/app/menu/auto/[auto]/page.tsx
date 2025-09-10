@@ -406,26 +406,14 @@ export default function AutoPage() {
 
     <div className="space-y-2">
       {/* Temperature sensors */}
-      {Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => {
-        const value = data?.[sensor.key];
-        return (
-          <div key={key} className="flex justify-between">
-            <span>{t(sensor.label)}</span>
-            <span className="font-medium">
-              {formatValue(value, "°C")}
-            </span>
-          </div>
-        );
-      })}
+    
 
       {/* Controls */}
       {Object.entries(currentConfig.controls).map(([key, control]) => {
         // Example: don't show Heater if machine ends with 200
         if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
           return null;
-        }   if (control.label === "Supply Air(TH)" && (auto as string)?.includes("GTPL-132-300-AP-300-S7-1200")) {
-          return null;
-        }
+        }   
         return (
           <div key={key} className="flex justify-between">
             <span>{t(control.label)}</span>
