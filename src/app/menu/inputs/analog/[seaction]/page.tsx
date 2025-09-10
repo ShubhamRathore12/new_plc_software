@@ -100,6 +100,28 @@ export default function AnalogPage() {
       "Heater": "Heater_speed",
     },
   }
+  const GTPL_132_config = {
+    displayName: "S7-1200 Machine",
+    inputs: {
+      "Suction pressure": "LP_value",
+      "Discharge pressure": "HP_value",
+      "T0 probe #1 (Afterheater)": "T0_1_air_outlet_temp",
+      "T0 probe #2 (Afterheater)": "T0_2_air_outlet_temp",
+      "T1 probe #1 (Cold Air)": "T1_1_cold_air_temp",
+      "T1 probe #2 (Cold Air)": "T1_2_cold_air_temp",
+      "T2 probe #1 (Ambient Air)": "T2_1_ambient_temp",
+      "T2 probe #2 (Ambient Air)": "T2_2_ambient_temp",
+      "TH probe #1 (Supply Air)": "TH_1_supply_air_temp",
+      "TH probe #2 (Supply Air)": "TH_2_supply_air_temp",
+    },
+    outputs: {
+      "Blower speed": "Blower_speed",
+      "Cond. Fan speed": "Condenser_fan_speed", // Changed from "Cond_fan_speed" to "Condenser_fan_speed"
+      "Hot gas valve": "Hot_valve_speed",
+      "Afterheat valve": "AHT_vale_speed",
+      "Heater": "Heater_speed",
+    },
+  }
 
   const machineConfigs: Record<
     string,
@@ -116,7 +138,7 @@ export default function AnalogPage() {
     "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
     "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
     "GTPL-124-GT-450T-S7-1200": sharedS7_1200_config,
-    "GTPL-132-300-AP-300-S7-1200":sharedS7_1200_config,
+      "GTPL-132-300-AP-300-S7-1200": GTPL_132_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -133,7 +155,7 @@ export default function AnalogPage() {
       },
       outputs: {
         "Blower speed": "BLOWER_RPM",
-        "Cond. Fan speed": "Cond_fan_speed",
+        "Cond. Fan speed": "Condenser_fan_speed",
         "Hot gas valve": "HOT_GAS_VALVE_RPM",
         "Afterheat valve": "AFTER_HEAT_VALVE_RPM",
         "Heater": "Heater_speed",
@@ -211,33 +233,48 @@ export default function AnalogPage() {
                   <h2 className="text-lg font-semibold">Analog Output</h2>
                  <div className="space-y-2 pl-4">
   {analogOutputs
-    .filter((item) => {
-      if (device === "GTPL-124-GT-450T-S7-1200" || 
-          device === 'GTPL-121-gT-1000T-S7-1200' || 
-          device === 'GTPL-122-gT-1000T-S7-1200' || 
-          device === 'GTPL-131-GT-650T-S7-1200' || 
-          device === 'GTPL-132-300-AP-300-S7-1200' || 
-          (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
-        return item.description !== "Heater" && item.description !== "Cond. Fan speed";
+  .filter((item) => {
+    // Filter out Heater for specific machines
+    if (device === "GTPL-124-GT-450T-S7-1200" || 
+        device === 'GTPL-121-gT-1000T-S7-1200' || 
+        device === 'GTPL-122-gT-1000T-S7-1200' || 
+        device === 'GTPL-131-GT-650T-S7-1200' || 
+        device === 'GTPL-132-300-AP-300-S7-1200' ||
+        (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
+      if (item.description === "Heater") {
+        return false; // Always filter out Heater for these machines
       }
-      return true;
-    })
-    .map((item) => {
-      const liveKey = analogOutputValueMap[item.description];
-      const liveValue = liveKey ? data?.[liveKey] : undefined;
-      
-      return (
-        <div
-          key={item.description}
-          className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
-        >
-          <div className="flex-1">{item.description}</div>
-          <div className="font-medium text-right w-20">
-            {formatValue(liveValue) ?? item.value} {item.unit}
-          </div>
+    }
+    
+    // Filter out Cond. Fan speed for specific machines (but NOT for GTPL-132-300-AP-300-S7-1200)
+    if (device === "GTPL-124-GT-450T-S7-1200" || 
+        device === 'GTPL-121-gT-1000T-S7-1200' || 
+        device === 'GTPL-122-gT-1000T-S7-1200' || 
+        device === 'GTPL-131-GT-650T-S7-1200' ||
+        (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
+      if (item.description === "Cond. Fan speed") {
+        return false; // Filter out Cond. Fan speed for these machines (excluding GTPL-132-300-AP-300-S7-1200)
+      }
+    }
+    
+    return true; // Show all other items
+  })
+  .map((item) => {
+    const liveKey = analogOutputValueMap[item.description];
+    const liveValue = liveKey ? data?.[liveKey] : undefined;
+    
+    return (
+      <div
+        key={item.description}
+        className="flex items-center gap-4 p-2 rounded-md hover:bg-muted/50"
+      >
+        <div className="flex-1">{item.description}</div>
+        <div className="font-medium text-right w-20">
+          {formatValue(liveValue) ?? item.value} {item.unit}
         </div>
-      );
-    })}
+      </div>
+    );
+  })}
 </div>
                 </div>
               </div>

@@ -697,7 +697,8 @@ Delta_T_set_point_paddy_aeging_mode,
                   {formatValue(
                     data?.Value_to_Display_COND_ACT_SPEED ||
                       data?.CONDENSER_RPM ||
-                      data?.Cond_fan_speed,
+                      data?.Cond_fan_speed ||
+                      data?.Condenser_fan_speed,
                     "%"
                   )}
                 </div>
