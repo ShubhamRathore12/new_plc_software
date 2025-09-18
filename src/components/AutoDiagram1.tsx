@@ -91,6 +91,7 @@ console.log('Chiller_fault_Q2_3 value:', data?.Chiller_Fault_Q2_3
     "Collective_Trouble_Signal_on",
     "Collective_Trouble_Signal",
     "Collective_trouble_signal_Q1_0",
+
   ];
 
   // Check conditions
@@ -204,11 +205,22 @@ console.log('Chiller_fault_Q2_3 value:', data?.Chiller_Fault_Q2_3
             </div>
           )}
 
-          {[
+          {machineName.includes("GTPL-132-300-AP-300-S7-1200") ? (
+  <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+    Delta T ={" "}
+    {formatValue(
+      data.Delta_T_set_point ||
+        data?.Th_T1 ||
+        data?.Delta_T_set_point_in_grain_chilling_mode ||
+        data?.Delta_T_set_point_paddy_aeging_mode,
+      "°C"
+    )}
+  </div>
+) :[
             "GTPL-122-gT-1000T-S7-1200",
             "GTPL-121-gT-1000T-S7-1200",
             "GTPL-124-GT-450T-S7-1200",
-            "GTPL-132-300-AP-300-S7-1200",
+         
           ].some((name) => machineName.includes(name)) ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T Delta ={" "}

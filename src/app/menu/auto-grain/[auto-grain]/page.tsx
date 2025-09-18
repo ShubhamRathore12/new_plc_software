@@ -49,7 +49,7 @@ export default function AutoGrainPage() {
         AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED :{key:'Condenser_fan_speed' ,label:'COND. FAN'}
+        CONDENSORFANSPEED :{key:'Condenser_fan_speed' ,label:'Cond. Fan'}
 
       },
       compressor: {
