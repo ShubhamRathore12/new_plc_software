@@ -269,7 +269,7 @@ export default function OperatingHoursPage() {
                 <Input
                   id="hours"
                   type="number"
-                  value={data?.RUNNING_HOUR ?? hours}
+                  value={data?.RUNNING_HOUR  || data?.Running_hours}
                   readOnly
                   className="col-span-2"
                 />
@@ -285,7 +285,7 @@ export default function OperatingHoursPage() {
                   <Input
                     id="minutes"
                     type="number"
-                    value={data?.RUNNING_MINUTE ?? minutes}
+                    value={data?.RUNNING_MINUTE || data?.Running_hours_min}
                     readOnly
                   />
                 </div>
