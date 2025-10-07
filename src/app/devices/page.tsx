@@ -209,7 +209,7 @@ export default function DevicesPage() {
     },
        {
       name: "GTPL-132-300-AP-300-S7-1200",
-      location: "Germany",
+      location: "Salem (Tamil Nadu)",
       image: "/images/1200.jpg",
       plc: "S7-1200",
       chillerModel: "gT-240E",
@@ -358,7 +358,7 @@ const locations: Location[] = [
                 {isLocationDropdownOpen && (
                   <Card className="absolute z-20 w-full mt-2 max-h-60 overflow-y-auto bg-white/95 dark:bg-gray-800/95 backdrop-blur-md shadow-2xl border-0 ring-1 ring-gray-200 dark:ring-gray-700 animate-in slide-in-from-top-2 duration-200">
                     {locations.map((location, idx) => (
-                      <Card
+                      <div
                         key={location.name}
                         className="flex items-center p-3 m-2 cursor-pointer hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 rounded-lg transition-all duration-200 hover:scale-[1.02] border-0 shadow-sm hover:shadow-md"
                         onClick={() => {
@@ -377,7 +377,7 @@ const locations: Location[] = [
                         <span className="text-sm font-medium text-gray-800 dark:text-gray-100">
                           {location.name}
                         </span>
-                      </Card>
+                      </ div>
                     ))}
                   </Card>
                 )}

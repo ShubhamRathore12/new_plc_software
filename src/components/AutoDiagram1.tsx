@@ -889,7 +889,7 @@ export default function AutoDiagram1({
     data?.COMPRESSOR_ON === "tr" ||
     data?.Compressor_on_Q0_4 === "True" ||
     data?.Compressor_start === "True" ||
-    data?.COMPRESSOR_ON === "True";
+    data?.COMPRESSOR_ON === "True" || data?.Compressor_on_Q0_0 === "True"
 
   const isSpecialMachine = [
     "GTPL-122-gT-1000T-S7-1200",
@@ -1365,7 +1365,7 @@ export default function AutoDiagram1({
                   {formatValue(
                     data?.Value_to_Display_COND_ACT_SPEED ||
                       data?.CONDENSER_RPM ||
-                      data?.Cond_fan_speed,
+                      data?.Cond_fan_speed || data?.Condenser_fan_speed,
                     "%"
                   )}
                 </div>
