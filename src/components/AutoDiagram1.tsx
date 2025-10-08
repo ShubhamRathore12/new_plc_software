@@ -555,7 +555,7 @@
 //                   "GTPL-111-gT-80E-P-S7-200",
 //                   "GTPL-112-gT-80E-P-S7-200",
 //                   "GTPL-113-gT-80E-P-S7-200",
-//                   ''GTPL-132-300-AP-S7-1200''
+//                  'GTPL-132-300-AP-S7-1200'
 //                 ].some((name) => machineName.includes(name))
 //                   ? "translate(230%,650%)"
 //                   : "translateY(620%)",
@@ -572,7 +572,7 @@
 //                 "GTPL-111-gT-80E-P-S7-200",
 //                 "GTPL-112-gT-80E-P-S7-200",
 //                 "GTPL-113-gT-80E-P-S7-200",
-//                 ''GTPL-132-300-AP-S7-1200''
+//                'GTPL-132-300-AP-S7-1200'
 //               ].some((name) => machineName.includes(name)) && (
 //                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
 //                   <div className="text-xs font-bold">HTR</div>
@@ -909,7 +909,7 @@ export default function AutoDiagram1({
     "GTPL-111-gT-80E-P-S7-200",
     "GTPL-112-gT-80E-P-S7-200",
     "GTPL-113-gT-80E-P-S7-200",
-    ''GTPL-132-300-AP-S7-1200''
+   'GTPL-132-300-AP-S7-1200'
   ].some((name) => machineName.includes(name));
 
   const isFanMachine = [

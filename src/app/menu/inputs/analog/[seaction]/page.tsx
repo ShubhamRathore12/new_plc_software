@@ -239,7 +239,7 @@ export default function AnalogPage() {
         device === 'GTPL-121-gT-1000T-S7-1200' || 
         device === 'GTPL-122-gT-1000T-S7-1200' || 
         device === 'GTPL-131-GT-650T-S7-1200' || 
-        device === ''GTPL-132-300-AP-S7-1200'' ||
+        device ==='GTPL-132-300-AP-S7-1200' ||
         (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
       if (item.description === "Heater") {
         return false; // Always filter out Heater for these machines
