@@ -256,7 +256,7 @@ export function getTagsForMachine(machineName: string): string[] {
     machineName === "GTPL-116-gT-320E-S7-1200"
   )
     return GPL_117_TAGS;
-  if (machineName === "GTPL-132-300-AP-300-S7-1200") return GPL_132_TAGS;
+  if (machineName === "'GTPL-132-300-AP-S7-1200'") return GPL_132_TAGS;
   if (S7_200_MACHINES.includes(machineName)) return S7_200_TAGS;
   return S7_1200_TAGS;
 }

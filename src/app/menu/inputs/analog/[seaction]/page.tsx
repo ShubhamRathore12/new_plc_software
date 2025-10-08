@@ -138,7 +138,7 @@ export default function AnalogPage() {
     "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
     "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
     "GTPL-124-GT-450T-S7-1200": sharedS7_1200_config,
-      "GTPL-132-300-AP-300-S7-1200": GTPL_132_config,
+      "'GTPL-132-300-AP-S7-1200'": GTPL_132_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -198,7 +198,7 @@ export default function AnalogPage() {
                       {section.items
                         .filter((item) => {
                           // If machine is GTPL-124-GT-450T-S7-1200, remove TH probes
-                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-300-S7-1200") {
+                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "'GTPL-132-300-AP-S7-1200'") {
                             return !item.description.startsWith("TH probe")
                           } 
                              if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200") {
@@ -239,21 +239,21 @@ export default function AnalogPage() {
         device === 'GTPL-121-gT-1000T-S7-1200' || 
         device === 'GTPL-122-gT-1000T-S7-1200' || 
         device === 'GTPL-131-GT-650T-S7-1200' || 
-        device === 'GTPL-132-300-AP-300-S7-1200' ||
+        device === ''GTPL-132-300-AP-S7-1200'' ||
         (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
       if (item.description === "Heater") {
         return false; // Always filter out Heater for these machines
       }
     }
     
-    // Filter out Cond. Fan speed for specific machines (but NOT for GTPL-132-300-AP-300-S7-1200)
+    // Filter out Cond. Fan speed for specific machines (but NOT for 'GTPL-132-300-AP-S7-1200')
     if (device === "GTPL-124-GT-450T-S7-1200" || 
         device === 'GTPL-121-gT-1000T-S7-1200' || 
         device === 'GTPL-122-gT-1000T-S7-1200' || 
         device === 'GTPL-131-GT-650T-S7-1200' ||
         (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
       if (item.description === "Cond. Fan speed") {
-        return false; // Filter out Cond. Fan speed for these machines (excluding GTPL-132-300-AP-300-S7-1200)
+        return false; // Filter out Cond. Fan speed for these machines (excluding 'GTPL-132-300-AP-S7-1200')
       }
     }
     

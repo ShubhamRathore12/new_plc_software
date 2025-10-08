@@ -17,7 +17,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
   const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200"  || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
   const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
   const isGTPL116 = device === "GTPL-116-gT-240E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200"
-  const isGTPL132 =device === 'GTPL-132-300-AP-300-S7-1200'
+  const isGTPL132 =device === ''GTPL-132-300-AP-S7-1200''
   const { data } = useAutoData(device as string);
 
   // Helper to normalize all possible "fault" values - handles both boolean and string values

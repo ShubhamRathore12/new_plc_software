@@ -37,7 +37,7 @@ export default function AutoGrainPage() {
   
 
   const machineConfig = {
-    "GTPL-132-300-AP-300-S7-1200": {
+    "'GTPL-132-300-AP-S7-1200'": {
       serialNumber: "GTPL_132_GRAIN",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
@@ -62,7 +62,7 @@ export default function AutoGrainPage() {
 
   const currentConfig =
     machineConfig[autoGrain as keyof typeof machineConfig] ||
-    machineConfig["GTPL-132-300-AP-300-S7-1200"];
+    machineConfig["'GTPL-132-300-AP-S7-1200'"];
 
   const handleBack = () => router.push(`/menu/${autoGrain}`);
 
@@ -114,14 +114,14 @@ export default function AutoGrainPage() {
                   <Home
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-300-AP-300-S7-1200"
+                    machineName="'GTPL-132-300-AP-S7-1200'"
                   />
                 ) : (
                   <AutoDiagram1
                     blower={Fan}
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-300-AP-300-S7-1200"
+                    machineName="'GTPL-132-300-AP-S7-1200'"
                   />
                 )}
               </div>

@@ -244,7 +244,7 @@ export default function Home() {
   };
 
   // Check if the device is the specific grain/paddy chilling device
-  const isGrainPaddyDevice = device === "GTPL-132-300-AP-300-S7-1200";
+  const isGrainPaddyDevice = device === "'GTPL-132-300-AP-S7-1200'";
 
   const getMenuItems = (): MenuItem[] => {
     if (isGrainPaddyDevice) {

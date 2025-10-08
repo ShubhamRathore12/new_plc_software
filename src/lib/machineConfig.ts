@@ -323,7 +323,7 @@ export const MACHINE_CONFIG = {
     tags: S7_1200_TAGS,
     type: "S7-1200",
   },
-  "GTPL-132-300-AP-300-S7-1200": {
+  "'GTPL-132-300-AP-S7-1200'": {
     table: "GTPL_132_GT300AP",
     tags: GPL_132_TAGS,
     type: "S7-1200",
@@ -344,5 +344,5 @@ export const MACHINE_CONFIG = {
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
-  // "GPL-132":'GTPL-132-300-AP-300-S7-1200'
+  // "GPL-132":''GTPL-132-300-AP-S7-1200''
 };

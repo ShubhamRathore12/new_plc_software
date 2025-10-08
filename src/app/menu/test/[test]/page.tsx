@@ -279,7 +279,7 @@ export default function TestPage() {
               </Card>
             </AnimatedContainer>
 
-{test === 'GTPL-132-300-AP-300-S7-1200' ? null :<> <AnimatedContainer delay={3}>
+{test === ''GTPL-132-300-AP-S7-1200'' ? null :<> <AnimatedContainer delay={3}>
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-6">HEATER</h2>

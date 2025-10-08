@@ -258,7 +258,7 @@ export default function AutoPage() {
       serialNumber: "GTPL_113",
       ...commonS7_200Config,
     },
-       "GTPL-132-300-AP-300-S7-1200": {
+       "'GTPL-132-300-AP-S7-1200'": {
       serialNumber: "GTPL_132",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
