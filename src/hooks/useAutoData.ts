@@ -58,7 +58,7 @@ export const useAutoData = (autoType: string) => {
      "GTPL-119-gT-180E-S7-1200":"gtpl_119",
      "GTPL-120-gT-180E-S7-1200":"gtpl_120",
      "GTPL-124-GT-450T-S7-1200":"gtpl_124",
-     "''GTPL-132-300-AP-S7-1200''":'gtpl_132',
+    'GTPL-132-300-AP-S7-1200':'gtpl_132',
      "GTPL-131-GT-650T-S7-1200":"gtpl_131"
 
     
