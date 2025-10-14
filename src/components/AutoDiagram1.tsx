@@ -853,6 +853,7 @@ export default function AutoDiagram1({
     "Chiller_healthy_on_Q1_1",
     "Chiller_healthy_on",
     "Chiller_healthy",
+    "Chiller_healthy_on_Q1_1"
   ];
 
   // Red light conditions
@@ -863,6 +864,7 @@ export default function AutoDiagram1({
     "Chiller_Fault_on",
     "Chiller_Fault",
     "Chiller_fault_Q2_3",
+    "Chiller_Fault_Q2_3"
   ];
 
   // Yellow light conditions
