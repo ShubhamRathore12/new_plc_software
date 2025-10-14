@@ -167,7 +167,7 @@
 //             "GTPL-122-gT-1000T-S7-1200",
 //             "GTPL-121-gT-1000T-S7-1200",
 //             "GTPL-124-GT-450T-S7-1200",
-//             "'GTPL-132-300-AP-S7-1200'",
+//             "GTPL-132-300-AP-S7-1200",
 //           ].some((name) => machineName.includes(name)) ? (
 //             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
 //               T0 ={" "}
@@ -205,7 +205,7 @@
 //             </div>
 //           )}
 
-//           {machineName.includes("'GTPL-132-300-AP-S7-1200'") ? (
+//           {machineName.includes("GTPL-132-300-AP-S7-1200") ? (
 //   <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
 //     Delta T ={" "}
 //     {formatValue(
@@ -359,7 +359,7 @@
 //                 "GTPL-122-gT-1000T-S7-1200",
 //                 "GTPL-121-gT-1000T-S7-1200",
 //                 "GTPL-124-GT-450T-S7-1200",
-//                 "'GTPL-132-300-AP-S7-1200'",
+//                 "GTPL-132-300-AP-S7-1200",
 //               ].some((name) => machineName.includes(name)) && (
 //                 <line
 //                   x1="280"
@@ -439,7 +439,7 @@
 //               "GTPL-122-gT-1000T-S7-1200",
 //               "GTPL-121-gT-1000T-S7-1200",
 //               "GTPL-124-GT-450T-S7-1200",
-//               "'GTPL-132-300-AP-S7-1200'",
+//               "GTPL-132-300-AP-S7-1200",
 //             ].some((name) => machineName.includes(name)) && (
 //               <div
 //                 className="absolute z-10"
@@ -555,7 +555,7 @@
 //                   "GTPL-111-gT-80E-P-S7-200",
 //                   "GTPL-112-gT-80E-P-S7-200",
 //                   "GTPL-113-gT-80E-P-S7-200",
-//                  'GTPL-132-300-AP-S7-1200'
+//                  GTPL-132-300-AP-S7-1200
 //                 ].some((name) => machineName.includes(name))
 //                   ? "translate(230%,650%)"
 //                   : "translateY(620%)",
@@ -572,7 +572,7 @@
 //                 "GTPL-111-gT-80E-P-S7-200",
 //                 "GTPL-112-gT-80E-P-S7-200",
 //                 "GTPL-113-gT-80E-P-S7-200",
-//                'GTPL-132-300-AP-S7-1200'
+//                GTPL-132-300-AP-S7-1200
 //               ].some((name) => machineName.includes(name)) && (
 //                 <div className="bg-red-600 text-white px-3 ml-64 py-4 text-center rounded">
 //                   <div className="text-xs font-bold">HTR</div>
@@ -895,7 +895,10 @@ export default function AutoDiagram1({
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
     "GTPL-124-GT-450T-S7-1200",
-    "'GTPL-132-300-AP-S7-1200'",
+    "GTPL-137-GT-450T-S7-1200",
+    "GTPL-138-GT-450T-S7-1200",
+
+    "GTPL-132-300-AP-S7-1200",
   ].some((name) => machineName.includes(name));
 
   const isHTRMachine = [
@@ -909,7 +912,11 @@ export default function AutoDiagram1({
     "GTPL-111-gT-80E-P-S7-200",
     "GTPL-112-gT-80E-P-S7-200",
     "GTPL-113-gT-80E-P-S7-200",
-   'GTPL-132-300-AP-S7-1200'
+   "GTPL-132-300-AP-S7-1200",
+    "GTPL-137-GT-450T-S7-1200",
+    "GTPL-138-GT-450T-S7-1200",
+    
+
   ].some((name) => machineName.includes(name));
 
   const isFanMachine = [

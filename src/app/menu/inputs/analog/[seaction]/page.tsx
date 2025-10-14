@@ -9,61 +9,51 @@ import { useParams, useRouter } from "next/navigation"
 export default function AnalogPage() {
   const analogInputs = [
     {
-      section: "Analog Input (4-20mA)",
+      section: "ANALOG INPUTS (4-20mA)",
       items: [
         {
-          description: "Suction pressure",
+          description: "Suction Pressure",
           value: "120",
           unit: "psi",
         },
         {
-          description: "Discharge pressure",
+          description: "Discharge Pressure",
           value: "240",
           unit: "psi",
         },
       ],
     },
     {
-      section: "Analog Input (RTD type)",
+      section: "ANALOG INPUTS (RTD Type)",
       items: [
         {
-          description: "T0 probe #1 (Afterheater)",
-          value: "28.5",
-          unit: "°C",
-        },
-        {
-          description: "T0 probe #2 (Afterheater)",
-          value: "28.3",
-          unit: "°C",
-        },
-        {
-          description: "T1 probe #1 (Cold Air)",
-          value: "24.2",
-          unit: "°C",
-        },
-        {
-          description: "T1 probe #2 (Cold Air)",
-          value: "24.1",
-          unit: "°C",
-        },
-        {
-          description: "T2 probe #1 (Ambient Air)",
+          description: "T2.1 Ambient Temp",
           value: "30.0",
           unit: "°C",
         },
         {
-          description: "T2 probe #2 (Ambient Air)",
+          description: "T2.2 Ambient Temp",
           value: "30.1",
           unit: "°C",
         },
         {
-          description: "TH probe #1 (Supply Air)",
-          value: "32.4",
+          description: "T1.1 Cold Temp",
+          value: "24.2",
           unit: "°C",
         },
         {
-          description: "TH probe #2 (Supply Air)",
-          value: "32.5",
+          description: "T1.2 Cold Temp",
+          value: "24.1",
+          unit: "°C",
+        },
+        {
+          description: "T0.1 Air Outlet Temp",
+          value: "28.5",
+          unit: "°C",
+        },
+        {
+          description: "T0.2 Air Outlet Temp",
+          value: "28.3",
           unit: "°C",
         },
       ],
@@ -71,11 +61,10 @@ export default function AnalogPage() {
   ]
 
   const analogOutputs = [
-    { description: "Blower speed", value: "65", unit: "%" },
-    { description: "Cond. Fan speed", value: "55", unit: "%" },
-    { description: "Hot gas valve", value: "0", unit: "%" },
-    { description: "Afterheat valve", value: "42", unit: "%" },
-    { description: "Heater", value: "0", unit: "%" },
+    { description: "Blower Speed", value: "65", unit: "%" },
+    { description: "Condenser fab speed", value: "55", unit: "%" },
+    { description: "Hot Gas Valve", value: "0", unit: "%" },
+    { description: "Afterheat Valve", value: "42", unit: "%" },
   ]
 
   const sharedS7_1200_config = {
@@ -123,6 +112,46 @@ export default function AnalogPage() {
     },
   }
 
+  const GTPL_137_config = {
+    displayName: "GTPL-137 Machine",
+    inputs: {
+      "Suction Pressure": "LP_value",
+      "Discharge Pressure": "HP_value",
+      "T2.1 Ambient Temp": "T2_1_ambient_temp",
+      "T2.2 Ambient Temp": "T2_2_ambient_temp",
+      "T1.1 Cold Temp": "T1_1_cold_air_temp",
+      "T1.2 Cold Temp": "T1_2_cold_air_temp",
+      "T0.1 Air Outlet Temp": "T0_1_air_outlet_temp",
+      "T0.2 Air Outlet Temp": "T0_2_air_outlet_temp",
+    },
+    outputs: {
+      "Blower Speed": "Blower_speed",
+      "Condenser fab speed": "Cond_fan_speed",
+      "Hot Gas Valve": "Hot_valve_speed",
+      "Afterheat Valve": "AHT_valve_speed",
+    },
+  }
+
+  const GTPL_138_config = {
+    displayName: "GTPL-138 Machine",
+    inputs: {
+      "Suction Pressure": "LP_value",
+      "Discharge Pressure": "HP_value",
+      "T2.1 Ambient Temp": "T2_1_ambient_temp",
+      "T2.2 Ambient Temp": "T2_2_ambient_temp",
+      "T1.1 Cold Temp": "T1_1_cold_air_temp",
+      "T1.2 Cold Temp": "T1_2_cold_air_temp",
+      "T0.1 Air Outlet Temp": "T0_1_air_outlet_temp",
+      "T0.2 Air Outlet Temp": "T0_2_air_outlet_temp",
+    },
+    outputs: {
+      "Blower Speed": "Blower_speed",
+      "Condenser fab speed": "Cond_fan_speed",
+      "Hot Gas Valve": "Hot_valve_speed",
+      "Afterheat Valve": "AHT_valve_speed",
+    },
+  }
+
   const machineConfigs: Record<
     string,
     {
@@ -138,7 +167,9 @@ export default function AnalogPage() {
     "GTPL-116-gT-240E-S7-1200": sharedS7_1200_config,
     "GTPL-117-gT-320E-S7-1200": sharedS7_1200_config,
     "GTPL-124-GT-450T-S7-1200": sharedS7_1200_config,
-      "'GTPL-132-300-AP-S7-1200'": GTPL_132_config,
+    "GTPL-132-300-AP-S7-1200": GTPL_132_config,
+    "GTPL-137-GT-450T-S7-1200": GTPL_137_config,
+    "GTPL-138-GT-450T-S7-1200": GTPL_138_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -198,13 +229,17 @@ export default function AnalogPage() {
                       {section.items
                         .filter((item) => {
                           // If machine is GTPL-124-GT-450T-S7-1200, remove TH probes
-                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "'GTPL-132-300-AP-S7-1200'") {
+                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           } 
                              if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }  if (['118','108','109','110','111','112','113'].some(id => device?.includes(id))) {
                             return !item.description.startsWith("T0 probe #2 (Afterheater)") && !item.description.startsWith("T2 probe #2 (Ambient Air)") && !item.description.startsWith("TH probe #2 (Supply Air)") && !item.description.startsWith("T1 probe #2 (Cold Air)")
+                          }
+                          // For GTPL-137 and GTPL-138, show all items
+                          if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200") {
+                            return true;
                           }
                           return true
                         })
@@ -239,22 +274,30 @@ export default function AnalogPage() {
         device === 'GTPL-121-gT-1000T-S7-1200' || 
         device === 'GTPL-122-gT-1000T-S7-1200' || 
         device === 'GTPL-131-GT-650T-S7-1200' || 
-        device ==='GTPL-132-300-AP-S7-1200' ||
+        device ==="GTPL-132-300-AP-S7-1200" ||
         (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
       if (item.description === "Heater") {
         return false; // Always filter out Heater for these machines
       }
     }
     
-    // Filter out Cond. Fan speed for specific machines (but NOT for 'GTPL-132-300-AP-S7-1200')
+    // Filter out Cond. Fan speed for specific machines (but NOT for GTPL-132-300-AP-S7-1200)
     if (device === "GTPL-124-GT-450T-S7-1200" || 
         device === 'GTPL-121-gT-1000T-S7-1200' || 
         device === 'GTPL-122-gT-1000T-S7-1200' || 
         device === 'GTPL-131-GT-650T-S7-1200' ||
         (['118','108','109','110','111','112','113'].some(id => device?.includes(id)))) {
       if (item.description === "Cond. Fan speed") {
-        return false; // Filter out Cond. Fan speed for these machines (excluding 'GTPL-132-300-AP-S7-1200')
+        return false; // Filter out Cond. Fan speed for these machines (excluding GTPL-132-300-AP-S7-1200)
       }
+    }
+    
+    // For GTPL-137 and GTPL-138, show all items except Heater
+    if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200") {
+      if (item.description === "Heater") {
+        return false; // Filter out Heater for these machines
+      }
+      return true; // Show all other items
     }
     
     return true; // Show all other items

@@ -126,7 +126,7 @@ export default function AerationWithoutHeatingPage() {
                       </div>
                     </div>
 {devices === "GTPL-115-gT-180E-S7-1200" ? null :  <Label className="mb-2 block">{t("Set Duration")}</Label>}
-         {devices === "GTPL-115-gT-180E-S7-1200" ? null :         
+         {devices === "GTPL-115-gT-180E-S7-1200"  ? null :         
                     <div className="flex items-center space-x-2">
                       <Input
                         type="number"
@@ -206,7 +206,7 @@ export default function AerationWithoutHeatingPage() {
     {devices === "GTPL-124-GT-450T-S7-1200" || 
      devices === "GTPL-122-gT-1000T-S7-1200" || 
      devices === "GTPL-121-gT-1000T-S7-1200" ||
-     devices === "'GTPL-132-300-AP-S7-1200'"
+     devices === "GTPL-132-300-AP-S7-1200" || devices === "GTPL-137-GT-450T-S7-1200"  || devices === "GTPL-138-GT-450T-S7-1200"
       ? t("T0") 
       : t("TH")} ({t("After Heat")})
   </span>

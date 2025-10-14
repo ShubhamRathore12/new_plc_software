@@ -238,6 +238,54 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
+export const GTPL_137_TAGS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Compressor_module_feedback_error_I0_1",
+  "Compressor_in_operation_I0_2",
+  "Compressor_oil_low_I0_3",
+  "Blower_drive_fault_I0_4",
+  "Blower_drive_in_operation_I0_5",
+  "Blower_circuit_breaker_I0_6",
+  "Condenser_fan1_TOP_fault_I0_7",
+  "Condenser_fan1_circuit_breaker_I1_0",
+  "Spare_I1_1",
+  "Low_pressure_fault_I1_2",
+  "High_Pressure_Fault_I1_3",
+  "Start_stop_I1_4",
+  "Three_phase_monitor_fault_I2_0",
+  "Spare_I2_1",
+  "Cond_fan2_TOP_fault_I2_2",
+  "Cond_fan3_TOP_fault_I2_3",
+  "Cond_fan4_TOP_fault_I2_4",
+  "Cond_fan2_circuit_breaker_fault_I2_5",
+  "Cond_fan3_circuit_breaker_fault_I2_6",
+  "Cond_fan4_circuit_breaker_fault_I2_7",
+];
+
+export const GTPL_138_TAGS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Compressor_module_feedback_error_I0_1",
+  "Compressor_in_operation_I0_2",
+  "Compressor_oil_low_I0_3",
+  "Blower_drive_fault_I0_4",
+  "Blower_drive_in_operation_I0_5",
+  "Blower_circuit_breaker_I0_6",
+  "Condenser_fan1_TOP_fault_I0_7",
+  "Condenser_fan1_circuit_breaker_I1_0",
+  "Spare_I1_1",
+  "Low_pressure_fault_I1_2",
+  "High_Pressure_Fault_I1_3",
+  "Start_stop_I1_4",
+  "Three_phase_monitor_fault_I2_0",
+  "Spare_I2_1",
+  "Cond_fan2_TOP_fault_I2_2",
+  "Cond_fan3_TOP_fault_I2_3",
+  "Cond_fan4_TOP_fault_I2_4",
+  "Cond_fan2_circuit_breaker_fault_I2_5",
+  "Cond_fan3_circuit_breaker_fault_I2_6",
+  "Cond_fan4_circuit_breaker_fault_I2_7",
+];
+
 // Machine configuration type
 interface MachineConfig {
   table: string;
@@ -335,9 +383,19 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "'GTPL-132-300-AP-S7-1200'": {
+  "GTPL-132-300-AP-S7-1200": {
     table: "GTPL_132_GT650T",
     tags: GPL_132_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-137-GT-450T-S7-1200": {
+    table: "GTPL_137_GT_450T_S7_1200",
+    tags: GTPL_137_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-138-GT-450T-S7-1200": {
+    table: "GTPL_138_GT_450T_S7_1200",
+    tags: GTPL_138_TAGS,
     type: "S7-1200",
   },
 };
@@ -347,7 +405,7 @@ export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
   "GPL-30": "GTPL-30-gT-180E-S7-1200",
-  "GPL-132": "'GTPL-132-300-AP-S7-1200'",
+  "GPL-132": "GTPL-132-300-AP-S7-1200",
 };
 
 // Fault code type
@@ -604,6 +662,52 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 28, description: "Air outlet sensor T0.2 open" },
     { code: 29, description: "Air outlet sensor T0.2 short circuit" },
   ],
+  GTPL_137: [
+    { code: 1, description: "Compressor circuit breaker" },
+    { code: 2, description: "Compressor module feedback error" },
+    { code: 3, description: "Compressor in operation" },
+    { code: 4, description: "Compressor oil low" },
+    { code: 5, description: "Blower drive fault" },
+    { code: 6, description: "Blower drive in operation" },
+    { code: 7, description: "Blower circuit breaker" },
+    { code: 8, description: "Condenser fan1 TOP fault" },
+    { code: 9, description: "Condenser fan1 circuit breaker" },
+    { code: 10, description: "Spare" },
+    { code: 11, description: "Low pressure fault" },
+    { code: 12, description: "High Pressure Fault" },
+    { code: 13, description: "Start/stop" },
+    { code: 14, description: "Three phase monitor fault" },
+    { code: 15, description: "Spare" },
+    { code: 16, description: "Cond fan2 TOP fault" },
+    { code: 17, description: "Cond fan3 TOP fault" },
+    { code: 18, description: "Cond fan4 TOP fault" },
+    { code: 19, description: "Cond fan2 circuit breaker fault" },
+    { code: 20, description: "Cond fan3 circuit breaker fault" },
+    { code: 21, description: "Cond fan4 circuit breaker fault" },
+  ],
+  GTPL_138: [
+    { code: 1, description: "Compressor circuit breaker" },
+    { code: 2, description: "Compressor module feedback error" },
+    { code: 3, description: "Compressor in operation" },
+    { code: 4, description: "Compressor oil low" },
+    { code: 5, description: "Blower drive fault" },
+    { code: 6, description: "Blower drive in operation" },
+    { code: 7, description: "Blower circuit breaker" },
+    { code: 8, description: "Condenser fan1 TOP fault" },
+    { code: 9, description: "Condenser fan1 circuit breaker" },
+    { code: 10, description: "Spare" },
+    { code: 11, description: "Low pressure fault" },
+    { code: 12, description: "High Pressure Fault" },
+    { code: 13, description: "Start/stop" },
+    { code: 14, description: "Three phase monitor fault" },
+    { code: 15, description: "Spare" },
+    { code: 16, description: "Cond fan2 TOP fault" },
+    { code: 17, description: "Cond fan3 TOP fault" },
+    { code: 18, description: "Cond fan4 TOP fault" },
+    { code: 19, description: "Cond fan2 circuit breaker fault" },
+    { code: 20, description: "Cond fan3 circuit breaker fault" },
+    { code: 21, description: "Cond fan4 circuit breaker fault" },
+  ],
 };
 
 // Helper functions
@@ -630,8 +734,12 @@ export function getFaultCodesForMachine(machineName: string) {
     resolvedName === "GTPL-120-gT-180E-S7-1200"
   ) {
     return FAULT_CODES["GPL-115"];
-  } else if (resolvedName === "'GTPL-132-300-AP-S7-1200'") {
+  } else if (resolvedName === "GTPL-132-300-AP-S7-1200") {
     return FAULT_CODES["GTPL_132"];
+  } else if (resolvedName === "GTPL-137-GT-450T-S7-1200") {
+    return FAULT_CODES["GTPL_137"];
+  } else if (resolvedName === "GTPL-138-GT-450T-S7-1200") {
+    return FAULT_CODES["GTPL_138"];
   } else if (
     resolvedName.includes("GPL-117") ||
     resolvedName.includes("GTPL-117") ||
@@ -686,6 +794,10 @@ export function getMachineType(machineName: string): string {
     return "GPL-117";
   } else if (resolvedName.includes("GPL-124")) {
     return "GPL-124";
+  } else if (resolvedName.includes("GTPL-137")) {
+    return "GTPL_137";
+  } else if (resolvedName.includes("GTPL-138")) {
+    return "GTPL_138";
   } else {
     return config.type;
   }

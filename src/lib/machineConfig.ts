@@ -238,6 +238,94 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
+export const GTPL_137_TAGS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Compressor_module_feedback_error_I0_1",
+  "Compressor_in_operation_I0_2",
+  "Compressor_oil_low_I0_3",
+  "Blower_drive_fault_I0_4",
+  "Blower_drive_in_operation_I0_5",
+  "Blower_circuit_breaker_I0_6",
+  "Condenser_fan1_TOP_fault_I0_7",
+  "Condenser_fan1_circuit_breaker_I1_0",
+  "Spare_I1_1",
+  "Low_pressure_fault_I1_2",
+  "High_Pressure_Fault_I1_3",
+  "Start_stop_I1_4",
+  "Three_phase_monitor_fault_I2_0",
+  "Spare_I2_1",
+  "Cond_fan2_TOP_fault_I2_2",
+  "Cond_fan3_TOP_fault_I2_3",
+  "Cond_fan4_TOP_fault_I2_4",
+  "Cond_fan2_circuit_breaker_fault_I2_5",
+  "Cond_fan3_circuit_breaker_fault_I2_6",
+  "Cond_fan4_circuit_breaker_fault_I2_7",
+];
+
+export const GTPL_138_TAGS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Compressor_module_feedback_error_I0_1",
+  "Compressor_in_operation_I0_2",
+  "Compressor_oil_low_I0_3",
+  "Blower_drive_fault_I0_4",
+  "Blower_drive_in_operation_I0_5",
+  "Blower_circuit_breaker_I0_6",
+  "Condenser_fan1_TOP_fault_I0_7",
+  "Condenser_fan1_circuit_breaker_I1_0",
+  "Spare_I1_1",
+  "Low_pressure_fault_I1_2",
+  "High_Pressure_Fault_I1_3",
+  "Start_stop_I1_4",
+  "Three_phase_monitor_fault_I2_0",
+  "Spare_I2_1",
+  "Cond_fan2_TOP_fault_I2_2",
+  "Cond_fan3_TOP_fault_I2_3",
+  "Cond_fan4_TOP_fault_I2_4",
+  "Cond_fan2_circuit_breaker_fault_I2_5",
+  "Cond_fan3_circuit_breaker_fault_I2_6",
+  "Cond_fan4_circuit_breaker_fault_I2_7",
+];
+
+export const GTPL_137_OUTPUT_TAGS = [
+  "Compressor_on_Q0_0",
+  "Compressor_motor_reset_Q0_1",
+  "Spare_Q0_2",
+  "Spare_Q0_3",
+  "Solenoid_valve_on_Q0_4",
+  "Hot_gas_valve_on_Q0_5",
+  "After_heat_valve_on_Q0_6",
+  "Blower_drive_on_Q0_7",
+  "Collective_trouble_signal_Q1_0",
+  "Chiller_healthy_on_Q1_1",
+  "Spare_Q2_0",
+  "Condenser_fan1_on_Q2_1",
+  "CR valve 75% on_Q2_2",
+  "Chiller_fault_Q2_3",
+  "Condenser_fan2_on_Q2_4",
+  "Condenser_fan3_on_Q2_5",
+  "Condenser_fan4_on_Q2_6",
+];
+
+export const GTPL_138_OUTPUT_TAGS = [
+  "Compressor_on_Q0_0",
+  "Compressor_motor_reset_Q0_1",
+  "Spare_Q0_2",
+  "Spare_Q0_3",
+  "Solenoid_valve_on_Q0_4",
+  "Hot_gas_valve_on_Q0_5",
+  "After_heat_valve_on_Q0_6",
+  "Blower_drive_on_Q0_7",
+  "Collective_trouble_signal_Q1_0",
+  "Chiller_healthy_on_Q1_1",
+  "Spare_Q2_0",
+  "Condenser_fan1_on_Q2_1",
+  "CR valve 75% on_Q2_2",
+  "Chiller_fault_Q2_3",
+  "Condenser_fan2_on_Q2_4",
+  "Condenser_fan3_on_Q2_5",
+  "Condenser_fan4_on_Q2_6",
+];
+
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
@@ -323,7 +411,7 @@ export const MACHINE_CONFIG = {
     tags: S7_1200_TAGS,
     type: "S7-1200",
   },
-  "'GTPL-132-300-AP-S7-1200'": {
+  "GTPL-132-300-AP-S7-1200": {
     table: "GTPL_132_GT300AP",
     tags: GPL_132_TAGS,
     type: "S7-1200",
@@ -338,11 +426,21 @@ export const MACHINE_CONFIG = {
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
+  "GTPL-137-GT-450T-S7-1200": {
+    table: "GTPL_137_GT_450T_S7_1200",
+    tags: GTPL_137_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-138-GT-450T-S7-1200": {
+    table: "GTPL_138_GT_450T_S7_1200",
+    tags: GTPL_138_TAGS,
+    type: "S7-1200",
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
-  // "GPL-132":''GTPL-132-300-AP-S7-1200''
+  // "GPL-132":'GTPL-132-300-AP-S7-1200'
 };
