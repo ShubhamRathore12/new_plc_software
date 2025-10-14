@@ -1370,7 +1370,7 @@ export default function AutoDiagram1({
                 <div className="text-xs font-bold">Condensor</div>
                 <div className="text-xs">
                   {formatValue(
-                    data?.Value_to_Display_COND_ACT_SPEED ||
+                   data?. Cond_fan_speed || data?.Value_to_Display_COND_ACT_SPEED ||
                       data?.CONDENSER_RPM ||
                       data?.Cond_fan_speed || data?.Condenser_fan_speed,
                     "%"

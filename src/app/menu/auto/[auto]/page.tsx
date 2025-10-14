@@ -277,6 +277,44 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-137-GT-450T-S7-1200": {
+      serialNumber: "GTPL_137",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: " Cond_fan_speed", label: "Condenser Fan" }, // Added Condenser Fan
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-138-GT-450T-S7-1200": {
+      serialNumber: "GTPL_138",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Cond_fan_speed", label: "Condenser Fan" }, // Added Condenser Fan
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
       temperatureSensors: {
@@ -443,20 +481,44 @@ export default function AutoPage() {
         </span>
       </div>
 }
-          
-      <div className="flex justify-between">
-        <span>{t("LP")}</span>
-        <span className="font-medium">
-          {formatValue(data?.[currentConfig.compressor.lp])}
-        </span>
-      </div>
 
-      <div className="flex justify-between">
-        <span>{t("HP")}</span>
-        <span className="font-medium">
-          {formatValue(data?.[currentConfig.compressor.hp])}
-        </span>
-      </div>
+      {/* Add bar values after HP and LP for machines 137 and 138 */}
+      {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+        <>
+          <div className="flex justify-between">
+            <span>{t("LP")} (bar)</span>
+            <span className="font-medium">
+              {formatValue(data?.[currentConfig.compressor.lp], " bar")}
+            </span>
+          </div>
+          <div className="flex justify-between">
+            <span>{t("HP")} (bar)</span>
+            <span className="font-medium">
+              {formatValue(data?.[currentConfig.compressor.hp], " bar")}
+            </span>
+          </div>
+       
+        </>
+      )}
+
+      {/* For other machines, show standard HP and LP */}
+      {!['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+        <>
+          <div className="flex justify-between">
+            <span>{t("LP")}</span>
+            <span className="font-medium">
+              {formatValue(data?.[currentConfig.compressor.lp])}
+            </span>
+          </div>
+
+          <div className="flex justify-between">
+            <span>{t("HP")}</span>
+            <span className="font-medium">
+              {formatValue(data?.[currentConfig.compressor.hp])}
+            </span>
+          </div>
+        </>
+      )}
     </div>
   </CardContent>
 </Card>
