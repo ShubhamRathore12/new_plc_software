@@ -10,7 +10,6 @@ interface AutoData {
 export const useAutoData = (autoType: string) => {
   const { status } = useMachineStatusFeed();
 
-    
   const [data, setData] = useState<AutoData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -44,42 +43,48 @@ export const useAutoData = (autoType: string) => {
   };
 
   const deviceNameToStatusKey: Record<string, string> = {
-    "GTPL-122-gT-1000T-S7-1200": "gtpl",
-    "GTPL-118-gT-80E-P-S7-200": "kabo",
-    "GTPL-108-gT-40E-P-S7-200": "gtpl_108",
-    "GTPL-109-gT-40E-P-S7-200": "gtpl_109",
-    "GTPL-110-gT-40E-P-S7-200": "gtpl_110",
-    "GTPL-111-gT-80E-P-S7-200": "gtpl_111",
-    "GTPL-112-gT-80E-P-S7-200": "gtpl_112",
-    "GTPL-113-gT-80E-P-S7-200": "gtpl_113",
+    "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
+    "GTPL-118-gT-80E-P-S7-200": "KABO_200",
+    "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
+    "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
+    "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
+    "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
+    "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
+    "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
     "Gtpl-S7-1200-02": "gtpl_1200_02",
-    "GTPL-115-gT-180E-S7-1200" : "gtpl_115",
-    "GTPL-117-gT-320E-S7-1200":"gtpl_117",
-     "GTPL-114-gT-140E-S7-1200":"gtpl_114",
-     "GTPL-116-gT-240E-S7-1200":"gtpl_116",
-     "GTPL-119-gT-180E-S7-1200":"gtpl_119",
-     "GTPL-120-gT-180E-S7-1200":"gtpl_120",
-     "GTPL-124-GT-450T-S7-1200":"gtpl_124",
-    'GTPL-132-300-AP-S7-1200':'gtpl_132',
-     "GTPL-131-GT-650T-S7-1200":"gtpl_131",
-         "GTPL-137-GT-450T-S7-1200":"GTPL_137_GT_450T_S7_1200",
-   "GTPL-138-GT-450T-S7-1200" :"GTPL_137_GT_450T_S7_1200",
-
-    
-    
+    "GTPL-30-gT-180E-S7-1200": "GTPL_114",
+    "GTPL-115-gT-180E-S7-1200": "GTPL_115",
+    "GTPL-116-gT-240E-S7-1200": "GTPL_116",
+    "GTPL-117-gT-320E-S7-1200": "GTPL_117",
+    "GTPL-119-gT-180E-S7-1200": "GTPL_119",
+    "GTPL-120-gT-180E-S7-1200": "GTPL_120",
+    "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
+    'GTPL-124-GT-450T-S7-1200':"GTPL_124",
+    "GTPL-131-GT-650T-S7-1200":"GTPL_131",
+    "GTPL-132-300-AP-S7-1200":"GTPL_132",
+    "GTPL-137-GT-450T-S7-1200":"GTPL_137",
+    "GTPL-138-GT-450T-S7-1200":"GTPL_138"
   };
 
   const fetchData = async () => {
     const table = autoTypeToTableMap[autoType];
     const statusKey = deviceNameToStatusKey[autoType];
 
-
+    // Find the device status in the machines array
+    const deviceStatus = status.machines.find(
+      (m) => m.machineName === statusKey
+    );
     
-  const deviceStatus = statusKey ? (status as any)?.[statusKey] : {};
+    const isMachineRunning = deviceStatus?.machineStatus ?? false;
 
-  
-  
-  const isMachineRunning = deviceStatus?.machineStatus ?? false;
+    // Only fetch data if machine is running, otherwise set data to empty
+    if (!isMachineRunning) {
+      setData([]);
+      setIsConnected(false);
+      setError(null);
+      setRetryCount(0);
+      return;
+    }
 
     if (!table) {
       setError("❌ Unknown table mapping for device: " + autoType);
