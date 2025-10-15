@@ -1210,12 +1210,13 @@ export default function AutoDiagram1({
                   <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
                   <div className="text-xs font-bold p-1 text-center w-full">TH</div>
                   <div className="text-xs font-bold p-1 text-center w-full">
-                    {formatValue(
-                      data.AI_TH_Act ||
-                        data?.AFTER_HEATER_TEMP_Th ||
-                        data?.TH_temp_mean,
-                      "°C"
-                    )}
+                    {(() => {
+                      // Handle zero values correctly
+                      if (data.AI_TH_Act !== undefined && data.AI_TH_Act !== null) return formatValue(data.AI_TH_Act, "°C");
+                      if (data?.AFTER_HEATER_TEMP_Th !== undefined && data?.AFTER_HEATER_TEMP_Th !== null) return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
+                      if (data?.TH_temp_mean !== undefined && data?.TH_temp_mean !== null) return formatValue(data?.TH_temp_mean, "°C");
+                      return formatValue(undefined, "°C");
+                    })()}
                   </div>
                   <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
                 </div>
@@ -1228,10 +1229,12 @@ export default function AutoDiagram1({
                 <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
                   <div className="text-xs font-bold p-1 text-center">T0</div>
                   <div className="text-xs p-1 text-center">
-                    {formatValue(
-                      data.AIR_OUTLET_TEMP || data?.T0_temp_mean,
-                      "°C"
-                    )}
+                    {(() => {
+                      // Handle zero values correctly
+                      if (data.AIR_OUTLET_TEMP !== undefined && data.AIR_OUTLET_TEMP !== null) return formatValue(data.AIR_OUTLET_TEMP, "°C");
+                      if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
+                      return formatValue(undefined, "°C");
+                    })()}
                   </div>
                 </div>
               </div>
@@ -1243,12 +1246,12 @@ export default function AutoDiagram1({
                 <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
                   <div className="text-xs font-bold p-1 text-center">T1</div>
                   <div className="text-xs p-1 text-center">
-                    {formatValue(
-                      data?.COLD_AIR_TEMP_T1 ||
-                        data?.T1_temp_mean ||
-                        data?.T1_temp_mean,
-                      "°C"
-                    )}
+                    {(() => {
+                      // Handle zero values correctly
+                      if (data?.COLD_AIR_TEMP_T1 !== undefined && data?.COLD_AIR_TEMP_T1 !== null) return formatValue(data?.COLD_AIR_TEMP_T1, "°C");
+                      if (data?.T1_temp_mean !== undefined && data?.T1_temp_mean !== null) return formatValue(data?.T1_temp_mean, "°C");
+                      return formatValue(undefined, "°C");
+                    })()}
                   </div>
                 </div>
               </div>
@@ -1258,9 +1261,12 @@ export default function AutoDiagram1({
             <div className="absolute text-center" style={{ left: "580px", top: "200px" }}>
               <div className="text-lg font-bold">T2</div>
               <div className="text-sm">
-                {formatValue(
-                  data?.T2_temp_mean || data?.AMBIENT_AIR_TEMP_T2
-                ) || "N/A"}°C
+                {(() => {
+                  // Handle zero values correctly
+                  if (data?.T2_temp_mean !== undefined && data?.T2_temp_mean !== null) return formatValue(data?.T2_temp_mean) + "°C";
+                  if (data?.AMBIENT_AIR_TEMP_T2 !== undefined && data?.AMBIENT_AIR_TEMP_T2 !== null) return formatValue(data?.AMBIENT_AIR_TEMP_T2) + "°C";
+                  return "N/A°C";
+                })()}
               </div>
             </div>
 
@@ -1270,34 +1276,38 @@ export default function AutoDiagram1({
                 <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
                   <div className="text-sm font-bold">
-                    {formatValue(
-                      data.Value_to_Display_HEATER || data?.Heater_speed,
-                      "%"
-                    )}
+                    {(() => {
+                      // Handle zero values correctly
+                      if (data.Value_to_Display_HEATER !== undefined && data.Value_to_Display_HEATER !== null) return formatValue(data.Value_to_Display_HEATER, "%");
+                      if (data?.Heater_speed !== undefined && data?.Heater_speed !== null) return formatValue(data?.Heater_speed, "%");
+                      return formatValue(undefined, "%");
+                    })()}
                   </div>
                 </div>
               )}
               <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
                 <div className="text-xs font-bold">AHT</div>
                 <div className="text-sm font-bold">
-                  {formatValue(
-                    data?.AHT_vale_speed ||
-                      data.Value_to_Display_AHT_VALE_OPEN ||
-                      data.AFTER_HEAT_VALVE_RPM ||
-                      data?.AHT_valve_speed,
-                    "%"
-                  )}
+                  {(() => {
+                    // Handle zero values correctly
+                    if (data?.AHT_vale_speed !== undefined && data?.AHT_vale_speed !== null) return formatValue(data?.AHT_vale_speed, "%");
+                    if (data.Value_to_Display_AHT_VALE_OPEN !== undefined && data.Value_to_Display_AHT_VALE_OPEN !== null) return formatValue(data.Value_to_Display_AHT_VALE_OPEN, "%");
+                    if (data.AFTER_HEAT_VALVE_RPM !== undefined && data.AFTER_HEAT_VALVE_RPM !== null) return formatValue(data.AFTER_HEAT_VALVE_RPM, "%");
+                    if (data?.AHT_valve_speed !== undefined && data?.AHT_valve_speed !== null) return formatValue(data?.AHT_valve_speed, "%");
+                    return formatValue(undefined, "%");
+                  })()}
                 </div>
               </div>
               <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
                 <div className="text-xs font-bold">HGS</div>
                 <div className="text-sm font-bold">
-                  {formatValue(
-                    data.Value_to_Display_HOT_GAS_VALVE_OPEN ||
-                      data?.HOT_GAS_VALVE_RPM ||
-                      data?.Hot_valve_speed,
-                    "%"
-                  )}
+                  {(() => {
+                    // Handle zero values correctly
+                    if (data.Value_to_Display_HOT_GAS_VALVE_OPEN !== undefined && data.Value_to_Display_HOT_GAS_VALVE_OPEN !== null) return formatValue(data.Value_to_Display_HOT_GAS_VALVE_OPEN, "%");
+                    if (data?.HOT_GAS_VALVE_RPM !== undefined && data?.HOT_GAS_VALVE_RPM !== null) return formatValue(data?.HOT_GAS_VALVE_RPM, "%");
+                    if (data?.Hot_valve_speed !== undefined && data?.Hot_valve_speed !== null) return formatValue(data?.Hot_valve_speed, "%");
+                    return formatValue(undefined, "%");
+                  })()}
                 </div>
               </div>
             </div>
@@ -1312,13 +1322,13 @@ export default function AutoDiagram1({
                 />
                 <div className="text-xs font-bold mt-1">BLOWER</div>
                 <div className="text-sm font-bold">
-                  {formatValue(
-                    data?.Blower_speed ||
-                      data?.BLOWER_RPM ||
-                      data?.Value_to_Display_BLOWER ||
-                      data?.Blower_speed,
-                    "%"
-                  )}
+                  {(() => {
+                    // Handle zero values correctly
+                    if (data?.Blower_speed !== undefined && data?.Blower_speed !== null) return formatValue(data?.Blower_speed, "%");
+                    if (data?.BLOWER_RPM !== undefined && data?.BLOWER_RPM !== null) return formatValue(data?.BLOWER_RPM, "%");
+                    if (data?.Value_to_Display_BLOWER !== undefined && data?.Value_to_Display_BLOWER !== null) return formatValue(data?.Value_to_Display_BLOWER, "%");
+                    return formatValue(undefined, "%");
+                  })()}
                 </div>
               </div>
             </div>
@@ -1371,12 +1381,14 @@ export default function AutoDiagram1({
               <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
                 <div className="text-xs font-bold">Condensor</div>
                 <div className="text-xs">
-                  {formatValue(
-                   data?. Cond_fan_speed || data?.Value_to_Display_COND_ACT_SPEED ||
-                      data?.CONDENSER_RPM ||
-                      data?.Cond_fan_speed || data?.Condenser_fan_speed,
-                    "%"
-                  )}
+                  {(() => {
+                    // Handle zero values correctly
+                    if (data?.Cond_fan_speed !== undefined && data?.Cond_fan_speed !== null) return formatValue(data?.Cond_fan_speed, "%");
+                    if (data?.Value_to_Display_COND_ACT_SPEED !== undefined && data?.Value_to_Display_COND_ACT_SPEED !== null) return formatValue(data?.Value_to_Display_COND_ACT_SPEED, "%");
+                    if (data?.CONDENSER_RPM !== undefined && data?.CONDENSER_RPM !== null) return formatValue(data?.CONDENSER_RPM, "%");
+                    if (data?.Condenser_fan_speed !== undefined && data?.Condenser_fan_speed !== null) return formatValue(data?.Condenser_fan_speed, "%");
+                    return formatValue(undefined, "%");
+                  })()}
                 </div>
               </div>
             </div>
@@ -1411,20 +1423,26 @@ export default function AutoDiagram1({
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 LP
                 <br />
-                {formatValue(
-                  data.AI_SUC_PRESSURE || data?.LP || data?.LP_value
-                )}
+                {(() => {
+                  // Handle zero values correctly
+                  if (data.AI_SUC_PRESSURE !== undefined && data.AI_SUC_PRESSURE !== null) return formatValue(data.AI_SUC_PRESSURE);
+                  if (data?.LP !== undefined && data?.LP !== null) return formatValue(data?.LP);
+                  if (data?.LP_value !== undefined && data?.LP_value !== null) return formatValue(data?.LP_value);
+                  return formatValue(undefined);
+                })()}
               </div>
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 HP
                 <br />
-                {formatValue(
-                  data.AI_COND_PRESSURE ||
-                    data?.HP ||
-                    data?.COMPRESSOR_TIME ||
-                    data?.HP_value ||
-                    data?.Compressor_timer
-                )}
+                {(() => {
+                  // Handle zero values correctly
+                  if (data.AI_COND_PRESSURE !== undefined && data.AI_COND_PRESSURE !== null) return formatValue(data.AI_COND_PRESSURE);
+                  if (data?.HP !== undefined && data?.HP !== null) return formatValue(data?.HP);
+                  if (data?.COMPRESSOR_TIME !== undefined && data?.COMPRESSOR_TIME !== null) return formatValue(data?.COMPRESSOR_TIME);
+                  if (data?.HP_value !== undefined && data?.HP_value !== null) return formatValue(data?.HP_value);
+                  if (data?.Compressor_timer !== undefined && data?.Compressor_timer !== null) return formatValue(data?.Compressor_timer);
+                  return formatValue(undefined);
+                })()}
               </div>
             </div>
           </div>

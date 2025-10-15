@@ -8,7 +8,7 @@ import {
   type ReactNode,
 } from "react";
 
-type Language = "en" | "de" | "fr";
+type Language = "en" | "de" | "fr" | "th";
 
 interface LanguageContextType {
   language: Language;
@@ -27,7 +27,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   // Load persisted language preference on mount
   useEffect(() => {
     const stored = typeof window !== "undefined" && localStorage.getItem("lang");
-    if (stored === "en" || stored === "de" || stored === "fr") {
+    if (stored === "en" || stored === "de" || stored === "fr" || stored === "th") {
       setLanguage(stored);
     }
   }, []);

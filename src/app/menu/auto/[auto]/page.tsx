@@ -288,7 +288,7 @@ export default function AutoPage() {
 
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        COND: { key: " Cond_fan_speed", label: "Condenser Fan" }, // Added Condenser Fan
+        COND: { key: "Cond_fan_speed", label: "Condenser Fan" }, // Added Condenser Fan
       },
       compressor: {
         time: "Compressor_timer",
@@ -461,12 +461,19 @@ export default function AutoPage() {
         // Example: don't show Heater if machine ends with 200
         if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
           return null;
-        }   
+        }
+        
+        // Handle zero values correctly by checking for explicit undefined/null
+        let value;
+        if (data?.[control.key] !== undefined && data?.[control.key] !== null) {
+          value = data[control.key];
+        }
+        
         return (
           <div key={key} className="flex justify-between">
             <span>{t(control.label)}</span>
             <span className="font-medium">
-              {formatValue(data?.[control.key], "%")}
+              {formatValue(value, "%")}
             </span>
           </div>
         );
@@ -477,7 +484,13 @@ export default function AutoPage() {
  <div className="flex justify-between">
         <span>{t("Heater")}</span>
         <span className="font-medium">
-          {formatValue(data?.Heater_speed, "%")}
+          {(() => {
+            const heaterValue = data?.Heater_speed;
+            return formatValue(
+              heaterValue !== undefined && heaterValue !== null ? heaterValue : undefined, 
+              "%"
+            );
+          })()}
         </span>
       </div>
 }
@@ -486,15 +499,27 @@ export default function AutoPage() {
       {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
         <>
           <div className="flex justify-between">
-            <span>{t("LP")} (bar)</span>
+            <span>{t("LP")} </span>
             <span className="font-medium">
-              {formatValue(data?.[currentConfig.compressor.lp], " bar")}
+              {(() => {
+                const lpValue = data?.[currentConfig.compressor.lp];
+                return formatValue(
+                  lpValue !== undefined && lpValue !== null ? lpValue : undefined,
+                  " bar"
+                );
+              })()}
             </span>
           </div>
           <div className="flex justify-between">
-            <span>{t("HP")} (bar)</span>
+            <span>{t("HP")} </span>
             <span className="font-medium">
-              {formatValue(data?.[currentConfig.compressor.hp], " bar")}
+              {(() => {
+                const hpValue = data?.[currentConfig.compressor.hp];
+                return formatValue(
+                  hpValue !== undefined && hpValue !== null ? hpValue : undefined,
+                  " bar"
+                );
+              })()}
             </span>
           </div>
        
@@ -507,14 +532,24 @@ export default function AutoPage() {
           <div className="flex justify-between">
             <span>{t("LP")}</span>
             <span className="font-medium">
-              {formatValue(data?.[currentConfig.compressor.lp])}
+              {(() => {
+                const lpValue = data?.[currentConfig.compressor.lp];
+                return formatValue(
+                  lpValue !== undefined && lpValue !== null ? lpValue : undefined
+                );
+              })()}
             </span>
           </div>
 
           <div className="flex justify-between">
             <span>{t("HP")}</span>
             <span className="font-medium">
-              {formatValue(data?.[currentConfig.compressor.hp])}
+              {(() => {
+                const hpValue = data?.[currentConfig.compressor.hp];
+                return formatValue(
+                  hpValue !== undefined && hpValue !== null ? hpValue : undefined
+                );
+              })()}
             </span>
           </div>
         </>

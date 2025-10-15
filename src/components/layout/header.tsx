@@ -45,6 +45,9 @@ export default function Header() {
               <DropdownMenuItem onClick={() => setLanguage("fr")}>
                 {t("french")}
               </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setLanguage("th")}>
+                {t("thai")}
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
