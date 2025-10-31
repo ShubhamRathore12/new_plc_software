@@ -83,7 +83,7 @@ export default function AnalogPage() {
       "Blower Speed": "Blower_speed",
       "Condenser fab speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
-      "Afterheat Valve": "AHT_vale_speed",
+      "Afterheat Valve": "AHT_valve_speed",
     },
   }
   const GTPL_132_config = {
