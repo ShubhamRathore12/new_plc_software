@@ -853,7 +853,8 @@ export default function AutoDiagram1({
     "Chiller_healthy_on_Q1_1",
     "Chiller_healthy_on",
     "Chiller_healthy",
-    "Chiller_healthy_on_Q1_1"
+    "Chiller_healthy_on_Q1_1",
+    'Chiller_healthy_Q1_1'
   ];
 
   // Red light conditions
@@ -864,7 +865,8 @@ export default function AutoDiagram1({
     "Chiller_Fault_on",
     "Chiller_Fault",
     "Chiller_fault_Q2_3",
-    "Chiller_Fault_Q2_3"
+    "Chiller_Fault_Q2_3",
+    'Chiller_fault_Q2_3'
   ];
 
   // Yellow light conditions
@@ -891,7 +893,7 @@ export default function AutoDiagram1({
     data?.COMPRESSOR_ON === "tr" ||
     data?.Compressor_on_Q0_4 === "True" ||
     data?.Compressor_start === "True" ||
-    data?.COMPRESSOR_ON === "True" || data?.Compressor_on_Q0_0 === "True"
+    data?.COMPRESSOR_ON === "True" || data?.Compressor_on_Q0_0 === "True" || data?.Compressor_start_Q0_0 === "true"
 
   const isSpecialMachine = [
     "GTPL-122-gT-1000T-S7-1200",
