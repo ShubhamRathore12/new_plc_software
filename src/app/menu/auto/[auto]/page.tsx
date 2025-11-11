@@ -77,12 +77,12 @@ export default function AutoPage() {
     },
     "GTPL-30-gT-180E-S7-1200": {
       serialNumber: "GTPL_114",
-       temperatureSensors: {
+      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
 
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
@@ -101,12 +101,12 @@ export default function AutoPage() {
     },
     "GTPL-115-gT-180E-S7-1200": {
       serialNumber: "GTPL_115",
-     temperatureSensors: {
+      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
 
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
@@ -122,35 +122,35 @@ export default function AutoPage() {
       },
     },
     "GTPL-116-gT-240E-S7-1200": {
-    serialNumber: "GTPL_116",
-    temperatureSensors: {
-      T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
-      // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
-      T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-      T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
-
-      // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-    },
-    controls: {
-      AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
-      HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
-      BLOWER: { key: "Blower_speed", label: "Blower" },
-    },
-    compressor: {
-      time: "Compressor_timer",
-      hp: "HP_value",
-      lp: "LP_value",
-    },
-  },
-    "GTPL-117-gT-320E-S7-1200": {
-      serialNumber: "GTPL_117",
-       temperatureSensors: {
+      serialNumber: "GTPL_116",
+      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+
+        // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-117-gT-320E-S7-1200": {
+      serialNumber: "GTPL_117",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
 
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
@@ -167,13 +167,13 @@ export default function AutoPage() {
     },
     "GTPL-119-gT-180E-S7-1200": {
       serialNumber: "GTPL_119",
-   temperatureSensors: {
+      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
-      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
 
       },
       controls: {
@@ -189,12 +189,12 @@ export default function AutoPage() {
     },
     "GTPL-120-gT-180E-S7-1200": {
       serialNumber: "GTPL_120",
-    temperatureSensors: {
+      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-      TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
 
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
@@ -209,10 +209,10 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    
+
     "GTPL-121-gT-1000T-S7-1200": {
       serialNumber: "GTPL_121",
-  temperatureSensors: {
+      temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
         // T0SP: { key: "T0_set_point", label: "After Heat(T0 Sp)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
@@ -258,7 +258,7 @@ export default function AutoPage() {
       serialNumber: "GTPL_113",
       ...commonS7_200Config,
     },
-       "GTPL-132-300-AP-S7-1200": {
+    "GTPL-132-300-AP-S7-1200": {
       serialNumber: "GTPL_132",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
@@ -315,6 +315,25 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-136-gT-450AP": {
+      serialNumber: "GTPL_136",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+       
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
       temperatureSensors: {
@@ -336,7 +355,7 @@ export default function AutoPage() {
         lp: "AI_SUC_PRESSURE",
       },
     },
-  
+
   };
 
   const currentConfig =
@@ -381,11 +400,11 @@ export default function AutoPage() {
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-             {t("SELECT AUTO")}
+              {t("SELECT AUTO")}
             </h1>
             <p className="text-muted-foreground">
               SR. NO. {auto}
-           
+
             </p>
           </AnimatedContainer>
 
@@ -435,128 +454,128 @@ export default function AutoPage() {
                 </CardContent>
               </Card> */}
 
-         <Card>
-  <CardContent className="p-6">
-    {/* Heading with i18n */}
-    <h2 className="text-xl font-semibold mb-4">
-      {t("Temperature")}
-    </h2>
+              <Card>
+                <CardContent className="p-6">
+                  {/* Heading with i18n */}
+                  <h2 className="text-xl font-semibold mb-4">
+                    {t("Temperature")}
+                  </h2>
 
-    <div className="space-y-2">
-      {/* Temperature sensors */}
-      {Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => {
-        const value = data?.[sensor.key];
-        return (
-          <div key={key} className="flex justify-between">
-            <span>{t(sensor.label)}</span>
-            <span className="font-medium">
-              {formatValue(value, "°C")}
-            </span>
-          </div>
-        );
-      })}
+                  <div className="space-y-2">
+                    {/* Temperature sensors */}
+                    {Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => {
+                      const value = data?.[sensor.key];
+                      return (
+                        <div key={key} className="flex justify-between">
+                          <span>{t(sensor.label)}</span>
+                          <span className="font-medium">
+                            {formatValue(value, "°C")}
+                          </span>
+                        </div>
+                      );
+                    })}
 
-      {/* Controls */}
-      {Object.entries(currentConfig.controls).map(([key, control]) => {
-        // Example: don't show Heater if machine ends with 200
-        if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
-          return null;
-        }
-        
-        // Handle zero values correctly by checking for explicit undefined/null
-        let value;
-        if (data?.[control.key] !== undefined && data?.[control.key] !== null) {
-          value = data[control.key];
-        }
-        
-        return (
-          <div key={key} className="flex justify-between">
-            <span>{t(control.label)}</span>
-            <span className="font-medium">
-              {formatValue(value, "%")}
-            </span>
-          </div>
-        );
-      })}
+                    {/* Controls */}
+                    {Object.entries(currentConfig.controls).map(([key, control]) => {
+                      // Example: don't show Heater if machine ends with 200
+                      if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
+                        return null;
+                      }
 
-      {/* Compressor values */}
-{['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].includes(auto as string) &&
- <div className="flex justify-between">
-        <span>{t("Heater")}</span>
-        <span className="font-medium">
-          {(() => {
-            const heaterValue = data?.Heater_speed;
-            return formatValue(
-              heaterValue !== undefined && heaterValue !== null ? heaterValue : undefined, 
-              "%"
-            );
-          })()}
-        </span>
-      </div>
-}
+                      // Handle zero values correctly by checking for explicit undefined/null
+                      let value;
+                      if (data?.[control.key] !== undefined && data?.[control.key] !== null) {
+                        value = data[control.key];
+                      }
 
-      {/* Add bar values after HP and LP for machines 137 and 138 */}
-      {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
-        <>
-          <div className="flex justify-between">
-            <span>{t("LP")} </span>
-            <span className="font-medium">
-              {(() => {
-                const lpValue = data?.[currentConfig.compressor.lp];
-                return formatValue(
-                  lpValue !== undefined && lpValue !== null ? lpValue : undefined,
-                  " bar"
-                );
-              })()}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>{t("HP")} </span>
-            <span className="font-medium">
-              {(() => {
-                const hpValue = data?.[currentConfig.compressor.hp];
-                return formatValue(
-                  hpValue !== undefined && hpValue !== null ? hpValue : undefined,
-                  " bar"
-                );
-              })()}
-            </span>
-          </div>
-       
-        </>
-      )}
+                      return (
+                        <div key={key} className="flex justify-between">
+                          <span>{t(control.label)}</span>
+                          <span className="font-medium">
+                            {formatValue(value, "%")}
+                          </span>
+                        </div>
+                      );
+                    })}
 
-      {/* For other machines, show standard HP and LP */}
-      {!['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
-        <>
-          <div className="flex justify-between">
-            <span>{t("LP")}</span>
-            <span className="font-medium">
-              {(() => {
-                const lpValue = data?.[currentConfig.compressor.lp];
-                return formatValue(
-                  lpValue !== undefined && lpValue !== null ? lpValue : undefined
-                );
-              })()}
-            </span>
-          </div>
+                    {/* Compressor values */}
+                    {['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].includes(auto as string) &&
+                      <div className="flex justify-between">
+                        <span>{t("Heater")}</span>
+                        <span className="font-medium">
+                          {(() => {
+                            const heaterValue = data?.Heater_speed;
+                            return formatValue(
+                              heaterValue !== undefined && heaterValue !== null ? heaterValue : undefined,
+                              "%"
+                            );
+                          })()}
+                        </span>
+                      </div>
+                    }
 
-          <div className="flex justify-between">
-            <span>{t("HP")}</span>
-            <span className="font-medium">
-              {(() => {
-                const hpValue = data?.[currentConfig.compressor.hp];
-                return formatValue(
-                  hpValue !== undefined && hpValue !== null ? hpValue : undefined
-                );
-              })()}
-            </span>
-          </div>
-        </>
-      )}
-    </div>
-  </CardContent>
-</Card>
+                    {/* Add bar values after HP and LP for machines 137 and 138 */}
+                    {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+                      <>
+                        <div className="flex justify-between">
+                          <span>{t("LP")} </span>
+                          <span className="font-medium">
+                            {(() => {
+                              const lpValue = data?.[currentConfig.compressor.lp];
+                              return formatValue(
+                                lpValue !== undefined && lpValue !== null ? lpValue : undefined,
+                                " bar"
+                              );
+                            })()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>{t("HP")} </span>
+                          <span className="font-medium">
+                            {(() => {
+                              const hpValue = data?.[currentConfig.compressor.hp];
+                              return formatValue(
+                                hpValue !== undefined && hpValue !== null ? hpValue : undefined,
+                                " bar"
+                              );
+                            })()}
+                          </span>
+                        </div>
+
+                      </>
+                    )}
+
+                    {/* For other machines, show standard HP and LP */}
+                    {!['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+                      <>
+                        <div className="flex justify-between">
+                          <span>{t("LP")}</span>
+                          <span className="font-medium">
+                            {(() => {
+                              const lpValue = data?.[currentConfig.compressor.lp];
+                              return formatValue(
+                                lpValue !== undefined && lpValue !== null ? lpValue : undefined
+                              );
+                            })()}
+                          </span>
+                        </div>
+
+                        <div className="flex justify-between">
+                          <span>{t("HP")}</span>
+                          <span className="font-medium">
+                            {(() => {
+                              const hpValue = data?.[currentConfig.compressor.hp];
+                              return formatValue(
+                                hpValue !== undefined && hpValue !== null ? hpValue : undefined
+                              );
+                            })()}
+                          </span>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
 
               <motion.div

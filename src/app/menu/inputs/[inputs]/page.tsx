@@ -11,21 +11,22 @@ export default function InputsPage() {
   const { inputs } = useParams();
   const device = inputs?.toString();
   const { t } = useLanguage(); // Move this to component level
-const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => device?.includes(code));
-  const isGtpl122 = ['122','121'].some(code => device?.includes(code))
+  const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => device?.includes(code));
+  const isGtpl122 = ['122', '121'].some(code => device?.includes(code))
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
-  const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200"  || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
+  const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200" || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
   const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
   const isGTPL116 = device === "GTPL-116-gT-240E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200"
-  const isGTPL132 =device ==="GTPL-132-300-AP-S7-1200"
+  const isGTPL132 = device === "GTPL-132-300-AP-S7-1200"
+  const isGTPL136 = device === "GTPL-136-gT-450AP"
   const isGTPL137 = device === "GTPL-137-GT-450T-S7-1200"
   const isGTPL138 = device === "GTPL-138-GT-450T-S7-1200"
   const { data } = useAutoData(device as string);
 
   // Helper to normalize all possible "fault" values - handles both boolean and string values
   const isStatusFault = (value: unknown): boolean => {
-   
-    
+
+
     if (typeof value === 'boolean') return value;
     if (typeof value === 'string') {
       const lowerValue = value.toLowerCase();
@@ -34,7 +35,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
     return false;
   };
 
-  
+
 
   const s7_200_faultStatus = [
     { id: "1", description: "Blower circuit breaker fault", status: data?.BLOWER_CIRCUIT_BREAKER_FAULT },
@@ -81,26 +82,26 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
     { id: "I3.3", description: "Cond fan 6 circuit breaker", status: data?.Cond_fan_6_circuit_breaker_ },
   ];
 
-  const gtpl_132_faultStatus =[{ id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor_circuit_breaker_I0_0"] },
-{ id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor_module_feedback_error_I0_1"] },
-{ id: "I0.2", description: "Compressor in operation", status: data?.["Compressor_in_operation_I0_2"] },
-{ id: "I0.3", description: "Compressor oil low", status: data?.["Compressor_oil_low_I0_3"] },
-{ id: "I0.4", description: "Blower drive fault", status: data?.["Blower_drive_fault_I0_4"] },
-{ id: "I0.5", description: "Blower drive in operation", status: data?.["Blower_drive_in_operation_I0_5"] },
-{ id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower_circuit_breaker_I0_6"] },
-{ id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser_fan1_TOP_fault_I0_7"] },
-{ id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser_fan1_circuit_breaker_I1_0"] },
-{ id: "I1.1", description: "Spare", status: data?.["Spare_I1_1"] },
-{ id: "I1.2", description: "Low pressure fault", status: data?.Low_pressure_fault_I1_2 },
-{ id: "I1.3", description: "High Pressure Fault", status: data?.["High_Pressure_Fault_I1_3"] },
-{ id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1_4"] },
-{ id: "I2.0", description: "Three phase monitor fault", status: data?.["Three_phase_monitor_fault_I2_0"] },
-{ id: "I2.1", description: "Spare", status: data?.["Spare_I2_1"] },
-{ id: "I2.2", description: "Condenser fan2 TOP fault", status: data?.["Cond_fan2_TOP_fault_I2_2"] },
-{ id: "I2.3", description: "Spare", status: data?.["Spare_I2_3"] },
-{ id: "I2.4", description: "Spare", status: data?.["Spare_I2_4"] },
-{ id: "I2.5", description: "Condenser fan2 circuit breaker fault", status: data?.["Condenser_fan2_circuit_breaker_fault_I2_5"] },
-]
+  const gtpl_132_faultStatus = [{ id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor_circuit_breaker_I0_0"] },
+  { id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor_module_feedback_error_I0_1"] },
+  { id: "I0.2", description: "Compressor in operation", status: data?.["Compressor_in_operation_I0_2"] },
+  { id: "I0.3", description: "Compressor oil low", status: data?.["Compressor_oil_low_I0_3"] },
+  { id: "I0.4", description: "Blower drive fault", status: data?.["Blower_drive_fault_I0_4"] },
+  { id: "I0.5", description: "Blower drive in operation", status: data?.["Blower_drive_in_operation_I0_5"] },
+  { id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower_circuit_breaker_I0_6"] },
+  { id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser_fan1_TOP_fault_I0_7"] },
+  { id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser_fan1_circuit_breaker_I1_0"] },
+  { id: "I1.1", description: "Spare", status: data?.["Spare_I1_1"] },
+  { id: "I1.2", description: "Low pressure fault", status: data?.Low_pressure_fault_I1_2 },
+  { id: "I1.3", description: "High Pressure Fault", status: data?.["High_Pressure_Fault_I1_3"] },
+  { id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1_4"] },
+  { id: "I2.0", description: "Three phase monitor fault", status: data?.["Three_phase_monitor_fault_I2_0"] },
+  { id: "I2.1", description: "Spare", status: data?.["Spare_I2_1"] },
+  { id: "I2.2", description: "Condenser fan2 TOP fault", status: data?.["Cond_fan2_TOP_fault_I2_2"] },
+  { id: "I2.3", description: "Spare", status: data?.["Spare_I2_3"] },
+  { id: "I2.4", description: "Spare", status: data?.["Spare_I2_4"] },
+  { id: "I2.5", description: "Condenser fan2 circuit breaker fault", status: data?.["Condenser_fan2_circuit_breaker_fault_I2_5"] },
+  ]
 
   const gtpl_137_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_I0_0 },
@@ -150,6 +151,30 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
     { id: "I2.7", description: "Cond fan4 circuit breaker fault", status: data?.Cond_fan4_circuit_breaker_fault_I2_7 },
   ]
 
+  const gtpl_136_faultStatus = [
+    { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_I0_0 },
+    { id: "I0.1", description: "Compressor module feedback error", status: data?.Compressor_module_feedback_error_I0_1 },
+    { id: "I0.2", description: "Compressor in operation", status: data?.Compressor_in_operation_I0_2 },
+    { id: "I0.3", description: "Compressor oil low", status: data?.Compressor_oil_low_I0_3 },
+    { id: "I0.4", description: "Blower drive fault", status: data?.Blower_drive_fault_I0_4 },
+    { id: "I0.5", description: "Blower drive in operation", status: data?.Blower_drive_in_operation_I0_5 },
+    { id: "I0.6", description: "Blower circuit breaker", status: data?.Blower_circuit_breaker_I0_6 },
+    { id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.Condenser_fan1_TOP_fault_I0_7 },
+    { id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.Condenser_fan1_circuit_breaker_I1_0 },
+    { id: "I1.1", description: "Spare", status: data?.Spare_I1_1 },
+    { id: "I1.2", description: "Low pressure fault", status: data?.Low_pressure_fault_I1_2 },
+    { id: "I1.3", description: "High Pressure Fault", status: data?.High_Pressure_Fault_I1_3 },
+    { id: "I1.4", description: "Start/stop", status: data?.Start_stop_I1_4 },
+    { id: "I2.0", description: "Three phase monitor fault", status: data?.Three_phase_monitor_fault_I2_0 },
+    { id: "I2.1", description: "Spare", status: data?.Spare_I2_1 },
+    { id: "I2.2", description: "Cond fan2 TOP fault", status: data?.Cond__fan2_TOP_fault_I2_2 },
+    { id: "I2.3", description: "Cond fan3 TOP fault", status: data?.Cond__fan3_TOP_fault_I2_3 },
+    { id: "I2.4", description: "Cond fan4 TOP fault", status: data?.Cond__fan4_TOP_fault_I2_4 },
+    { id: "I2.5", description: "Cond fan2 circuit breaker fault", status: data?.Cond__fan2_circuit_breaker_fault_I2_5 },
+    { id: "I2.6", description: "Cond fan3 circuit breaker fault", status: data?.Cond__fan3_circuit_breaker_fault_I2_6 },
+    { id: "I2.7", description: "Cond fan4 circuit breaker fault", status: data?.Cond__fan4_circuit_breaker_fault_I2_7 },
+  ]
+
   const gtpl_115_faultStatus = [
     { id: "1", description: "Blower circuit breaker fault", status: data?.BLOWER_CIRCUIT_BREAKER_I0_0 },
     { id: "2", description: "Blower drive fault", status: data?.BLOWER_DRIVE_I0_1 },
@@ -171,27 +196,27 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
   ];
 
   const gtpl_116_faultStatus = [
-  { id: "1", description: "Blower circuit breaker", status: data?.Blower_circuit_breaker },
-  { id: "2", description: "Blower drive", status: data?.Blower_drive },
-  { id: "3", description: "Blower in operation", status: data?.Blower_in_operation },
-  { id: "4", description: "Heater drive fault", status: data?.Heater_drive_fault },
-  { id: "5", description: "Condenser fan1 TOP fault", status: data?.Condenser_fan1_TOP_fault },
-  { id: "6", description: "Condenser fan2 TOP fault", status: data?.Condenser_fan2_TOP_fault },
-  { id: "7", description: "Condenser fan drive fault", status: data?.Condenser_fan_drive_fault },
-  { id: "8", description: "Compressor oil low", status: data?.Compressor_oil_low },
-  { id: "9", description: "Compressor circuit breaker fault", status: data?.Compressor_circuit_breaker_fault },
-  { id: "10", description: "Compressor motor overheat", status: data?.Compressor_motor_overheat },
-  { id: "11", description: "Low Pressure Fault", status: data?.Low_Pressure_Fault },
-  { id: "12", description: "High pressure fault", status: data?.High_pressure_fault },
-  { id: "13", description: "Three phase monitor fault", status: data?.Three_phase_monitor_fault },
-  { id: "14", description: "Heater TOP fault", status: data?.Heater_TOP_fault },
-  { id: "15", description: "Cond fan1 circuit breaker fault", status: data?.Cond_fan1_circuit_breaker_fault },
-  { id: "16", description: "Heater circuit breaker fault", status: data?.Heater_circuit_breaker_fault },
-  { id: "17", description: "Heater RCCB fault", status: data?.Heater_RCCB_fault },
-  { id: "18", description: "Condenser fan1 door open", status: data?.Condenser_fan1_door_open },
-  { id: "19", description: "Cond fan2 circuit breaker", status: data?.Cond_fan2_circuit_breaker },
-  { id: "20", description: "Condenser fan2 door open", status: data?.Condenser_fan2_door_open }
-];
+    { id: "1", description: "Blower circuit breaker", status: data?.Blower_circuit_breaker },
+    { id: "2", description: "Blower drive", status: data?.Blower_drive },
+    { id: "3", description: "Blower in operation", status: data?.Blower_in_operation },
+    { id: "4", description: "Heater drive fault", status: data?.Heater_drive_fault },
+    { id: "5", description: "Condenser fan1 TOP fault", status: data?.Condenser_fan1_TOP_fault },
+    { id: "6", description: "Condenser fan2 TOP fault", status: data?.Condenser_fan2_TOP_fault },
+    { id: "7", description: "Condenser fan drive fault", status: data?.Condenser_fan_drive_fault },
+    { id: "8", description: "Compressor oil low", status: data?.Compressor_oil_low },
+    { id: "9", description: "Compressor circuit breaker fault", status: data?.Compressor_circuit_breaker_fault },
+    { id: "10", description: "Compressor motor overheat", status: data?.Compressor_motor_overheat },
+    { id: "11", description: "Low Pressure Fault", status: data?.Low_Pressure_Fault },
+    { id: "12", description: "High pressure fault", status: data?.High_pressure_fault },
+    { id: "13", description: "Three phase monitor fault", status: data?.Three_phase_monitor_fault },
+    { id: "14", description: "Heater TOP fault", status: data?.Heater_TOP_fault },
+    { id: "15", description: "Cond fan1 circuit breaker fault", status: data?.Cond_fan1_circuit_breaker_fault },
+    { id: "16", description: "Heater circuit breaker fault", status: data?.Heater_circuit_breaker_fault },
+    { id: "17", description: "Heater RCCB fault", status: data?.Heater_RCCB_fault },
+    { id: "18", description: "Condenser fan1 door open", status: data?.Condenser_fan1_door_open },
+    { id: "19", description: "Cond fan2 circuit breaker", status: data?.Cond_fan2_circuit_breaker },
+    { id: "20", description: "Condenser fan2 door open", status: data?.Condenser_fan2_door_open }
+  ];
 
   // Updated GTPL-124 fault status with corrected property names based on your actual data
   const gtpl_124_faultStatus = [
@@ -220,20 +245,21 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
 
   const renderList = () => {
     // Fixed the selection logic to include all device types
-   const selectedList = 
-  isGT80E ? s7_200_faultStatus :
-  isGtpl115 ? gtpl_115_faultStatus :
-  isGtpl124 ? gtpl_124_faultStatus :
-  (isGtpl122 || isGtpl1200_02) ? s7_1200_faultStatus :
-  isGTPL116 ? gtpl_116_faultStatus :
-  isGTPL132 ? gtpl_132_faultStatus :
-  isGTPL137 ? gtpl_137_faultStatus :
-  isGTPL138 ? gtpl_138_faultStatus :
-  [];
+    const selectedList =
+      isGT80E ? s7_200_faultStatus :
+        isGtpl115 ? gtpl_115_faultStatus :
+          isGtpl124 ? gtpl_124_faultStatus :
+            (isGtpl122 || isGtpl1200_02) ? s7_1200_faultStatus :
+              isGTPL116 ? gtpl_116_faultStatus :
+                isGTPL132 ? gtpl_132_faultStatus :
+                  isGTPL136 ? gtpl_136_faultStatus :
+                    isGTPL137 ? gtpl_137_faultStatus :
+                      isGTPL138 ? gtpl_138_faultStatus :
+                        [];
 
     return selectedList.map((item) => {
       const isFault = isStatusFault(item.status);
-      const isCondenserFan1TopFault = isGTPL132 &&  item.id === 'I0.2' ||  item.id ==='I1.2' || item.id === "I2.0";
+      const isCondenserFan1TopFault = isGTPL132 && item.id === 'I0.2' || item.id === 'I1.2' || item.id === "I2.0";
       const shouldShowRed = isCondenserFan1TopFault ? !isFault : isFault;
 
       return (
@@ -245,12 +271,11 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
           <div className="flex-1">{item.description}</div>
           <div className="flex items-center gap-2">
             <div
-              className={`w-4 h-4 rounded-full ${
-                shouldShowRed ? "bg-red-500" : "bg-green-500"
-              }`}
+              className={`w-4 h-4 rounded-full ${shouldShowRed ? "bg-red-500" : "bg-green-500"
+                }`}
               title={shouldShowRed ? "Active" : "Inactive"}
             ></div>
-          
+
           </div>
         </div>
       );
@@ -262,7 +287,7 @@ const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => d
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">INPUTS</h1>
-   
+
         </div>
 
         <Card>

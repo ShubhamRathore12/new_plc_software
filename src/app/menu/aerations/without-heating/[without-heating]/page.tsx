@@ -206,7 +206,8 @@ export default function AerationWithoutHeatingPage() {
     {devices === "GTPL-124-GT-450T-S7-1200" || 
      devices === "GTPL-122-gT-1000T-S7-1200" || 
      devices === "GTPL-121-gT-1000T-S7-1200" ||
-     devices === "GTPL-132-300-AP-S7-1200" || devices === "GTPL-137-GT-450T-S7-1200"  || devices === "GTPL-138-GT-450T-S7-1200"
+     devices === "GTPL-132-300-AP-S7-1200" || devices === "GTPL-137-GT-450T-S7-1200"  || devices === "GTPL-138-GT-450T-S7-1200" || devices === 
+     "GTPL-136-gT-450AP"
       ? t("T0") 
       : t("TH")} ({t("After Heat")})
   </span>

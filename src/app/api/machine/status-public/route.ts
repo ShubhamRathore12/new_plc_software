@@ -26,6 +26,8 @@ const MACHINE_TABLES: Record<string, string> = {
   GTPL_132_GT300AP:"GTPL_132",
  GTPL_137_GT_450T_S7_1200:"GTPL_137",
  GTPL_138_GT_450T_S7_1200:"GTPL_138",
+ GTPL_136_GT_450AP_S7_1200:"GTPL_136",
+
 };
 
 // In-memory cache for last known state

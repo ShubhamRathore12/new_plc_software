@@ -39,6 +39,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
     "GTPL-137-GT-450T-S7-1200":"GTPL_137_GT_450T_S7_1200",
    "GTPL-138-GT-450T-S7-1200" :"GTPL_137_GT_450T_S7_1200",
+   "GTPL-136-gT-450AP"  :"GTPL_136_GT_450AP_S7_1200"
 
   };
 
@@ -63,7 +64,8 @@ export const useAutoData = (autoType: string) => {
     "GTPL-131-GT-650T-S7-1200":"GTPL_131",
     "GTPL-132-300-AP-S7-1200":"GTPL_132",
     "GTPL-137-GT-450T-S7-1200":"GTPL_137",
-    "GTPL-138-GT-450T-S7-1200":"GTPL_138"
+    "GTPL-138-GT-450T-S7-1200":"GTPL_138",
+    "GTPL-136-gT-450AP" :'GTPL_136'
   };
 
   const fetchData = async () => {

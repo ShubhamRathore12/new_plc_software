@@ -238,6 +238,42 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
+export const GTPL_136_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_over_43C",
+  "Compressor_motor_winding_temp_high",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_40C",
+  "Condenser_fan2_TOP_fault",
+  "Condenser_fan3_TOP_fault",
+  "Condenser_fan4_TOP_fault",
+  "Condenser_fan2_circuit_breaker_fault",
+  "Condenser_fan3_circuit_breaker_fault",
+  "Condenser_fan4_circuit_breaker_fault",
+  "Condenser_fan1_circuit_breaker_fault",
+  "Condenser_fan1_TOP_fault",
+  "Ambient_air_sensor_T2_1_open",
+  "Ambient_air_sensor_T2_1_short_circuit",
+  "Ambient_air_sensor_T2_2_open",
+  "Ambient_air_sensor_T2_2_short_circuit",
+  "Cold_air_sensor_T1_1_open",
+  "Cold_air_sensor_T1_1_short_circuit",
+  "Cold_air_sensor_T1_2_open",
+  "Cold_air_sensor_T1_2_short_circuit",
+  "Air_outlet_sensor_T0_1_open",
+  "Air_outlet_sensor_T0_1_short_circuit",
+  "Air_outlet_sensor_T0_2_open",
+  "Air_outlet_sensor_T0_2_short_circuit",
+];
+
 export const GTPL_137_138_TAGS = [
   "Compressor_circuit_breaker_fault",
   "Oil_pressure_low",
@@ -384,6 +420,11 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   "GTPL-138-GT-450T-S7-1200": {
     table: "GTPL_138_GT_450T_S7_1200",
     tags: GTPL_137_138_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-136-gT-450AP": {
+    table: "GTPL_136_GT_450AP_S7_1200",
+    tags: GTPL_136_TAGS,
     type: "S7-1200",
   },
 };
@@ -696,6 +737,41 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 20, description: "Cond fan3 circuit breaker fault" },
     { code: 21, description: "Cond fan4 circuit breaker fault" },
   ],
+  GTPL_136: [
+    { code: 1, description: "Compressor circuit breaker fault" },
+    { code: 2, description: "Oil pressure low" },
+    { code: 3, description: "Blower drive fault" },
+    { code: 4, description: "Blower circuit breaker fault" },
+    { code: 5, description: "Three phase monitor fault" },
+    { code: 6, description: "High pressure fault" },
+    { code: 7, description: "Ambient temp lower than set temp" },
+    { code: 8, description: "Ambient temp over 43°C" },
+    { code: 9, description: "Compressor motor winding temp high" },
+    { code: 10, description: "Low pressure 1 fault" },
+    { code: 11, description: "Compressor feedback error" },
+    { code: 12, description: "Low pressure 2 fault" },
+    { code: 13, description: "Ambient temp over 40°C" },
+    { code: 14, description: "Condenser fan2 TOP fault" },
+    { code: 15, description: "Condenser fan3 TOP fault" },
+    { code: 16, description: "Condenser fan4 TOP fault" },
+    { code: 17, description: "Condenser fan2 circuit breaker fault" },
+    { code: 18, description: "Condenser fan3 circuit breaker fault" },
+    { code: 19, description: "Condenser fan4 circuit breaker fault" },
+    { code: 20, description: "Condenser fan1 circuit breaker fault" },
+    { code: 21, description: "Condenser fan1 TOP fault" },
+    { code: 22, description: "Ambient air sensor T2.1 open" },
+    { code: 23, description: "Ambient air sensor T2.1 short circuit" },
+    { code: 24, description: "Ambient air sensor T2.2 open" },
+    { code: 25, description: "Ambient air sensor T2.2 short circuit" },
+    { code: 26, description: "Cold air sensor T1.1 open" },
+    { code: 27, description: "Cold air sensor T1.1 short circuit" },
+    { code: 28, description: "Cold air sensor T1.2 open" },
+    { code: 29, description: "Cold air sensor T1.2 short circuit" },
+    { code: 30, description: "Air outlet sensor T0.1 open" },
+    { code: 31, description: "Air outlet sensor T0.1 short circuit" },
+    { code: 32, description: "Air outlet sensor T0.2 open" },
+    { code: 33, description: "Air outlet sensor T0.2 short circuit" },
+  ],
 };
 
 // Helper functions
@@ -724,6 +800,8 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GPL-115"];
   } else if (resolvedName === "GTPL-132-300-AP-S7-1200") {
     return FAULT_CODES["GTPL_132"];
+  } else if (resolvedName === "GTPL-136-gT-450AP") {
+    return FAULT_CODES["GTPL_136"];
   } else if (resolvedName === "GTPL-137-GT-450T-S7-1200") {
     return FAULT_CODES["GTPL_137"];
   } else if (resolvedName === "GTPL-138-GT-450T-S7-1200") {
@@ -782,6 +860,8 @@ export function getMachineType(machineName: string): string {
     return "GPL-117";
   } else if (resolvedName.includes("GPL-124")) {
     return "GPL-124";
+  } else if (resolvedName.includes("GTPL-136")) {
+    return "GTPL_136";
   } else if (resolvedName.includes("GTPL-137")) {
     return "GTPL_137";
   } else if (resolvedName.includes("GTPL-138")) {

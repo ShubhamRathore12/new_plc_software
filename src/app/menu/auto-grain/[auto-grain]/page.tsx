@@ -58,6 +58,27 @@ export default function AutoGrainPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-136-gT-450AP": {
+      serialNumber: "GTPL_136_GRAIN",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED :{key:'Condenser_fan_speed' ,label:'Cond. Fan'}
+
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
   };
 
   const currentConfig =

@@ -232,6 +232,42 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
+export const GTPL_136_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_over_43C",
+  "Compressor_motor_winding_temp_high",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_40C",
+  "Condenser_fan2_TOP_fault",
+  "Condenser_fan3_TOP_fault",
+  "Condenser_fan4_TOP_fault",
+  "Condenser_fan2_circuit_breaker_fault",
+  "Condenser_fan3_circuit_breaker_fault",
+  "Condenser_fan4_circuit_breaker_fault",
+  "Condenser_fan1_circuit_breaker_fault",
+  "Condenser_fan1_TOP_fault",
+  "Ambient_air_sensor_T2_1_open",
+  "Ambient_air_sensor_T2_1_short_circuit",
+  "Ambient_air_sensor_T2_2_open",
+  "Ambient_air_sensor_T2_2_short_circuit",
+  "Cold_air_sensor_T1_1_open",
+  "Cold_air_sensor_T1_1_short_circuit",
+  "Cold_air_sensor_T1_2_open",
+  "Cold_air_sensor_T1_2_short_circuit",
+  "Air_outlet_sensor_T0_1_open",
+  "Air_outlet_sensor_T0_1_short_circuit",
+  "Air_outlet_sensor_T0_2_open",
+  "Air_outlet_sensor_T0_2_short_circuit",
+];
+
 export const S7_200_MACHINES = [
   "GTPL-118-gT-80E-P-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
@@ -257,6 +293,7 @@ export function getTagsForMachine(machineName: string): string[] {
   )
     return GPL_117_TAGS;
   if (machineName === "GTPL-132-300-AP-S7-1200") return GPL_132_TAGS;
+  if (machineName === "GTPL-136-gT-450AP") return GTPL_136_TAGS;
   if (S7_200_MACHINES.includes(machineName)) return S7_200_TAGS;
   return S7_1200_TAGS;
 }

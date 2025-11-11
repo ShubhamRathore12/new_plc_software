@@ -153,6 +153,26 @@ export default function AnalogPage() {
     },
   }
 
+  const GTPL_136_config = {
+    displayName: "GTPL-136 Machine",
+    inputs: {
+      "Suction Pressure": "LP_value",
+      "Discharge Pressure": "HP_value",
+      "T2.1 Ambient Temp": "T2_1_ambient_temp",
+      "T2.2 Ambient Temp": "T2_2_ambient_temp",
+      "T1.1 Cold Temp": "T1_1_cold_air_temp",
+      "T1.2 Cold Temp": "T1_2_cold_air_temp",
+      "T0.1 Air Outlet Temp": "T0_1_air_outlet_temp",
+      "T0.2 Air Outlet Temp": "T0_2_air_outlet_temp",
+    },
+    outputs: {
+      "Blower Speed": "Blower_speed",
+      "Condenser fab speed": "Condenser_fan_speed",
+      "Hot Gas Valve": "Hot_valve_speed",
+      "Afterheat Valve": "AHT_valve_speed",
+    },
+  }
+
   const machineConfigs: Record<
     string,
     {
@@ -172,6 +192,7 @@ export default function AnalogPage() {
     "GTPL-122-gT-1000T-S7-1200": sharedS7_1200_config,
     "GTPL-131-GT-650T-S7-1200": sharedS7_1200_config,
     "GTPL-132-300-AP-S7-1200": GTPL_132_config,
+    "GTPL-136-gT-450AP": GTPL_136_config,
     "GTPL-137-GT-450T-S7-1200": GTPL_137_config,
     "GTPL-138-GT-450T-S7-1200": GTPL_138_config,
     default: {
@@ -211,6 +232,21 @@ export default function AnalogPage() {
 
   // Added error handling for when device is undefined
   const { data, isConnected, error, formatValue } = useAutoData(device || "")
+
+  // Debug logging for GTPL-136
+  useEffect(() => {
+    if (device === "GTPL-136-gT-450AP" && data) {
+      console.log("GTPL-136 Device detected:", device);
+      console.log("Current config:", currentMachineConfig);
+      console.log("Raw data received:", data);
+      console.log("Looking for these fields:", analogInputValueMap);
+      
+      // Check specific fields
+      Object.entries(analogInputValueMap).forEach(([description, fieldName]) => {
+        console.log(`${description} -> ${fieldName}: ${data[fieldName]}`);
+      });
+    }
+  }, [device, data, currentMachineConfig, analogInputValueMap])
 
   // GSAP animations
   useEffect(() => {
@@ -318,7 +354,7 @@ export default function AnalogPage() {
                     <div className="grid gap-3">
                       {section.items
                         .filter((item) => {
-                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200") {
+                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP") {
                             return !item.description.startsWith("TH probe")
                           }
                           if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200") {

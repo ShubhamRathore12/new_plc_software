@@ -228,6 +228,13 @@ export default function DevicesPage() {
       plc: "S7-1200",
       chillerModel: "gT-240E",
     },
+    {
+      name: "GTPL-136-gT-450AP",
+      location: "Thailand",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450AP",
+    },
   ];
 
   // const locations: Location[] = [
@@ -310,6 +317,7 @@ const locations: Location[] = [
     'GTPL-124-GT-450T-S7-1200':"GTPL_124",
     "GTPL-131-GT-650T-S7-1200":"GTPL_131",
     "GTPL-132-300-AP-S7-1200":"GTPL_132",
+    "GTPL-136-gT-450AP":"GTPL_136",
     "GTPL-137-GT-450T-S7-1200":"GTPL_137",
     "GTPL-138-GT-450T-S7-1200":"GTPL_138"
   };

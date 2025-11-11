@@ -220,7 +220,7 @@
 //             "GTPL-122-gT-1000T-S7-1200",
 //             "GTPL-121-gT-1000T-S7-1200",
 //             "GTPL-124-GT-450T-S7-1200",
-         
+
 //           ].some((name) => machineName.includes(name)) ? (
 //             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
 //               T Delta ={" "}
@@ -901,7 +901,7 @@ export default function AutoDiagram1({
     "GTPL-124-GT-450T-S7-1200",
     "GTPL-137-GT-450T-S7-1200",
     "GTPL-138-GT-450T-S7-1200",
-
+    "GTPL-136-gT-450AP",
     "GTPL-132-300-AP-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -916,10 +916,11 @@ export default function AutoDiagram1({
     "GTPL-111-gT-80E-P-S7-200",
     "GTPL-112-gT-80E-P-S7-200",
     "GTPL-113-gT-80E-P-S7-200",
-   "GTPL-132-300-AP-S7-1200",
+    "GTPL-132-300-AP-S7-1200",
     "GTPL-137-GT-450T-S7-1200",
     "GTPL-138-GT-450T-S7-1200",
-    
+    "GTPL-136-gT-450AP"
+
 
   ].some((name) => machineName.includes(name));
 
@@ -966,33 +967,33 @@ export default function AutoDiagram1({
               T0 ={" "}
               {isGrainChilling
                 ? formatValue(
-                    data?.T0_set_point ||
-                      data?.AIR_OUTLET_TEMP ||
-                      data?.T1_set_point_in_grain_chilling_mode,
-                    "°C"
-                  )
+                  data?.T0_set_point ||
+                  data?.AIR_OUTLET_TEMP ||
+                  data?.T1_set_point_in_grain_chilling_mode  || data?.T0_temp_mean,
+                  "°C"
+                )
                 : isPaddyChilling
                   ? formatValue(
-                      data?.T0_set_point ||
-                        data?.AIR_OUTLET_TEMP ||
-                        data?.T1_set_point_in_paddy_aeging_mode,
-                      "°C"
-                    )
+                    data?.T0_set_point ||
+                    data?.AIR_OUTLET_TEMP ||
+                    data?.T1_set_point_in_paddy_aeging_mode || data?.T0_temp_mean,
+                    "°C"
+                  )
                   : formatValue(
-                      data?.T0_set_point ||
-                        data?.AIR_OUTLET_TEMP ||
-                        data?.T1_set_point_in_paddy_aeging_mode,
-                      "°C"
-                    )}
+                    data?.T0_set_point ||
+                    data?.AIR_OUTLET_TEMP ||
+                    data?.T1_set_point_in_paddy_aeging_mode || data?.T0_temp_mean,
+                    "°C"
+                  )}
             </div>
           ) : (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T1 ={" "}
               {formatValue(
                 data?.T1_set_point ||
-                  data?.T1_temp_mean ||
-                  data?.T1_SET_POINT ||
-                  data?.Delta_T_set_point_paddy_aeging_mode,
+                data?.T1_temp_mean ||
+                data?.T1_SET_POINT ||
+                data?.Delta_T_set_point_paddy_aeging_mode,
                 "°C"
               )}
             </div>
@@ -1003,25 +1004,25 @@ export default function AutoDiagram1({
               T Delta ={" "}
               {isGrainChilling
                 ? formatValue(
-                    data.Delta_T_set_point ||
-                      data?.Th_T1 ||
-                      data?.Delta_T_set_point_in_grain_chilling_mode,
-                    "°C"
-                  )
+                  data.Delta_T_set_point ||
+                  data?.Th_T1 ||
+                  data?.Delta_T_set_point_in_grain_chilling_mode,
+                  "°C"
+                )
                 : isPaddyChilling
                   ? formatValue(
-                      data.Delta_T_set_point ||
-                        data?.Th_T1 ||
-                        data?.Delta_T_set_point_paddy_aeging_mode,
-                      "°C"
-                    )
+                    data.Delta_T_set_point ||
+                    data?.Th_T1 ||
+                    data?.Delta_T_set_point_paddy_aeging_mode,
+                    "°C"
+                  )
                   : formatValue(
-                      data.Delta_T_set_point ||
-                        data?.Th_T1 ||
-                        data?.Delta_T_set_point_in_grain_chilling_mode ||
-                        data?.Delta_T_set_point_paddy_aeging_mode,
-                      "°C"
-                    )}
+                    data.Delta_T_set_point ||
+                    data?.Th_T1 ||
+                    data?.Delta_T_set_point_in_grain_chilling_mode ||
+                    data?.Delta_T_set_point_paddy_aeging_mode,
+                    "°C"
+                  )}
             </div>
           ) : (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
@@ -1037,7 +1038,7 @@ export default function AutoDiagram1({
         {/* Main Content Container - Centered */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-[1200px] h-[600px] bg-gray-100">
-            
+
             {/* SVG Container for Silo and Lines */}
             <svg
               className="absolute inset-0 w-full h-full"
@@ -1408,11 +1409,10 @@ export default function AutoDiagram1({
                 <div className="font-bold">
                   <span className="flex items-center gap-1">
                     <span
-                      className={`h-2 w-2 rounded-full ${
-                        isCompressorOn
+                      className={`h-2 w-2 rounded-full ${isCompressorOn
                           ? "bg-green-500"
                           : "bg-red-500"
-                      } shadow-sm`}
+                        } shadow-sm`}
                     />
                     {isCompressorOn ? "ON" : "OFF"}
                   </span>

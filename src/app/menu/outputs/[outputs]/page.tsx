@@ -187,6 +187,28 @@ export default function OutputsPage() {
         { id: "17", description: "Condenser fan 4", dataKey: "Condenser_fan4_on_Q2_6" },
       ];
     }
+    else if (deviceType === "GTPL-136-gT-450AP") {
+      return [
+        { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
+        { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
+        { id: "Q0.2", description: "CR valve 25% on", dataKey: "CR_valve_25_on_Q0_2" },
+        { id: "Q0.3", description: "CR valve 50% on", dataKey: "CR_valve_50_on_Q0_3" },
+        { id: "Q0.4", description: "Solenoid valve on", dataKey: "Solenoid_valve_on_Q0_4" },
+        { id: "Q0.5", description: "Hot gas valve on", dataKey: "Hot_gas_valve_on_Q0_5" },
+        { id: "Q0.6", description: "After heat valve on", dataKey: "After_heat_valve_on_Q0_6" },
+        { id: "Q0.7", description: "Blower drive on", dataKey: "Blower_drive_on_Q0_7" },
+        { id: "Q1.0", description: "Collective Trouble Signal", dataKey: "Collective_Trouble_Signal_Q1_0" },
+        { id: "Q1.1", description: "Chiller healthy on", dataKey: "Chiller_healthy_on_Q1_1" },
+        { id: "Q2.0", description: "Spare", dataKey: "Spare_Q2_0" },
+        { id: "Q2.1", description: "Condenser fan1 on", dataKey: "Condenser_fan1_on_Q2_1" },
+        { id: "Q2.2", description: "CR valve 75% on", dataKey: "CR_valve_75_on_Q2_2" },
+        { id: "Q2.3", description: "Chiller Fault", dataKey: "Chiller_Fault_Q2_3" },
+        { id: "Q2.4", description: "Condenser fan2 on", dataKey: "Condenser_fan2_on_Q2_4" },
+        { id: "Q2.5", description: "Condenser fan3 on", dataKey: "Condenser_fan3_on_Q2_5" },
+        { id: "Q2.6", description: "Condenser fan4 on", dataKey: "Condenser_fan4_on_Q2_6" },
+        { id: "Q2.7", description: "CR valve 100% on", dataKey: "CR_valve_100_on_Q2_7" },
+      ];
+    }
     else if (deviceType === "GTPL-137-GT-450T-S7-1200" || deviceType === "GTPL-138-GT-450T-S7-1200") {
       return [
         { id: "1", description: "Compressor", dataKey: "Compressor_on_Q0_0" },
@@ -231,6 +253,9 @@ export default function OutputsPage() {
     }
 
     if (device === "GTPL-116-gT-240E-S7-1200") {
+      return value === true || value === 1 || value === "1" || value === "True" || value === "true";
+    }
+    if (device === "GTPL-136-gT-450AP") {
       return value === true || value === 1 || value === "1" || value === "True" || value === "true";
     }
 
