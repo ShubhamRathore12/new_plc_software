@@ -969,14 +969,14 @@ export default function AutoDiagram1({
                 ? formatValue(
                   data?.T0_set_point ||
                   data?.AIR_OUTLET_TEMP ||
-                  data?.T1_set_point_in_grain_chilling_mode  || data?.T0_temp_mean,
+                  data?.T1_set_point_in_grain_chilling_mode  || data?.T0_set_point_in_grain_chilling_mode,
                   "°C"
                 )
                 : isPaddyChilling
                   ? formatValue(
                     data?.T0_set_point ||
                     data?.AIR_OUTLET_TEMP ||
-                    data?.T1_set_point_in_paddy_aeging_mode || data?.T0_temp_mean,
+                    data?.T1_set_point_in_paddy_aeging_mode || data?.T0_set_point_in_paddy_aeging_mode,
                     "°C"
                   )
                   : formatValue(
