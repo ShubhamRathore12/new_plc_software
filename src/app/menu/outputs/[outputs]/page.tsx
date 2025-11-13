@@ -51,7 +51,7 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "GTPL-122-gT-1000T-S7-1200") {
+    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor Start", dataKey: "Compressor_start_Q0_0" },
         { id: "Q0.1", description: "Compressor Module Reset", dataKey: "Compressor_module_reset_Q0_1" },
@@ -74,29 +74,29 @@ export default function OutputsPage() {
         { id: "Q3.1", description: "Cond Fan 6 ON", dataKey: "Cond_fan_6_ON_Q3_1" },
       ];
     }
-    else if (device === "GTPL-121-gT-1000T-S7-1200") {
-      return [
-        { id: "1", description: "Compressor Start", dataKey: "Compressor Start" },
-        { id: "2", description: "Compressor Module Reset", dataKey: "Compressor Module Reset" },
-        { id: "3", description: "CR Valve 25% ON", dataKey: "CR Valve 25% ON" },
-        { id: "4", description: "CR Valve 50% ON", dataKey: "CR Valve 50% ON" },
-        { id: "5", description: "Solenoid Valve ON", dataKey: "Solenoid Valve ON" },
-        { id: "6", description: "Hot Gas Valve ON", dataKey: "Hot Gas Valve ON" },
-        { id: "7", description: "AHT Valve ON", dataKey: "AHT Valve ON" },
-        { id: "8", description: "Blower Drive Start", dataKey: "Blower Drive Start" },
-        { id: "9", description: "System Warning", dataKey: "System Warning" },
-        { id: "10", description: "Chiller Healthy", dataKey: "Chiller Healthy" },
-        { id: "11", description: "Cond Fan 1 ON", dataKey: "Cond Fan 1 ON" },
-        { id: "12", description: "CR Valve 75% ON", dataKey: "CR Valve 75% ON" },
-        { id: "13", description: "Chiller Fault", dataKey: "Chiller Fault" },
-        { id: "14", description: "Cond Fan 2 ON", dataKey: "Cond Fan 2 ON" },
-        { id: "15", description: "Cond Fan 3 ON", dataKey: "Cond Fan 3 ON" },
-        { id: "16", description: "Cond Fan 4 ON", dataKey: "Cond Fan 4 ON" },
-        { id: "17", description: "CR Valve 100% ON", dataKey: "CR Valve 100% ON" },
-        { id: "18", description: "Cond Fan 5 ON", dataKey: "Cond Fan 5 ON" },
-        { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
-      ];
-    }
+    // else if (device === "GTPL-121-gT-1000T-S7-1200") {
+    //   return [
+    //     { id: "1", description: "Compressor Start", dataKey: "Compressor Start" },
+    //     { id: "2", description: "Compressor Module Reset", dataKey: "Compressor Module Reset" },
+    //     { id: "3", description: "CR Valve 25% ON", dataKey: "CR Valve 25% ON" },
+    //     { id: "4", description: "CR Valve 50% ON", dataKey: "CR Valve 50% ON" },
+    //     { id: "5", description: "Solenoid Valve ON", dataKey: "Solenoid Valve ON" },
+    //     { id: "6", description: "Hot Gas Valve ON", dataKey: "Hot Gas Valve ON" },
+    //     { id: "7", description: "AHT Valve ON", dataKey: "AHT Valve ON" },
+    //     { id: "8", description: "Blower Drive Start", dataKey: "Blower Drive Start" },
+    //     { id: "9", description: "System Warning", dataKey: "System Warning" },
+    //     { id: "10", description: "Chiller Healthy", dataKey: "Chiller Healthy" },
+    //     { id: "11", description: "Cond Fan 1 ON", dataKey: "Cond Fan 1 ON" },
+    //     { id: "12", description: "CR Valve 75% ON", dataKey: "CR Valve 75% ON" },
+    //     { id: "13", description: "Chiller Fault", dataKey: "Chiller Fault" },
+    //     { id: "14", description: "Cond Fan 2 ON", dataKey: "Cond Fan 2 ON" },
+    //     { id: "15", description: "Cond Fan 3 ON", dataKey: "Cond Fan 3 ON" },
+    //     { id: "16", description: "Cond Fan 4 ON", dataKey: "Cond Fan 4 ON" },
+    //     { id: "17", description: "CR Valve 100% ON", dataKey: "CR Valve 100% ON" },
+    //     { id: "18", description: "Cond Fan 5 ON", dataKey: "Cond Fan 5 ON" },
+    //     { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
+    //   ];
+    // }
     else if (deviceType === "GTPL-118-gT-80E-P-S7-200" || deviceType === "GTPL-108-gT-40E-P-S7-200" || deviceType === "GTPL-109-gT-40E-P-S7-200" || deviceType === "GTPL-110-gT-40E-P-S7-200" || deviceType === "GTPL-111-gT-80E-P-S7-200" || deviceType === "GTPL-112-gT-80E-P-S7-200" || deviceType === "GTPL-113-gT-80E-P-S7-200") {
       return [
         { id: "1", description: "Blower Drive", dataKey: "BLOWER_DRIVE_ENABLE" },
