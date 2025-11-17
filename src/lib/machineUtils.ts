@@ -15,6 +15,8 @@ export type MachineType =
   | "GTPL_120"
   | "GTPL_121"
   | "GTPL_122_S7_1200"
+  | "GTPL_134"
+  | "GTPL_135"
   | "KABO_200"
   | "unknown";
 

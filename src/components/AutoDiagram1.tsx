@@ -903,6 +903,8 @@ export default function AutoDiagram1({
     "GTPL-138-GT-450T-S7-1200",
     "GTPL-136-gT-450AP",
     "GTPL-132-300-AP-S7-1200",
+    "GTPL-134-gT-450T-S7-1200",
+    "GTPL-135-gT-450T-S7-1200"
   ].some((name) => machineName.includes(name));
 
   const isHTRMachine = [
@@ -919,7 +921,9 @@ export default function AutoDiagram1({
     "GTPL-132-300-AP-S7-1200",
     "GTPL-137-GT-450T-S7-1200",
     "GTPL-138-GT-450T-S7-1200",
-    "GTPL-136-gT-450AP"
+    "GTPL-136-gT-450AP",
+    "GTPL-134-gT-450T-S7-1200",
+    "GTPL-135-gT-450T-S7-1200"
 
 
   ].some((name) => machineName.includes(name));

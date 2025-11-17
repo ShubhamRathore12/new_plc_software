@@ -193,21 +193,21 @@ export default function DevicesPage() {
       plc: "S7-1200",
       chillerModel: "gT-1000T",
     },
-     {
+    {
       name: "GTPL-124-GT-450T-S7-1200",
       location: "Indonesia",
       image: "/images/1200.jpg",
       plc: "S7-1200",
       chillerModel: "gT-240E",
     },
-       {
+    {
       name: "GTPL-131-GT-650T-S7-1200",
       location: "Germany",
       image: "/images/1200.jpg",
       plc: "S7-1200",
       chillerModel: "gT-240E",
     },
-       {
+    {
       name: "GTPL-132-300-AP-S7-1200",
       location: "Salem (Tamil Nadu)",
       image: "/images/1200.jpg",
@@ -234,6 +234,20 @@ export default function DevicesPage() {
       image: "/images/1200.jpg",
       plc: "S7-1200",
       chillerModel: "gT-450AP",
+    },
+    {
+      name: "GTPL-134-gT-450T-S7-1200",
+      location: "Thailand",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450T",
+    },
+    {
+      name: "GTPL-135-gT-450T-S7-1200",
+      location: "Thailand",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450T",
     },
   ];
 
@@ -265,38 +279,38 @@ export default function DevicesPage() {
 
   // Replace the existing filteredDevices logic with this updated version
 
-const filteredDevices = allDevices.filter((device) => {
-  const matchesLocation =
-    selectedLocation === "" ||
-    selectedLocation === "All" ||
-    device.location === selectedLocation;
+  const filteredDevices = allDevices.filter((device) => {
+    const matchesLocation =
+      selectedLocation === "" ||
+      selectedLocation === "All" ||
+      device.location === selectedLocation;
 
-  const isRestricted = accessArray.includes(device.name.toLowerCase());
+    const isRestricted = accessArray.includes(device.name.toLowerCase());
 
-  // Hide Noida and Noida---kanpur locations if user's firstName is "carl"
-  const shouldHideNoidaLocations = 
-    data?.user?.firstName?.toLowerCase() === "carl" &&
-    (device.location === "Noida" || device.location === "Noida---kanpur");
+    // Hide Noida and Noida---kanpur locations if user's firstName is "carl"
+    const shouldHideNoidaLocations =
+      data?.user?.firstName?.toLowerCase() === "carl" &&
+      (device.location === "Noida" || device.location === "Noida---kanpur");
 
-  return matchesLocation && !isRestricted && !shouldHideNoidaLocations;
-});
+    return matchesLocation && !isRestricted && !shouldHideNoidaLocations;
+  });
 
-// Also update the locations array to exclude Noida locations for carl
-const locations: Location[] = [
-  { name: t("All"), image: "/images/1200.jpg" },
-  ...Array.from(new Set(allDevices.map((d) => d.location)))
-    .filter((loc) => {
-      // Filter out Noida locations if user is carl
-      if (data?.user?.firstName?.toLowerCase() === "carl" || data?.user?.firstName?.toLowerCase() === "Weinzierl") {
-        return loc !== "Noida" && loc !== "Noida---kanpur";
-      }
-      return true;
-    })
-    .map((loc) => ({
-      name: loc,
-      image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
-    })),
-];
+  // Also update the locations array to exclude Noida locations for carl
+  const locations: Location[] = [
+    { name: t("All"), image: "/images/1200.jpg" },
+    ...Array.from(new Set(allDevices.map((d) => d.location)))
+      .filter((loc) => {
+        // Filter out Noida locations if user is carl
+        if (data?.user?.firstName?.toLowerCase() === "carl" || data?.user?.firstName?.toLowerCase() === "Weinzierl") {
+          return loc !== "Noida" && loc !== "Noida---kanpur";
+        }
+        return true;
+      })
+      .map((loc) => ({
+        name: loc,
+        image: loc.includes("kanpur") ? "/images/1200.jpg" : "/images/200.jpg",
+      })),
+  ];
 
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
@@ -314,28 +328,30 @@ const locations: Location[] = [
     "GTPL-119-gT-180E-S7-1200": "GTPL_119",
     "GTPL-120-gT-180E-S7-1200": "GTPL_120",
     "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
-    'GTPL-124-GT-450T-S7-1200':"GTPL_124",
-    "GTPL-131-GT-650T-S7-1200":"GTPL_131",
-    "GTPL-132-300-AP-S7-1200":"GTPL_132",
-    "GTPL-136-gT-450AP":"GTPL_136",
-    "GTPL-137-GT-450T-S7-1200":"GTPL_137",
-    "GTPL-138-GT-450T-S7-1200":"GTPL_138"
+    'GTPL-124-GT-450T-S7-1200': "GTPL_124",
+    "GTPL-131-GT-650T-S7-1200": "GTPL_131",
+    "GTPL-132-300-AP-S7-1200": "GTPL_132",
+    "GTPL-136-gT-450AP": "GTPL_136",
+    "GTPL-137-GT-450T-S7-1200": "GTPL_137",
+    "GTPL-138-GT-450T-S7-1200": "GTPL_138",
+    "GTPL-134-gT-450T-S7-1200": "GTPL_134",
+    "GTPL-135-gT-450T-S7-1200": "GTPL_135"
   };
 
   const handleViewMore = (deviceName: string) => {
     const key = deviceNameToStatusKey[deviceName];
     const deviceStatus = status.machines.find(m => m.machineName === key);
-  
+
     const machineStatusValue = deviceStatus?.machineStatus ?? false;
-  
+
     // Correct JSON stringify and encode
     const statusString = encodeURIComponent(JSON.stringify({ machineStatus: machineStatusValue }));
-  
+
     router.push(`/menu/${deviceName}?status=${statusString}`);
   };
-  
-  
-  
+
+
+
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950">
@@ -531,11 +547,10 @@ const locations: Location[] = [
                             </div>
                             <div className="flex items-center gap-1">
                               <span
-                                className={`h-2 w-2 rounded-full ${
-                                  isMachineRunning
-                                    ? "bg-green-500 group-hover:bg-green-600"
-                                    : "bg-red-500 group-hover:bg-red-600"
-                                } shadow-sm transition-colors duration-300`}
+                                className={`h-2 w-2 rounded-full ${isMachineRunning
+                                  ? "bg-green-500 group-hover:bg-green-600"
+                                  : "bg-red-500 group-hover:bg-red-600"
+                                  } shadow-sm transition-colors duration-300`}
                               />
                               <span
                                 className={`text-xs font-semibold ${isMachineRunning ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
@@ -554,11 +569,10 @@ const locations: Location[] = [
                             </div>
                             <div className="flex items-center gap-1">
                               <span
-                                className={`h-2 w-2 rounded-full ${
-                                  isInternetConnected
-                                    ? "bg-green-500 group-hover:bg-green-600"
-                                    : "bg-red-500 group-hover:bg-red-600"
-                                } shadow-sm transition-colors duration-300`}
+                                className={`h-2 w-2 rounded-full ${isInternetConnected
+                                  ? "bg-green-500 group-hover:bg-green-600"
+                                  : "bg-red-500 group-hover:bg-red-600"
+                                  } shadow-sm transition-colors duration-300`}
                               />
                               <span
                                 className={`text-xs font-semibold ${isInternetConnected ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}
@@ -579,11 +593,10 @@ const locations: Location[] = [
                             </div>
                             <div className="flex items-center gap-1">
                               <span
-                                className={`h-2 w-2 rounded-full ${
-                                  isCoolingWorking
-                                    ? "bg-green-500 group-hover:bg-green-600"
-                                    : "bg-red-500 group-hover:bg-red-600"
-                                } shadow-sm transition-colors duration-300`}
+                                className={`h-2 w-2 rounded-full ${isCoolingWorking
+                                  ? "bg-green-500 group-hover:bg-green-600"
+                                  : "bg-red-500 group-hover:bg-red-600"
+                                  } shadow-sm transition-colors duration-300`}
                               />
                               <span
                                 className={`text-xs font-semibold ${isCoolingWorking ? "text-green-600 dark:text-green-400 group-hover:text-green-700" : "text-red-600 dark:text-red-400 group-hover:text-red-700"} transition-colors duration-300`}

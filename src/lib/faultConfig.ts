@@ -310,6 +310,44 @@ export const GTPL_137_138_TAGS = [
   "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
+export const GTPL_134_135_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_below_set",
+  "Ambient_temp_above_45",
+  "Compressor_motor_temp_high",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_above_43",
+  "Cond_fan2_TOP_fault",
+  "Cond_fan3_TOP_fault",
+  "Cond_fan4_TOP_fault",
+  "Cond_fan2_cb_fault",
+  "Cond_fan3_cb_fault",
+  "Cond_fan4_cb_fault",
+  "Cond_fan1_cb_fault",
+  "Cond_fan1_TOP_fault",
+  "T2_1_sensor_open",
+  "T2_1_sensor_short",
+  "T2_2_sensor_open",
+  "T2_2_sensor_short",
+  "T1_1_sensor_open",
+  "T1_1_sensor_short",
+  "T1_2_sensor_open",
+  "T1_2_sensor_short",
+  "T0_1_sensor_open",
+  "T0_1_sensor_short",
+  "T0_2_sensor_open",
+  "T0_2_sensor_short",
+  "Tdelta_sensor_open",
+  "Tdelta_sensor_short",
+];
+
 // Machine configuration type
 interface MachineConfig {
   table: string;
@@ -425,6 +463,16 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   "GTPL-136-gT-450AP": {
     table: "GTPL_136_GT_450AP_S7_1200",
     tags: GTPL_136_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-134-gT-450T-S7-1200": {
+    table: "GTPL_134_GT_450T_S7_1200",
+    tags: GTPL_134_135_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-135-gT-450T-S7-1200": {
+    table: "GTPL_135_GT_450T_S7_1200",
+    tags: GTPL_134_135_TAGS,
     type: "S7-1200",
   },
 };
@@ -772,6 +820,80 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 32, description: "Air outlet sensor T0.2 open" },
     { code: 33, description: "Air outlet sensor T0.2 short circuit" },
   ],
+  GTPL_134: [
+    { code: 1, description: "Compressor_circuit_breaker_fault" },
+    { code: 2, description: "Oil_pressure_low" },
+    { code: 3, description: "Blower_drive_fault" },
+    { code: 4, description: "Blower_circuit_breaker_fault" },
+    { code: 5, description: "Three_phase_monitor_fault" },
+    { code: 6, description: "High_pressure_fault" },
+    { code: 7, description: "Ambient_temp_below_set" },
+    { code: 8, description: "Ambient_temp_above_45" },
+    { code: 9, description: "Compressor_motor_temp_high" },
+    { code: 10, description: "Low_pressure_1_fault" },
+    { code: 11, description: "Compressor_feedback_error" },
+    { code: 12, description: "Low_pressure_2_fault" },
+    { code: 13, description: "Ambient_temp_above_43" },
+    { code: 14, description: "Cond_fan2_TOP_fault" },
+    { code: 15, description: "Cond_fan3_TOP_fault" },
+    { code: 16, description: "Cond_fan4_TOP_fault" },
+    { code: 17, description: "Cond_fan2_cb_fault" },
+    { code: 18, description: "Cond_fan3_cb_fault" },
+    { code: 19, description: "Cond_fan4_cb_fault" },
+    { code: 20, description: "Cond_fan1_cb_fault" },
+    { code: 21, description: "Cond_fan1_TOP_fault" },
+    { code: 22, description: "T2_1_sensor_open" },
+    { code: 23, description: "T2_1_sensor_short" },
+    { code: 24, description: "T2_2_sensor_open" },
+    { code: 25, description: "T2_2_sensor_short" },
+    { code: 26, description: "T1_1_sensor_open" },
+    { code: 27, description: "T1_1_sensor_short" },
+    { code: 28, description: "T1_2_sensor_open" },
+    { code: 29, description: "T1_2_sensor_short" },
+    { code: 30, description: "T0_1_sensor_open" },
+    { code: 31, description: "T0_1_sensor_short" },
+    { code: 32, description: "T0_2_sensor_open" },
+    { code: 33, description: "T0_2_sensor_short" },
+    { code: 34, description: "Tdelta_sensor_open" },
+    { code: 35, description: "Tdelta_sensor_short" },
+  ],
+  GTPL_135: [
+    { code: 1, description: "Compressor_circuit_breaker_fault" },
+    { code: 2, description: "Oil_pressure_low" },
+    { code: 3, description: "Blower_drive_fault" },
+    { code: 4, description: "Blower_circuit_breaker_fault" },
+    { code: 5, description: "Three_phase_monitor_fault" },
+    { code: 6, description: "High_pressure_fault" },
+    { code: 7, description: "Ambient_temp_below_set" },
+    { code: 8, description: "Ambient_temp_above_45" },
+    { code: 9, description: "Compressor_motor_temp_high" },
+    { code: 10, description: "Low_pressure_1_fault" },
+    { code: 11, description: "Compressor_feedback_error" },
+    { code: 12, description: "Low_pressure_2_fault" },
+    { code: 13, description: "Ambient_temp_above_43" },
+    { code: 14, description: "Cond_fan2_TOP_fault" },
+    { code: 15, description: "Cond_fan3_TOP_fault" },
+    { code: 16, description: "Cond_fan4_TOP_fault" },
+    { code: 17, description: "Cond_fan2_cb_fault" },
+    { code: 18, description: "Cond_fan3_cb_fault" },
+    { code: 19, description: "Cond_fan4_cb_fault" },
+    { code: 20, description: "Cond_fan1_cb_fault" },
+    { code: 21, description: "Cond_fan1_TOP_fault" },
+    { code: 22, description: "T2_1_sensor_open" },
+    { code: 23, description: "T2_1_sensor_short" },
+    { code: 24, description: "T2_2_sensor_open" },
+    { code: 25, description: "T2_2_sensor_short" },
+    { code: 26, description: "T1_1_sensor_open" },
+    { code: 27, description: "T1_1_sensor_short" },
+    { code: 28, description: "T1_2_sensor_open" },
+    { code: 29, description: "T1_2_sensor_short" },
+    { code: 30, description: "T0_1_sensor_open" },
+    { code: 31, description: "T0_1_sensor_short" },
+    { code: 32, description: "T0_2_sensor_open" },
+    { code: 33, description: "T0_2_sensor_short" },
+    { code: 34, description: "Tdelta_sensor_open" },
+    { code: 35, description: "Tdelta_sensor_short" },
+  ],
 };
 
 // Helper functions
@@ -806,6 +928,10 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GTPL_137"];
   } else if (resolvedName === "GTPL-138-GT-450T-S7-1200") {
     return FAULT_CODES["GTPL_138"];
+  } else if (resolvedName === "GTPL-134-gT-450T-S7-1200") {
+    return FAULT_CODES["GTPL_134"];
+  } else if (resolvedName === "GTPL-135-gT-450T-S7-1200") {
+    return FAULT_CODES["GTPL_135"];
   } else if (
     resolvedName.includes("GPL-117") ||
     resolvedName.includes("GTPL-117") ||
@@ -866,6 +992,10 @@ export function getMachineType(machineName: string): string {
     return "GTPL_137";
   } else if (resolvedName.includes("GTPL-138")) {
     return "GTPL_138";
+  } else if (resolvedName.includes("GTPL-134")) {
+    return "GTPL_134";
+  } else if (resolvedName.includes("GTPL-135")) {
+    return "GTPL_135";
   } else {
     return config.type;
   }

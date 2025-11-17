@@ -326,6 +326,44 @@ export const GTPL_138_OUTPUT_TAGS = [
   "Condenser_fan4_on_Q2_6",
 ];
 
+export const GTPL_134_135_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_below_set",
+  "Ambient_temp_above_45",
+  "Compressor_motor_temp_high",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_above_43",
+  "Cond_fan2_TOP_fault",
+  "Cond_fan3_TOP_fault",
+  "Cond_fan4_TOP_fault",
+  "Cond_fan2_cb_fault",
+  "Cond_fan3_cb_fault",
+  "Cond_fan4_cb_fault",
+  "Cond_fan1_cb_fault",
+  "Cond_fan1_TOP_fault",
+  "T2_1_sensor_open",
+  "T2_1_sensor_short",
+  "T2_2_sensor_open",
+  "T2_2_sensor_short",
+  "T1_1_sensor_open",
+  "T1_1_sensor_short",
+  "T1_2_sensor_open",
+  "T1_2_sensor_short",
+  "T0_1_sensor_open",
+  "T0_1_sensor_short",
+  "T0_2_sensor_open",
+  "T0_2_sensor_short",
+  "Tdelta_sensor_open",
+  "Tdelta_sensor_short",
+];
+
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
@@ -434,6 +472,16 @@ export const MACHINE_CONFIG = {
   "GTPL-138-GT-450T-S7-1200": {
     table: "GTPL_138_GT_450T_S7_1200",
     tags: GTPL_138_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-134-gT-450T-S7-1200": {
+    table: "GTPL_134_GT_450T_S7_1200",
+    tags: GTPL_134_135_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-135-gT-450T-S7-1200": {
+    table: "GTPL_135_GT_450T_S7_1200",
+    tags: GTPL_134_135_TAGS,
     type: "S7-1200",
   },
 };
