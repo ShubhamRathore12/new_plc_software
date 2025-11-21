@@ -144,7 +144,7 @@
 
 //   while (offset < effectiveLimit) {
 //     const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
-    
+
 //     const [chunkRows] = await pool.query<RowDataPacket[]>(
 //       `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
 //       [...params, currentChunkSize, offset]
@@ -424,7 +424,7 @@
 
 //     console.log("Writing Excel file...");
 //     const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
-    
+
 //     const recordCount = processedRows.length;
 //     const dateRange = hasDateFilter ? `_${fromDate || 'start'}_to_${toDate || 'end'}` : '';
 //     const filename = `${table}${dateRange}_${new Date().toISOString().slice(0, 10)}_${recordCount}records.xlsx`;
@@ -501,17 +501,17 @@ const ALLOWED_TABLES = [
 ] as const;
 
 const PREFERRED_NUMERIC_ORDER = [
-  "T2_1_ambient_temp","T2_2_ambient_temp","T2_temp_mean",
-  "T1_1_cold_air_temp","T1_2_cold_air_temp","T1_temp_mean",
-  "T0_1_air_outlet_temp","T0_2_air_outlet_temp","T0_temp_mean",
-  "TH_1_supply_air_temp","TH_2_supply_air_temp","TH_temp_mean",
-  "LP_value","HP_value","LP_set_point","HP_set_point",
-  "T1_set_point","TH_T1_set_point","Compressor_timer","Delta_set_to_aeration","Aeration_duration_set",
-  "Running_time_hour","Running_time_minute","Running_hours","Running_hours_min",
-  "Blower_speed","Hot_valve_speed","AHT_vale_speed","AHT_valve_speed","Heater_speed","Cond_fan_speed",
-  "Blower_speed_set_in_manual","Cond_fan_speed_set_in_manual","Hot_gas_valve_set_in_manual","AHT_valve_set_in_manual","Heater_set_in_manual",
-  "Fault_code","FS","UF","RHP","BLWR_pct","RMR_pct","CNPR_pct","AHT_pct","HCSR_pct",
-  "T2_1_ambient_temp","T2_2_ambient_temp","T1_1_cold_air_temp","T1_2_cold_air_temp","T0_1_air_outlet_temp","T0_2_air_outlet_temp","LP_value","HP_value","T2_temp_mean","T1_temp_mean","T0_temp_mean","Blower_speed","Hot_valve_speed","AHT_valve_speed","T0_set_point","Delta_T_set_point","Compressor_timer","Aeration_duration_set","Running_time_hour","Running_time_minute","HP_set_point","LP_set_point","Blower_speed_set_in_manual","Hot_gas_valve_set_in_manual","AHT_valve_set_in_manual","Running_hours","Running_hours_min","FAULT_CODE","Auto_mode","Manual_mode","Aeration_mode","Auto_start","Auto_stop","Aeration_start","Aeration_stop","Continuous_mode","Compressor_circuit_breaker_I0_0","Comp_module_fdk_error_I0_1","Comp_in_operation_I0_2","Oil_level_I0_3","Blower_drive_I0_4","Blower_in_operation_I0_5","Blower_circuit_breaker_I0_6","Cond_fan_1_TOP_I0_7","Cond_fan_1_circuit_breaker_I1_0","Low_pressure_fault_I1_1","Compressor_OLR_trip_I1_2","High_pressure_fault_I1_3","Start_stop_switch_I1_4","Three_phase_monitoring_fault_I2_0","Cond_fan_2_TOP_I2_2","Cond_fan_3_TOP_I2_3","Cond_fan_4_TOP_I2_4","Cond_fan_2_circuit_breaker_I2_5","Cond_fan_3_circuit_breaker_I2_6","Cond_fan_4_circuit_breaker_I2_7","Cond_fan_5_TOP_I3_0","Cond_fan_6_TOP_I3_1","Cond_fan_5_circuit_breaker_I3_2","Cond_fan_6_circuit_breaker_I3_3","Compressor_start_Q0_0","Compressor_module_reset_Q0_1","CR_valve_25_percent_ON_Q0_2","CR_valve_50_percent_ON_Q0_3","Solenoid_valve_ON_Q0_4","Hot_gas_valve_ON_Q0_5","AHT_valve_ON_Q0_6","Blower_drive_start_Q0_7","System_warning_Q1_0","Chiller_healthy_Q1_1","Cond_fan_1_ON_Q2_1","CR_valve_75_percent_ON_Q2_2","Chiller_fault_Q2_3","Cond_fan_2_ON_Q2_4","Cond_fan_3_ON_Q2_5","Cond_fan_4_ON_Q2_6","CR_valve_100_percent_ON_Q2_7","Cond_fan_5_ON_Q3_0","Cond_fan_6_ON_Q3_1","Compressor_circuit_breaker_fault","Oil_pressure_low","Blower_drive_fault","Blower_circuit_breaker_fault","Ambient_air_sensor_1open","COND_FAN_OVERLOAD","Three_phase_monitor_fault","High_pressure_fault","Ambient_temp_lower_than_set_temp","Ambient_temp_over_50C","COMP_MODULE_FEEDBACK_ERROR_Si_I1","Low_pressure_1_fault","COMP_FBK_ERROR","Low_pressure_2_fault","Ambient_temp_over_47C","Condenser_fan_2_TOP_fault","Condenser_fan_3_TOP_fault","Condenser_fan_4_TOP_fault","Condenser_fan_2_circuit_breaker_fault","Condenser_fan_3_circuit_breaker_fault","Condenser_fan_4_circuit_breaker_fault","Condenser_fan_5_TOP_fault","Condenser_fan_6_TOP_fault","Condenser_fan_5_circuit_breaker_fault","Condenser_fan_6_circuit_breaker_fault","Condenser_fan_1_circuit_breaker_fault","Condenser_fan_1_TOP_fault","Ambient_air_sensor_1_short_circuit","Ambient_air_sensor_2_open","Ambient_air_sensor_2_short_circuit","Cold_air_sensor_1_open","Cold_air_sensor_1_short_circuit","Cold_air_sensor_2_open","Cold_air_sensor_2_short_circuit","Air_outlet_sensor_1_open","Air_outlet_sensor_1_short_circuit","Air_outlet_sensor_2_open","Air_outlet_sensor_2_short_circuit"
+  "T2_1_ambient_temp", "T2_2_ambient_temp", "T2_temp_mean",
+  "T1_1_cold_air_temp", "T1_2_cold_air_temp", "T1_temp_mean",
+  "T0_1_air_outlet_temp", "T0_2_air_outlet_temp", "T0_temp_mean",
+  "TH_1_supply_air_temp", "TH_2_supply_air_temp", "TH_temp_mean",
+  "LP_value", "HP_value", "LP_set_point", "HP_set_point",
+  "T1_set_point", "TH_T1_set_point", "Compressor_timer", "Delta_set_to_aeration", "Aeration_duration_set",
+  "Running_time_hour", "Running_time_minute", "Running_hours", "Running_hours_min",
+  "Blower_speed", "Hot_valve_speed", "AHT_vale_speed", "AHT_valve_speed", "Heater_speed", "Cond_fan_speed",
+  "Blower_speed_set_in_manual", "Cond_fan_speed_set_in_manual", "Hot_gas_valve_set_in_manual", "AHT_valve_set_in_manual", "Heater_set_in_manual",
+  "Fault_code", "FS", "UF", "RHP", "BLWR_pct", "RMR_pct", "CNPR_pct", "AHT_pct", "HCSR_pct",
+  "T2_1_ambient_temp", "T2_2_ambient_temp", "T1_1_cold_air_temp", "T1_2_cold_air_temp", "T0_1_air_outlet_temp", "T0_2_air_outlet_temp", "LP_value", "HP_value", "T2_temp_mean", "T1_temp_mean", "T0_temp_mean", "Blower_speed", "Hot_valve_speed", "AHT_valve_speed", "T0_set_point", "Delta_T_set_point", "Compressor_timer", "Aeration_duration_set", "Running_time_hour", "Running_time_minute", "HP_set_point", "LP_set_point", "Blower_speed_set_in_manual", "Hot_gas_valve_set_in_manual", "AHT_valve_set_in_manual", "Running_hours", "Running_hours_min", "FAULT_CODE", "Auto_mode", "Manual_mode", "Aeration_mode", "Auto_start", "Auto_stop", "Aeration_start", "Aeration_stop", "Continuous_mode", "Compressor_circuit_breaker_I0_0", "Comp_module_fdk_error_I0_1", "Comp_in_operation_I0_2", "Oil_level_I0_3", "Blower_drive_I0_4", "Blower_in_operation_I0_5", "Blower_circuit_breaker_I0_6", "Cond_fan_1_TOP_I0_7", "Cond_fan_1_circuit_breaker_I1_0", "Low_pressure_fault_I1_1", "Compressor_OLR_trip_I1_2", "High_pressure_fault_I1_3", "Start_stop_switch_I1_4", "Three_phase_monitoring_fault_I2_0", "Cond_fan_2_TOP_I2_2", "Cond_fan_3_TOP_I2_3", "Cond_fan_4_TOP_I2_4", "Cond_fan_2_circuit_breaker_I2_5", "Cond_fan_3_circuit_breaker_I2_6", "Cond_fan_4_circuit_breaker_I2_7", "Cond_fan_5_TOP_I3_0", "Cond_fan_6_TOP_I3_1", "Cond_fan_5_circuit_breaker_I3_2", "Cond_fan_6_circuit_breaker_I3_3", "Compressor_start_Q0_0", "Compressor_module_reset_Q0_1", "CR_valve_25_percent_ON_Q0_2", "CR_valve_50_percent_ON_Q0_3", "Solenoid_valve_ON_Q0_4", "Hot_gas_valve_ON_Q0_5", "AHT_valve_ON_Q0_6", "Blower_drive_start_Q0_7", "System_warning_Q1_0", "Chiller_healthy_Q1_1", "Cond_fan_1_ON_Q2_1", "CR_valve_75_percent_ON_Q2_2", "Chiller_fault_Q2_3", "Cond_fan_2_ON_Q2_4", "Cond_fan_3_ON_Q2_5", "Cond_fan_4_ON_Q2_6", "CR_valve_100_percent_ON_Q2_7", "Cond_fan_5_ON_Q3_0", "Cond_fan_6_ON_Q3_1", "Compressor_circuit_breaker_fault", "Oil_pressure_low", "Blower_drive_fault", "Blower_circuit_breaker_fault", "Ambient_air_sensor_1open", "COND_FAN_OVERLOAD", "Three_phase_monitor_fault", "High_pressure_fault", "Ambient_temp_lower_than_set_temp", "Ambient_temp_over_50C", "COMP_MODULE_FEEDBACK_ERROR_Si_I1", "Low_pressure_1_fault", "COMP_FBK_ERROR", "Low_pressure_2_fault", "Ambient_temp_over_47C", "Condenser_fan_2_TOP_fault", "Condenser_fan_3_TOP_fault", "Condenser_fan_4_TOP_fault", "Condenser_fan_2_circuit_breaker_fault", "Condenser_fan_3_circuit_breaker_fault", "Condenser_fan_4_circuit_breaker_fault", "Condenser_fan_5_TOP_fault", "Condenser_fan_6_TOP_fault", "Condenser_fan_5_circuit_breaker_fault", "Condenser_fan_6_circuit_breaker_fault", "Condenser_fan_1_circuit_breaker_fault", "Condenser_fan_1_TOP_fault", "Ambient_air_sensor_1_short_circuit", "Ambient_air_sensor_2_open", "Ambient_air_sensor_2_short_circuit", "Cold_air_sensor_1_open", "Cold_air_sensor_1_short_circuit", "Cold_air_sensor_2_open", "Cold_air_sensor_2_short_circuit", "Air_outlet_sensor_1_open", "Air_outlet_sensor_1_short_circuit", "Air_outlet_sensor_2_open", "Air_outlet_sensor_2_short_circuit"
 
 ];
 
@@ -555,7 +555,7 @@ const PRETTY_HEADER_MAP: Record<string, string> = {
 };
 
 const FAULT_PATTERNS = [
-  "fault","overheat","door_open","short_circuit","warning","top","protection","not_achieved",
+  "fault", "overheat", "door_open", "short_circuit", "warning", "top", "protection", "not_achieved",
 ];
 
 // Optimized chunked processing for large datasets
@@ -567,12 +567,12 @@ async function getTimestampColumn(table: string): Promise<'created_at' | 'create
     const [columns] = await pool.query<RowDataPacket[]>(
       `SHOW COLUMNS FROM \`${table}\` WHERE Field IN ('created_at', 'created_on')`
     );
-    
+
     if (Array.isArray(columns) && columns.length > 0) {
       const colName = columns[0].Field;
       return colName === 'created_on' ? 'created_on' : 'created_at';
     }
-    
+
     // Default fallback
     return 'created_at';
   } catch (err) {
@@ -624,6 +624,11 @@ function normalizeCreatedAt(raw: any): { full: string; date: string; time: strin
   return { full: "", date: "", time: "" };
 }
 
+// Check if table is machine 121 or 122 (full column export)
+function isFullColumnTable(table: string): boolean {
+  return table === "GTPL_121_GT1000T" || table === "gtpl_122_s7_1200_01";
+}
+
 // Process data in chunks to handle large datasets efficiently
 async function processDataInChunks(
   table: string,
@@ -636,10 +641,11 @@ async function processDataInChunks(
 ): Promise<any[]> {
   const allProcessedRows: any[] = [];
   let offset = 0;
+  const isFullExport = isFullColumnTable(table);
 
   while (offset < effectiveLimit) {
     const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
-    
+
     const [chunkRows] = await pool.query<RowDataPacket[]>(
       `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
       [...params, currentChunkSize, offset]
@@ -664,8 +670,8 @@ async function processDataInChunks(
       return obj;
     });
 
-    // Process chunk based on format (pretty vs raw)
-    if (all) {
+    // Process chunk based on format (pretty vs raw) and table type
+    if (all || isFullExport) {
       const prettyChunk = normalizedChunk.map((r) => {
         const timestampValue = r[timestampCol] || r.created_at || r.created_on;
         const { full, date, time } = normalizeCreatedAt(timestampValue);
@@ -676,20 +682,33 @@ async function processDataInChunks(
           created_at_time: time,
         };
 
-        const numericKeysInRow = Object.keys(r).filter((k) => {
-          if (k === "id" || k === "created_at" || k === "created_on") return false;
-          return toNum(r[k]) !== "";
-        });
+        if (isFullExport) {
+          // For machines 121 and 122, include ALL columns with their raw values
+          for (const [k, v] of Object.entries(r)) {
+            if (k === "id" || k === timestampCol) continue; // Skip id and timestamp as they're already handled
 
-        const ordered = [
-          ...PREFERRED_NUMERIC_ORDER.filter((k) => numericKeysInRow.includes(k)),
-          ...numericKeysInRow.filter((k) => !PREFERRED_NUMERIC_ORDER.includes(k)),
-        ];
+            // Convert numeric values appropriately, but keep all data types
+            const numValue = toNum(v);
+            base[k] = numValue !== "" ? numValue : v;
+          }
+        } else {
+          // Original logic for other machines
+          const numericKeysInRow = Object.keys(r).filter((k) => {
+            if (k === "id" || k === "created_at" || k === "created_on") return false;
+            return toNum(r[k]) !== "";
+          });
 
-        ordered.forEach((k) => {
-          if (k in r) base[k] = toNum(r[k]);
-        });
+          const ordered = [
+            ...PREFERRED_NUMERIC_ORDER.filter((k) => numericKeysInRow.includes(k)),
+            ...numericKeysInRow.filter((k) => !PREFERRED_NUMERIC_ORDER.includes(k)),
+          ];
 
+          ordered.forEach((k) => {
+            if (k in r) base[k] = toNum(r[k]);
+          });
+        }
+
+        // Add faults for all machines
         const faults: string[] = [];
         for (const [k, v] of Object.entries(r)) {
           if (!looksLikeFaultKey(k)) continue;
@@ -925,7 +944,7 @@ export async function GET(req: Request) {
         [Object.fromEntries(headerKeys.map((k) => [k, ""]))],
         { header: headerKeys }
       );
-      finalizeSheet(ws, headerKeys, hasDateFilter 
+      finalizeSheet(ws, headerKeys, hasDateFilter
         ? `No records found for date range: ${fromDate || 'beginning'} to ${toDate || 'end'}`
         : "No records found for selected criteria"
       );
@@ -935,7 +954,7 @@ export async function GET(req: Request) {
 
     console.log("Writing Excel file...");
     const buffer = XLSX.write(wb, { bookType: "xlsx", type: "buffer" });
-    
+
     const recordCount = processedRows.length;
     const dateRange = hasDateFilter ? `_${fromDate || 'start'}_to_${toDate || 'end'}` : '';
     const filename = `${table}${dateRange}_${new Date().toISOString().slice(0, 10)}_${recordCount}records.xlsx`;
@@ -955,7 +974,7 @@ export async function GET(req: Request) {
   } catch (err: any) {
     console.error("Export error:", err);
     return Response.json(
-      { 
+      {
         error: err.message || "Internal error",
         details: process.env.NODE_ENV === 'development' ? err.stack : undefined
       },
