@@ -19,7 +19,9 @@ const ALLOWED_TABLES = [
   "GTPL_124_GT_450T_S7_1200",
   "GTPL_131_GT_650T_S7_1200",
   "GTPL_132_GT_650T_S7_1200",
-  "GTPL_132_GT300AP"
+  "GTPL_132_GT300AP",
+  "GTPL_137_GT_450T_S7_1200",
+  "GTPL_138_GT_450T_S7_1200",
 ];
 
 export async function GET(req: Request) {

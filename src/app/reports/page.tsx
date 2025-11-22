@@ -57,6 +57,8 @@ const allDevices = [
   "GTPL-124-GT-450T-S7-1200",
   "GTPL-131-GT-650T-S7-1200",
   "GTPL-132-300-AP-S7-1200",
+  "GTPL-137-GT-450T-S7-1200",
+  "GTPL-138-GT-450T-S7-1200",
 ];
 
 // Create a mapping from device name to table name
@@ -80,6 +82,8 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-131-GT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
   "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
   "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
+  "GTPL-137-GT-450T-S7-1200":"GTPL_137_GT_450T_S7_1200",
+  "GTPL-138-GT-450T-S7-1200":"GTPL_138_GT_450T_S7_1200",
 };
 
 
@@ -106,6 +110,8 @@ const ALLOWED_TABLES = [
   "GTPL_131_GT_650T_S7_1200",
   "GTPL_132_GT_650T_S7_1200",
   "GTPL_132_GT300AP",
+  "GTPL_137_GT_450T_S7_1200",
+  "GTPL_138_GT_450T_S7_1200",
 ] as const;
 
 type TableName = typeof ALLOWED_TABLES[number];
