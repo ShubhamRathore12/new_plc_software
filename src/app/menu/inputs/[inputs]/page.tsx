@@ -5,12 +5,19 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { useParams, useRouter } from "next/navigation";
 import { useAutoData } from "@/hooks/useAutoData";
 import { useLanguage } from "@/providers/language-provider";
+import { ArrowLeft, Activity, AlertCircle, CheckCircle2, Gauge, Zap, Settings, TrendingUp, Shield } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export default function InputsPage() {
   const router = useRouter();
   const { inputs } = useParams();
   const device = inputs?.toString();
-  const { t } = useLanguage(); // Move this to component level
+  const { t } = useLanguage();
+  const [mounted, setMounted] = useState(false);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const statsRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
   const isGT80E = ['118', '108', '109', '110', '111', '112', '113'].some(code => device?.includes(code));
   const isGtpl122 = ['122', '121'].some(code => device?.includes(code))
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
@@ -23,10 +30,12 @@ export default function InputsPage() {
   const isGTPL138 = device === "GTPL-138-GT-450T-S7-1200"
   const { data } = useAutoData(device as string);
 
-  // Helper to normalize all possible "fault" values - handles both boolean and string values
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Helper to normalize all possible "fault" values
   const isStatusFault = (value: unknown): boolean => {
-
-
     if (typeof value === 'boolean') return value;
     if (typeof value === 'string') {
       const lowerValue = value.toLowerCase();
@@ -34,8 +43,6 @@ export default function InputsPage() {
     }
     return false;
   };
-
-
 
   const s7_200_faultStatus = [
     { id: "1", description: "Blower circuit breaker fault", status: data?.BLOWER_CIRCUIT_BREAKER_FAULT },
@@ -82,26 +89,27 @@ export default function InputsPage() {
     { id: "I3.3", description: "Cond fan 6 circuit breaker", status: data?.Cond_fan_6_circuit_breaker_ },
   ];
 
-  const gtpl_132_faultStatus = [{ id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor_circuit_breaker_I0_0"] },
-  { id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor_module_feedback_error_I0_1"] },
-  { id: "I0.2", description: "Compressor in operation", status: data?.["Compressor_in_operation_I0_2"] },
-  { id: "I0.3", description: "Compressor oil low", status: data?.["Compressor_oil_low_I0_3"] },
-  { id: "I0.4", description: "Blower drive fault", status: data?.["Blower_drive_fault_I0_4"] },
-  { id: "I0.5", description: "Blower drive in operation", status: data?.["Blower_drive_in_operation_I0_5"] },
-  { id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower_circuit_breaker_I0_6"] },
-  { id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser_fan1_TOP_fault_I0_7"] },
-  { id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser_fan1_circuit_breaker_I1_0"] },
-  { id: "I1.1", description: "Spare", status: data?.["Spare_I1_1"] },
-  { id: "I1.2", description: "Low pressure fault", status: data?.Low_pressure_fault_I1_2 },
-  { id: "I1.3", description: "High Pressure Fault", status: data?.["High_Pressure_Fault_I1_3"] },
-  { id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1_4"] },
-  { id: "I2.0", description: "Three phase monitor fault", status: data?.["Three_phase_monitor_fault_I2_0"] },
-  { id: "I2.1", description: "Spare", status: data?.["Spare_I2_1"] },
-  { id: "I2.2", description: "Condenser fan2 TOP fault", status: data?.["Cond_fan2_TOP_fault_I2_2"] },
-  { id: "I2.3", description: "Spare", status: data?.["Spare_I2_3"] },
-  { id: "I2.4", description: "Spare", status: data?.["Spare_I2_4"] },
-  { id: "I2.5", description: "Condenser fan2 circuit breaker fault", status: data?.["Condenser_fan2_circuit_breaker_fault_I2_5"] },
-  ]
+  const gtpl_132_faultStatus = [
+    { id: "I0.0", description: "Compressor circuit breaker", status: data?.["Compressor_circuit_breaker_I0_0"] },
+    { id: "I0.1", description: "Compressor module feedback error", status: data?.["Compressor_module_feedback_error_I0_1"] },
+    { id: "I0.2", description: "Compressor in operation", status: data?.["Compressor_in_operation_I0_2"] },
+    { id: "I0.3", description: "Compressor oil low", status: data?.["Compressor_oil_low_I0_3"] },
+    { id: "I0.4", description: "Blower drive fault", status: data?.["Blower_drive_fault_I0_4"] },
+    { id: "I0.5", description: "Blower drive in operation", status: data?.["Blower_drive_in_operation_I0_5"] },
+    { id: "I0.6", description: "Blower circuit breaker", status: data?.["Blower_circuit_breaker_I0_6"] },
+    { id: "I0.7", description: "Condenser fan1 TOP fault", status: data?.["Condenser_fan1_TOP_fault_I0_7"] },
+    { id: "I1.0", description: "Condenser fan1 circuit breaker", status: data?.["Condenser_fan1_circuit_breaker_I1_0"] },
+    { id: "I1.1", description: "Spare", status: data?.["Spare_I1_1"] },
+    { id: "I1.2", description: "Low pressure fault", status: data?.Low_pressure_fault_I1_2 },
+    { id: "I1.3", description: "High Pressure Fault", status: data?.["High_Pressure_Fault_I1_3"] },
+    { id: "I1.4", description: "Start/stop", status: data?.["Start/stop_I1_4"] },
+    { id: "I2.0", description: "Three phase monitor fault", status: data?.["Three_phase_monitor_fault_I2_0"] },
+    { id: "I2.1", description: "Spare", status: data?.["Spare_I2_1"] },
+    { id: "I2.2", description: "Condenser fan2 TOP fault", status: data?.["Cond_fan2_TOP_fault_I2_2"] },
+    { id: "I2.3", description: "Spare", status: data?.["Spare_I2_3"] },
+    { id: "I2.4", description: "Spare", status: data?.["Spare_I2_4"] },
+    { id: "I2.5", description: "Condenser fan2 circuit breaker fault", status: data?.["Condenser_fan2_circuit_breaker_fault_I2_5"] },
+  ];
 
   const gtpl_137_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_I0_0 },
@@ -125,7 +133,7 @@ export default function InputsPage() {
     { id: "I2.5", description: "Cond fan2 circuit breaker fault", status: data?.Cond_fan2_circuit_breaker_fault_I2_5 },
     { id: "I2.6", description: "Cond fan3 circuit breaker fault", status: data?.Cond_fan3_circuit_breaker_fault_I2_6 },
     { id: "I2.7", description: "Cond fan4 circuit breaker fault", status: data?.Cond_fan4_circuit_breaker_fault_I2_7 },
-  ]
+  ];
 
   const gtpl_138_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_I0_0 },
@@ -149,7 +157,7 @@ export default function InputsPage() {
     { id: "I2.5", description: "Cond fan2 circuit breaker fault", status: data?.Cond_fan2_circuit_breaker_fault_I2_5 },
     { id: "I2.6", description: "Cond fan3 circuit breaker fault", status: data?.Cond_fan3_circuit_breaker_fault_I2_6 },
     { id: "I2.7", description: "Cond fan4 circuit breaker fault", status: data?.Cond_fan4_circuit_breaker_fault_I2_7 },
-  ]
+  ];
 
   const gtpl_136_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_I0_0 },
@@ -173,7 +181,7 @@ export default function InputsPage() {
     { id: "I2.5", description: "Cond fan2 circuit breaker fault", status: data?.Cond__fan2_circuit_breaker_fault_I2_5 },
     { id: "I2.6", description: "Cond fan3 circuit breaker fault", status: data?.Cond__fan3_circuit_breaker_fault_I2_6 },
     { id: "I2.7", description: "Cond fan4 circuit breaker fault", status: data?.Cond__fan4_circuit_breaker_fault_I2_7 },
-  ]
+  ];
 
   const gtpl_115_faultStatus = [
     { id: "1", description: "Blower circuit breaker fault", status: data?.BLOWER_CIRCUIT_BREAKER_I0_0 },
@@ -218,7 +226,6 @@ export default function InputsPage() {
     { id: "20", description: "Condenser fan2 door open", status: data?.Condenser_fan2_door_open }
   ];
 
-  // Updated GTPL-124 fault status with corrected property names based on your actual data
   const gtpl_124_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker fault", status: data?.Compressor_circuit_breaker_I0_0 },
     { id: "I0.1", description: "Compressor module FDK error", status: data?.Comp_module_fdk_error_I0_1 },
@@ -244,7 +251,6 @@ export default function InputsPage() {
   ];
 
   const renderList = () => {
-    // Fixed the selection logic to include all device types
     const selectedList =
       isGT80E ? s7_200_faultStatus :
         isGtpl115 ? gtpl_115_faultStatus :
@@ -257,73 +263,297 @@ export default function InputsPage() {
                       isGTPL138 ? gtpl_138_faultStatus :
                         [];
 
-    return selectedList.map((item) => {
+    return selectedList.map((item, index) => {
       const isFault = isStatusFault(item.status);
-      const isCondenserFan1TopFault = isGTPL132 && item.id === 'I0.2' || item.id === 'I1.2' || item.id === "I2.0";
+      const isCondenserFan1TopFault = isGTPL132 && (item.id === 'I0.2' || item.id === 'I1.2' || item.id === "I2.0");
       const shouldShowRed = isCondenserFan1TopFault ? !isFault : isFault;
 
       return (
         <div
           key={item.id}
-          className="flex items-center gap-4 p-3 rounded-md hover:bg-muted/50"
+          className="group relative overflow-hidden rounded-xl border border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] hover:border-blue-400/50 dark:hover:border-blue-500/50"
+          style={{
+            animation: mounted ? `slideInUp 0.6s ease-out ${index * 0.05}s both` : 'none'
+          }}
         >
-          <div className="font-mono text-sm min-w-[60px]">{item.id}</div>
-          <div className="flex-1">{item.description}</div>
-          <div className="flex items-center gap-2">
-            <div
-              className={`w-4 h-4 rounded-full ${shouldShowRed ? "bg-red-500" : "bg-green-500"
-                }`}
-              title={shouldShowRed ? "Active" : "Inactive"}
-            ></div>
+          {/* Animated gradient background */}
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-purple-500/0 to-pink-500/0 group-hover:from-blue-500/10 group-hover:via-purple-500/10 group-hover:to-pink-500/10 transition-all duration-700" />
 
+          {/* Glowing border effect */}
+          <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 blur-xl" />
+
+          <div className="relative flex items-center gap-4 p-4">
+            {/* Animated ID Badge */}
+            <div className="flex-shrink-0 relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl blur-md opacity-50 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative flex items-center justify-center w-16 h-16 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-800 border-2 border-gray-300 dark:border-gray-600 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-500">
+                <span className="font-mono text-sm font-bold text-gray-700 dark:text-gray-200 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                  {item.id}
+                </span>
+              </div>
+            </div>
+
+            {/* Description with animated underline */}
+            <div className="flex-1 min-w-0 relative">
+              <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
+                {item.description}
+              </p>
+              <div className="h-0.5 w-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 group-hover:w-full transition-all duration-700 mt-1" />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1.5 flex items-center gap-1.5">
+                <span className={`inline-block w-2 h-2 rounded-full ${shouldShowRed ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'}`} />
+                {shouldShowRed ? "Active Alert" : "Normal Operation"}
+              </p>
+            </div>
+
+            {/* Animated Status Indicator */}
+            <div className="flex-shrink-0 flex items-center gap-3">
+              <div className="relative">
+                {/* Pulsing ring for active faults */}
+                {shouldShowRed && (
+                  <>
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75 animate-ping" />
+                    <span className="absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-50 animate-pulse" />
+                  </>
+                )}
+
+                {/* Main status circle */}
+                <div className={`relative inline-flex items-center justify-center w-14 h-14 rounded-full border-3 transition-all duration-500 group-hover:scale-110 group-hover:rotate-12 ${shouldShowRed
+                  ? "bg-gradient-to-br from-red-500 to-red-600 border-red-700 shadow-lg shadow-red-500/50"
+                  : "bg-gradient-to-br from-emerald-500 to-emerald-600 border-emerald-700 shadow-lg shadow-emerald-500/50"
+                  }`}>
+                  {shouldShowRed ? (
+                    <AlertCircle className="h-7 w-7 text-white animate-pulse" />
+                  ) : (
+                    <CheckCircle2 className="h-7 w-7 text-white" />
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
+
+          {/* Bottom accent line */}
+          <div className={`h-1 w-0 group-hover:w-full transition-all duration-700 ${shouldShowRed
+            ? 'bg-gradient-to-r from-red-500 via-orange-500 to-red-500'
+            : 'bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-500'
+            }`} />
         </div>
       );
     });
   };
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1 container py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">INPUTS</h1>
+  const selectedList =
+    isGT80E ? s7_200_faultStatus :
+      isGtpl115 ? gtpl_115_faultStatus :
+        isGtpl124 ? gtpl_124_faultStatus :
+          (isGtpl122 || isGtpl1200_02) ? s7_1200_faultStatus :
+            isGTPL116 ? gtpl_116_faultStatus :
+              isGTPL132 ? gtpl_132_faultStatus :
+                isGTPL136 ? gtpl_136_faultStatus :
+                  isGTPL137 ? gtpl_137_faultStatus :
+                    isGTPL138 ? gtpl_138_faultStatus :
+                      [];
 
+  const totalInputs = selectedList.length;
+  const activeFaults = selectedList.filter(item => isStatusFault(item.status)).length;
+  const normalStatus = totalInputs - activeFaults;
+
+  return (
+    <>
+      <style jsx global>{`
+        @keyframes slideInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInScale {
+          from {
+            opacity: 0;
+            transform: scale(0.9);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+
+        @keyframes shimmer {
+          0% {
+            background-position: -1000px 0;
+          }
+          100% {
+            background-position: 1000px 0;
+          }
+        }
+
+        .animate-shimmer {
+          animation: shimmer 3s infinite;
+          background: linear-gradient(
+            to right,
+            transparent 0%,
+            rgba(255, 255, 255, 0.3) 50%,
+            transparent 100%
+          );
+          background-size: 1000px 100%;
+        }
+      `}</style>
+
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
         </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <ScrollArea className="h-[600px] pr-4">
-              <div className="space-y-2">{renderList()}</div>
-            </ScrollArea>
-
-            <div className="flex gap-4 mt-6">
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => router.push(`/menu/outputs/${device}`)}
-              >
-                OUTPUTS
-              </Button>
-              <Button
-                variant="outline"
-                className="flex-1"
-                onClick={() => router.push(`/menu/inputs/analog/${device}`)}
-              >
-                ANALOG
-              </Button>
-            </div>
-          </CardContent>
-
-          <Button
-            variant="outline"
-            onClick={() => router.push(`/menu/${device}`)}
+        <div className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
+          {/* Animated Header */}
+          <div
+            ref={headerRef}
+            className="mb-8"
+            style={{
+              animation: mounted ? 'fadeInScale 0.8s ease-out' : 'none'
+            }}
           >
-            BACK
-          </Button>
-        </Card>
-      </main>
-    </div>
+            <div className="flex items-center gap-4 mb-6">
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => router.push(`/menu/${device}`)}
+                className="h-14 w-14 rounded-2xl border-2 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:rotate-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg"
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </Button>
+              <div className="flex-1">
+                <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text  mb-2 animate-shimmer">
+                  System Inputs Monitor
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 text-lg flex items-center gap-2">
+                  <Activity className="h-5 w-5 animate-pulse" />
+                  Real-time monitoring • {device}
+                </p>
+              </div>
+            </div>
+
+            {/* Animated Stats Cards */}
+            <div
+              ref={statsRef}
+              className="grid grid-cols-1 md:grid-cols-3 gap-6"
+              style={{
+                animation: mounted ? 'slideInUp 0.8s ease-out 0.2s both' : 'none'
+              }}
+            >
+              {/* Total Inputs Card */}
+              <Card className="relative overflow-hidden border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md hover:scale-105 transition-all duration-500 group shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardContent className="p-6 relative">
+                  <div className="flex items-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg shadow-blue-500/50 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
+                      <Zap className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Total Inputs</p>
+                      <p className="text-4xl font-bold text-gray-900 dark:text-white mt-1">{totalInputs}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Active Faults Card */}
+              <Card className="relative overflow-hidden border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md hover:scale-105 transition-all duration-500 group shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-orange-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardContent className="p-6 relative">
+                  <div className="flex items-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 shadow-lg shadow-red-500/50 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 relative">
+                      {activeFaults > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                        </span>
+                      )}
+                      <AlertCircle className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Active Faults</p>
+                      <p className="text-4xl font-bold text-gray-900 dark:text-white mt-1">{activeFaults}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Normal Status Card */}
+              <Card className="relative overflow-hidden border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md hover:scale-105 transition-all duration-500 group shadow-xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-green-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                <CardContent className="p-6 relative">
+                  <div className="flex items-center gap-4">
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 shadow-lg shadow-emerald-500/50 group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
+                      <CheckCircle2 className="h-8 w-8 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Normal Status</p>
+                      <p className="text-4xl font-bold text-gray-900 dark:text-white mt-1">{normalStatus}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+
+          {/* Main Content Card */}
+          <Card
+            ref={listRef}
+            className="border-2 border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-800/95 backdrop-blur-xl shadow-2xl overflow-hidden"
+            style={{
+              animation: mounted ? 'slideInUp 0.8s ease-out 0.4s both' : 'none'
+            }}
+          >
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-3">
+                  <Shield className="h-7 w-7 text-blue-600 dark:text-blue-400" />
+                  Input Status Overview
+                </h2>
+                <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 dark:bg-blue-900/30 border border-blue-300 dark:border-blue-700">
+                  <TrendingUp className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <span className="text-sm font-medium text-blue-600 dark:text-blue-400">Live Data</span>
+                </div>
+              </div>
+
+              <ScrollArea className="h-[600px] pr-4">
+                <div className="space-y-4">
+                  {renderList()}
+                </div>
+              </ScrollArea>
+
+              {/* Action Buttons */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 pt-6 border-t-2 border-gray-200 dark:border-gray-700">
+                <Button
+                  variant="outline"
+                  className="h-16 text-lg font-semibold border-2 hover:border-purple-500 dark:hover:border-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/20 transition-all duration-300 group relative overflow-hidden shadow-lg"
+                  onClick={() => router.push(`/menu/outputs/${device}`)}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/0 via-purple-500/10 to-purple-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                  <Gauge className="h-6 w-6 mr-3 group-hover:rotate-180 transition-transform duration-700" />
+                  View Outputs
+                </Button>
+                <Button
+                  variant="outline"
+                  className="h-16 text-lg font-semibold border-2 hover:border-blue-500 dark:hover:border-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-all duration-300 group relative overflow-hidden shadow-lg"
+                  onClick={() => router.push(`/menu/inputs/analog/${device}`)}
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/10 to-blue-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+                  <Settings className="h-6 w-6 mr-3 group-hover:rotate-180 transition-transform duration-700" />
+                  Analog Inputs
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </>
   );
 }
-
-
