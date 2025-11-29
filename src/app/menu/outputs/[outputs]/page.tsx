@@ -21,7 +21,7 @@ export default function OutputsPage() {
   // GSAP animations
   useEffect(() => {
     if (containerRef.current) {
-      gsap.fromTo(containerRef.current, 
+      gsap.fromTo(containerRef.current,
         { opacity: 0, y: 30 },
         { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }
       );
@@ -31,13 +31,13 @@ export default function OutputsPage() {
     if (itemsRef.current.length > 0) {
       gsap.fromTo(itemsRef.current,
         { opacity: 0, x: -20 },
-        { 
-          opacity: 1, 
-          x: 0, 
-          duration: 0.6, 
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
           stagger: 0.08,
           delay: 0.3,
-          ease: "power2.out" 
+          ease: "power2.out"
         }
       );
     }
@@ -230,6 +230,28 @@ export default function OutputsPage() {
         { id: "17", description: "Condenser fan 4", dataKey: "Condenser_fan4_on_Q2_6" },
       ];
     }
+    else if (deviceType === "GTPL-061-gT-450T-S7-1200") {
+      return [
+        { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
+        { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
+        { id: "Q0.2", description: "CR 25% ON", dataKey: "CR_25%_ON_Q0_2" },
+        { id: "Q0.3", description: "CR 50% ON", dataKey: "CR_50%_ON_Q0_3" },
+        { id: "Q0.4", description: "Solenoid valve on", dataKey: "Solenoid_valve_on_Q0_4" },
+        { id: "Q0.5", description: "Hot gas valve on", dataKey: "Hot_gas_valve_on_Q0_5" },
+        { id: "Q0.6", description: "After heat valve on", dataKey: "After_heat_valve_on_Q0_6" },
+        { id: "Q0.7", description: "Blower drive on", dataKey: "Blower_drive_on_Q0_7" },
+        { id: "Q1.0", description: "Collective trouble signal", dataKey: "Collective_trouble_signal_Q1_0" },
+        { id: "Q1.1", description: "Chiller healthy on", dataKey: "Chiller_healthy_on_Q1_1" },
+        { id: "Q2.0", description: "Spare", dataKey: "Spare_Q2_0" },
+        { id: "Q2.1", description: "Condenser fan1 on", dataKey: "Condenser_fan1_on_Q2_1" },
+        { id: "Q2.2", description: "CR valve 75% on", dataKey: "CR valve 75% on_Q2_2" },
+        { id: "Q2.3", description: "Chiller fault", dataKey: "Chiller_fault_Q2_3" },
+        { id: "Q2.4", description: "Condenser fan2 on", dataKey: "Condenser_fan2_on_Q2_4" },
+        { id: "Q2.5", description: "Condenser fan3 on", dataKey: "Condenser_fan3_on_Q2_5" },
+        { id: "Q2.6", description: "Condenser fan4 on", dataKey: "Condenser_fan4_on_Q2_6" },
+        { id: "Q2.7", description: "CR 100% ON", dataKey: "CR_100%_ON_Q2_7" },
+      ];
+    }
 
     return [];
   };
@@ -320,7 +342,7 @@ export default function OutputsPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <main className="flex-1 container py-8" ref={containerRef}>
-        <motion.div 
+        <motion.div
           className="mb-8"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -357,7 +379,7 @@ export default function OutputsPage() {
               <div className="grid gap-4">
                 {outputsData?.map((output, index) => {
                   const status = getStatus(output.dataKey);
-                  
+
                   return (
                     <motion.div
                       key={output.id}
@@ -387,13 +409,12 @@ export default function OutputsPage() {
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="flex items-center gap-3">
                         <div className="flex items-center gap-2">
                           {getStatusIcon(output.dataKey, status)}
-                          <span className={`text-sm font-bold ${
-                            status ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
-                          }`}>
+                          <span className={`text-sm font-bold ${status ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
+                            }`}>
                             {status ? 'ON' : 'OFF'}
                           </span>
                         </div>
@@ -407,7 +428,7 @@ export default function OutputsPage() {
               </div>
             </ScrollArea>
 
-            <motion.div 
+            <motion.div
               className="flex gap-4 mt-8"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -431,10 +452,10 @@ export default function OutputsPage() {
               </Button>
             </motion.div>
           </CardContent>
-          
+
           <div className="p-6 pt-0">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               className="w-full h-12 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 hover:from-slate-100 hover:to-slate-200 dark:hover:from-slate-700 dark:hover:to-slate-600 transition-all duration-300"
               onClick={() => router.push(`/menu/${device}`)}
             >

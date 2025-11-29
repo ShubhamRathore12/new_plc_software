@@ -22,6 +22,7 @@ const ALLOWED_TABLES = [
   "GTPL_132_GT300AP",
   "GTPL_137_GT_450T_S7_1200",
   "GTPL_138_GT_450T_S7_1200",
+  "GTPL_061_GT_450T_S7_1200",
 ];
 
 export async function GET(req: Request) {

@@ -59,12 +59,13 @@ const allDevices = [
   "GTPL-132-300-AP-S7-1200",
   "GTPL-137-GT-450T-S7-1200",
   "GTPL-138-GT-450T-S7-1200",
+  "GTPL-061-gT-450T-S7-1200",
 ];
 
 // Create a mapping from device name to table name
 const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
-   // Note: Add this to ALLOWED_TABLES if needed
+  // Note: Add this to ALLOWED_TABLES if needed
   "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
   "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
   "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
@@ -82,8 +83,9 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-131-GT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
   "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
   "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
-  "GTPL-137-GT-450T-S7-1200":"GTPL_137_GT_450T_S7_1200",
-  "GTPL-138-GT-450T-S7-1200":"GTPL_138_GT_450T_S7_1200",
+  "GTPL-137-GT-450T-S7-1200": "GTPL_137_GT_450T_S7_1200",
+  "GTPL-138-GT-450T-S7-1200": "GTPL_138_GT_450T_S7_1200",
+  "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
 };
 
 
@@ -112,6 +114,7 @@ const ALLOWED_TABLES = [
   "GTPL_132_GT300AP",
   "GTPL_137_GT_450T_S7_1200",
   "GTPL_138_GT_450T_S7_1200",
+  "GTPL_061_GT_450T_S7_1200",
 ] as const;
 
 type TableName = typeof ALLOWED_TABLES[number];
@@ -144,7 +147,7 @@ export default function TableWithDownload() {
     // Filter devices based on access permissions
     const filtered = allDevices.filter((deviceName) => {
       // Hide devices that match any value in accessArray (case-insensitive)
-      return !accessArray.some((access: string) => 
+      return !accessArray.some((access: string) =>
         deviceName.toLowerCase().includes(access) ||
         (DEVICE_TO_TABLE_MAP[deviceName] || "").toLowerCase().includes(access)
       );
@@ -175,18 +178,18 @@ export default function TableWithDownload() {
   // Function to validate date range (max 3 days)
   const validateDateRange = (dates: [Dayjs, Dayjs] | null): boolean => {
     if (!dates || !dates[0] || !dates[1]) return true;
-    
+
     const [startDate, endDate] = dates;
     const daysDifference = endDate.diff(startDate, 'day');
-    
+
     if (daysDifference > 3) {
-     toast.error(
-         "Please select a date range of maximum 3 days. Higher date ranges may result in large amounts of data.",
-       
+      toast.error(
+        "Please select a date range of maximum 3 days. Higher date ranges may result in large amounts of data.",
+
       );
       return false;
     }
-    
+
     return true;
   };
 
@@ -239,7 +242,7 @@ export default function TableWithDownload() {
   // Keep your downloadAllData as-is
   const downloadAllData = async () => {
     if (!dateRange) return;
-    
+
     // Validate date range before downloading
     if (!validateDateRange(dateRange)) {
       return;
@@ -247,7 +250,7 @@ export default function TableWithDownload() {
 
     const tableName = DEVICE_TO_TABLE_MAP[selectedDevice];
     if (!tableName) return;
-    
+
     setIsDownloading(true);
     setDownloadProgress(0);
     try {
@@ -289,7 +292,7 @@ export default function TableWithDownload() {
       link.click();
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
-      
+
       message.success("Data downloaded successfully!");
     } catch (err) {
       console.error("Download error:", err);
@@ -314,10 +317,10 @@ export default function TableWithDownload() {
   const handleDateChange: any = (dates: any) => {
     // Reset to page 1 whenever date filter toggles
     setPagination((p: any) => ({ ...p, page: 1 }));
-    
+
     if (dates && dates[0] && dates[1]) {
       const dateRangeToValidate: [Dayjs, Dayjs] = [dates[0], dates[1]];
-      
+
       // Validate the date range
       if (validateDateRange(dateRangeToValidate)) {
         setDateRange(dateRangeToValidate);
@@ -359,7 +362,7 @@ export default function TableWithDownload() {
   const disabledDate = (current: Dayjs) => {
     const today = dayjs();
     const fiveDaysAgo = today.subtract(60, 'day');
-    
+
     // Disable future dates (after today) and dates older than 60 days ago
     return current && (current.isAfter(today, 'day') || current.isBefore(fiveDaysAgo, 'day'));
   };
@@ -383,10 +386,10 @@ export default function TableWithDownload() {
               </SelectContent>
             </Select>
 
-            <RangePicker 
-              disabledDate={disabledDate} 
-              onChange={handleDateChange} 
-              className="w-[300px]" 
+            <RangePicker
+              disabledDate={disabledDate}
+              onChange={handleDateChange}
+              className="w-[300px]"
               format="YYYY-MM-DD"
               placeholder={['Start Date', 'End Date']}
             />
@@ -414,7 +417,7 @@ export default function TableWithDownload() {
         {dateRange && (
           <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
             <p className="text-sm text-blue-700">
-              <strong>Selected Date Range:</strong> {dateRange[0].format("YYYY-MM-DD")} to {dateRange[1].format("YYYY-MM-DD")} 
+              <strong>Selected Date Range:</strong> {dateRange[0].format("YYYY-MM-DD")} to {dateRange[1].format("YYYY-MM-DD")}
               ({dateRange[1].diff(dateRange[0], 'day') + 1} day{dateRange[1].diff(dateRange[0], 'day') !== 0 ? 's' : ''})
             </p>
             <p className="text-xs text-blue-600 mt-1">

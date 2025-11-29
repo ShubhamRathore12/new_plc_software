@@ -904,7 +904,8 @@ export default function AutoDiagram1({
     "GTPL-136-gT-450AP",
     "GTPL-132-300-AP-S7-1200",
     "GTPL-134-gT-450T-S7-1200",
-    "GTPL-135-gT-450T-S7-1200"
+    "GTPL-135-gT-450T-S7-1200",
+    // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
 
   const isHTRMachine = [
@@ -923,7 +924,8 @@ export default function AutoDiagram1({
     "GTPL-138-GT-450T-S7-1200",
     "GTPL-136-gT-450AP",
     "GTPL-134-gT-450T-S7-1200",
-    "GTPL-135-gT-450T-S7-1200"
+    "GTPL-135-gT-450T-S7-1200",
+    "GTPL-061-gT-450T-S7-1200"
 
 
   ].some((name) => machineName.includes(name));
@@ -966,14 +968,25 @@ export default function AutoDiagram1({
 
         {/* Temperature Display Boxes - Top Right */}
         <div className="absolute top-4 right-1/2 transform translate-x-1/2 translate-x-48 space-y-2 z-10">
-          {isSpecialMachine ? (
+          {machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T1 ={" "}
+              {formatValue(
+                data?.T1_set_point ||
+                data?.T1_temp_mean ||
+                data?.COLD_AIR_TEMP_T1 ||
+                data?.T1_SET_POINT,
+                "°C"
+              )}
+            </div>
+          ) : isSpecialMachine ? (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
               T0 ={" "}
               {isGrainChilling
                 ? formatValue(
                   data?.T0_set_point ||
                   data?.AIR_OUTLET_TEMP ||
-                  data?.T1_set_point_in_grain_chilling_mode  || data?.T0_set_point_in_grain_chilling_mode,
+                  data?.T1_set_point_in_grain_chilling_mode || data?.T0_set_point_in_grain_chilling_mode,
                   "°C"
                 )
                 : isPaddyChilling
@@ -1027,6 +1040,14 @@ export default function AutoDiagram1({
                     data?.Delta_T_set_point_paddy_aeging_mode,
                     "°C"
                   )}
+            </div>
+          ) : machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T0 - T1 ={" "}
+              {formatValue(
+                data?.T0_T1_set_point || data?.AIR_OUTLET_TEMP || data?.COLD_AIR_TEMP_T1 || data?.T1_temp_mean,
+                "°C"
+              )}
             </div>
           ) : (
             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
@@ -1136,7 +1157,7 @@ export default function AutoDiagram1({
               />
 
               {/* Vertical drops from main line to thermometers */}
-              {!isSpecialMachine && (
+              {!isSpecialMachine && machineName !== "GTPL-061-gT-450T-S7-1200" && (
                 <line
                   x1="280"
                   y1="120"
@@ -1211,24 +1232,24 @@ export default function AutoDiagram1({
             </svg>
 
             {/* TH Thermometer */}
-            {!isSpecialMachine && (
-              <div className="absolute" style={{ left: "260px", top: "152px" }}>
-                <div className="w-12 h-60 bg-pink-200 border-2 border-red-300 rounded-lg relative">
-                  <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
-                  <div className="text-xs font-bold p-1 text-center w-full">TH</div>
-                  <div className="text-xs font-bold p-1 text-center w-full">
-                    {(() => {
-                      // Handle zero values correctly
-                      if (data.AI_TH_Act !== undefined && data.AI_TH_Act !== null) return formatValue(data.AI_TH_Act, "°C");
-                      if (data?.AFTER_HEATER_TEMP_Th !== undefined && data?.AFTER_HEATER_TEMP_Th !== null) return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
-                      if (data?.TH_temp_mean !== undefined && data?.TH_temp_mean !== null) return formatValue(data?.TH_temp_mean, "°C");
-                      return formatValue(undefined, "°C");
-                    })()}
-                  </div>
-                  <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
-                </div>
-              </div>
-            )}
+            {!isSpecialMachine && machineName !== "GTPL-061-gT-450T-S7-1200" && (
+  <div className="absolute" style={{ left: "260px", top: "152px" }}>
+    <div className="w-12 h-60 bg-pink-200 border-2 border-red-300 rounded-lg relative">
+      <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
+      <div className="text-xs font-bold p-1 text-center w-full">TH</div>
+      <div className="text-xs font-bold p-1 text-center w-full">
+        {(() => {
+          // Handle zero values correctly
+          if (data.AI_TH_Act !== undefined && data.AI_TH_Act !== null) return formatValue(data.AI_TH_Act, "°C");
+          if (data?.AFTER_HEATER_TEMP_Th !== undefined && data?.AFTER_HEATER_TEMP_Th !== null) return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
+          if (data?.TH_temp_mean !== undefined && data?.TH_temp_mean !== null) return formatValue(data?.TH_temp_mean, "°C");
+          return formatValue(undefined, "°C");
+        })()}
+      </div>
+      <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+    </div>
+  </div>
+)}
 
             {/* T0 Thermometer */}
             <div className="absolute" style={{ left: "360px", top: "152px" }}>
@@ -1414,8 +1435,8 @@ export default function AutoDiagram1({
                   <span className="flex items-center gap-1">
                     <span
                       className={`h-2 w-2 rounded-full ${isCompressorOn
-                          ? "bg-green-500"
-                          : "bg-red-500"
+                        ? "bg-green-500"
+                        : "bg-red-500"
                         } shadow-sm`}
                     />
                     {isCompressorOn ? "ON" : "OFF"}
