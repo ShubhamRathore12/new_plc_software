@@ -2,6 +2,11 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createContactEmailTemplate } from "@/lib/email-templates";
 
+// Debug: Check if API key is loaded
+if (!process.env.RESEND_API_KEY) {
+  console.error("RESEND_API_KEY is not defined in environment variables");
+}
+
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
