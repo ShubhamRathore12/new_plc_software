@@ -91,18 +91,18 @@ export default function DevicesPage() {
 
   const allDevices: Device[] = [
     {
-      name: "GTPL-122-gT-1000T-S7-1200",
-      location: "Noida---kanpur",
+      name: "GTPL-30-gT-180E-S7-1200",
+      location: "Germany",
       image: "/images/1200.jpg",
       plc: "S7-1200",
-      chillerModel: "gT-1000T",
+      chillerModel: "gT-140E",
     },
     {
-      name: "GTPL-118-gT-80E-P-S7-200",
-      location: "Noida",
-      image: "/images/200.jpg",
-      plc: "S7-200",
-      chillerModel: "gT-80E-P",
+      name: "GTPL-061-gT-450T-S7-1200",
+      location: "Turkey",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450T",
     },
     {
       name: "GTPL-108-gT-40E-P-S7-200",
@@ -147,13 +147,6 @@ export default function DevicesPage() {
       chillerModel: "gT-80E-P",
     },
     {
-      name: "GTPL-30-gT-180E-S7-1200",
-      location: "Germany",
-      image: "/images/1200.jpg",
-      plc: "S7-1200",
-      chillerModel: "gT-140E",
-    },
-    {
       name: "GTPL-115-gT-180E-S7-1200",
       location: "Germany",
       image: "/images/1200.jpg",
@@ -175,6 +168,13 @@ export default function DevicesPage() {
       chillerModel: "gT-320E",
     },
     {
+      name: "GTPL-118-gT-80E-P-S7-200",
+      location: "Noida",
+      image: "/images/200.jpg",
+      plc: "S7-200",
+      chillerModel: "gT-80E-P",
+    },
+    {
       name: "GTPL-119-gT-180E-S7-1200",
       location: "Germany",
       image: "/images/1200.jpg",
@@ -190,6 +190,13 @@ export default function DevicesPage() {
     },
     {
       name: "GTPL-121-gT-1000T-S7-1200",
+      location: "Noida---kanpur",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-1000T",
+    },
+    {
+      name: "GTPL-122-gT-1000T-S7-1200",
       location: "Noida---kanpur",
       image: "/images/1200.jpg",
       plc: "S7-1200",
@@ -217,27 +224,6 @@ export default function DevicesPage() {
       chillerModel: "gT-240E",
     },
     {
-      name: "GTPL-137-GT-450T-S7-1200",
-      location: "Thailand",
-      image: "/images/1200.jpg",
-      plc: "S7-1200",
-      chillerModel: "gT-240E",
-    },
-    {
-      name: "GTPL-138-GT-450T-S7-1200",
-      location: "Thailand",
-      image: "/images/1200.jpg",
-      plc: "S7-1200",
-      chillerModel: "gT-240E",
-    },
-    {
-      name: "GTPL-136-gT-450AP",
-      location: "Thailand",
-      image: "/images/1200.jpg",
-      plc: "S7-1200",
-      chillerModel: "gT-450AP",
-    },
-    {
       name: "GTPL-134-gT-450T-S7-1200",
       location: "Thailand",
       image: "/images/1200.jpg",
@@ -252,11 +238,25 @@ export default function DevicesPage() {
       chillerModel: "gT-450T",
     },
     {
-      name: "GTPL-061-gT-450T-S7-1200",
-      location: "Turkey",
+      name: "GTPL-136-gT-450AP",
+      location: "Thailand",
       image: "/images/1200.jpg",
       plc: "S7-1200",
-      chillerModel: "gT-450T",
+      chillerModel: "gT-450AP",
+    },
+    {
+      name: "GTPL-137-GT-450T-S7-1200",
+      location: "Thailand",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-240E",
+    },
+    {
+      name: "GTPL-138-GT-450T-S7-1200",
+      location: "Thailand",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-240E",
     },
   ];
 
