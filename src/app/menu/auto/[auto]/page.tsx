@@ -334,6 +334,25 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-139-GT-300AP-S7-1200": {
+      serialNumber: "GTPL_139",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Condenser_fan_speed", label: "Condenser Fan" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "Gtpl-S7-1200-02": {
       serialNumber: "GTOL-1023",
       temperatureSensors: {
@@ -395,17 +414,41 @@ export default function AutoPage() {
 
   return (
     <PageTransition>
-      <div className="flex flex-col min-h-screen">
-        <ConnectionStatus isConnected={isConnected} error={error} />
-        <main className="flex-1 container py-8">
-          <AnimatedContainer className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {t("SELECT AUTO")}
-            </h1>
-            <p className="text-muted-foreground">
-              SR. NO. {auto}
+      <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+        </div>
 
-            </p>
+        <ConnectionStatus isConnected={isConnected} error={error} />
+        <main className="flex-1 container py-8 relative z-10">
+          <AnimatedContainer className="mb-8">
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="flex items-center gap-4"
+            >
+              <div className="p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 shadow-lg shadow-blue-500/50">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent mb-1">
+                  {t("SELECT AUTO")}
+                </h1>
+                <p className="text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 text-sm font-medium">
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
+                    </svg>
+                    SR. NO. {auto}
+                  </span>
+                </p>
+              </div>
+            </motion.div>
           </AnimatedContainer>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -454,29 +497,53 @@ export default function AutoPage() {
                 </CardContent>
               </Card> */}
 
-              <Card>
-                <CardContent className="p-6">
-                  {/* Heading with i18n */}
-                  <h2 className="text-xl font-semibold mb-4">
-                    {t("Temperature")}
-                  </h2>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+              >
+                <Card className="backdrop-blur-xl bg-white/80 dark:bg-gray-800/80 border-2 border-gray-200/50 dark:border-gray-700/50 shadow-2xl hover:shadow-3xl transition-all duration-500 overflow-hidden group">
+                  {/* Gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  <CardContent className="p-6 relative">
+                    {/* Heading with icon */}
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="p-2 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 shadow-lg shadow-orange-500/50">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                      </div>
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {t("Temperature")}
+                      </h2>
+                    </div>
 
-                  <div className="space-y-2">
+                    <div className="space-y-3">
                     {/* Temperature sensors */}
-                    {Object.entries(currentConfig.temperatureSensors).map(([key, sensor]) => {
+                    {Object.entries(currentConfig.temperatureSensors).map(([key, sensor], index) => {
                       const value = data?.[sensor.key];
                       return (
-                        <div key={key} className="flex justify-between">
-                          <span>{t(sensor.label)}</span>
-                          <span className="font-medium">
+                        <motion.div
+                          key={key}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: index * 0.05 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
+                            {t(sensor.label)}
+                          </span>
+                          <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                             {formatValue(value, "°C")}
                           </span>
-                        </div>
+                        </motion.div>
                       );
                     })}
 
                     {/* Controls */}
-                    {Object.entries(currentConfig.controls).map(([key, control]) => {
+                    {Object.entries(currentConfig.controls).map(([key, control], index) => {
                       // Example: don't show Heater if machine ends with 200
                       if (control.label === "Heater" && (auto as string)?.endsWith("200")) {
                         return null;
@@ -488,38 +555,97 @@ export default function AutoPage() {
                         value = data[control.key];
                       }
 
+                      const percentage = parseFloat(value) || 0;
+
                       return (
-                        <div key={key} className="flex justify-between">
-                          <span>{t(control.label)}</span>
-                          <span className="font-medium">
-                            {formatValue(value, "%")}
-                          </span>
-                        </div>
+                        <motion.div
+                          key={key}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: (Object.keys(currentConfig.temperatureSensors).length + index) * 0.05 }}
+                          className="group"
+                        >
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors flex items-center gap-2">
+                              <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                              {t(control.label)}
+                            </span>
+                            <span className="font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                              {formatValue(value, "%")}
+                            </span>
+                          </div>
+                          <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: `${percentage}%` }}
+                              transition={{ duration: 1, delay: (Object.keys(currentConfig.temperatureSensors).length + index) * 0.05 + 0.3 }}
+                              className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 rounded-full shadow-lg"
+                              style={{
+                                boxShadow: '0 0 10px rgba(168, 85, 247, 0.5)'
+                              }}
+                            />
+                          </div>
+                        </motion.div>
                       );
                     })}
 
                     {/* Compressor values */}
                     {['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].includes(auto as string) &&
-                      <div className="flex justify-between">
-                        <span>{t("Heater")}</span>
-                        <span className="font-medium">
-                          {(() => {
-                            const heaterValue = data?.Heater_speed;
-                            return formatValue(
-                              heaterValue !== undefined && heaterValue !== null ? heaterValue : undefined,
-                              "%"
-                            );
-                          })()}
-                        </span>
-                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.5 }}
+                        className="group"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-2">
+                            <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                            </svg>
+                            {t("Heater")}
+                          </span>
+                          <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                            {(() => {
+                              const heaterValue = data?.Heater_speed;
+                              return formatValue(
+                                heaterValue !== undefined && heaterValue !== null ? heaterValue : undefined,
+                                "%"
+                              );
+                            })()}
+                          </span>
+                        </div>
+                        <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{ width: `${parseFloat(data?.Heater_speed) || 0}%` }}
+                            transition={{ duration: 1, delay: 0.8 }}
+                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 rounded-full shadow-lg"
+                            style={{
+                              boxShadow: '0 0 10px rgba(249, 115, 22, 0.5)'
+                            }}
+                          />
+                        </div>
+                      </motion.div>
                     }
 
                     {/* Add bar values after HP and LP for machines 137 and 138 */}
                     {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
                       <>
-                        <div className="flex justify-between">
-                          <span>{t("LP")} </span>
-                          <span className="font-medium">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, delay: 0.6 }}
+                          className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-cyan-200 dark:border-cyan-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                            {t("LP")}
+                          </span>
+                          <span className="font-bold text-lg bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                             {(() => {
                               const lpValue = data?.[currentConfig.compressor.lp];
                               return formatValue(
@@ -528,10 +654,20 @@ export default function AutoPage() {
                               );
                             })()}
                           </span>
-                        </div>
-                        <div className="flex justify-between">
-                          <span>{t("HP")} </span>
-                          <span className="font-medium">
+                        </motion.div>
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, delay: 0.7 }}
+                          className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            </svg>
+                            {t("HP")}
+                          </span>
+                          <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                             {(() => {
                               const hpValue = data?.[currentConfig.compressor.hp];
                               return formatValue(
@@ -540,17 +676,26 @@ export default function AutoPage() {
                               );
                             })()}
                           </span>
-                        </div>
-
+                        </motion.div>
                       </>
                     )}
 
                     {/* For other machines, show standard HP and LP */}
                     {!['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
                       <>
-                        <div className="flex justify-between">
-                          <span>{t("LP")}</span>
-                          <span className="font-medium">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, delay: 0.6 }}
+                          className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-cyan-200 dark:border-cyan-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                            </svg>
+                            {t("LP")}
+                          </span>
+                          <span className="font-bold text-lg bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                             {(() => {
                               const lpValue = data?.[currentConfig.compressor.lp];
                               return formatValue(
@@ -558,11 +703,21 @@ export default function AutoPage() {
                               );
                             })()}
                           </span>
-                        </div>
+                        </motion.div>
 
-                        <div className="flex justify-between">
-                          <span>{t("HP")}</span>
-                          <span className="font-medium">
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.5, delay: 0.7 }}
+                          className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                            <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                            </svg>
+                            {t("HP")}
+                          </span>
+                          <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                             {(() => {
                               const hpValue = data?.[currentConfig.compressor.hp];
                               return formatValue(
@@ -570,12 +725,13 @@ export default function AutoPage() {
                               );
                             })()}
                           </span>
-                        </div>
+                        </motion.div>
                       </>
                     )}
                   </div>
                 </CardContent>
               </Card>
+              </motion.div>
 
 
               <motion.div
@@ -615,13 +771,16 @@ export default function AutoPage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 2.7 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
               >
                 <Button
                   variant="outline"
-                  className="w-full"
+                  className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 hover:from-gray-100 hover:to-gray-200 dark:hover:from-gray-700 dark:hover:to-gray-600 border-2 border-gray-300 dark:border-gray-600 hover:border-blue-400 dark:hover:border-blue-500 transition-all duration-300 shadow-lg hover:shadow-xl group"
                   onClick={handleBack}
                 >
+                  <svg className="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  </svg>
                   BACK
                 </Button>
               </motion.div>

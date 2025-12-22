@@ -443,6 +443,7 @@ export function getTagCategory(tag: string): "fault" {
 
 export function getTableNameForMachine(machineName: string): string {
   if (machineName === "GTPL-30-gT-180E-S7-1200") return "gplt_144";
+  if (machineName === "GTPL-139-GT-300AP-S7-1200") return "GTPL_139_GT300AP";
   return "default_table";
 }
 

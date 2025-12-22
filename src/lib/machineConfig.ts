@@ -238,6 +238,38 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_2_short_circuit",
 ];
 
+export const GTPL_139_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_over_45C",
+  "Compressor_module_feedback_error",
+  "Low_pressure_1_fault",
+  "Compressor_feedback_error",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_43C",
+  "Condenser_fan_2_TOP_fault",
+  "Condenser_fan_2_circuit_breaker_fault",
+  "Condenser_fan_1_circuit_breaker_fault",
+  "Condenser_fan_1_TOP_fault",
+  "Ambient_air_sensor_T2_1_open",
+  "Ambient_air_sensor_T2_1_short_circuit",
+  "Ambient_air_sensor_T2_2_open",
+  "Ambient_air_sensor_T2_2_short_circuit",
+  "Cold_air_sensor_T1_1_open",
+  "Cold_air_sensor_T1_1_short_circuit",
+  "Cold_air_sensor_T1_2_open",
+  "Cold_air_sensor_T1_2_short_circuit",
+  "Air_outlet_sensor_T0_1_open",
+  "Air_outlet_sensor_T0_1_short_circuit",
+  "Air_outlet_sensor_T0_2_open",
+  "Air_outlet_sensor_T0_2_short_circuit",
+];
+
 export const GTPL_137_TAGS = [
   "Compressor_circuit_breaker_I0_0",
   "Compressor_module_feedback_error_I0_1",
@@ -487,6 +519,11 @@ export const MACHINE_CONFIG = {
   "GTPL-061-gT-450T-S7-1200": {
     table: "GTPL_061_GT_450T_S7_1200",
     tags: GTPL_134_135_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-139-GT-300AP-S7-1200": {
+    table: "GTPL_139_GT300AP",
+    tags: GTPL_139_TAGS,
     type: "S7-1200",
   },
 };

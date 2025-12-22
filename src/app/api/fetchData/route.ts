@@ -27,7 +27,8 @@ const allowedTables = new Set([
   "GTPL_134_GT_450T_S7_1200",
   "GTPL_135_GT_450T_S7_1200",
 
-  "GTPL_061_GT_450T_S7_1200"
+  "GTPL_061_GT_450T_S7_1200",
+  ' GTPL_139_GT300AP'
 ]);
 
 export async function GET(req: NextRequest) {

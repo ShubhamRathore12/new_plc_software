@@ -76,7 +76,7 @@ export default function Home() {
     }
   };
 
-  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP";
+  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200';
   const shouldHideAeration = device === "GTPL-061-gT-450T-S7-1200";
 
   const getMenuItems = (): MenuItem[] => {

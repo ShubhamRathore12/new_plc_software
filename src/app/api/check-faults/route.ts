@@ -197,6 +197,11 @@ const MACHINE_CONFIG = {
     table: "GTPL_121_GT1000T",
     tags: S7_1200_TAGS,
     type: "S7-1200"
+  },
+  "GTPL-139-GT-300AP-S7-1200": {
+    table: "GTPL_139_GT300AP",
+    tags: S7_1200_TAGS,
+    type: "S7-1200"
   }
 };
 
