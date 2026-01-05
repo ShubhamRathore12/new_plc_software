@@ -267,6 +267,20 @@ export default function DevicesPage() {
       plc: "S7-1200",
       chillerModel: "GT-300AP",
     },
+    {
+      name: "GTPL-142-gT-450AP-S7-1200",
+      location: "India",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450AP",
+    },
+    {
+      name: "GTPL-143-gT-450AP-S7-1200",
+      location: "India",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450AP",
+    },
   ];
 
   const filteredDevices = allDevices.filter((device) => {
@@ -324,7 +338,9 @@ export default function DevicesPage() {
     "GTPL-134-gT-450T-S7-1200": "GTPL_134",
     "GTPL-135-gT-450T-S7-1200": "GTPL_135",
     "GTPL-061-gT-450T-S7-1200": "GTPL_061",
-    "GTPL-139-GT-300AP-S7-1200": "GTPL_139"
+    "GTPL-139-GT-300AP-S7-1200": "GTPL_139",
+    "GTPL-142-gT-450AP-S7-1200": "GTPL_142",
+    "GTPL-143-gT-450AP-S7-1200": "GTPL_143"
   };
 
   const handleViewMore = (deviceName: string) => {
