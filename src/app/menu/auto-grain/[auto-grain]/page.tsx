@@ -174,38 +174,104 @@ export default function AutoGrainPage() {
                     {t("Temperature")} - {t("Grain Chilling")}
                   </h2>
 
-                  <div className="space-y-2">
-                    
-                    {/* Temperature sensors */}
+                  <div className="space-y-3">
                     {Object.entries(currentConfig.temperatureSensors).map(
-                      ([key, sensor]) => {
+                      ([key, sensor], index) => {
                         const value = data?.[sensor.key];
                         return (
-                          <div key={key} className="flex justify-between">
-                            <span>{t(sensor.label)}</span>
-                            <span className="font-medium">
+                          <motion.div
+                            key={key}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.4, delay: index * 0.05 }}
+                            className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg"
+                          >
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
+                              {t(sensor.label)}
+                            </span>
+                            <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                               {formatValue(value, "°C")}
                             </span>
-                          </div>
+                          </motion.div>
                         );
                       }
                     )}
 
-                    {/* Controls */}
                     {Object.entries(currentConfig.controls).map(
-                      ([key, control]) => {
+                      ([key, control], index) => {
+                        let value;
+                        if (
+                          data?.[control.key] !== undefined &&
+                          data?.[control.key] !== null
+                        ) {
+                          value = data[control.key];
+                        }
+
+                        const percentage = parseFloat(value) || 0;
+
                         return (
-                          <div key={key} className="flex justify-between">
-                            <span>{t(control.label)}</span>
-                            <span className="font-medium">
-                              {formatValue(data?.[control.key], "%")}
-                            </span>
-                          </div>
+                          <motion.div
+                            key={key}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{
+                              duration: 0.4,
+                              delay:
+                                (Object.keys(currentConfig.temperatureSensors)
+                                  .length +
+                                  index) *
+                                0.05,
+                            }}
+                            className="group"
+                          >
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors flex items-center gap-2">
+                                <svg
+                                  className="w-4 h-4 text-purple-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                                  />
+                                </svg>
+                                {t(control.label)}
+                              </span>
+                              <span className="font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                {formatValue(value, "%")}
+                              </span>
+                            </div>
+                            <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${percentage}%` }}
+                                transition={{
+                                  duration: 1,
+                                  delay:
+                                    (Object.keys(
+                                      currentConfig.temperatureSensors
+                                    ).length +
+                                      index) *
+                                      0.05 +
+                                    0.3,
+                                }}
+                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 rounded-full shadow-lg"
+                                style={{
+                                  boxShadow:
+                                    "0 0 10px rgba(168, 85, 247, 0.5)",
+                                }}
+                              />
+                            </div>
+                          </motion.div>
                         );
                       }
                     )}
 
-                    {/* Compressor values */}
                     <div className="flex justify-between">
                       <span>{t("LP")}</span>
                       <span className="font-medium">

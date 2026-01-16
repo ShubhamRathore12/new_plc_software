@@ -140,7 +140,23 @@ export const useAutoData = (autoType: string) => {
     if (value === undefined || value === null) return "--";
     const numericValue = parseFloat(value);
     if (isNaN(numericValue)) return `${value}${unit}`;
-    if (numericValue === 0) return `0${unit}`;
+    if (numericValue === 0) {
+      if (unit.includes("°")) {
+        return `0.00${unit}`;
+      }
+      if (unit.includes("bar")) {
+        return `${numericValue.toFixed(1)}${unit}`;
+      }
+      return `0${unit}`;
+    }
+
+    if (unit.includes("°")) {
+      return `${numericValue.toFixed(1)}${unit}`;
+    }
+
+    if (unit.includes("bar")) {
+      return `${numericValue.toFixed(1)}${unit}`;
+    }
 
     const decimalPart = numericValue % 1;
     const roundedValue =

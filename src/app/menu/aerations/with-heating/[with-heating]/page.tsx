@@ -134,86 +134,230 @@ export default function AerationWithHeatingPage() {
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">
-                      {t("Aeration Control")}
+                    {t("Aeration Control")}
                   </h2>
-                  <div className="space-y-6">
-                    <div className="flex items-center space-x-2">
+                  <div className="space-y-4">
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.05 }}
+                      className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg"
+                    >
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-gradient-to-r from-green-400 to-emerald-500 animate-pulse" />
+                        {t("Continuous Mode")}
+                      </span>
                       <Switch
                         id="continuous-mode"
-                        checked={data?.CONTINUOUS_MODE == 'tr' || data?.Continuous_mode == 'tr'}
-            
+                        checked={
+                          data?.CONTINUOUS_MODE == "tr" ||
+                          data?.Continuous_mode == "tr"
+                        }
                       />
-                      <Label htmlFor="continuous-mode">{t("Continuous Mode")}</Label>
-                    </div>
+                    </motion.div>
 
-                    {!data?.CONTINUOUS_MODE || !data?.Continuous_mode && (
+                    {!data?.CONTINUOUS_MODE || !data?.Continuous_mode ? (
                       <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: "auto", opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.3 }}
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                        className="group"
                       >
-                        <Label className="mb-2 block">{t("Set Duration")}</Label>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors flex items-center gap-2">
+                            <svg
+                              className="w-4 h-4 text-purple-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M13 10V3L4 14h7v7l9-11h-7z"
+                              />
+                            </svg>
+                            {t("Set Duration")}
+                          </span>
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={
+                                data?.SET_DURATION || data?.Aeration_duration_set
+                              }
+                              onChange={(e) =>
+                                setDuration(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={1}
+                              max={24}
+                            />
+                            <span>{t("h")}</span>
+                          </div>
+                        </div>
+                        <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                          <motion.div
+                            initial={{ width: 0 }}
+                            animate={{
+                              width: `${Math.min(Math.max((duration / 24) * 100, 0), 100)}%`,
+                            }}
+                            transition={{ duration: 1, delay: 0.5 }}
+                            className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 rounded-full shadow-lg"
+                            style={{
+                              boxShadow: "0 0 10px rgba(168, 85, 247, 0.5)",
+                            }}
+                          />
+                        </div>
+                      </motion.div>
+                    ) : null}
+
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.15 }}
+                      className="group"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4 text-orange-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"
+                            />
+                          </svg>
+                          {t("Delta(A)")}
+                        </span>
                         <div className="flex items-center space-x-2">
                           <Input
                             type="number"
-                            value={data?.SET_DURATION || data?.Aeration_duration_set}
+                            value={
+                              data?.DELTA_SET || data?.Delta_set_to_aeration
+                            }
                             onChange={(e) =>
-                              setDuration(Number.parseInt(e.target.value) || 0)
+                              setDeltaTemp(
+                                Number.parseInt(e.target.value) || 0
+                              )
                             }
                             className="w-16"
                             min={1}
-                            max={24}
+                            max={15}
                           />
-                          <span>{t("h")}</span>
+                          <span>°C</span>
                         </div>
-                      </motion.div>
-                    )}
-
-                    <div>
-                      <Label className="mb-2 block">Delta(A)</Label>
-                      <div className="flex items-center space-x-2">
-                        <Input
-                          type="number"
-                          value={data?.DELTA_SET || data?.Delta_set_to_aeration}
-                          onChange={(e) =>
-                            setDeltaTemp(Number.parseInt(e.target.value) || 0)
-                          }
-                          className="w-16"
-                          min={1}
-                          max={15}
-                        />
-                        <span>°C</span>
                       </div>
-                    </div>
+                      <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{
+                            width: `${Math.min(Math.max(((deltaTemp || 0) / 15) * 100, 0), 100)}%`,
+                          }}
+                          transition={{ duration: 1, delay: 0.6 }}
+                          className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 rounded-full shadow-lg"
+                          style={{
+                            boxShadow: "0 0 10px rgba(249, 115, 22, 0.5)",
+                          }}
+                        />
+                      </div>
+                    </motion.div>
 
-                    <Label className="mb-2 block">{t("Running Time")}</Label>
-                    <div className="flex items-center space-x-4">
-                      <Input
-                        type="number"
-                        value={data?.RUNNING_HOUR1 || runningHours || data?.Running_time_hour}
-                        onChange={(e) =>
-                          setRunningHours(Number.parseInt(e.target.value) || 0)
-                        }
-                        className="w-16"
-                        min={0}
-                        max={23}
-                      />
-                      <span>{t("h")}</span>
-                      <Input
-                        type="number"
-                        value={data?.RUNNING_MINUTE1 || runningMinutes || data?.Running_time_minute}
-                        onChange={(e) =>
-                          setRunningMinutes(
-                            Number.parseInt(e.target.value) || 0
-                          )
-                        }
-                        className="w-16"
-                        min={0}
-                        max={59}
-                      />
-                      <span>{t("min")}</span>
-                    </div>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
+                      className="group"
+                    >
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors flex items-center gap-2">
+                          <svg
+                            className="w-4 h-4 text-cyan-500"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                            />
+                          </svg>
+                          {t("Running Time")}
+                        </span>
+                        <div className="flex items-center space-x-4">
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={
+                                data?.RUNNING_HOUR1 ||
+                                runningHours ||
+                                data?.Running_time_hour
+                              }
+                              onChange={(e) =>
+                                setRunningHours(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={0}
+                              max={23}
+                            />
+                            <span>{t("h")}</span>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Input
+                              type="number"
+                              value={
+                                data?.RUNNING_MINUTE1 ||
+                                runningMinutes ||
+                                data?.Running_time_minute
+                              }
+                              onChange={(e) =>
+                                setRunningMinutes(
+                                  Number.parseInt(e.target.value) || 0
+                                )
+                              }
+                              className="w-16"
+                              min={0}
+                              max={59}
+                            />
+                            <span>{t("min")}</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                        <motion.div
+                          initial={{ width: 0 }}
+                          animate={{
+                            width: `${
+                              Math.min(
+                                Math.max(
+                                  ((runningHours * 60 + runningMinutes) /
+                                    (24 * 60)) *
+                                    100,
+                                  0
+                                ),
+                                100
+                              ) || 0
+                            }%`,
+                          }}
+                          transition={{ duration: 1, delay: 0.7 }}
+                          className="absolute inset-y-0 left-0 bg-gradient-to-r from-cyan-500 via-blue-500 to-cyan-600 rounded-full shadow-lg"
+                          style={{
+                            boxShadow: "0 0 10px rgba(6, 182, 212, 0.5)",
+                          }}
+                        />
+                      </div>
+                    </motion.div>
                   </div>
                 </CardContent>
               </Card>
@@ -221,43 +365,170 @@ export default function AerationWithHeatingPage() {
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">{t("Temperature")}</h2>
-                  <div className="space-y-2">
+                  <div className="space-y-3">
                     {AI_TH_Act !== null && (
-                      <div className="flex justify-between">
-                        <span>{devices === 'GTPL-121-gT-1000T-S7-1200' ? t("T0") 
-      : t("TH")} ({t("After Heat")})</span>
-                        <span className="font-medium">
-                          {formatValue(AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean || data?.TH_temp_mean || data?.T0_temp_mean, "°C")}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.05 }}
+                        className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg"
+                      >
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
+                          {devices === "GTPL-121-gT-1000T-S7-1200" ? t("T0") : t("TH")} ({t("After Heat")})
                         </span>
-                      </div>
+                        <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          {formatValue(
+                            AI_TH_Act ||
+                              data?.AFTER_HEATER_TEMP_Th ||
+                              data?.TH_temp_mean ||
+                              data?.T0_temp_mean,
+                            "°C"
+                          )}
+                        </span>
+                      </motion.div>
                     )}
 
                     {AI_AMBIANT_TEMP !== null && (
-                      <div className="flex justify-between">
-                        <span>T2 (Ambient)</span>
-                        <span className="font-medium">
-                          {formatValue(AI_AMBIANT_TEMP || data?.AMBIENT_AIR_TEMP_T2 || data?.T2_temp_mean, "°C")}
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.1 }}
+                        className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg"
+                      >
+                        <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
+                          T2 (Ambient)
                         </span>
-                      </div>
+                        <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                          {formatValue(
+                            AI_AMBIANT_TEMP ||
+                              data?.AMBIENT_AIR_TEMP_T2 ||
+                              data?.T2_temp_mean,
+                            "°C"
+                          )}
+                        </span>
+                      </motion.div>
                     )}
+
                     {Value_to_Display_EVAP_ACT_SPEED !== null && (
-                      <div className="flex justify-between">
-                        <span>{t("BLOWER")}</span>
-                        <span className="font-medium">
-                          {formatValue(Value_to_Display_EVAP_ACT_SPEED || data?.Blower_speed, "%")}
-                        </span>
-                      </div>
+                      <motion.div
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.4, delay: 0.15 }}
+                        className="group"
+                      >
+                        {(() => {
+                          const blowerValue =
+                            Value_to_Display_EVAP_ACT_SPEED ??
+                            data?.Blower_speed;
+                          const percentage =
+                            parseFloat(blowerValue as any) || 0;
+
+                          return (
+                            <>
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors flex items-center gap-2">
+                                  <svg
+                                    className="w-4 h-4 text-purple-500"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      strokeWidth={2}
+                                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                                    />
+                                  </svg>
+                                  {t("BLOWER")}
+                                </span>
+                                <span className="font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                  {formatValue(
+                                    blowerValue !== undefined &&
+                                      blowerValue !== null
+                                      ? blowerValue
+                                      : undefined,
+                                    "%"
+                                  )}
+                                </span>
+                              </div>
+                              <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                                <motion.div
+                                  initial={{ width: 0 }}
+                                  animate={{ width: `${percentage}%` }}
+                                  transition={{ duration: 1, delay: 0.5 }}
+                                  className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 rounded-full shadow-lg"
+                                  style={{
+                                    boxShadow:
+                                      "0 0 10px rgba(168, 85, 247, 0.5)",
+                                  }}
+                                />
+                              </div>
+                            </>
+                          );
+                        })()}
+                      </motion.div>
                     )}
-         
-  <div className="flex justify-between">
-    <span>Heater</span>
-    <span className="font-medium">
-      {formatValue(Value_to_Display_HEATER || data?.Heater_speed, "%")}
-    </span>
-  </div>
 
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
+                      className="group"
+                    >
+                      {(() => {
+                        const heaterValue =
+                          Value_to_Display_HEATER ?? data?.Heater_speed;
+                        const percentage =
+                          parseFloat(heaterValue as any) || 0;
 
-
+                        return (
+                          <>
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors flex items-center gap-2">
+                                <svg
+                                  className="w-4 h-4 text-orange-500"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"
+                                  />
+                                </svg>
+                                {t("Heater")}
+                              </span>
+                              <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
+                                {formatValue(
+                                  heaterValue !== undefined &&
+                                    heaterValue !== null
+                                    ? heaterValue
+                                    : undefined,
+                                  "%"
+                                )}
+                              </span>
+                            </div>
+                            <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+                              <motion.div
+                                initial={{ width: 0 }}
+                                animate={{ width: `${percentage}%` }}
+                                transition={{ duration: 1, delay: 0.6 }}
+                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-orange-500 via-red-500 to-orange-600 rounded-full shadow-lg"
+                                style={{
+                                  boxShadow:
+                                    "0 0 10px rgba(249, 115, 22, 0.5)",
+                                }}
+                              />
+                            </div>
+                          </>
+                        );
+                      })()}
+                    </motion.div>
                   </div>
                 </CardContent>
               </Card>
