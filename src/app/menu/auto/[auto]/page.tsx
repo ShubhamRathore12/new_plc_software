@@ -68,6 +68,7 @@ export default function AutoPage() {
         AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
+          
       },
       compressor: {
         time: "Compressor_timer",
@@ -220,7 +221,7 @@ export default function AutoPage() {
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
-        // AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
       },
