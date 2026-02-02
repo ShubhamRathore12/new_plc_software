@@ -215,6 +215,7 @@ export default function AnalogPage() {
     "GTPL-137-GT-450T-S7-1200": GTPL_137_config,
     "GTPL-138-GT-450T-S7-1200": GTPL_138_config,
     "GTPL-061-gT-450T-S7-1200": GTPL_061_config,
+    "GTPL-139-GT-300AP-S7-1200":GTPL_138_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -454,7 +455,7 @@ export default function AnalogPage() {
                           (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
                           if (item.description === "Cond. Fan speed" || item.description === "Condenser fab speed") return false;
                         }
-                        if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200") {
+                        if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200" || device === "GTPL-139-GT-300AP-S7-1200") {
                           if (item.description === "Heater") return false;
                           return true;
                         }
