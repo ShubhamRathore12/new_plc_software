@@ -503,7 +503,9 @@ const ALLOWED_TABLES = [
   "GTPL_061_GT_450T_S7_1200",
     "GTPL_134_GT_450T_S7_1200",
   "GTPL_135_GT_450T_S7_1200",
-    'GTPL_139_GT300AP'
+    'GTPL_139_GT300AP',
+  "GTPL_142_GT_450AP_S7_1200",
+  "GTPL_143_GT_450AP_S7_1200"
 ] as const;
 
 const PREFERRED_NUMERIC_ORDER = [
@@ -630,16 +632,19 @@ function normalizeCreatedAt(raw: any): { full: string; date: string; time: strin
   return { full: "", date: "", time: "" };
 }
 
-// Check if table is machine 121, 122, 061, 134, 135, 136, 137, or 138 (full column export)
+// Check if table is machine 121, 122, 061, 132, 134, 135, 136, 137, 138, 142, or 143 (full column export)
 function isFullColumnTable(table: string): boolean {
   return table === "GTPL_121_GT1000T" ||
     table === "gtpl_122_s7_1200_01" ||
     table === "GTPL_061_GT_450T_S7_1200" ||
+    table === "GTPL_132_GT300AP" ||
     table === "GTPL_134_GT_450T_S7_1200" ||
     table === "GTPL_135_GT_450T_S7_1200" ||
     table === "GTPL_136_GT_450AP_S7_1200" ||
     table === "GTPL_137_GT_450T_S7_1200" ||
-    table === "GTPL_138_GT_450T_S7_1200";
+    table === "GTPL_138_GT_450T_S7_1200" ||
+    table === "GTPL_142_GT_450AP_S7_1200" ||
+    table === "GTPL_143_GT_450AP_S7_1200";
 }
 
 // Process data in chunks to handle large datasets efficiently

@@ -41,7 +41,7 @@ export default function AutoPage() {
       if (value === undefined || value === null) return "--";
       const numericValue = parseFloat(value);
       if (isNaN(numericValue)) return value;
-      const barValue = numericValue * 0.0689476; // 1 psi = 0.0689476 bar
+      const barValue = numericValue // 1 psi = 0.0689476 bar
       return barValue;
     }
     return value;
