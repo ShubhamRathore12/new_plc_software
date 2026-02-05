@@ -51,7 +51,7 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200") {
+    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-131-GT-650T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor Start", dataKey: "Compressor_start_Q0_0" },
         { id: "Q0.1", description: "Compressor Module Reset", dataKey: "Compressor_module_reset_Q0_1" },
@@ -145,12 +145,12 @@ export default function OutputsPage() {
         { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
       ];
     }
-    else if (deviceType === "GTPL-132-300-AP-S7-1200") {
+    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-GT-300AP-S7-1200') {
       return [
         { id: "Q0.0", description: "Compressor_on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor_motor_reset", dataKey: "Compressor_motor_reset_Q0_1" },
-        { id: "Q0.2", description: "CR_valve_25%_on", dataKey: "CR_valve_25%_on_Q0_2" },
-        { id: "Q0.3", description: "CR_valve_50%_on", dataKey: "CR_valve_50%_on_Q0_3" },
+        { id: "Q0.2", description: "CR_valve_25%_on", dataKey: "CR_valve_25_percent_on_Q0_2" },
+        { id: "Q0.3", description: "CR_valve_50%_on", dataKey: "CR_valve_50_percent_on_Q0_3" },
         { id: "Q0.4", description: "Solenoid_valve_on", dataKey: "Solenoid_valve_on_Q0_4" },
         { id: "Q0.5", description: "Hot_gas_valve_on", dataKey: "Hot_gas_valve_on_Q0_5" },
         { id: "Q0.6", description: "After_heat_valve_on", dataKey: "After_heat_valve_on_Q0_6" },
@@ -159,10 +159,10 @@ export default function OutputsPage() {
         { id: "Q1.1", description: "Chiller_healthy_on", dataKey: "Chiller_healthy_on_Q1_1" },
         { id: "Q2.0", description: "Spare", dataKey: "Spare_Q2_0" },
         { id: "Q2.1", description: "Condenser_fan1_on", dataKey: "Condenser_fan1_on_Q2_1" },
-        { id: "Q2.2", description: "CR valve 75% on", dataKey: "CR valve 75% on_Q2_2" },
+        { id: "Q2.2", description: "CR valve 75% on", dataKey: "CR_valve_75_percent_on_Q2_2" },
         { id: "Q2.3", description: "Chiller_fault", dataKey: "Chiller_Fault_Q2_3" },
         { id: "Q2.4", description: "Condenser_fan2_on", dataKey: "Condenser_fan2_on_Q2_4" },
-        { id: "Q2.5", description: "CR_valve_100%_on", dataKey: "CR_valve_100%_on_Q2_5" },
+        { id: "Q2.5", description: "CR_valve_100%_on", dataKey: "CR_valve_100_percent_on_Q2_5" },
         { id: "Q2.6", description: "Spare", dataKey: "Spare_Q2_6" },
       ];
     }
@@ -288,7 +288,7 @@ export default function OutputsPage() {
       return value === "tr";
     }
 
-    if (device === "GTPL-122-gT-1000T-S7-1200") {
+    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
       return value === "true" || value === 1 || value === "1" || value === true || value === "True";
     }
 

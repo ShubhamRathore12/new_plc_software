@@ -11,19 +11,25 @@ import { motion } from "framer-motion"
 import { Activity, Thermometer, Gauge } from "lucide-react"
 
 export default function AnalogPage() {
+  const { seaction } = useParams()
+  const device = seaction?.toString()
+  
+  // Check if current device is GTPL-137 or GTPL-138 (bar machines)
+  const isBarMachine = device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200"
+
   const analogInputs = [
     {
       section: "ANALOG INPUTS (4-20mA)",
       items: [
         {
           description: "Suction Pressure",
-          value: "120",
-          unit: "psi",
+          value: isBarMachine ? "8.3" : "120",
+          unit: isBarMachine ? "bar" : "psi",
         },
         {
           description: "Discharge Pressure",
-          value: "240",
-          unit: "psi",
+          value: isBarMachine ? "16.5" : "240",
+          unit: isBarMachine ? "bar" : "psi",
         },
       ],
     },
@@ -64,11 +70,13 @@ export default function AnalogPage() {
     },
   ]
 
-  const analogOutputs = [
-    { description: "Blower Speed", value: "65", unit: "%" },
-    { description: "Condenser fab speed", value: "55", unit: "%" },
-    { description: "Hot Gas Valve", value: "0", unit: "%" },
-    { description: "Afterheat Valve", value: "42", unit: "%" },
+  // Analog outputs will be dynamically populated from live data
+  const analogOutputsTemplate = [
+    { description: "Blower Speed", unit: "%" },
+    { description: "Condenser fab speed", unit: "%" },
+    { description: "Hot Gas Valve", unit: "%" },
+    { description: "Afterheat Valve", unit: "%" },
+    { description: "Heater", unit: "%" },
   ]
 
   const sharedS7_1200_config = {
@@ -241,8 +249,6 @@ export default function AnalogPage() {
   }
 
   const router = useRouter()
-  const { seaction } = useParams()
-  const device = seaction?.toString()
   const containerRef = useRef<HTMLDivElement>(null)
   const itemsRef = useRef<HTMLDivElement[]>([])
 
@@ -253,6 +259,20 @@ export default function AnalogPage() {
 
   // Added error handling for when device is undefined
   const { data, isConnected, error, formatValue } = useAutoData(device || "")
+
+  // Helper function to convert psi values to bar for display
+  const convertToBarIfNecessary = (value: any, unit: string = "") => {
+    if (isBarMachine && (unit === "psi" || unit.includes("psi"))) {
+      // Convert psi to bar (1 psi = 0.0689476 bar)
+      if (value === undefined || value === null) return "--"
+      const numericValue = parseFloat(value)
+      if (isNaN(numericValue)) return value
+      const barValue = numericValue * 0.0689476
+      // Return the converted value, let the hook handle formatting
+      return barValue
+    }
+    return value
+  }
 
   // Debug logging for GTPL-136
   useEffect(() => {
@@ -314,8 +334,10 @@ export default function AnalogPage() {
       if (numValue < 10) return 'text-blue-500'
       return 'text-green-500'
     }
-    if (unit === 'psi') {
-      if (numValue > 200) return 'text-orange-500'
+    if (unit === 'psi' || unit === 'bar') {
+      // For bar units, adjust thresholds (1 bar ≈ 14.5 psi)
+      const threshold = unit === 'bar' ? 13.8 : 200  // 13.8 bar ≈ 200 psi
+      if (numValue > threshold) return 'text-orange-500'
       return 'text-blue-500'
     }
     if (unit === '%') {
@@ -378,7 +400,7 @@ export default function AnalogPage() {
                           if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-061-gT-450T-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
-                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200") {
+                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
                           if (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
@@ -392,7 +414,9 @@ export default function AnalogPage() {
                         .map((item, itemIndex) => {
                           const liveKey = analogInputValueMap[item.description]
                           const liveValue = liveKey ? data?.[liveKey] : undefined
-                          const displayValue = formatValue(liveValue) ?? item.value
+                          const convertedValue = convertToBarIfNecessary(liveValue, item.unit)
+                          const displayUnit = isBarMachine && (item.unit === "psi" || item.unit.includes("psi")) ? "bar" : item.unit
+                          const displayValue = formatValue(convertedValue, displayUnit) ?? formatValue(item.value, displayUnit)
 
                           return (
                             <div
@@ -410,9 +434,12 @@ export default function AnalogPage() {
                                 <span className={`text-2xl font-bold ${getValueColor(displayValue, item.unit)} transition-colors`}>
                                   {displayValue}
                                 </span>
-                                <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                                  {item.unit}
-                                </span>
+                                {/* Only show unit separately if formatValue didn't include it */}
+                                {displayValue && !displayValue.toString().includes(item.unit) && (
+                                  <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                    {item.unit}
+                                  </span>
+                                )}
                                 {liveValue && (
                                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
                                 )}
@@ -436,8 +463,13 @@ export default function AnalogPage() {
                     <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">ANALOG OUTPUTS</h2>
                   </div>
                   <div className="grid gap-3">
-                    {analogOutputs
-                      .filter((item) => {
+                    {analogOutputsTemplate
+                      .filter((item: { description: string; unit: string }) => {
+                        // Check if this output exists in the current machine config
+                        const liveKey = analogOutputValueMap[item.description];
+                        if (!liveKey) return false;
+                        
+                        // Apply existing filtering logic
                         if (device === "GTPL-124-GT-450T-S7-1200" ||
                           device === 'GTPL-121-gT-1000T-S7-1200' ||
                           device === 'GTPL-122-gT-1000T-S7-1200' ||
@@ -453,18 +485,19 @@ export default function AnalogPage() {
                           device === 'GTPL-131-GT-650T-S7-1200' ||
                           device === "GTPL-061-gT-450T-S7-1200" ||
                           (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
-                          if (item.description === "Cond. Fan speed" || item.description === "Condenser fab speed") return false;
+                          if (item.description === "Condenser fab speed") return false;
                         }
                         if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200" || device === "GTPL-139-GT-300AP-S7-1200") {
                           if (item.description === "Heater") return false;
-                          return true;
                         }
                         return true;
                       })
                       .map((item) => {
                         const liveKey = analogOutputValueMap[item.description];
                         const liveValue = liveKey ? data?.[liveKey] : undefined;
-                        const displayValue = formatValue(liveValue) ?? item.value
+                        
+                        // Use formatValue for proper formatting
+                        const displayValue = formatValue(liveValue, item.unit);
 
                         return (
                           <div
@@ -482,10 +515,13 @@ export default function AnalogPage() {
                               <span className={`text-2xl font-bold ${getValueColor(displayValue, item.unit)} transition-colors`}>
                                 {displayValue}
                               </span>
-                              <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                                {item.unit}
-                              </span>
-                              {liveValue && (
+                              {/* Only show unit separately if formatValue didn't include it */}
+                              {displayValue && !displayValue.toString().includes(item.unit) && (
+                                <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                                  {item.unit}
+                                </span>
+                              )}
+                              {liveValue !== undefined && liveValue !== null && (
                                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
                               )}
                             </div>

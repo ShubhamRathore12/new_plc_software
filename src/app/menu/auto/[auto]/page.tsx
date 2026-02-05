@@ -32,6 +32,21 @@ export default function AutoPage() {
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
 
+  // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
+  const isBarMachine = auto === "GTPL-137-GT-450T-S7-1200" || auto === "GTPL-138-GT-450T-S7-1200";
+
+  // Helper function to convert psi values to bar for display
+  const convertPressureToBar = (value: any) => {
+    if (isBarMachine) {
+      if (value === undefined || value === null) return "--";
+      const numericValue = parseFloat(value);
+      if (isNaN(numericValue)) return value;
+      const barValue = numericValue * 0.0689476; // 1 psi = 0.0689476 bar
+      return barValue;
+    }
+    return value;
+  };
+
   // Configuration for different machines
   const commonS7_200Config = {
     temperatureSensors: {
@@ -221,7 +236,7 @@ export default function AutoPage() {
         // "Delta T": { key: "Delta_T_set_point", label: "Delta T" },
       },
       controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
       },
@@ -288,6 +303,7 @@ export default function AutoPage() {
       controls: {
 
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Cond_fan_speed", label: "Condenser Fan" }, // Added Condenser Fan
       },
@@ -305,7 +321,8 @@ export default function AutoPage() {
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
       },
       controls: {
-        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+               AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
+
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Cond_fan_speed", label: "Condenser Fan" }, // Added Condenser Fan
@@ -543,6 +560,82 @@ export default function AutoPage() {
                       );
                     })}
 
+                    {/* CR Valve Status for specific machines */}
+                    {[
+                      "GTPL-121-gT-1000T-S7-1200",
+                      "GTPL-122-gT-1000T-S7-1200",
+                      "GTPL-131-GT-650T-S7-1200",
+                      "GTPL-132-300-AP-S7-1200",
+                      "GTPL-134-gT-450T-S7-1200",
+                      "GTPL-135-gT-450T-S7-1200",
+                      "GTPL-136-gT-450AP",
+                      "GTPL-139-GT-300AP-S7-1200",
+                      "GTPL-142-gT-180E-S7-1200",
+                      "GTPL-143-gT-180E-S7-1200"
+                    ].includes(auto as string) && (
+                      <>
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.25 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 25% 
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_25_percent_ON_Q0_2 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_25_percent_ON_Q0_2)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.3 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 50% 
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_50_percent_ON_Q0_3 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_50_percent_ON_Q0_3)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.35 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 75% 
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_75_percent_ON_Q2_2 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_75_percent_ON_Q2_2)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.4 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 100% 
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_100_percent_ON_Q2_7 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_100_percent_ON_Q2_7)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+                      </>
+                    )}
+
                     {/* Controls */}
                     {Object.entries(currentConfig.controls).map(([key, control], index) => {
                       // Example: don't show Heater if machine ends with 200
@@ -593,7 +686,7 @@ export default function AutoPage() {
                     })}
 
                     {/* Compressor values */}
-                    {['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200', 'GTPL-121-gT-1000T-S7-1200'].includes(auto as string) &&
+                    {['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200',].includes(auto as string) &&
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -649,9 +742,10 @@ export default function AutoPage() {
                           <span className="font-bold text-lg bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                             {(() => {
                               const lpValue = data?.[currentConfig.compressor.lp];
+                              const convertedValue = convertPressureToBar(lpValue);
                               return formatValue(
-                                lpValue !== undefined && lpValue !== null ? lpValue : undefined,
-                                " bar"
+                                convertedValue !== undefined && convertedValue !== null ? convertedValue : undefined,
+                                isBarMachine ? " bar" : "psi"
                               );
                             })()}
                           </span>
@@ -671,9 +765,10 @@ export default function AutoPage() {
                           <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
                             {(() => {
                               const hpValue = data?.[currentConfig.compressor.hp];
+                              const convertedValue = convertPressureToBar(hpValue);
                               return formatValue(
-                                hpValue !== undefined && hpValue !== null ? hpValue : undefined,
-                                " bar"
+                                convertedValue !== undefined && convertedValue !== null ? convertedValue : undefined,
+                                isBarMachine ? " bar" : "psi"
                               );
                             })()}
                           </span>
@@ -700,7 +795,8 @@ export default function AutoPage() {
                             {(() => {
                               const lpValue = data?.[currentConfig.compressor.lp];
                               return formatValue(
-                                lpValue !== undefined && lpValue !== null ? lpValue : undefined
+                                lpValue !== undefined && lpValue !== null ? lpValue : undefined,
+                                "psi"
                               );
                             })()}
                           </span>
@@ -722,7 +818,8 @@ export default function AutoPage() {
                             {(() => {
                               const hpValue = data?.[currentConfig.compressor.hp];
                               return formatValue(
-                                hpValue !== undefined && hpValue !== null ? hpValue : undefined
+                                hpValue !== undefined && hpValue !== null ? hpValue : undefined,
+                                "psi"
                               );
                             })()}
                           </span>

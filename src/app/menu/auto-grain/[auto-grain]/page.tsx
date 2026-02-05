@@ -33,8 +33,24 @@ export default function AutoGrainPage() {
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
-
   
+  // Check if Grain_chilling_mode is active (handles both "true" and "True")
+  const isGrainChillingMode = String(data?.Grain_chilling_mode)?.toLowerCase() === "true";
+
+  // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
+  const isBarMachine = autoGrain === "GTPL-137-GT-450T-S7-1200" || autoGrain === "GTPL-138-GT-450T-S7-1200";
+
+  // Helper function to convert psi values to bar for display
+  const convertPressureToBar = (value: any) => {
+    if (isBarMachine) {
+      if (value === undefined || value === null) return "--";
+      const numericValue = parseFloat(value);
+      if (isNaN(numericValue)) return value;
+      const barValue = numericValue * 0.0689476; // 1 psi = 0.0689476 bar
+      return barValue;
+    }
+    return value;
+  };
 
   const machineConfig = {
     "GTPL-132-300-AP-S7-1200": {
@@ -141,10 +157,74 @@ export default function AutoGrainPage() {
         <ConnectionStatus isConnected={isConnected} error={error} />
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
+            <motion.h1 
+              className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3"
+              animate={isGrainChillingMode ? {
+                scale: [1, 1.05, 1],
+                textShadow: [
+                  '0 0 0px rgba(59, 130, 246, 0)',
+                  '0 0 20px rgba(59, 130, 246, 0.8)',
+                  '0 0 0px rgba(59, 130, 246, 0)'
+                ]
+              } : {
+                scale: 1,
+                textShadow: '0 0 0px rgba(156, 163, 175, 0)'
+              }}
+              transition={{
+                duration: 2,
+                repeat: isGrainChillingMode ? Infinity : 0,
+                repeatType: "reverse"
+              }}
+            >
               {t("GRAIN CHILLING MODE")} - {t("AUTO")}
-            </h1>
+              <motion.div
+                animate={isGrainChillingMode ? {
+                  rotate: 360,
+                  scale: [1, 1.2, 1]
+                } : {
+                  rotate: 0,
+                  scale: 1
+                }}
+                transition={{
+                  duration: isGrainChillingMode ? 3 : 0.5,
+                  repeat: isGrainChillingMode ? Infinity : 0,
+                  ease: "linear"
+                }}
+                className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                  isGrainChillingMode 
+                    ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
+                    : 'bg-gradient-to-r from-gray-400 to-gray-500'
+                }`}
+              >
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </motion.div>
+            </motion.h1>
             <p className="text-muted-foreground">SR. NO. {autoGrain}</p>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ 
+                opacity: data?.Grain_chilling_mode !== undefined ? 1 : 0, 
+                y: data?.Grain_chilling_mode !== undefined ? 0 : 10 
+              }}
+              className="mt-2 flex items-center gap-2 text-sm"
+            >
+              <motion.div
+                animate={{ 
+                  scale: isGrainChillingMode ? [1, 1.2, 1] : 1,
+                  backgroundColor: isGrainChillingMode ? '#10b981' : '#ef4444'
+                }}
+                transition={{ 
+                  duration: isGrainChillingMode ? 1 : 0.3, 
+                  repeat: isGrainChillingMode ? Infinity : 0 
+                }}
+                className="w-2 h-2 rounded-full"
+              />
+              <span className={isGrainChillingMode ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
+                {isGrainChillingMode ? 'Grain Chilling Mode Active' : 'Grain Chilling Mode Inactive'}
+              </span>
+            </motion.div>
           </AnimatedContainer>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -272,19 +352,123 @@ export default function AutoGrainPage() {
                       }
                     )}
 
-                    <div className="flex justify-between">
-                      <span>{t("LP")}</span>
-                      <span className="font-medium">
-                        {formatValue(data?.[currentConfig.compressor.lp])}
+                    {/* Improved HP/LP Display with Pressure Conversion */}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.6 }}
+                      className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-cyan-200 dark:border-cyan-700 hover:shadow-lg transition-all duration-300"
+                    >
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                        <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                        </svg>
+                        {t("LP")}
                       </span>
-                    </div>
+                      <span className="font-bold text-lg bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
+                        {(() => {
+                          const lpValue = data?.[currentConfig.compressor.lp];
+                          const convertedValue = convertPressureToBar(lpValue);
+                          return formatValue(
+                            convertedValue !== undefined && convertedValue !== null ? convertedValue : undefined,
+                            isBarMachine ? " bar" : "psi"
+                          );
+                        })()}
+                      </span>
+                    </motion.div>
 
-                    <div className="flex justify-between">
-                      <span>{t("HP")}</span>
-                      <span className="font-medium">
-                        {formatValue(data?.[currentConfig.compressor.hp])}
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5, delay: 0.7 }}
+                      className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-700 hover:shadow-lg transition-all duration-300"
+                    >
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
+                        <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                        </svg>
+                        {t("HP")}
                       </span>
-                    </div>
+                      <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                        {(() => {
+                          const hpValue = data?.[currentConfig.compressor.hp];
+                          const convertedValue = convertPressureToBar(hpValue);
+                          return formatValue(
+                            convertedValue !== undefined && convertedValue !== null ? convertedValue : undefined,
+                            isBarMachine ? " bar" : "psi"
+                          );
+                        })()}
+                      </span>
+                    </motion.div>
+
+                    {/* CR Valve Status for specific machines */}
+                    {[
+                      "GTPL-132-300-AP-S7-1200",
+                      "GTPL-136-gT-450AP",
+                      "GTPL-139-GT-300AP-S7-1200"
+                    ].includes(autoGrain as string) && (
+                      <>
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.8 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 25%
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_25_percent_on_Q0_2 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_25_percent_on_Q0_2)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.85 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 50%
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_50_percent_on_Q0_3 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_50_percent_on_Q0_3)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.9 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 75%
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_75_percent_on_Q2_2 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_75_percent_on_Q2_2)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.4, delay: 0.95 }}
+                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
+                        >
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
+                            CR Valve 100%
+                          </span>
+                          <span className={`font-bold text-lg ${data?.CR_valve_100_percent_on_Q2_5 ? "text-green-600" : "text-red-600"}`}>
+                            {String(data?.CR_valve_100_percent_on_Q2_5)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          </span>
+                        </motion.div>
+                      </>
+                    )}
                   </div>
                 </CardContent>
               </Card>
