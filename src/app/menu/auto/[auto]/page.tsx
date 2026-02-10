@@ -570,8 +570,8 @@ export default function AutoPage() {
                       "GTPL-135-gT-450T-S7-1200",
                       "GTPL-136-gT-450AP",
                       "GTPL-139-GT-300AP-S7-1200",
-                      "GTPL-142-gT-180E-S7-1200",
-                      "GTPL-143-gT-180E-S7-1200"
+                      "GTPL-142-gT-450AP-S7-1200",
+                      "GTPL-143-gT-450AP-S7-1200"
                     ].includes(auto as string) && (
                       <>
                         <motion.div

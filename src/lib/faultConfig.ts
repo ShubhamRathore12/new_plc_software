@@ -995,7 +995,7 @@ export function getFaultCodesForMachine(machineName: string) {
     resolvedName === "GTPL-120-gT-180E-S7-1200"
   ) {
     return FAULT_CODES["GPL-115"];
-  } else if (resolvedName === "GTPL-132-300-AP-S7-1200") {
+  } else if (resolvedName === "GTPL-132-300-AP-S7-1200" || resolvedName === "GTPL-142-gT-450AP-S7-1200" || resolvedName === "GTPL-143-gT-450AP-S7-1200") {
     return FAULT_CODES["GTPL_132"];
   } else if (resolvedName === "GTPL-136-gT-450AP") {
     return FAULT_CODES["GTPL_136"];

@@ -20,53 +20,111 @@ export default function AnalogPage() {
   const analogInputs = [
     {
       section: "ANALOG INPUTS (4-20mA)",
-      items: [
-        {
-          description: "Suction Pressure",
-          value: isBarMachine ? "8.3" : "120",
-          unit: isBarMachine ? "bar" : "psi",
-        },
-        {
-          description: "Discharge Pressure",
-          value: isBarMachine ? "16.5" : "240",
-          unit: isBarMachine ? "bar" : "psi",
-        },
-      ],
+      items: 
+        (device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-143-gT-450AP-S7-1200") 
+        ? [
+            {
+              description: "Suction pressure",
+              value: isBarMachine ? "8.3" : "120",
+              unit: isBarMachine ? "bar" : "psi",
+            },
+            {
+              description: "Discharge pressure",
+              value: isBarMachine ? "16.5" : "240",
+              unit: isBarMachine ? "bar" : "psi",
+            },
+          ]
+        : [
+            {
+              description: "Suction Pressure",
+              value: isBarMachine ? "8.3" : "120",
+              unit: isBarMachine ? "bar" : "psi",
+            },
+            {
+              description: "Discharge Pressure",
+              value: isBarMachine ? "16.5" : "240",
+              unit: isBarMachine ? "bar" : "psi",
+            },
+          ],
     },
     {
       section: "ANALOG INPUTS (RTD Type)",
-      items: [
-        {
-          description: "T2.1 Ambient Temp",
-          value: "30.0",
-          unit: "°C",
-        },
-        {
-          description: "T2.2 Ambient Temp",
-          value: "30.1",
-          unit: "°C",
-        },
-        {
-          description: "T1.1 Cold Temp",
-          value: "24.2",
-          unit: "°C",
-        },
-        {
-          description: "T1.2 Cold Temp",
-          value: "24.1",
-          unit: "°C",
-        },
-        {
-          description: "T0.1 Air Outlet Temp",
-          value: "28.5",
-          unit: "°C",
-        },
-        {
-          description: "T0.2 Air Outlet Temp",
-          value: "28.3",
-          unit: "°C",
-        },
-      ],
+      items: 
+        (device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-143-gT-450AP-S7-1200") 
+        ? [
+            {
+              description: "T0 probe #1 (Afterheater)",
+              value: "28.5",
+              unit: "°C",
+            },
+            {
+              description: "T0 probe #2 (Afterheater)",
+              value: "28.3",
+              unit: "°C",
+            },
+            {
+              description: "T1 probe #1 (Cold Air)",
+              value: "24.2",
+              unit: "°C",
+            },
+            {
+              description: "T1 probe #2 (Cold Air)",
+              value: "24.1",
+              unit: "°C",
+            },
+            {
+              description: "T2 probe #1 (Ambient Air)",
+              value: "30.0",
+              unit: "°C",
+            },
+            {
+              description: "T2 probe #2 (Ambient Air)",
+              value: "30.1",
+              unit: "°C",
+            },
+            {
+              description: "TH probe #1 (Supply Air)",
+              value: "32.0",
+              unit: "°C",
+            },
+            {
+              description: "TH probe #2 (Supply Air)",
+              value: "32.2",
+              unit: "°C",
+            },
+          ]
+        : [
+            {
+              description: "T2.1 Ambient Temp",
+              value: "30.0",
+              unit: "°C",
+            },
+            {
+              description: "T2.2 Ambient Temp",
+              value: "30.1",
+              unit: "°C",
+            },
+            {
+              description: "T1.1 Cold Temp",
+              value: "24.2",
+              unit: "°C",
+            },
+            {
+              description: "T1.2 Cold Temp",
+              value: "24.1",
+              unit: "°C",
+            },
+            {
+              description: "T0.1 Air Outlet Temp",
+              value: "28.5",
+              unit: "°C",
+            },
+            {
+              description: "T0.2 Air Outlet Temp",
+              value: "28.3",
+              unit: "°C",
+            },
+          ],
     },
   ]
 
@@ -114,7 +172,7 @@ export default function AnalogPage() {
     },
     outputs: {
       "Blower speed": "Blower_speed",
-      "Cond. Fan speed": "Condenser_fan_speed", // Changed from "Cond_fan_speed" to "Condenser_fan_speed"
+      "Cond. Fan speed": "Condenser_fan_speed",
       "Hot gas valve": "Hot_valve_speed",
       "Afterheat valve": "AHT_vale_speed",
       "Heater": "Heater_speed",
@@ -219,11 +277,14 @@ export default function AnalogPage() {
     "GTPL-122-gT-1000T-S7-1200": sharedS7_1200_config,
     "GTPL-131-GT-650T-S7-1200": sharedS7_1200_config,
     "GTPL-132-300-AP-S7-1200": GTPL_132_config,
+
     "GTPL-136-gT-450AP": GTPL_136_config,
     "GTPL-137-GT-450T-S7-1200": GTPL_137_config,
     "GTPL-138-GT-450T-S7-1200": GTPL_138_config,
     "GTPL-061-gT-450T-S7-1200": GTPL_061_config,
     "GTPL-139-GT-300AP-S7-1200":GTPL_138_config,
+    "GTPL-142-gT-450AP-S7-1200":GTPL_132_config,
+    "GTPL-143-gT-450AP-S7-1200":GTPL_132_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -397,7 +458,7 @@ export default function AnalogPage() {
                     <div className="grid gap-3">
                       {section.items
                         .filter((item) => {
-                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-061-gT-450T-S7-1200") {
+                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-143-gT-450AP-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
                           if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
@@ -469,12 +530,19 @@ export default function AnalogPage() {
                         const liveKey = analogOutputValueMap[item.description];
                         if (!liveKey) return false;
                         
-                        // Apply existing filtering logic
+                        // For GTPL-132, GTPL-142, GTPL-143 - exclude Heater only
+                        if (device === "GTPL-132-300-AP-S7-1200" || 
+                            device === "GTPL-142-gT-450AP-S7-1200" || 
+                            device === "GTPL-143-gT-450AP-S7-1200") {
+                          if (item.description === "Heater") return false;
+                          return true;
+                        }
+                        
+                        // Apply existing filtering logic for other machines
                         if (device === "GTPL-124-GT-450T-S7-1200" ||
                           device === 'GTPL-121-gT-1000T-S7-1200' ||
                           device === 'GTPL-122-gT-1000T-S7-1200' ||
                           device === 'GTPL-131-GT-650T-S7-1200' ||
-                          device === "GTPL-132-300-AP-S7-1200" ||
                           device === "GTPL-061-gT-450T-S7-1200" ||
                           (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
                           if (item.description === "Heater") return false;

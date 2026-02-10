@@ -145,7 +145,7 @@ export default function OutputsPage() {
         { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
       ];
     }
-    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-GT-300AP-S7-1200') {
+    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-GT-300AP-S7-1200' || deviceType === 'GTPL-142-gT-450AP-S7-1200' || deviceType === 'GTPL-143-gT-450AP-S7-1200') {
       return [
         { id: "Q0.0", description: "Compressor_on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor_motor_reset", dataKey: "Compressor_motor_reset_Q0_1" },
