@@ -114,6 +114,44 @@ export default function AutoGrainPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-142-gT-450AP-S7-1200": {
+      serialNumber: "GTPL_142_GRAIN",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-143-gT-450AP-S7-1200": {
+      serialNumber: "GTPL_143_GRAIN",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
   };
 
   const currentConfig =

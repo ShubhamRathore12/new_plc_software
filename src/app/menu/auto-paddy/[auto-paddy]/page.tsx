@@ -42,6 +42,14 @@ export default function AutoPaddyPage() {
     return false;
   })();
 
+  // Check if Paddy_aeging_mode is active (handles various boolean representations)
+  const isGrainChillingMode = (() => {
+    const value = data?.Paddy_aeging_mode;
+    if (value === true || value === 1 || value === "1") return true;
+    if (String(value)?.toLowerCase() === "true") return true;
+    return false;
+  })();
+
   // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
   const isBarMachine = autoPaddy === "GTPL-137-GT-450T-S7-1200" || autoPaddy === "GTPL-138-GT-450T-S7-1200";
 
@@ -119,6 +127,44 @@ export default function AutoPaddyPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-142-gT-450AP-S7-1200": {
+      serialNumber: "GTPL_142_PADDY",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-143-gT-450AP-S7-1200": {
+      serialNumber: "GTPL_143_PADDY",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
   };
 
   const currentConfig =
@@ -164,7 +210,7 @@ export default function AutoPaddyPage() {
           <AnimatedContainer className="mb-8">
             <motion.h1 
               className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3"
-              animate={isPaddyAgeingMode ? {
+              animate={(isPaddyAgeingMode || isGrainChillingMode) ? {
                 scale: [1, 1.05, 1],
                 textShadow: [
                   '0 0 0px rgba(59, 130, 246, 0)',
@@ -177,13 +223,16 @@ export default function AutoPaddyPage() {
               }}
               transition={{
                 duration: 2,
-                repeat: isPaddyAgeingMode ? Infinity : 0,
+                repeat: (isPaddyAgeingMode || isGrainChillingMode) ? Infinity : 0,
                 repeatType: "reverse"
               }}
             >
-              {t("PADDY AGEING MODE")} - {t("AUTO")}
+              {(isPaddyAgeingMode && isGrainChillingMode) ? `${t("PADDY & GRAIN MODE")} - ${t("AUTO")}` :
+               (isPaddyAgeingMode) ? `${t("PADDY AGEING MODE")} - ${t("PADDY AGEING MODE")}` :
+               (isGrainChillingMode) ? `${t("GRAIN CHILLING MODE")} - ${t("PADDY AGEING MODE")}` :
+               `${t("PADDY AGEING MODE")}`}
               <motion.div
-                animate={isPaddyAgeingMode ? {
+                animate={(isPaddyAgeingMode || isGrainChillingMode) ? {
                   rotate: 360,
                   scale: [1, 1.2, 1]
                 } : {
@@ -191,12 +240,12 @@ export default function AutoPaddyPage() {
                   scale: 1
                 }}
                 transition={{
-                  duration: isPaddyAgeingMode ? 3 : 0.5,
-                  repeat: isPaddyAgeingMode ? Infinity : 0,
+                  duration: (isPaddyAgeingMode || isGrainChillingMode) ? 3 : 0.5,
+                  repeat: (isPaddyAgeingMode || isGrainChillingMode) ? Infinity : 0,
                   ease: "linear"
                 }}
                 className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  isPaddyAgeingMode 
+                  (isPaddyAgeingMode || isGrainChillingMode)
                     ? 'bg-gradient-to-r from-green-500 to-emerald-600' 
                     : 'bg-gradient-to-r from-gray-400 to-gray-500'
                 }`}
@@ -230,8 +279,35 @@ export default function AutoPaddyPage() {
                 {isPaddyAgeingMode ? 'Paddy Ageing Mode Active' : 'Paddy Ageing Mode Inactive'}
               </span>
               {/* Debug info - remove in production */}
+          
+            </motion.div>
+            
+            {/* Grain Chilling Mode Status */}
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ 
+                opacity: data?.Paddy_aeging_mode !== undefined ? 1 : 0, 
+                y: data?.Paddy_aeging_mode !== undefined ? 0 : 10 
+              }}
+              className="mt-2 flex items-center gap-2 text-sm"
+            >
+              <motion.div
+                animate={{ 
+                  scale: isGrainChillingMode ? [1, 1.2, 1] : 1,
+                  backgroundColor: isGrainChillingMode ? '#10b981' : '#ef4444'
+                }}
+                transition={{ 
+                  duration: isGrainChillingMode ? 1 : 0.3, 
+                  repeat: isGrainChillingMode ? Infinity : 0 
+                }}
+                className="w-2 h-2 rounded-full"
+              />
+              <span className={isGrainChillingMode ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
+                {isGrainChillingMode ? 'Grain Chilling Mode Active' : 'Grain Chilling Mode Inactive'}
+              </span>
+              {/* Debug info - remove in production */}
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
-                (Value: {String(data?.Paddy_ageing_mode)}, Type: {typeof data?.Paddy_ageing_mode})
+                (Value: {String(data?.Paddy_aeging_mode)}, Type: {typeof data?.Paddy_aeging_mode})
               </span>
             </motion.div>
           </AnimatedContainer>
