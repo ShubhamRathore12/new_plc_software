@@ -517,6 +517,16 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GTPL_139_TAGS,
     type: "S7-1200",
   },
+  "GTPL-142-gT-450AP-S7-1200": {
+    table: "GTPL_132_GT650T",
+    tags: GPL_132_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-143-gT-450AP-S7-1200": {
+    table: "GTPL_132_GT650T",
+    tags: GPL_132_TAGS,
+    type: "S7-1200",
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
@@ -525,6 +535,8 @@ export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
   "GPL-30": "GTPL-30-gT-180E-S7-1200",
   "GPL-132": "GTPL-132-300-AP-S7-1200",
+  "GPL-142": "GTPL-142-gT-450AP-S7-1200",
+  "GPL-143": "GTPL-143-gT-450AP-S7-1200",
   "GTPL-061": "GTPL-061-gT-450T-S7-1200",
 };
 
@@ -1075,6 +1087,12 @@ export function getMachineType(machineName: string): string {
     return "GTPL_135";
   } else if (resolvedName.includes("GTPL-139")) {
     return "GTPL_139";
+  } else if (
+    resolvedName.includes("GTPL-132") ||
+    resolvedName.includes("GTPL-142") ||
+    resolvedName.includes("GTPL-143")
+  ) {
+    return "GTPL_132";
   } else {
     return config.type;
   }
