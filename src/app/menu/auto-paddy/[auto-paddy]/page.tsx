@@ -227,9 +227,9 @@ export default function AutoPaddyPage() {
                 repeatType: "reverse"
               }}
             >
-              {(isPaddyAgeingMode && isGrainChillingMode) ? `${t("PADDY & GRAIN MODE")} - ${t("AUTO")}` :
+              {(isPaddyAgeingMode && isGrainChillingMode) ? `${t("PADDY AGEING MODE")} - ${t("AUTO")}` :
                (isPaddyAgeingMode) ? `${t("PADDY AGEING MODE")} - ${t("PADDY AGEING MODE")}` :
-               (isGrainChillingMode) ? `${t("GRAIN CHILLING MODE")} - ${t("PADDY AGEING MODE")}` :
+               (isGrainChillingMode) ? `${t("PADDY AGEING MODE")} - ${t("PADDY AGEING MODE")}` :
                `${t("PADDY AGEING MODE")}`}
               <motion.div
                 animate={(isPaddyAgeingMode || isGrainChillingMode) ? {
@@ -303,7 +303,7 @@ export default function AutoPaddyPage() {
                 className="w-2 h-2 rounded-full"
               />
               <span className={isGrainChillingMode ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
-                {isGrainChillingMode ? 'Grain Chilling Mode Active' : 'Grain Chilling Mode Inactive'}
+                {isGrainChillingMode ? 'Padding Ageing Mode Active' : 'Padding Ageing Mode Inactive'}
               </span>
               {/* Debug info - remove in production */}
               <span className="text-xs text-gray-500 dark:text-gray-400 ml-2">
