@@ -531,6 +531,11 @@ export const MACHINE_CONFIG = {
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
+  "GTPL-123-GT-450AP": {
+    table: "GTPL_123_GT_450AP_S7_1200",
+    tags: GPL_132_TAGS,
+    type: "S7-1200",
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")

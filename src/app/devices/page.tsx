@@ -275,6 +275,13 @@ export default function DevicesPage() {
       chillerModel: "gT-450AP",
     },
     {
+      name: "GTPL-123-GT-450AP",
+      location: "India",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gt-450AP",
+    },
+    {
       name: "GTPL-143-gT-450AP-S7-1200",
       location: "India",
       image: "/images/1200.jpg",
@@ -340,6 +347,7 @@ export default function DevicesPage() {
     "GTPL-061-gT-450T-S7-1200": "GTPL_061",
     "GTPL-139-GT-300AP-S7-1200": "GTPL_139",
     "GTPL-142-gT-450AP-S7-1200": "GTPL_142",
+    "GTPL-123-GT-450AP": "GTPL_123",
     "GTPL-143-gT-450AP-S7-1200": "GTPL_143"
   };
 

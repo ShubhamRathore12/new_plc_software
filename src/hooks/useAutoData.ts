@@ -45,6 +45,7 @@ export const useAutoData = (autoType: string) => {
    "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
    "GTPL-139-GT-300AP-S7-1200": "GTPL_139_GT300AP",
    "GTPL-142-gT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
+   "GTPL-123-GT-450AP": "GTPL_123_GT_450AP_S7_1200",
    "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200"
 
   };
@@ -77,6 +78,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-061-gT-450T-S7-1200":"GTPL_061",
     "GTPL-139-GT-300AP-S7-1200":"GTPL_139",
     "GTPL-142-gT-450AP-S7-1200":"GTPL_142",
+    "GTPL-123-GT-450AP":"GTPL_123",
     "GTPL-143-gT-450AP-S7-1200":"GTPL_143"
   };
 

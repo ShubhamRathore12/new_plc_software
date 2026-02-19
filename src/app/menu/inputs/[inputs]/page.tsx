@@ -24,7 +24,7 @@ export default function InputsPage() {
   const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200" || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
   const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
   const isGTPL116 = device === "GTPL-116-gT-240E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200"
-  const isGTPL132 = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-143-gT-450AP-S7-1200"
+  const isGTPL132 = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200"
   const isGTPL136 = device === "GTPL-136-gT-450AP"
   const isGTPL137 = device === "GTPL-137-GT-450T-S7-1200"
   const isGTPL138 = device === "GTPL-138-GT-450T-S7-1200"

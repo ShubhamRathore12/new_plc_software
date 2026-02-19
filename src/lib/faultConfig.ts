@@ -522,6 +522,11 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
+  "GTPL-123-GT-450AP": {
+    table: "GTPL_123_GT_450AP_S7_1200",
+    tags: GPL_132_TAGS,
+    type: "S7-1200",
+  },
   "GTPL-143-gT-450AP-S7-1200": {
     table: "GTPL_132_GT650T",
     tags: GPL_132_TAGS,
@@ -1007,7 +1012,7 @@ export function getFaultCodesForMachine(machineName: string) {
     resolvedName === "GTPL-120-gT-180E-S7-1200"
   ) {
     return FAULT_CODES["GPL-115"];
-  } else if (resolvedName === "GTPL-132-300-AP-S7-1200" || resolvedName === "GTPL-142-gT-450AP-S7-1200" || resolvedName === "GTPL-143-gT-450AP-S7-1200") {
+  } else if (resolvedName === "GTPL-132-300-AP-S7-1200" || resolvedName === "GTPL-142-gT-450AP-S7-1200" || resolvedName === "GTPL-123-GT-450AP" || resolvedName === "GTPL-143-gT-450AP-S7-1200") {
     return FAULT_CODES["GTPL_132"];
   } else if (resolvedName === "GTPL-136-gT-450AP") {
     return FAULT_CODES["GTPL_136"];
@@ -1090,6 +1095,7 @@ export function getMachineType(machineName: string): string {
   } else if (
     resolvedName.includes("GTPL-132") ||
     resolvedName.includes("GTPL-142") ||
+    resolvedName.includes("GTPL-123") ||
     resolvedName.includes("GTPL-143")
   ) {
     return "GTPL_132";

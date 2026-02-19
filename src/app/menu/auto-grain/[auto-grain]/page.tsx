@@ -133,6 +133,25 @@ export default function AutoGrainPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-123-GT-450AP": {
+      serialNumber: "GTPL_123_GRAIN",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "GTPL-143-gT-450AP-S7-1200": {
       serialNumber: "GTPL_143_GRAIN",
       temperatureSensors: {
@@ -445,7 +464,8 @@ export default function AutoGrainPage() {
                       "GTPL-136-gT-450AP",
                       "GTPL-139-GT-300AP-S7-1200",
                       'GTPL-143-gT-450AP-S7-1200',
-                      'GTPL-142-gT-450AP-S7-1200'
+                      'GTPL-142-gT-450AP-S7-1200',
+                      'GTPL-123-GT-450AP'
                     ].includes(autoGrain as string) && (
                       <>
                         <motion.div

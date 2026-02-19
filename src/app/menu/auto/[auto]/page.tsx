@@ -571,6 +571,7 @@ export default function AutoPage() {
                       "GTPL-136-gT-450AP",
                       "GTPL-139-GT-300AP-S7-1200",
                       "GTPL-142-gT-450AP-S7-1200",
+                      "GTPL-123-GT-450AP",
                       "GTPL-143-gT-450AP-S7-1200"
                     ].includes(auto as string) && (
                       <>
