@@ -131,7 +131,7 @@ export default function AnalogPage() {
   // Analog outputs will be dynamically populated from live data
   const analogOutputsTemplate = [
     { description: "Blower Speed", unit: "%" },
-    { description: "Condenser fab speed", unit: "%" },
+    { description: "Condenser fan speed", unit: "%" },
     { description: "Hot Gas Valve", unit: "%" },
     { description: "Afterheat Valve", unit: "%" },
     { description: "Heater", unit: "%" },
@@ -151,7 +151,7 @@ export default function AnalogPage() {
     },
     outputs: {
       "Blower Speed": "Blower_speed",
-      "Condenser fab speed": "Cond_fan_speed",
+      "Condenser fan speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -193,7 +193,7 @@ export default function AnalogPage() {
     },
     outputs: {
       "Blower Speed": "Blower_speed",
-      "Condenser fab speed": "Cond_fan_speed",
+      "Condenser fan speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -213,7 +213,7 @@ export default function AnalogPage() {
     },
     outputs: {
       "Blower Speed": "Blower_speed",
-      "Condenser fab speed": "Cond_fan_speed",
+      "Condenser fan speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -252,7 +252,7 @@ export default function AnalogPage() {
     },
     outputs: {
       "Blower Speed": "Blower_speed",
-      "Condenser fab speed": "Condenser_fan_speed",
+      "Condenser fan speed": "Condenser_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },

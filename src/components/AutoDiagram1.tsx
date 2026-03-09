@@ -908,6 +908,7 @@ export default function AutoDiagram1({
     "GTPL-143-gT-450AP-S7-1200",
     "GTPL-134-gT-450T-S7-1200",
     "GTPL-135-gT-450T-S7-1200",
+    "GTPL-133-GT-650T-S7-1200"
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -931,7 +932,8 @@ export default function AutoDiagram1({
     "GTPL-136-gT-450AP",
     "GTPL-134-gT-450T-S7-1200",
     "GTPL-135-gT-450T-S7-1200",
-    "GTPL-061-gT-450T-S7-1200"
+    "GTPL-061-gT-450T-S7-1200",
+    'GTPL-133-GT-650T-S7-1200'
 
 
   ].some((name) => machineName.includes(name));
