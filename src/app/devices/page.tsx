@@ -212,7 +212,7 @@ export default function DevicesPage() {
       chillerModel: "gT-240E",
     },
     {
-      name: "GTPL-131-GT-650T-S7-1200",
+      name: "GTPL-133-GT-650T-S7-1200",
       location: "Noida",
       image: "/images/1200.jpg",
       plc: "S7-1200",
@@ -337,7 +337,7 @@ export default function DevicesPage() {
     "GTPL-120-gT-180E-S7-1200": "GTPL_120",
     "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
     'GTPL-124-GT-450T-S7-1200': "GTPL_124",
-    "GTPL-131-GT-650T-S7-1200": "GTPL_131",
+    "GTPL-133-GT-650T-S7-1200": "GTPL_131",
     "GTPL-132-300-AP-S7-1200": "GTPL_132",
     "GTPL-136-gT-450AP": "GTPL_136",
     "GTPL-137-GT-450T-S7-1200": "GTPL_137",
