@@ -302,7 +302,10 @@ export default function DevicesPage() {
       data?.user?.firstName?.toLowerCase() === "carl" &&
       (device.location === "Noida" || device.location === "Noida---kanpur");
 
-    return matchesLocation && !isRestricted && !shouldHideNoidaLocations;
+    const isTantikornUser = data?.user?.firstName?.toLowerCase() === "tantikorn";
+    const showOnlyThailand = isTantikornUser && device.location !== "Thailand";
+
+    return matchesLocation && !isRestricted && !shouldHideNoidaLocations && !showOnlyThailand;
   });
 
   const locations: Location[] = [
@@ -311,6 +314,9 @@ export default function DevicesPage() {
       .filter((loc) => {
         if (data?.user?.firstName?.toLowerCase() === "carl" || data?.user?.firstName?.toLowerCase() === "Weinzierl") {
           return loc !== "Noida" && loc !== "Noida---kanpur";
+        }
+        if (data?.user?.firstName?.toLowerCase() === "tantikorn") {
+          return loc === "Thailand";
         }
         return true;
       })
