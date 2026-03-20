@@ -22,6 +22,7 @@ import useIsMobile from "@/hooks/useIsMobile";
 import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 import AutoDiagram1 from "@/components/AutoDiagram1";
 import { useLanguage } from "@/providers/language-provider";
+import { hasMachineFeature } from "@/lib/machineRegistry";
 
 export default function AutoPage() {
   const router = useRouter();
@@ -32,8 +33,8 @@ export default function AutoPage() {
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
 
-  // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
-  const isBarMachine = auto === "GTPL-137-GT-450T-S7-1200" || auto === "GTPL-138-GT-450T-S7-1200";
+  // Derived from centralized registry — no manual updates needed
+  const isBarMachine = hasMachineFeature(auto as string, "isBarMachine");
 
   // Helper function to convert psi values to bar for display
   const convertPressureToBar = (value: any) => {
@@ -352,6 +353,42 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-145-GT-450T-S7-1200": {
+      serialNumber: "GTPL_145",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-148-GT-450T-S7-1200": {
+      serialNumber: "GTPL_148",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "GTPL-136-gT-450AP": {
       serialNumber: "GTPL_136",
       temperatureSensors: {
@@ -579,20 +616,8 @@ export default function AutoPage() {
                       );
                     })}
 
-                    {/* CR Valve Status for specific machines */}
-                    {[
-                      "GTPL-121-gT-1000T-S7-1200",
-                      "GTPL-122-gT-1000T-S7-1200",
-                      "GTPL-133-GT-650T-S7-1200",
-                      "GTPL-132-300-AP-S7-1200",
-                      "GTPL-134-gT-450T-S7-1200",
-                      "GTPL-135-gT-450T-S7-1200",
-                      "GTPL-136-gT-450AP",
-                      "GTPL-139-GT-300AP-S7-1200",
-                      "GTPL-142-gT-450AP-S7-1200",
-                      "GTPL-123-GT-450AP",
-                      "GTPL-143-gT-450AP-S7-1200"
-                    ].includes(auto as string) && (
+                    {/* CR Valve Status — derived from centralized registry */}
+                    {hasMachineFeature(auto as string, "hasCRValve") && (
                       <>
                         <motion.div
                           initial={{ opacity: 0, x: -20 }}
@@ -744,8 +769,8 @@ export default function AutoPage() {
                       </motion.div>
                     }
 
-                    {/* Add bar values after HP and LP for machines 137 and 138 */}
-                    {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+                    {/* Add bar values after HP and LP for bar machines */}
+                    {isBarMachine && (
                       <>
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}
@@ -797,7 +822,7 @@ export default function AutoPage() {
                     )}
 
                     {/* For other machines, show standard HP and LP */}
-                    {!['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+                    {!isBarMachine && (
                       <>
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}

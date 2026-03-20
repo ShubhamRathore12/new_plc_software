@@ -20,6 +20,7 @@ import Home from "@/components/aeration-control";
 import AerationwithHeating from "@/components/AerationwithHeating";
 import useIsMobile from "@/hooks/useIsMobile";
 import { useLanguage } from "@/providers/language-provider";
+import { hasMachineFeature } from "@/lib/machineRegistry";
 
 export default function AerationWithoutHeatingPage() {
   const router = useRouter();
@@ -291,17 +292,7 @@ export default function AerationWithoutHeatingPage() {
                     >
                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
-                        {(
-                          devices === "GTPL-124-GT-450T-S7-1200" ||
-                          devices === "GTPL-122-gT-1000T-S7-1200" ||
-                          devices === "GTPL-121-gT-1000T-S7-1200" ||
-                          devices === "GTPL-132-300-AP-S7-1200" ||
-                          devices === "GTPL-137-GT-450T-S7-1200" ||
-                          devices === "GTPL-138-GT-450T-S7-1200" ||
-                          devices === "GTPL-136-gT-450AP" ||
-                          devices === "GTPL-134-gT-450T-S7-1200" ||
-                          devices === "GTPL-135-gT-450T-S7-1200"
-                        )
+                        {hasMachineFeature(devices as string, "usesT0THLabels")
                           ? t("T0")
                           : t("TH")}{" "}
                         ({t("After Heat")})

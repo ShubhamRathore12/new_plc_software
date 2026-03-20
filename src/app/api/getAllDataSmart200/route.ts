@@ -506,7 +506,9 @@ const ALLOWED_TABLES = [
     'GTPL_139_GT300AP',
   "GTPL_142_GT_450AP_S7_1200",
   "GTPL_123_GT_450AP_S7_1200",
-  "GTPL_143_GT_450AP_S7_1200"
+  "GTPL_143_GT_450AP_S7_1200",
+  "GTPL_145_GT_450T_S7_1200",
+  "GTPL_148_GT_450T_S7_1200"
 ] as const;
 
 const PREFERRED_NUMERIC_ORDER = [
@@ -644,6 +646,8 @@ function isFullColumnTable(table: string): boolean {
     table === "GTPL_136_GT_450AP_S7_1200" ||
     table === "GTPL_137_GT_450T_S7_1200" ||
     table === "GTPL_138_GT_450T_S7_1200" ||
+    table === "GTPL_145_GT_450T_S7_1200" ||
+    table === "GTPL_148_GT_450T_S7_1200" ||
     table === "GTPL_142_GT_450AP_S7_1200" ||
     table === "GTPL_123_GT_450AP_S7_1200" ||
     table === "GTPL_143_GT_450AP_S7_1200";

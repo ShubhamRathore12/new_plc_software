@@ -1,23 +1,8 @@
 import { pool } from "@/lib/db";
+import { ALL_TABLE_NAMES } from "@/lib/machineRegistry";
 
-// All available tables
-const ALLOWED_TABLES = [
-  "GTPL_108_gT_40E_P_S7_200_Germany",
-  "GTPL_109_gT_40E_P_S7_200_Germany",
-  "GTPL_110_gT_40E_P_S7_200_Germany",
-  "GTPL_111_gT_80E_P_S7_200_Germany",
-  "GTPL_112_gT_80E_P_S7_200_Germany",
-  "GTPL_113_gT_80E_P_S7_200_Germany",
-  "kabomachinedatasmart200",
-  "GTPL_114_GT_140E_S7_1200",
-  "GTPL_115_GT_180E_S7_1200",
-  "GTPL_119_GT_180E_S7_1200",
-  "GTPL_120_GT_180E_S7_1200",
-  "GTPL_116_GT_240E_S7_1200",
-  "GTPL_117_GT_320E_S7_1200",
-  "GTPL_121_GT1000T",
-  "gtpl_122_s7_1200_01",
-];
+// Derived from centralized registry
+const ALLOWED_TABLES = ALL_TABLE_NAMES;
 
 export async function GET(req: Request) {
   try {
@@ -97,6 +82,13 @@ export async function GET(req: Request) {
       });
     }
   } catch (err: any) {
+    // Table doesn't exist yet — return friendly error instead of 500
+    if (err?.errno === 1146) {
+      return new Response(JSON.stringify({ error: "Table not yet available in the database" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
     console.error("Download error:", err?.message || err);
     return new Response(JSON.stringify({ error: "Database error" }), {
       status: 500,

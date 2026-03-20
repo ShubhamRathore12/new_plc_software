@@ -532,6 +532,16 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
+  "GTPL-145-GT-450T-S7-1200": {
+    table: "GTPL_145_GT_450T_S7_1200",
+    tags: GTPL_137_138_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-148-GT-450T-S7-1200": {
+    table: "GTPL_148_GT_450T_S7_1200",
+    tags: GTPL_137_138_TAGS,
+    type: "S7-1200",
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
@@ -954,6 +964,76 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 34, description: "Tdelta_sensor_open" },
     { code: 35, description: "Tdelta_sensor_short" },
   ],
+  GTPL_145: [
+    { code: 1, description: "Compressor circuit breaker fault" },
+    { code: 2, description: "Oil pressure low" },
+    { code: 3, description: "Blower drive fault" },
+    { code: 4, description: "Blower circuit breaker fault" },
+    { code: 7, description: "Three phase monitor fault" },
+    { code: 8, description: "High pressure fault" },
+    { code: 9, description: "Ambient temp. lower than set temp." },
+    { code: 10, description: "Ambient temp. over 43°C" },
+    { code: 11, description: "Compressor motor winding temp. high" },
+    { code: 14, description: "Low pressure 1 fault" },
+    { code: 15, description: "Compressor feedback error" },
+    { code: 16, description: "Low pressure 2 fault" },
+    { code: 17, description: "Ambient temp. over 40°C" },
+    { code: 18, description: "Condenser fan 2 TOP fault" },
+    { code: 19, description: "Condenser fan 3 TOP fault" },
+    { code: 20, description: "Condenser fan 4 TOP fault" },
+    { code: 21, description: "Condenser fan 2 circuit breaker fault" },
+    { code: 22, description: "Condenser fan 3 circuit breaker fault" },
+    { code: 23, description: "Condenser fan 4 circuit breaker fault" },
+    { code: 30, description: "Condenser fan 1 circuit breaker fault" },
+    { code: 31, description: "Condenser fan 1 TOP fault" },
+    { code: 5, description: "Ambient air sensor T2.1 open" },
+    { code: 32, description: "Ambient air sensor T2.1 short circuit" },
+    { code: 33, description: "Ambient air sensor T2.2 open" },
+    { code: 34, description: "Ambient air sensor T2.2 short circuit" },
+    { code: 35, description: "Cold air sensor T1.1 open" },
+    { code: 36, description: "Cold air sensor T1.1 short circuit" },
+    { code: 37, description: "Cold air sensor T1.2 open" },
+    { code: 38, description: "Cold air sensor T1.2 short circuit" },
+    { code: 39, description: "Air outlet sensor T0.1 open" },
+    { code: 40, description: "Air outlet sensor T0.1 short circuit" },
+    { code: 41, description: "Air outlet sensor T0.2 open" },
+    { code: 42, description: "Air outlet sensor T0.2 short circuit" },
+  ],
+  GTPL_148: [
+    { code: 1, description: "Compressor circuit breaker fault" },
+    { code: 2, description: "Oil pressure low" },
+    { code: 3, description: "Blower drive fault" },
+    { code: 4, description: "Blower circuit breaker fault" },
+    { code: 7, description: "Three phase monitor fault" },
+    { code: 8, description: "High pressure fault" },
+    { code: 9, description: "Ambient temp. lower than set temp." },
+    { code: 10, description: "Ambient temp. over 43°C" },
+    { code: 11, description: "Compressor motor winding temp. high" },
+    { code: 14, description: "Low pressure 1 fault" },
+    { code: 15, description: "Compressor feedback error" },
+    { code: 16, description: "Low pressure 2 fault" },
+    { code: 17, description: "Ambient temp. over 40°C" },
+    { code: 18, description: "Condenser fan 2 TOP fault" },
+    { code: 19, description: "Condenser fan 3 TOP fault" },
+    { code: 20, description: "Condenser fan 4 TOP fault" },
+    { code: 21, description: "Condenser fan 2 circuit breaker fault" },
+    { code: 22, description: "Condenser fan 3 circuit breaker fault" },
+    { code: 23, description: "Condenser fan 4 circuit breaker fault" },
+    { code: 30, description: "Condenser fan 1 circuit breaker fault" },
+    { code: 31, description: "Condenser fan 1 TOP fault" },
+    { code: 5, description: "Ambient air sensor T2.1 open" },
+    { code: 32, description: "Ambient air sensor T2.1 short circuit" },
+    { code: 33, description: "Ambient air sensor T2.2 open" },
+    { code: 34, description: "Ambient air sensor T2.2 short circuit" },
+    { code: 35, description: "Cold air sensor T1.1 open" },
+    { code: 36, description: "Cold air sensor T1.1 short circuit" },
+    { code: 37, description: "Cold air sensor T1.2 open" },
+    { code: 38, description: "Cold air sensor T1.2 short circuit" },
+    { code: 39, description: "Air outlet sensor T0.1 open" },
+    { code: 40, description: "Air outlet sensor T0.1 short circuit" },
+    { code: 41, description: "Air outlet sensor T0.2 open" },
+    { code: 42, description: "Air outlet sensor T0.2 short circuit" },
+  ],
   GTPL_139: [
     { code: 0, description: "Int0" },
     { code: 1, description: "Compressor circuit breaker fault" },
@@ -1020,6 +1100,10 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GTPL_137"];
   } else if (resolvedName === "GTPL-138-GT-450T-S7-1200") {
     return FAULT_CODES["GTPL_138"];
+  } else if (resolvedName === "GTPL-145-GT-450T-S7-1200") {
+    return FAULT_CODES["GTPL_145"];
+  } else if (resolvedName === "GTPL-148-GT-450T-S7-1200") {
+    return FAULT_CODES["GTPL_148"];
   } else if (resolvedName === "GTPL-134-gT-450T-S7-1200") {
     return FAULT_CODES["GTPL_134"];
   } else if (resolvedName === "GTPL-135-gT-450T-S7-1200") {
@@ -1086,6 +1170,10 @@ export function getMachineType(machineName: string): string {
     return "GTPL_137";
   } else if (resolvedName.includes("GTPL-138")) {
     return "GTPL_138";
+  } else if (resolvedName.includes("GTPL-145")) {
+    return "GTPL_145";
+  } else if (resolvedName.includes("GTPL-148")) {
+    return "GTPL_148";
   } else if (resolvedName.includes("GTPL-134")) {
     return "GTPL_134";
   } else if (resolvedName.includes("GTPL-135")) {

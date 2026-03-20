@@ -1,4 +1,5 @@
 import { pool } from "@/lib/db";
+import { MACHINE_REGISTRY } from "@/lib/machineRegistry";
 
 // S7-200 specific tags
 const S7_200_TAGS = [
@@ -208,28 +209,10 @@ const GPL_117_TAGS = [
 ];
 
 
-// Machine configuration mapping
-const MACHINE_CONFIG = {
-  // S7-200
-  "GTPL-118-gT-80E-P-S7-200": { table: "kabomachinedatasmart200", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-108-gT-40E-P-S7-200": { table: "GTPL_108_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-109-gT-40E-P-S7-200": { table: "GTPL_109_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-110-gT-40E-P-S7-200": { table: "GTPL_110_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-111-gT-80E-P-S7-200": { table: "GTPL_111_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-112-gT-80E-P-S7-200": { table: "GTPL_112_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-  "GTPL-113-gT-80E-P-S7-200": { table: "GTPL_113_gT_80E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
-
-  // S7-1200 (including GTPL-115)
-  "GTPL-122-gT-1000T-S7-1200": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
-  "Gtpl-S7-1200-02": { table: "gtpl_122_s7_1200_01", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-30-gT-180E-S7-1200": { table: "GTPL_114_GT_140E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
-  "GTPL-115-gT-180E-S7-1200": { table: "GTPL_115_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" }, // ✅ Corrected type
-  "GTPL-116-gT-240E-S7-1200": { table: "GTPL_116_GT_240E_S7_1200", tags: S7_1200_TAGS, type: "S7-1200" },
-  "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
-  "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
-  "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
-  "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
-};
+// Derived from centralized registry — no manual updates needed
+const MACHINE_CONFIG: Record<string, { table: string; tags: string[]; type: string }> = Object.fromEntries(
+  MACHINE_REGISTRY.map((m) => [m.name, { table: m.table, tags: m.tags, type: m.type }])
+);
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
 const MACHINE_NAME_ALIASES: Record<string, string> = {

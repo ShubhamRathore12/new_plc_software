@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/animated-container";
 import { useAutoData } from "../../../../../hooks/useAutoData";
 import { useLanguage } from "@/providers/language-provider";
+import { hasMachineFeature } from "@/lib/machineRegistry";
 
 export default function DefaultsPage() {
   const router = useRouter();
@@ -237,16 +238,9 @@ export default function DefaultsPage() {
   } = data || {};
 
 
-  const hideDeltaA = [
-  "GTPL-114-gT-140E-S7-1200",
-  "GTPL-115-gT-180E-S7-1200",
-  "GTPL-119-gT-180E-S7-1200",
-  "GTPL-120-gT-180E-S7-1200",
-  'GTPL-30-gT-180E-S7-1200',
-  'GTPL-116-gT-240E-S7-1200',
-  'GTPL-117-gT-320E-S7-1200'
-
-];
+  // Derived from centralized registry — no manual updates needed
+  const shouldHideDeltaA = hasMachineFeature(String(defaults), "hideDeltaA");
+  const usesT0Label = hasMachineFeature(String(defaults), "usesT0THLabels");
 
   return (
     <PageTransition>
@@ -267,16 +261,9 @@ export default function DefaultsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" || defaults === 
-                    'GTPL-121-gT-1000T-S7-1200' ? (
-                      <Label htmlFor="t1" className="text-right font-medium">
-                        T0
-                      </Label>
-                    ) : (
-                      <Label htmlFor="t1" className="text-right font-medium">
-                        T1
-                      </Label>
-                    )}
+                    <Label htmlFor="t1" className="text-right font-medium">
+                      {usesT0Label ? "T0" : "T1"}
+                    </Label>
 
                     <Input
                       id="t1"
@@ -291,7 +278,7 @@ export default function DefaultsPage() {
                     />
                     <div>°C</div>
                   </motion.div>
-                  {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" || defaults === 'GTPL-121-gT-1000T-S7-1200' ? null : (
+                  {usesT0Label ? null : (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -313,7 +300,7 @@ export default function DefaultsPage() {
                       <div>°C</div>
                     </motion.div>
                   )}
-{hideDeltaA.includes(String(defaults)) ? null : (
+{shouldHideDeltaA ? null : (
   <motion.div
     className="grid grid-cols-3 items-center gap-4"
     initial={{ opacity: 0, y: 10 }}
@@ -321,7 +308,7 @@ export default function DefaultsPage() {
     transition={{ delay: 0.4 }}
   >
     <Label htmlFor="delta-a" className="text-right font-medium">
-      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200"  ? "(T)" : "(A)"}
+      Delta {usesT0Label ? "(T)" : "(A)"}
     </Label>
     <Input
       id="delta-a"

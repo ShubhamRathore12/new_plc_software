@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Fan1200 from "../../public/images/fan.jpg"
+import { hasMachineFeature } from "@/lib/machineRegistry"
 
 export default function AerationHeating({blower,data,formatValue,machineName}:any) {
   const getSiloColor = (temp: number) => {
@@ -171,7 +172,7 @@ export default function AerationHeating({blower,data,formatValue,machineName}:an
 <div className="absolute left-[170px] top-[180px]">
   <div className="flex flex-row items-center px-2 py-1 gap-2">
     <div className="text-sm font-bold text-gray-700">
-      {machineName === "GTPL-122-gT-1000T-S7-1200" || machineName === "GTPL-121-gT-1000T-S7-1200" ? "T0" : "TH"}:
+      {hasMachineFeature(machineName, "usesT0THLabels") ? "T0" : "TH"}:
     </div>
     <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
       {formatValue(

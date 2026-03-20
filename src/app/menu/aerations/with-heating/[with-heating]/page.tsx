@@ -19,6 +19,7 @@ import Im1 from "../../../../../../public/images/4.png";
 import Image from "next/image";
 import { format } from "@/lib/utils";
 import { useAutoData } from "@/hooks/useAutoData"; // ✅ USE HOOK
+import { hasMachineFeature } from "@/lib/machineRegistry";
 import Home from "@/components/aeartionheating-control";
 import AerationHeating from "@/components/AerationHeating";
 import useIsMobile from "@/hooks/useIsMobile";
@@ -375,7 +376,7 @@ export default function AerationWithHeatingPage() {
                       >
                         <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
                           <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
-                          {devices === "GTPL-121-gT-1000T-S7-1200" ? t("T0") : t("TH")} ({t("After Heat")})
+                          {hasMachineFeature(devices as string, "usesT0THLabels") ? t("T0") : t("TH")} ({t("After Heat")})
                         </span>
                         <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
                           {formatValue(

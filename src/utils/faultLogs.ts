@@ -1,4 +1,5 @@
 import { machine } from "os";
+import { getMachineByName, DEVICE_TO_TABLE_MAP } from "@/lib/machineRegistry";
 
 export const PAGE_SIZE = 200;
 
@@ -317,23 +318,10 @@ export const S7_200_MACHINES = [
 ];
 
 export function getTagsForMachine(machineName: string): string[] {
-  if (machineName === "GTPL-30-gT-180E-S7-1200") return GTPL_30_TAGS;
-  if (
-    machineName === "GTPL-115-gT-180E-P-S7-1200" ||
-    machineName === "GTPL-114-gT-140E-P-S7-1200" ||
-    machineName === "GTPL-119-gT-180E-S7-1200 " ||
-    machineName === "GTPL-120-gT-180E-P-S7-1200"
-  )
-    return GPL_115_TAGS;
-  if (
-    machineName === "GTPL-117-gT-320E-S7-1200" ||
-    machineName === "GTPL-116-gT-320E-S7-1200"
-  )
-    return GPL_117_TAGS;
-  if (machineName === "GTPL-132-300-AP-S7-1200") return GPL_132_TAGS;
-  if (machineName === "GTPL-136-gT-450AP") return GTPL_136_TAGS;
-  if (machineName === "GTPL-134-gT-450T-S7-1200") return GTPL_134_135_TAGS;
-  if (machineName === "GTPL-135-gT-450T-S7-1200") return GTPL_134_135_TAGS;
+  // Derived from centralized registry — no manual updates needed
+  const machine = getMachineByName(machineName);
+  if (machine) return machine.tags;
+  // Fallback for unrecognized machines
   if (S7_200_MACHINES.includes(machineName)) return S7_200_TAGS;
   return S7_1200_TAGS;
 }
@@ -442,9 +430,8 @@ export function getTagCategory(tag: string): "fault" {
 }
 
 export function getTableNameForMachine(machineName: string): string {
-  if (machineName === "GTPL-30-gT-180E-S7-1200") return "gplt_144";
-  if (machineName === "GTPL-139-GT-300AP-S7-1200") return "GTPL_139_GT300AP";
-  return "default_table";
+  // Derived from centralized registry — no manual updates needed
+  return DEVICE_TO_TABLE_MAP[machineName] || "default_table";
 }
 
 export function getMachinePrefix(machineName: string): string {

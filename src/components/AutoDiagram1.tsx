@@ -790,6 +790,7 @@ import Fan1 from "../../public/images/124.png";
 import { usePathname } from "next/navigation";
 
 import { useEffect, useState } from "react";
+import { hasMachineFeature } from "@/lib/machineRegistry";
 
 export default function AutoDiagram1({
   blower,
@@ -895,55 +896,10 @@ export default function AutoDiagram1({
     data?.Compressor_start === "True" ||
     data?.COMPRESSOR_ON === "True" || data?.Compressor_on_Q0_0 === "True" || data?.Compressor_start_Q0_0 === "true"
 
-  const isSpecialMachine = [
-    "GTPL-122-gT-1000T-S7-1200",
-    "GTPL-121-gT-1000T-S7-1200",
-    "GTPL-124-GT-450T-S7-1200",
-    "GTPL-137-GT-450T-S7-1200",
-    "GTPL-138-GT-450T-S7-1200",
-    "GTPL-136-gT-450AP",
-    "GTPL-132-300-AP-S7-1200",
-    "GTPL-142-gT-450AP-S7-1200",
-    "GTPL-123-GT-450AP",
-    "GTPL-143-gT-450AP-S7-1200",
-    "GTPL-134-gT-450T-S7-1200",
-    "GTPL-135-gT-450T-S7-1200",
-    "GTPL-133-GT-650T-S7-1200"
-    // "GTPL-061-gT-450T-S7-1200",
-  ].some((name) => machineName.includes(name));
-
-  const isHTRMachine = [
-    "GTPL-122-gT-1000T-S7-1200",
-    "GTPL-121-gT-1000T-S7-1200",
-    "GTPL-124-GT-450T-S7-1200",
-    "GTPL-118-gT-80E-P-S7-200",
-    "GTPL-108-gT-40E-P-S7-200",
-    "GTPL-109-gT-40E-P-S7-200",
-    "GTPL-110-gT-40E-P-S7-200",
-    "GTPL-111-gT-80E-P-S7-200",
-    "GTPL-112-gT-80E-P-S7-200",
-    "GTPL-113-gT-80E-P-S7-200",
-    "GTPL-132-300-AP-S7-1200",
-    "GTPL-142-gT-450AP-S7-1200",
-    "GTPL-123-GT-450AP",
-    "GTPL-143-gT-450AP-S7-1200",
-    "GTPL-137-GT-450T-S7-1200",
-    "GTPL-138-GT-450T-S7-1200",
-    "GTPL-136-gT-450AP",
-    "GTPL-134-gT-450T-S7-1200",
-    "GTPL-135-gT-450T-S7-1200",
-    "GTPL-061-gT-450T-S7-1200",
-    'GTPL-133-GT-650T-S7-1200'
-
-
-  ].some((name) => machineName.includes(name));
-
-  const isFanMachine = [
-    "GTPL-116-gT-240E-S7-1200",
-    "GTPL-117-gT-320E-S7-1200",
-    "GTPL-122-gT-1000T-S7-1200",
-    "GTPL-121-gT-1000T-S7-1200",
-  ].some((name) => machineName.includes(name));
+  // Derived from centralized registry — no manual updates needed when adding new machines
+  const isSpecialMachine = hasMachineFeature(machineName, "isSpecialMachine");
+  const isHTRMachine = hasMachineFeature(machineName, "isHTRMachine");
+  const isFanMachine = hasMachineFeature(machineName, "isFanMachine");
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-auto">
@@ -1528,9 +1484,7 @@ export default function AutoDiagram1({
                 LP
                 <br />
                 {(() => {
-                  const isBarMachine =
-                    machineName === "GTPL-137-GT-450T-S7-1200" ||
-                    machineName === "GTPL-138-GT-450T-S7-1200";
+                  const isBarMachine = hasMachineFeature(machineName, "isBarMachine");
 
                   if (isBarMachine) {
                     if (data.AI_SUC_PRESSURE !== undefined && data.AI_SUC_PRESSURE !== null) return formatValue(data.AI_SUC_PRESSURE, " bar");
@@ -1549,9 +1503,7 @@ export default function AutoDiagram1({
                 HP
                 <br />
                 {(() => {
-                  const isBarMachine =
-                    machineName === "GTPL-137-GT-450T-S7-1200" ||
-                    machineName === "GTPL-138-GT-450T-S7-1200";
+                  const isBarMachine = hasMachineFeature(machineName, "isBarMachine");
 
                   if (isBarMachine) {
                     if (data.AI_COND_PRESSURE !== undefined && data.AI_COND_PRESSURE !== null) return formatValue(data.AI_COND_PRESSURE, " bar");

@@ -25,6 +25,7 @@ import { PageTransition } from "@/components/ui/animated-container";
 import { Logo } from "@/components/logo";
 import { useDataStore } from "@/lib/dataStore";
 import { useLanguage } from "@/providers/language-provider";
+import { hasMachineFeature } from "@/lib/machineRegistry";
 
 interface UserData {
   monitorAccess?: string;
@@ -76,8 +77,9 @@ export default function Home() {
     }
   };
 
-  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200' || device === 'GTPL-142-gT-450AP-S7-1200' || device === 'GTPL-123-GT-450AP' || device === 'GTPL-143-gT-450AP-S7-1200';
-  const shouldHideAeration = device === "GTPL-061-gT-450T-S7-1200";
+  // Derived from centralized registry — no manual updates needed
+  const isGrainPaddyDevice = hasMachineFeature(device as string, "isGrainPaddyDevice");
+  const shouldHideAeration = hasMachineFeature(device as string, "hideAeration");
 
   const getMenuItems = (): MenuItem[] => {
     if (isGrainPaddyDevice) {

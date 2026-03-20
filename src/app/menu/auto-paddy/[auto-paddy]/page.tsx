@@ -22,6 +22,7 @@ import useIsMobile from "@/hooks/useIsMobile";
 import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 import AutoDiagram1 from "@/components/AutoDiagram1";
 import { useLanguage } from "@/providers/language-provider";
+import { hasMachineFeature } from "@/lib/machineRegistry";
 
 export default function AutoPaddyPage() {
   const router = useRouter();
@@ -33,7 +34,7 @@ export default function AutoPaddyPage() {
 
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
-  
+
   // Check if Paddy_ageing_mode is active (handles various boolean representations)
   const isPaddyAgeingMode = (() => {
     const value = data?.Paddy_ageing_mode;
@@ -50,8 +51,8 @@ export default function AutoPaddyPage() {
     return false;
   })();
 
-  // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
-  const isBarMachine = autoPaddy === "GTPL-137-GT-450T-S7-1200" || autoPaddy === "GTPL-138-GT-450T-S7-1200";
+  // Derived from centralized registry
+  const isBarMachine = hasMachineFeature(autoPaddy as string, "isBarMachine");
 
   // Helper function to convert psi values to bar for display
   const convertPressureToBar = (value: any) => {
@@ -505,15 +506,8 @@ export default function AutoPaddyPage() {
                       </span>
                     </motion.div>
 
-                    {/* CR Valve Status for specific machines */}
-                    {[ 
-                      "GTPL-132-300-AP-S7-1200",
-                      "GTPL-136-gT-450AP",
-                      "GTPL-139-GT-300AP-S7-1200",
-                           'GTPL-143-gT-450AP-S7-1200',
-                      'GTPL-142-gT-450AP-S7-1200',
-                      'GTPL-123-GT-450AP'
-                    ].includes(autoPaddy as string) && (
+                    {/* CR Valve Status — derived from centralized registry */}
+                    {hasMachineFeature(autoPaddy as string, "hasCRValve") && (
                       <>
                         <motion.div
                           initial={{ opacity: 0, x: -20 }}

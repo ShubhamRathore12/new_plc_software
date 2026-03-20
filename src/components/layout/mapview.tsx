@@ -15,11 +15,10 @@ L.Icon.Default.mergeOptions({
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
 });
 
-// 🔽 City-wide machine locations
 const cityLocations = {
   Noida: {
     name: "Noida",
-    coordinates: [28.5708, 77.321], // default view center
+    coordinates: [28.5708, 77.321],
     subLocations: [
       { name: "Sector 18 Market", position: [28.5708, 77.321] },
       { name: "Amity University", position: [28.545, 77.3358] },
@@ -40,41 +39,54 @@ const cityLocations = {
 
 export default function MapView() {
   return (
-    <div className="w-full h-64 rounded-md overflow-hidden">
+    <div className="w-full h-72 rounded-xl overflow-hidden">
       <MapContainer
         center={cityLocations.Noida.coordinates as L.LatLngExpression}
         zoom={5}
         scrollWheelZoom
-        className="w-full h-full"
+        className="w-full h-full rounded-xl"
       >
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* 🟢 Noida Sub-locations */}
         {cityLocations.Noida.subLocations.map((location, index) => (
-          <Marker key={`noida-${index}`} position={location.position as L.LatLngExpression}>
+          <Marker
+            key={`noida-${index}`}
+            position={location.position as L.LatLngExpression}
+          >
             <Popup>
-              {location.name}<br />
-              City: Noida
+              <div className="text-sm">
+                <strong>{location.name}</strong>
+                <br />
+                <span className="text-gray-500">Noida, India</span>
+              </div>
             </Popup>
           </Marker>
         ))}
 
-        {/* 🔵 Kanpur center */}
-        <Marker position={cityLocations.Kanpur.coordinates as L.LatLngExpression}>
+        <Marker
+          position={cityLocations.Kanpur.coordinates as L.LatLngExpression}
+        >
           <Popup>
-            City: Kanpur<br />
-            GTPL Machine(s)
+            <div className="text-sm">
+              <strong>Kanpur</strong>
+              <br />
+              <span className="text-gray-500">GTPL Machine(s)</span>
+            </div>
           </Popup>
         </Marker>
 
-        {/* 🔴 Germany center */}
-        <Marker position={cityLocations.Germany.coordinates as L.LatLngExpression}>
+        <Marker
+          position={cityLocations.Germany.coordinates as L.LatLngExpression}
+        >
           <Popup>
-            Country: Germany<br />
-            GTPL Machine(s)
+            <div className="text-sm">
+              <strong>Germany</strong>
+              <br />
+              <span className="text-gray-500">GTPL Machine(s)</span>
+            </div>
           </Popup>
         </Marker>
       </MapContainer>

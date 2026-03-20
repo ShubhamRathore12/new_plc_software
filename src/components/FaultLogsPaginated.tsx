@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
+import { DEVICE_TO_TABLE_MAP } from "@/lib/machineRegistry";
 
 import LanguageSelector from "@/components/faultLogs/LanguageSelector";
 import SearchBar from "@/components/faultLogs/SearchBar";
@@ -61,8 +62,9 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       firstUrl.searchParams.append("machineName", machineName);
       firstUrl.searchParams.append("page", "1");
       firstUrl.searchParams.append("limit", PAGE_SIZE.toString());
-      if (machineName === "GTPL-30-gT-180E-S7-1200") {
-        firstUrl.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
+      const tableOverride = DEVICE_TO_TABLE_MAP[machineName];
+      if (tableOverride) {
+        firstUrl.searchParams.append("tableName", tableOverride);
       }
       if (search && search.trim()) {
         firstUrl.searchParams.append("search", search.trim());
@@ -84,8 +86,8 @@ export default function FaultLogsPaginated({ machineName }: Props) {
         url.searchParams.append("machineName", machineName);
         url.searchParams.append("page", apiPage.toString());
         url.searchParams.append("limit", PAGE_SIZE.toString());
-        if (machineName === "GTPL-30-gT-180E-S7-1200") {
-          url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
+        if (tableOverride) {
+          url.searchParams.append("tableName", tableOverride);
         }
         if (search && search.trim()) {
           url.searchParams.append("search", search.trim());

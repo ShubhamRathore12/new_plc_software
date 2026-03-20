@@ -1,35 +1,7 @@
 import { pool } from "@/lib/db";
+import { ALL_TABLE_NAMES } from "@/lib/machineRegistry";
 
-const ALLOWED_TABLES = [
-  "GTPL_108_gT_40E_P_S7_200_Germany",
-  "GTPL_109_gT_40E_P_S7_200_Germany",
-  "GTPL_110_gT_40E_P_S7_200_Germany",
-  "GTPL_111_gT_80E_P_S7_200_Germany",
-  "GTPL_112_gT_80E_P_S7_200_Germany",
-  "GTPL_113_gT_80E_P_S7_200_Germany",
-  "kabomachinedatasmart200",
-  "GTPL_114_GT_140E_S7_1200",
-  "GTPL_115_GT_180E_S7_1200",
-  "GTPL_119_GT_180E_S7_1200",
-  "GTPL_120_GT_180E_S7_1200",
-  "GTPL_116_GT_240E_S7_1200",
-  "GTPL_117_GT_320E_S7_1200",
-  "GTPL_121_GT1000T",
-  "gtpl_122_s7_1200_01",
-  "GTPL_124_GT_450T_S7_1200",
-  "GTPL_133_GT_650T_S7_1200",
-  "GTPL_132_GT_650T_S7_1200",
-  "GTPL_132_GT300AP",
-  "GTPL_137_GT_450T_S7_1200",
-  "GTPL_138_GT_450T_S7_1200",
-  "GTPL_061_GT_450T_S7_1200",
-   "GTPL_134_GT_450T_S7_1200",
-  "GTPL_135_GT_450T_S7_1200",
-    'GTPL_139_GT300AP',
-  "GTPL_142_GT_450AP_S7_1200",
-  "GTPL_123_GT_450AP_S7_1200",
-  "GTPL_143_GT_450AP_S7_1200"
-];
+const ALLOWED_TABLES = ALL_TABLE_NAMES;
 
 export async function GET(req: Request) {
   try {
@@ -115,6 +87,10 @@ export async function GET(req: Request) {
       },
     });
   } catch (err: any) {
+    // Table doesn't exist yet — return empty data instead of 500
+    if (err?.errno === 1146) {
+      return Response.json({ data: [], page: 1, limit: 0, total: 0, table: new URL(req.url).searchParams.get("table") });
+    }
     return Response.json({ error: err?.message || "Internal error" }, { status: 500 });
   }
 }

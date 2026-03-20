@@ -28,6 +28,8 @@ export default function InputsPage() {
   const isGTPL136 = device === "GTPL-136-gT-450AP"
   const isGTPL137 = device === "GTPL-137-GT-450T-S7-1200"
   const isGTPL138 = device === "GTPL-138-GT-450T-S7-1200"
+  const isGTPL145 = device === "GTPL-145-GT-450T-S7-1200"
+  const isGTPL148 = device === "GTPL-148-GT-450T-S7-1200"
   const isGTPL061 = device === "GTPL-061-gT-450T-S7-1200"
   const isGTPL139 = device === "GTPL-139-GT-300AP-S7-1200"
   const { data } = useAutoData(device as string);
@@ -311,9 +313,11 @@ export default function InputsPage() {
                   isGTPL136 ? gtpl_136_faultStatus :
                     isGTPL137 ? gtpl_137_faultStatus :
                       isGTPL138 ? gtpl_138_faultStatus :
-                        isGTPL061 ? gtpl_061_faultStatus :
-                          isGTPL139 ? gtpl_139_faultStatus :
-                            [];
+                        isGTPL145 ? gtpl_137_faultStatus :
+                          isGTPL148 ? gtpl_137_faultStatus :
+                            isGTPL061 ? gtpl_061_faultStatus :
+                              isGTPL139 ? gtpl_139_faultStatus :
+                                [];
 
     return selectedList.map((item, index) => {
       const isFault = isStatusFault(item.status);
@@ -403,9 +407,11 @@ export default function InputsPage() {
                 isGTPL136 ? gtpl_136_faultStatus :
                   isGTPL137 ? gtpl_137_faultStatus :
                     isGTPL138 ? gtpl_138_faultStatus :
-                      isGTPL061 ? gtpl_061_faultStatus :
-                        isGTPL139 ? gtpl_139_faultStatus :
-                          [];
+                      isGTPL145 ? gtpl_137_faultStatus :
+                        isGTPL148 ? gtpl_137_faultStatus :
+                          isGTPL061 ? gtpl_061_faultStatus :
+                            isGTPL139 ? gtpl_139_faultStatus :
+                              [];
 
   const totalInputs = selectedList.length;
   const activeFaults = selectedList.filter(item => isStatusFault(item.status)).length;

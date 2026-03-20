@@ -230,6 +230,28 @@ export default function OutputsPage() {
         { id: "17", description: "Condenser fan 4", dataKey: "Condenser_fan4_on_Q2_6" },
       ];
     }
+    else if (deviceType === "GTPL-145-GT-450T-S7-1200" || deviceType === "GTPL-148-GT-450T-S7-1200") {
+      return [
+        { id: "1", description: "Compressor", dataKey: "Compressor_on_Q0_0" },
+        { id: "2", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
+        { id: "3", description: "CR 25% ON", dataKey: "CR_25%_ON_Q0_2" },
+        { id: "4", description: "CR 50% ON", dataKey: "CR_50%_ON_Q0_3" },
+        { id: "5", description: "Solenoid valve", dataKey: "Solenoid_valve_on_Q0_4" },
+        { id: "6", description: "Hot gas valve", dataKey: "Hot_gas_valve_on_Q0_5" },
+        { id: "7", description: "After heat valve", dataKey: "After_heat_valve_on_Q0_6" },
+        { id: "8", description: "Blower drive", dataKey: "Blower_drive_on_Q0_7" },
+        { id: "9", description: "Collective trouble signal", dataKey: "Collective_trouble_signal_Q1_0" },
+        { id: "10", description: "Chiller healthy", dataKey: "Chiller_healthy_on_Q1_1" },
+        { id: "11", description: "Spare", dataKey: "Spare_Q2_0" },
+        { id: "12", description: "Condenser fan 1", dataKey: "Condenser_fan1_on_Q2_1" },
+        { id: "13", description: "CR valve 75% on", dataKey: "CR valve 75% on_Q2_2" },
+        { id: "14", description: "Chiller fault", dataKey: "Chiller_fault_Q2_3" },
+        { id: "15", description: "Condenser fan 2", dataKey: "Condenser_fan2_on_Q2_4" },
+        { id: "16", description: "Condenser fan 3", dataKey: "Condenser_fan3_on_Q2_5" },
+        { id: "17", description: "Condenser fan 4", dataKey: "Condenser_fan4_on_Q2_6" },
+        { id: "18", description: "CR 100% ON", dataKey: "CR_100%_ON_Q2_7" },
+      ];
+    }
     else if (deviceType === "GTPL-061-gT-450T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
@@ -283,30 +305,7 @@ export default function OutputsPage() {
   const getStatus = (dataKey: string) => {
     if (!data) return false;
     const value = data[dataKey];
-
-    if (device === "GTPL-118-gT-80E-P-S7-200") {
-      return value === "tr";
-    }
-
-    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200") {
-      return value === "true" || value === 1 || value === "1" || value === true || value === "True";
-    }
-
-    if (device === "GTPL-115-gT-180E-S7-1200") {
-      return value === true || value === 1 || value === "1" || value === "True" || value === "true";
-    }
-
-    if (device === "GTPL-116-gT-240E-S7-1200") {
-      return value === true || value === 1 || value === "1" || value === "True" || value === "true";
-    }
-    if (device === "GTPL-136-gT-450AP") {
-      return value === true || value === 1 || value === "1" || value === "True" || value === "true";
-    }
-
-    if (device === "GTPL-139-GT-300AP-S7-1200") {
-      return value === true || value === 1 || value === "1" || value === "True" || value === "true";
-    }
-
+    // Unified boolean check — handles all machine types
     return value === true || value === 1 || value === "1" || value === "tr" || value === "True" || value === "true";
   };
 

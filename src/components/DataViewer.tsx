@@ -15,85 +15,21 @@ import {
   FileText,
   FileJson,
 } from "lucide-react";
+import { MACHINE_REGISTRY } from "@/lib/machineRegistry";
 
-// All available tables with their display names
-const TABLE_CONFIG = {
-  GTPL_108_gT_40E_P_S7_200_Germany: {
-    name: "GTPL-108 (S7-200 Germany)",
-    type: "S7-200",
-    location: "Germany",
-  },
-  GTPL_109_gT_40E_P_S7_200_Germany: {
-    name: "GTPL-109 (S7-200 Germany)",
-    type: "S7-200",
-    location: "Germany",
-  },
-  GTPL_110_gT_40E_P_S7_200_Germany: {
-    name: "GTPL-110 (S7-200 Germany)",
-    type: "S7-200",
-    location: "Germany",
-  },
-  GTPL_111_gT_80E_P_S7_200_Germany: {
-    name: "GTPL-111 (S7-200 Germany)",
-    type: "S7-200",
-    location: "Germany",
-  },
-  GTPL_112_gT_80E_P_S7_200_Germany: {
-    name: "GTPL-112 (S7-200 Germany)",
-    type: "S7-200",
-    location: "Germany",
-  },
-  GTPL_113_gT_80E_P_S7_200_Germany: {
-    name: "GTPL-113 (S7-200 Germany)",
-    type: "S7-200",
-    location: "Germany",
-  },
-  kabomachinedatasmart200: {
-    name: "GTPL-118 (S7-200 Smart)",
-    type: "S7-200",
-    location: "Noida",
-  },
-  GTPL_114_GT_140E_S7_1200: {
-    name: "GTPL-114 (S7-1200)",
-    type: "S7-1200",
-    location: "Germany",
-  },
-  GTPL_115_GT_180E_S7_1200: {
-    name: "GTPL-115 (S7-1200)",
-    type: "S7-1200",
-    location: "Germany",
-  },
-  GTPL_119_GT_180E_S7_1200: {
-    name: "GTPL-119 (S7-1200)",
-    type: "S7-1200",
-    location: "Germany",
-  },
-  GTPL_120_GT_180E_S7_1200: {
-    name: "GTPL-120 (S7-1200)",
-    type: "S7-1200",
-    location: "Germany",
-  },
-  GTPL_116_GT_240E_S7_1200: {
-    name: "GTPL-116 (S7-1200)",
-    type: "S7-1200",
-    location: "Germany",
-  },
-  GTPL_117_GT_320E_S7_1200: {
-    name: "GTPL-117 (S7-1200)",
-    type: "S7-1200",
-    location: "Germany",
-  },
-  GTPL_121_GT1000T: {
-    name: "GTPL-121 (S7-1200)",
-    type: "S7-1200",
-    location: "Noida",
-  },
-  gtpl_122_s7_1200_01: {
-    name: "GTPL-122 (S7-1200)",
-    type: "S7-1200",
-    location: "Noida",
-  },
-};
+// Derived from centralized registry — no manual updates needed
+const TABLE_CONFIG: Record<string, { name: string; type: string; location: string }> = Object.fromEntries(
+  MACHINE_REGISTRY
+    .filter((m) => m.name !== "Gtpl-S7-1200-02") // exclude aliases
+    .map((m) => [
+      m.table,
+      {
+        name: `${m.name.match(/GTPL-\d+/i)?.[0] || m.name} (${m.type})`,
+        type: m.type,
+        location: m.location,
+      },
+    ])
+);
 
 interface DataViewerProps {
   className?: string;
