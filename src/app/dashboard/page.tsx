@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-1 gap-4 md:gap-6">
       <div className="space-y-4 md:space-y-6">
-        {/* Map Card */}
+        {/* Map Card — Live Machine Status */}
         <div className="p-4 rounded-lg shadow bg-white dark:bg-gray-800 text-black dark:text-white">
           <MapView />
         </div>
