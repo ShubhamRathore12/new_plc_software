@@ -491,6 +491,11 @@ export const MACHINE_CONFIG = {
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
+  "GTPL-131-GT-650T-S7-1200": {
+    table: "GTPL_131_GT_650T_S7_1200",
+    tags: GPL_124_TAGS,
+    type: "S7-1200",
+  },
   "GTPL-124-GT-450T-S7-1200": {
     table: "GTPL_124_GT_450T_S7_1200",
     tags: GPL_124_TAGS,

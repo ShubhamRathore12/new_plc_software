@@ -51,7 +51,7 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-133-GT-650T-S7-1200") {
+    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-133-GT-650T-S7-1200" || deviceType === "GTPL-131-GT-650T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor Start", dataKey: "Compressor_start_Q0_0" },
         { id: "Q0.1", description: "Compressor Module Reset", dataKey: "Compressor_module_reset_Q0_1" },
@@ -288,7 +288,7 @@ export default function OutputsPage() {
       return value === "tr";
     }
 
-    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200") {
+    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
       return value === "true" || value === 1 || value === "1" || value === true || value === "True";
     }
 
