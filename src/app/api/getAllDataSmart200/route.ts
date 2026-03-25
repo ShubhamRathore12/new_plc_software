@@ -504,6 +504,7 @@ const ALLOWED_TABLES = [
   "GTPL_061_GT_450T_S7_1200",
     "GTPL_134_GT_450T_S7_1200",
   "GTPL_135_GT_450T_S7_1200",
+  "GTPL_145_GT_450T_S7_1200",
     'GTPL_139_GT300AP',
   "GTPL_142_GT_450AP_S7_1200",
   "GTPL_123_GT_450AP_S7_1200",
@@ -642,6 +643,7 @@ function isFullColumnTable(table: string): boolean {
     table === "GTPL_132_GT300AP" ||
     table === "GTPL_134_GT_450T_S7_1200" ||
     table === "GTPL_135_GT_450T_S7_1200" ||
+    table === "GTPL_145_GT_450T_S7_1200" ||
     table === "GTPL_136_GT_450AP_S7_1200" ||
     table === "GTPL_137_GT_450T_S7_1200" ||
     table === "GTPL_138_GT_450T_S7_1200" ||
