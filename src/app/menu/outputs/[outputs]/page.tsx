@@ -302,9 +302,57 @@ export default function OutputsPage() {
 
   const outputsData = getOutputsConfig(device || "");
 
+  // Dynamically resolve dataKey: try exact match first, then try alternative CR valve naming conventions
+  const resolveDataKey = (dataKey: string): unknown => {
+    if (!data) return undefined;
+    if (data[dataKey] !== undefined) return data[dataKey];
+
+    // Try alternative CR valve naming patterns
+    const crPatterns: Record<string, string[]> = {
+      // 25% variants
+      "CR_valve_25_percent_on_Q0_2": ["CR_25_percent_ON_Q0_2", "CR_valve_25_percent_ON_Q0_2", "CR_25%_ON_Q0_2", "CR_valve_25_on_Q0_2"],
+      "CR_25_percent_ON_Q0_2": ["CR_valve_25_percent_on_Q0_2", "CR_valve_25_percent_ON_Q0_2", "CR_25%_ON_Q0_2", "CR_valve_25_on_Q0_2"],
+      "CR_valve_25_percent_ON_Q0_2": ["CR_valve_25_percent_on_Q0_2", "CR_25_percent_ON_Q0_2", "CR_25%_ON_Q0_2", "CR_valve_25_on_Q0_2"],
+      "CR_25%_ON_Q0_2": ["CR_valve_25_percent_on_Q0_2", "CR_25_percent_ON_Q0_2", "CR_valve_25_percent_ON_Q0_2", "CR_valve_25_on_Q0_2"],
+      "CR_valve_25_on_Q0_2": ["CR_valve_25_percent_on_Q0_2", "CR_25_percent_ON_Q0_2", "CR_valve_25_percent_ON_Q0_2", "CR_25%_ON_Q0_2"],
+      // 50% variants
+      "CR_valve_50_percent_on_Q0_3": ["CR_50_percent_ON_Q0_3", "CR_valve_50_percent_ON_Q0_3", "CR_50%_ON_Q0_3", "CR_valve_50_on_Q0_3"],
+      "CR_50_percent_ON_Q0_3": ["CR_valve_50_percent_on_Q0_3", "CR_valve_50_percent_ON_Q0_3", "CR_50%_ON_Q0_3", "CR_valve_50_on_Q0_3"],
+      "CR_valve_50_percent_ON_Q0_3": ["CR_valve_50_percent_on_Q0_3", "CR_50_percent_ON_Q0_3", "CR_50%_ON_Q0_3", "CR_valve_50_on_Q0_3"],
+      "CR_50%_ON_Q0_3": ["CR_valve_50_percent_on_Q0_3", "CR_50_percent_ON_Q0_3", "CR_valve_50_percent_ON_Q0_3", "CR_valve_50_on_Q0_3"],
+      "CR_valve_50_on_Q0_3": ["CR_valve_50_percent_on_Q0_3", "CR_50_percent_ON_Q0_3", "CR_valve_50_percent_ON_Q0_3", "CR_50%_ON_Q0_3"],
+      // 75% variants
+      "CR_valve_75_percent_on_Q2_2": ["CR_75_percent_ON_Q2_2", "CR_valve_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2", "CR_valve_75_on_Q2_2"],
+      "CR_75_percent_ON_Q2_2": ["CR_valve_75_percent_on_Q2_2", "CR_valve_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2", "CR_valve_75_on_Q2_2"],
+      "CR_valve_75_percent_ON_Q2_2": ["CR_valve_75_percent_on_Q2_2", "CR_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2", "CR_valve_75_on_Q2_2"],
+      "CR valve 75% on_Q2_2": ["CR_valve_75_percent_on_Q2_2", "CR_75_percent_ON_Q2_2", "CR_valve_75_percent_ON_Q2_2", "CR_valve_75_on_Q2_2"],
+      "CR_valve_75_on_Q2_2": ["CR_valve_75_percent_on_Q2_2", "CR_75_percent_ON_Q2_2", "CR_valve_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2"],
+      // 100% variants
+      "CR_valve_100_percent_on_Q2_5": ["CR_100_percent_ON_Q2_7", "CR_valve_100_percent_ON_Q2_7", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7", "CR_valve_100_percent_on_Q2_7"],
+      "CR_100_percent_ON_Q2_7": ["CR_valve_100_percent_on_Q2_5", "CR_valve_100_percent_ON_Q2_7", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7", "CR_valve_100_percent_on_Q2_7"],
+      "CR_valve_100_percent_ON_Q2_7": ["CR_valve_100_percent_on_Q2_5", "CR_100_percent_ON_Q2_7", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7"],
+      "CR_100%_ON_Q2_7": ["CR_valve_100_percent_on_Q2_5", "CR_100_percent_ON_Q2_7", "CR_valve_100_percent_ON_Q2_7", "CR_valve_100_on_Q2_7"],
+      "CR_valve_100_on_Q2_7": ["CR_valve_100_percent_on_Q2_5", "CR_100_percent_ON_Q2_7", "CR_valve_100_percent_ON_Q2_7", "CR_100%_ON_Q2_7"],
+      // Collective trouble signal variants
+      "Collective_trouble_signal_Q1_0": ["Collective_Trouble_Signal_Q1_0"],
+      "Collective_Trouble_Signal_Q1_0": ["Collective_trouble_signal_Q1_0"],
+      // Chiller fault variants
+      "Chiller_fault_Q2_3": ["Chiller_Fault_Q2_3"],
+      "Chiller_Fault_Q2_3": ["Chiller_fault_Q2_3"],
+    };
+
+    const alternatives = crPatterns[dataKey];
+    if (alternatives) {
+      for (const alt of alternatives) {
+        if (data[alt] !== undefined) return data[alt];
+      }
+    }
+    return undefined;
+  };
+
   const getStatus = (dataKey: string) => {
     if (!data) return false;
-    const value = data[dataKey];
+    const value = resolveDataKey(dataKey);
 
     if (device === "GTPL-118-gT-80E-P-S7-200") {
       return value === "tr";

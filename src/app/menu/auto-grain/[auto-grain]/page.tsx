@@ -34,6 +34,19 @@ export default function AutoGrainPage() {
   const isRunning = !!data?.AUTO_PROCESS_PB;
   const isAutoAeration = !!data?.AUTO_AERATION_ENA;
   
+  // Dynamically resolve CR valve column names across different machines
+  const resolveCR = (keys: string[]): string | undefined => {
+    if (!data) return undefined;
+    for (const k of keys) {
+      if (data[k] !== undefined) return String(data[k]);
+    }
+    return undefined;
+  };
+  const cr25 = resolveCR(["CR_valve_25_percent_ON_Q0_2", "CR_valve_25_percent_on_Q0_2", "CR_25_percent_ON_Q0_2", "CR_25%_ON_Q0_2", "CR_valve_25_on_Q0_2"]);
+  const cr50 = resolveCR(["CR_valve_50_percent_ON_Q0_3", "CR_valve_50_percent_on_Q0_3", "CR_50_percent_ON_Q0_3", "CR_50%_ON_Q0_3", "CR_valve_50_on_Q0_3"]);
+  const cr75 = resolveCR(["CR_valve_75_percent_ON_Q2_2", "CR_valve_75_percent_on_Q2_2", "CR_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2", "CR_valve_75_on_Q2_2"]);
+  const cr100 = resolveCR(["CR_valve_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_7", "CR_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_5", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7"]);
+
   // Check if Grain_chilling_mode is active (handles both "true" and "True")
   const isGrainChillingMode = String(data?.Grain_chilling_mode)?.toLowerCase() === "true";
 
@@ -478,8 +491,8 @@ export default function AutoGrainPage() {
                             <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
                             CR Valve 25%
                           </span>
-                          <span className={`font-bold text-lg ${data?.CR_valve_25_percent_on_Q0_2 ? "text-green-600" : "text-red-600"}`}>
-                            {String(data?.CR_valve_25_percent_on_Q0_2)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          <span className={`font-bold text-lg ${cr25?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
+                            {cr25?.toLowerCase() === "true" ? "ON" : "OFF"}
                           </span>
                         </motion.div>
 
@@ -493,8 +506,8 @@ export default function AutoGrainPage() {
                             <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
                             CR Valve 50%
                           </span>
-                          <span className={`font-bold text-lg ${data?.CR_valve_50_percent_on_Q0_3 ? "text-green-600" : "text-red-600"}`}>
-                            {String(data?.CR_valve_50_percent_on_Q0_3)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          <span className={`font-bold text-lg ${cr50?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
+                            {cr50?.toLowerCase() === "true" ? "ON" : "OFF"}
                           </span>
                         </motion.div>
 
@@ -508,8 +521,8 @@ export default function AutoGrainPage() {
                             <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
                             CR Valve 75%
                           </span>
-                          <span className={`font-bold text-lg ${data?.CR_valve_75_percent_on_Q2_2 ? "text-green-600" : "text-red-600"}`}>
-                            {String(data?.CR_valve_75_percent_on_Q2_2)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          <span className={`font-bold text-lg ${cr75?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
+                            {cr75?.toLowerCase() === "true" ? "ON" : "OFF"}
                           </span>
                         </motion.div>
 
@@ -523,8 +536,8 @@ export default function AutoGrainPage() {
                             <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
                             CR Valve 100%
                           </span>
-                          <span className={`font-bold text-lg ${data?.CR_valve_100_percent_on_Q2_5 ? "text-green-600" : "text-red-600"}`}>
-                            {String(data?.CR_valve_100_percent_on_Q2_5)?.toLowerCase() === "true" ? "ON" : "OFF"}
+                          <span className={`font-bold text-lg ${cr100?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
+                            {cr100?.toLowerCase() === "true" ? "ON" : "OFF"}
                           </span>
                         </motion.div>
                       </>
