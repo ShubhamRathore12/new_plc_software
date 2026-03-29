@@ -388,8 +388,8 @@ interface MachineConfig {
 // Machine configuration mapping
 export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   // S7-200
-  "GTPL-118-gT-80E-P-S7-200": {
-    table: "kabomachinedatasmart200",
+  "GTPL-60-gT-60T-P-S7-200": {
+    table: "GTPL_118_GT_60T_S7_1200",
     tags: S7_200_TAGS,
     type: "S7-200",
   },
@@ -802,6 +802,30 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 28, description: "Air outlet sensor T0.2 open" },
     { code: 29, description: "Air outlet sensor T0.2 short circuit" },
   ],
+  GTPL_118: [
+    { code: 1, description: "Compressor circuit breaker fault" },
+    { code: 3, description: "Blower drive fault" },
+    { code: 4, description: "Blower circuit breaker fault" },
+    { code: 5, description: "Ambient air sensor T2 open" },
+    { code: 7, description: "Three phase monitor fault" },
+    { code: 8, description: "High pressure fault" },
+    { code: 9, description: "Ambient temp lower than set temp" },
+    { code: 10, description: "Ambient temp over 45°C" },
+    { code: 11, description: "Compressor motor overheat" },
+    { code: 12, description: "Condenser fan door open" },
+    { code: 14, description: "Low pressure 1 fault" },
+    { code: 15, description: "Compressor running status fault" },
+    { code: 16, description: "Low pressure 2 fault" },
+    { code: 17, description: "Ambient temp over 43°C" },
+    { code: 28, description: "Discharge pressure high, please clean the filter" },
+    { code: 30, description: "Condenser fan circuit breaker fault" },
+    { code: 31, description: "Condenser fan TOP fault" },
+    { code: 32, description: "Ambient air sensor T2 short circuit" },
+    { code: 35, description: "Cold air sensor T1 open" },
+    { code: 36, description: "Cold air sensor T1 short circuit" },
+    { code: 39, description: "Air outlet sensor T0 open" },
+    { code: 40, description: "Air outlet sensor T0 short circuit" },
+  ],
   GTPL_137: [
     { code: 1, description: "Compressor circuit breaker" },
     { code: 2, description: "Compressor module feedback error" },
@@ -1015,6 +1039,8 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GTPL_132"];
   } else if (resolvedName === "GTPL-136-gT-450AP") {
     return FAULT_CODES["GTPL_136"];
+  } else if (resolvedName === "GTPL-60-gT-60T-P-S7-200") {
+    return FAULT_CODES["GTPL_118"];
   } else if (resolvedName === "GTPL-137-GT-450T-S7-1200") {
     return FAULT_CODES["GTPL_137"];
   } else if (resolvedName === "GTPL-138-GT-450T-S7-1200") {

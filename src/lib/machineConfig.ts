@@ -382,6 +382,34 @@ export const GTPL_134_135_TAGS = [
   "Cond_fan4_circuit_breaker_fault_I2_7",
 ];
 
+export const GTPL_118_TAGS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Compressor_overheat_I0_1",
+  "Compressor_in_operation_I0_2",
+  "Blower_drive_fault_I0_3",
+  "Blower_drive_in_operation_I0_4",
+  "Blower_circuit_breaker_I0_5",
+  "Condenser_fan_TOP_fault_I0_6",
+  "Condenser_fan_circuit_breaker_I0_7",
+  "Low_pressure_fault_I1_0",
+  "High_Pressure_Fault_I1_1",
+  "Three_phase_monitor_fault_I1_2",
+  "Condenser_fan_door_open_I1_3",
+];
+
+export const GTPL_118_OUTPUT_TAGS = [
+  "Compressor_on_Q0_0",
+  "Compressor_motor_reset_Q0_1",
+  "Solenoid_valve_on_Q0_2",
+  "Hot_gas_valve_on_Q0_3",
+  "After_heat_valve_on_Q0_4",
+  "Blower_drive_on_Q0_5",
+  "Collective_Trouble_Signal_Q0_6",
+  "Chiller_healthy_on_Q0_7",
+  "Condenser_fan_on_Q1_0",
+  "Chiller_Fault_Q1_1",
+];
+
 export const GTPL_134_135_OUTPUT_TAGS = [
   "Compressor_on_Q0_0",
   "Compressor_motor_reset_Q0_1",
@@ -406,10 +434,10 @@ export const GTPL_134_135_OUTPUT_TAGS = [
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
-  "GTPL-118-gT-80E-P-S7-200": {
-    table: "kabomachinedatasmart200",
-    tags: S7_200_TAGS,
-    type: "S7-200",
+  "GTPL-60-gT-60T-P-S7-200": {
+    table: "GTPL_118_GT_60T_S7_1200",
+    tags: GTPL_118_TAGS,
+    type: "S7-1200",
   },
   "GTPL-108-gT-40E-P-S7-200": {
     table: "GTPL_108_gT_40E_P_S7_200_Germany",

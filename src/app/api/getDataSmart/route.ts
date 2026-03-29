@@ -18,7 +18,7 @@ export async function GET(req: Request) {
   const interval = setInterval(async () => {
     try {
       const [rows]: any = await pool.query(
-        "SELECT * FROM kabomachinedatasmart200 ORDER BY id DESC LIMIT 1"
+        "SELECT * FROM GTPL_118_GT_60T_S7_1200 ORDER BY id DESC LIMIT 1"
       );
       const latest = rows[0];
 

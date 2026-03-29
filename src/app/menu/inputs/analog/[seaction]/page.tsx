@@ -275,6 +275,23 @@ export default function AnalogPage() {
     },
   }
 
+  const GTPL_60_config = {
+    displayName: "GTPL-60 Machine",
+    inputs: {
+      "Suction Pressure": "LP_value",
+      "Discharge Pressure": "HP_value",
+      "T2.1 Ambient Temp": "T2_ambient_temp",
+      "T1.1 Cold Temp": "T1_cold_air_temp",
+      "T0.1 Air Outlet Temp": "T0_air_outlet_temp",
+    },
+    outputs: {
+      "Blower Speed": "Blower_speed",
+      "Condenser fan speed": "Condenser_fan_speed",
+      "Hot Gas Valve": "Hot_valve_speed",
+      "Afterheat Valve": "AHT_valve_speed",
+    },
+  }
+
   const machineConfigs: Record<
     string,
     {
@@ -307,6 +324,7 @@ export default function AnalogPage() {
     "GTPL-142-gT-450AP-S7-1200":GTPL_132_config,
     "GTPL-123-GT-450AP":GTPL_132_config,
     "GTPL-143-gT-450AP-S7-1200":GTPL_132_config,
+    "GTPL-60-gT-60T-P-S7-200": GTPL_60_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -489,7 +507,7 @@ export default function AnalogPage() {
                           if (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
                             return !item.description.startsWith("T0 probe #2 (Afterheater)") && !item.description.startsWith("T2 probe #2 (Ambient Air)") && !item.description.startsWith("TH probe #2 (Supply Air)") && !item.description.startsWith("T1 probe #2 (Cold Air)")
                           }
-                          if (device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200") {
+                          if (device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-60-gT-60T-P-S7-200") {
                             return !item.description.includes(".2 ")
                           }
                           if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200") {

@@ -8,7 +8,7 @@ const ALLOWED_TABLES = [
   "GTPL_111_gT_80E_P_S7_200_Germany",
   "GTPL_112_gT_80E_P_S7_200_Germany",
   "GTPL_113_gT_80E_P_S7_200_Germany",
-  "kabomachinedatasmart200",
+  "GTPL_118_GT_60T_S7_1200",
   "GTPL_114_GT_140E_S7_1200",
   "GTPL_115_GT_180E_S7_1200",
   "GTPL_119_GT_180E_S7_1200",
@@ -22,7 +22,7 @@ const ALLOWED_TABLES = [
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
-    const table = searchParams.get("table") || "kabomachinedatasmart200";
+    const table = searchParams.get("table") || "GTPL_118_GT_60T_S7_1200";
     const format = searchParams.get("format") || "csv"; // csv or json
     const limit = parseInt(searchParams.get("limit") || "1000", 10);
 

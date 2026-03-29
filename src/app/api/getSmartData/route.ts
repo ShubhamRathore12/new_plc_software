@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function GET() {
   try {
     const [rows]: any[] = await pool.query(
-      "SELECT * FROM kabomachinedatasmart200 ORDER BY id DESC LIMIT 1"
+      "SELECT * FROM GTPL_118_GT_60T_S7_1200 ORDER BY id DESC LIMIT 1"
     );
 
     return NextResponse.json(rows, { status: 200 });

@@ -48,7 +48,7 @@ const TABLE_CONFIG = {
     type: "S7-200",
     location: "Germany",
   },
-  kabomachinedatasmart200: {
+  GTPL_118_GT_60T_S7_1200: {
     name: "GTPL-118 (S7-200 Smart)",
     type: "S7-200",
     location: "Noida",
@@ -101,7 +101,7 @@ interface DataViewerProps {
 
 export default function DataViewer({ className }: DataViewerProps) {
   const [selectedTable, setSelectedTable] = useState<string>(
-    "kabomachinedatasmart200"
+    "GTPL_118_GT_60T_S7_1200"
   );
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);

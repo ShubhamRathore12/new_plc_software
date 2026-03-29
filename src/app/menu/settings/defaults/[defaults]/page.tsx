@@ -363,47 +363,25 @@ export default function DefaultsPage() {
                     <div>psi</div>
                   </motion.div>
 
-                  {defaults !== "GTPL-118-gT-80E-P-S7-200" && (
-                    <motion.div
-                      className="grid grid-cols-3 items-center gap-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                    >
-                      <Label htmlFor="lp" className="text-right font-medium">
-                        LP
-                      </Label>
-                      <Input
-                        id="lp"
-                        type="number"
-                        value={
-                          PID_SETTINGS_LP_SET_FROM_HMI || data?.LP_set_point
-                        }
-                        className="col-span-1"
-                      />
-                      <div>psi</div>
-                    </motion.div>
-                  )}
-
-                  {defaults === "GTPL-118-gT-80E-P-S7-200" && (
-                    <motion.div
-                      className="grid grid-cols-3 items-center gap-4"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.6 }}
-                    >
-                      <Label htmlFor="lp" className="text-right font-medium">
-                        Auto Aeration
-                      </Label>
-                      <Input
-                        id="lp"
-                        type="number"
-                        value={data?.AUTO_AEARATIO_TIME}
-                        className="col-span-1"
-                      />
-                      <div>minute</div>
-                    </motion.div>
-                  )}
+                  <motion.div
+                    className="grid grid-cols-3 items-center gap-4"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6 }}
+                  >
+                    <Label htmlFor="lp" className="text-right font-medium">
+                      LP
+                    </Label>
+                    <Input
+                      id="lp"
+                      type="number"
+                      value={
+                        PID_SETTINGS_LP_SET_FROM_HMI || data?.LP_set_point
+                      }
+                      className="col-span-1"
+                    />
+                    <div>psi</div>
+                  </motion.div>
 
                   <motion.div
                     className="flex justify-between pt-4"

@@ -7,7 +7,7 @@ import {
 
 const MACHINE_TABLES: Record<string, string> = {
   gtpl_122_s7_1200_01: "GTPL_122_S7_1200",
-  kabomachinedatasmart200: "KABO_200",
+  GTPL_118_GT_60T_S7_1200: "KABO_200",
   GTPL_108_gT_40E_P_S7_200_Germany: "GTPL_108",
   GTPL_109_gT_40E_P_S7_200_Germany: "GTPL_109",
   GTPL_110_gT_40E_P_S7_200_Germany: "GTPL_110",

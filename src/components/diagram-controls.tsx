@@ -11,10 +11,10 @@ export default function Home({ data, formatValue, machineName }: any) {
   // Helper for lamp color
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db"); // gray-300
 
-  // Hide RH and Pa blocks for GTPL-118-gT-80E-P-S7-200
+  // Hide RH and Pa blocks for GTPL-60-gT-60T-P-S7-200
   const showTopBlocks =
-    machineName !== "GTPL-118-gT-80E-P-S7-200" &&
-    machineName !== "GTPL-118-gT-80E-P-S7-200";
+    machineName !== "GTPL-60-gT-60T-P-S7-200" &&
+    machineName !== "GTPL-60-gT-60T-P-S7-200";
 
   console.log(machineName);
 

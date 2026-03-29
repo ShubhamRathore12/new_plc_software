@@ -58,18 +58,29 @@ export default function TestPage() {
   useEffect(() => {
     setMounted(true);
     // Sync state with PLC data
-    if (data?.BLOWER_SET_POINT_MANUAL_MODE != null)
-      setBlowerSpeed(data.BLOWER_SET_POINT_MANUAL_MODE);
-    if (data?.CONDN_FAN_SET_POINT_MANUAL != null)
-      setCondFanSpeed(data.CONDN_FAN_SET_POINT_MANUAL);
-    if (data?.DELAY_TIME != null) setCompStartDelay(data.DELAY_TIME);
-    if (data?.HOT_GAS_VALVE_SET_POINT_MANUAL != null)
-      setHotGasValve(data.HOT_GAS_VALVE_SET_POINT_MANUAL);
-    if (data?.AFTER_HEAT_VALVE_SET_POINT_MANUAL != null)
-      setAfterHeatValve(data.AFTER_HEAT_VALVE_SET_POINT_MANUAL);
-    if (data?.MANUAL_Heater_Output != null)
-      setHeaterOutput(data.MANUAL_Heater_Output);
-  }, [data]);
+    if (test === "GTPL-60-gT-60T-P-S7-200") {
+      if (data?.Blower_speed_manual_set != null)
+        setBlowerSpeed(data.Blower_speed_manual_set);
+      if (data?.Condenser_fan_speed_set_in_manual != null)
+        setCondFanSpeed(data.Condenser_fan_speed_set_in_manual);
+      if (data?.Hot_gas_valve_manual_set != null)
+        setHotGasValve(data.Hot_gas_valve_manual_set);
+      if (data?.AHT_valve_manual_set != null)
+        setAfterHeatValve(data.AHT_valve_manual_set);
+    } else {
+      if (data?.BLOWER_SET_POINT_MANUAL_MODE != null)
+        setBlowerSpeed(data.BLOWER_SET_POINT_MANUAL_MODE);
+      if (data?.CONDN_FAN_SET_POINT_MANUAL != null)
+        setCondFanSpeed(data.CONDN_FAN_SET_POINT_MANUAL);
+      if (data?.DELAY_TIME != null) setCompStartDelay(data.DELAY_TIME);
+      if (data?.HOT_GAS_VALVE_SET_POINT_MANUAL != null)
+        setHotGasValve(data.HOT_GAS_VALVE_SET_POINT_MANUAL);
+      if (data?.AFTER_HEAT_VALVE_SET_POINT_MANUAL != null)
+        setAfterHeatValve(data.AFTER_HEAT_VALVE_SET_POINT_MANUAL);
+      if (data?.MANUAL_Heater_Output != null)
+        setHeaterOutput(data.MANUAL_Heater_Output);
+    }
+  }, [data, test]);
 
   const ControlCard = ({
     title,

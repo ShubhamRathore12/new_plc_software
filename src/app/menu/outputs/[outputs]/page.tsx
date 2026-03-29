@@ -97,7 +97,21 @@ export default function OutputsPage() {
     //     { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
     //   ];
     // }
-    else if (deviceType === "GTPL-118-gT-80E-P-S7-200" || deviceType === "GTPL-108-gT-40E-P-S7-200" || deviceType === "GTPL-109-gT-40E-P-S7-200" || deviceType === "GTPL-110-gT-40E-P-S7-200" || deviceType === "GTPL-111-gT-80E-P-S7-200" || deviceType === "GTPL-112-gT-80E-P-S7-200" || deviceType === "GTPL-113-gT-80E-P-S7-200") {
+    else if (deviceType === "GTPL-60-gT-60T-P-S7-200") {
+      return [
+        { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
+        { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
+        { id: "Q0.2", description: "Solenoid valve on", dataKey: "Solenoid_valve_on_Q0_2" },
+        { id: "Q0.3", description: "Hot gas valve on", dataKey: "Hot_gas_valve_on_Q0_3" },
+        { id: "Q0.4", description: "After heat valve on", dataKey: "After_heat_valve_on_Q0_4" },
+        { id: "Q0.5", description: "Blower drive on", dataKey: "Blower_drive_on_Q0_5" },
+        { id: "Q0.6", description: "Collective trouble signal", dataKey: "Collective_Trouble_Signal_Q0_6" },
+        { id: "Q0.7", description: "Chiller healthy", dataKey: "Chiller_healthy_on_Q0_7" },
+        { id: "Q1.0", description: "Condenser fan on", dataKey: "Condenser_fan_on_Q1_0" },
+        { id: "Q1.1", description: "Chiller fault", dataKey: "Chiller_Fault_Q1_1" },
+      ];
+    }
+    else if (deviceType === "GTPL-108-gT-40E-P-S7-200" || deviceType === "GTPL-109-gT-40E-P-S7-200" || deviceType === "GTPL-110-gT-40E-P-S7-200" || deviceType === "GTPL-111-gT-80E-P-S7-200" || deviceType === "GTPL-112-gT-80E-P-S7-200" || deviceType === "GTPL-113-gT-80E-P-S7-200") {
       return [
         { id: "1", description: "Blower Drive", dataKey: "BLOWER_DRIVE_ENABLE" },
         { id: "2", description: "Heater Drive", dataKey: "heater_on" },
@@ -354,7 +368,7 @@ export default function OutputsPage() {
     if (!data) return false;
     const value = resolveDataKey(dataKey);
 
-    if (device === "GTPL-118-gT-80E-P-S7-200") {
+    if (device === "GTPL-60-gT-60T-P-S7-200") {
       return value === "tr";
     }
 

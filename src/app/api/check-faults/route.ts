@@ -116,8 +116,8 @@ const S7_1200_TAGS = [
 // Machine configuration mapping
 const MACHINE_CONFIG = {
   // S7-200 machines
-  "GTPL-118-gT-80E-P-S7-200": {
-    table: "kabomachinedatasmart200",
+  "GTPL-60-gT-60T-P-S7-200": {
+    table: "GTPL_118_GT_60T_S7_1200",
     tags: S7_200_TAGS,
     type: "S7-200"
   },

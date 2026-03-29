@@ -235,7 +235,7 @@ export default function RegistrationForm() {
 
     // ✅ Devices from allDevices array
     { value: "GTPL-122-gT-1000T-S7-1200", label: "GTPL-122-gT-1000T-S7-1200" },
-    { value: "GTPL-118-gT-80E-P-S7-200", label: "GTPL-118-gT-80E-P-S7-200" },
+    { value: "GTPL-60-gT-60T-P-S7-200", label: "GTPL-60-gT-60T-P-S7-200" },
     { value: "GTPL-108-gT-40E-P-S7-200", label: "GTPL-108-gT-40E-P-S7-200" },
     { value: "GTPL-109-gT-40E-P-S7-200", label: "GTPL-109-gT-40E-P-S7-200" },
     { value: "GTPL-110-gT-40E-P-S7-200", label: "GTPL-110-gT-40E-P-S7-200" },

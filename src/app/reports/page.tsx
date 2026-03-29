@@ -40,7 +40,7 @@ const { RangePicker } = DatePicker;
 // All available device names
 const allDevices = [
   "GTPL-122-gT-1000T-S7-1200",
-  "GTPL-118-gT-80E-P-S7-200",
+  "GTPL-60-gT-60T-P-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
   "GTPL-109-gT-40E-P-S7-200",
   "GTPL-110-gT-40E-P-S7-200",
@@ -92,7 +92,7 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-133-GT-650T-S7-1200": "GTPL_133_GT_650T_S7_1200",
   "GTPL-131-GT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
   "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
-  "GTPL-118-gT-80E-P-S7-200": "kabomachinedatasmart200",
+  "GTPL-60-gT-60T-P-S7-200": "GTPL_118_GT_60T_S7_1200",
   "GTPL-137-GT-450T-S7-1200": "GTPL_137_GT_450T_S7_1200",
   "GTPL-138-GT-450T-S7-1200": "GTPL_138_GT_450T_S7_1200",
   "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
@@ -118,7 +118,7 @@ const ALLOWED_TABLES = [
   "GTPL_111_gT_80E_P_S7_200_Germany",
   "GTPL_112_gT_80E_P_S7_200_Germany",
   "GTPL_113_gT_80E_P_S7_200_Germany",
-  "kabomachinedatasmart200",
+  "GTPL_118_GT_60T_S7_1200",
   "GTPL_114_GT_140E_S7_1200",
   "GTPL_115_GT_180E_S7_1200",
   "GTPL_119_GT_180E_S7_1200",

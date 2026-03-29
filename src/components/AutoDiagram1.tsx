@@ -548,7 +548,7 @@
 //                   "GTPL-122-gT-1000T-S7-1200",
 //                   "GTPL-121-gT-1000T-S7-1200",
 //                   "GTPL-124-GT-450T-S7-1200",
-//                   "GTPL-118-gT-80E-P-S7-200",
+//                   "GTPL-60-gT-60T-P-S7-200",
 //                   "GTPL-108-gT-40E-P-S7-200",
 //                   "GTPL-109-gT-40E-P-S7-200",
 //                   "GTPL-110-gT-40E-P-S7-200",
@@ -565,7 +565,7 @@
 //                 "GTPL-122-gT-1000T-S7-1200",
 //                 "GTPL-121-gT-1000T-S7-1200",
 //                 "GTPL-124-GT-450T-S7-1200",
-//                 "GTPL-118-gT-80E-P-S7-200",
+//                 "GTPL-60-gT-60T-P-S7-200",
 //                 "GTPL-108-gT-40E-P-S7-200",
 //                 "GTPL-109-gT-40E-P-S7-200",
 //                 "GTPL-110-gT-40E-P-S7-200",
@@ -854,7 +854,9 @@ export default function AutoDiagram1({
     "Chiller_healthy_on",
     "Chiller_healthy",
     "Chiller_healthy_on_Q1_1",
-    'Chiller_healthy_Q1_1'
+    'Chiller_healthy_Q1_1',
+    "Chiller_healthy_on_Q0_7",
+    "Chiller_healthy_Q0_7",
   ];
 
   // Red light conditions
@@ -866,7 +868,8 @@ export default function AutoDiagram1({
     "Chiller_Fault",
     "Chiller_fault_Q2_3",
     "Chiller_Fault_Q2_3",
-    'Chiller_fault_Q2_3'
+    'Chiller_fault_Q2_3',
+    "Chiller_Fault_Q1_1",
   ];
 
   // Yellow light conditions
@@ -877,6 +880,7 @@ export default function AutoDiagram1({
     "Collective_Trouble_Signal_on",
     "Collective_Trouble_Signal",
     "Collective_trouble_signal_Q1_0",
+    "Collective_Trouble_Signal_Q0_6",
   ];
 
   // Check conditions
@@ -910,7 +914,8 @@ export default function AutoDiagram1({
     "GTPL-135-gT-450T-S7-1200",
     "GTPL-145-gT-450T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
-    "GTPL-131-GT-650T-S7-1200"
+    "GTPL-131-GT-650T-S7-1200",
+    "GTPL-60-gT-60T-P-S7-200",
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -918,7 +923,7 @@ export default function AutoDiagram1({
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
     "GTPL-124-GT-450T-S7-1200",
-    "GTPL-118-gT-80E-P-S7-200",
+    "GTPL-60-gT-60T-P-S7-200",
     "GTPL-108-gT-40E-P-S7-200",
     "GTPL-109-gT-40E-P-S7-200",
     "GTPL-110-gT-40E-P-S7-200",

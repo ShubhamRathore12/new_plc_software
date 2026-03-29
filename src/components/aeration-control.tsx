@@ -69,7 +69,7 @@ export default function Home({ data, devices, heat, title, formatValue }: any) {
               SR. NO: -
               {devices === "GTPL-122-gT-1000T-S7-1200"
                 ? "GTPL-122-gT-1000T-S7-1200"
-                : "GTPL-118-gT-80E-P-S7-200"}
+                : "GTPL-60-gT-60T-P-S7-200"}
             </text>
 
             {/* Silo */}
