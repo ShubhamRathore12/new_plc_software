@@ -388,7 +388,7 @@ interface MachineConfig {
 // Machine configuration mapping
 export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   // S7-200
-  "GTPL-60-gT-60T-P-S7-200": {
+  "GTPL-118-gT-60T-S7-200": {
     table: "GTPL_118_GT_60T_S7_1200",
     tags: S7_200_TAGS,
     type: "S7-200",
@@ -517,6 +517,11 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   },
   "GTPL-139-GT-300AP-S7-1200": {
     table: "GTPL_139_GT300AP",
+    tags: GTPL_139_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-144-GT-300AP-S7-1200": {
+    table: "GTPL_144_GT_300AP_S7_1200",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
   },
@@ -1039,7 +1044,7 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GTPL_132"];
   } else if (resolvedName === "GTPL-136-gT-450AP") {
     return FAULT_CODES["GTPL_136"];
-  } else if (resolvedName === "GTPL-60-gT-60T-P-S7-200") {
+  } else if (resolvedName === "GTPL-118-gT-60T-S7-200") {
     return FAULT_CODES["GTPL_118"];
   } else if (resolvedName === "GTPL-137-GT-450T-S7-1200") {
     return FAULT_CODES["GTPL_137"];

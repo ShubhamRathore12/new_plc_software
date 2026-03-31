@@ -134,6 +134,27 @@ export default function AutoPaddyPage() {
         BLOWER: { key: "Blower_speed", label: "Blower" },
         CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
       },
+      pressures: {
+        compressor: {
+          time: "Compressor_timer",
+          hp: "HP_value",
+          lp: "LP_value",
+        },
+      },
+    },
+    "GTPL-144-GT-300AP-S7-1200": {
+      serialNumber: "GTPL_144_PADDY",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+      },
       compressor: {
         time: "Compressor_timer",
         hp: "HP_value",

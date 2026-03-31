@@ -33,6 +33,7 @@ const MACHINE_TABLES: Record<string, string> = {
   GTPL_145_GT_450T_S7_1200: "GTPL_145",
   GTPL_061_GT_450T_S7_1200: "GTPL_061",
   GTPL_139_GT300AP:"GTPL_139",
+  GTPL_144_GT_300AP_S7_1200: "GTPL_144_GT_300AP_S7_1200",
   GTPL_142_GT_450AP_S7_1200: "GTPL_142",
   GTPL_123_GT_450AP_S7_1200: "GTPL_123",
   GTPL_143_GT_450AP_S7_1200: "GTPL_143"
@@ -51,14 +52,22 @@ Object.keys(MACHINE_TABLES).forEach((table) => {
 
 export async function GET() {
   const currentTime = new Date();
-  const machines: MachineResponse[] = [];
 
   try {
-    for (const [tableName, machineName] of Object.entries(MACHINE_TABLES)) {
-      const [rows] = await pool.query<any[]>(
-        `SELECT * FROM ${tableName} ORDER BY id DESC LIMIT 1`
-      );
-      const record = rows[0];
+    const entries = Object.entries(MACHINE_TABLES);
+
+    const results = await Promise.all(
+      entries.map(async ([tableName, machineName]) => {
+        const [rows] = await pool.query<any[]>(
+          `SELECT * FROM ${tableName} ORDER BY id DESC LIMIT 1`
+        );
+        return { tableName, machineName, record: rows[0] ?? null };
+      })
+    );
+
+    const machines: MachineResponse[] = [];
+
+    for (const { tableName, machineName, record } of results) {
       if (!record) continue;
 
       const id = record.id || 0;
@@ -79,7 +88,6 @@ export async function GET() {
 
       const hasNewData = idChanged && timeChanged;
 
-      // Update memory cache
       previousState[tableName] = { id, timestamp };
 
       const baseResponse: MachineResponse = {
@@ -94,12 +102,10 @@ export async function GET() {
         hasNewData,
         idChanged,
         machineName,
-        // Add createdAtChanged and createdOnChanged for all machines
         createdAtChanged: timeChanged,
         createdOnChanged: timeChanged,
       };
 
-      // Check for condenser fan status in all machines
       const rawCondFan = record?.COND_FAN_ON || record?.cond_fan_on || record?.Compressor_on_Q0_4;
       if (rawCondFan !== undefined) {
         const condFanOn = rawCondFan === 1 || rawCondFan === "tr" || rawCondFan === "true" || rawCondFan === true || rawCondFan === 'True';

@@ -116,7 +116,7 @@ const S7_1200_TAGS = [
 // Machine configuration mapping
 const MACHINE_CONFIG = {
   // S7-200 machines
-  "GTPL-60-gT-60T-P-S7-200": {
+  "GTPL-118-gT-60T-S7-200": {
     table: "GTPL_118_GT_60T_S7_1200",
     tags: S7_200_TAGS,
     type: "S7-200"

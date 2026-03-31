@@ -259,7 +259,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-60-gT-60T-P-S7-200": {
+    "GTPL-118-gT-60T-S7-200": {
       serialNumber: "GTPL_118",
       temperatureSensors: {
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
@@ -484,6 +484,42 @@ export default function AutoPage() {
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser Fan" },
       },
+      pressures: {
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-144-GT-300AP-S7-1200": {
+      serialNumber: "GTPL_144_GT_300AP_S7_1200",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Condenser_fan_speed", label: "Condenser Fan" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-061-gT-450T-S7-1200": {
+      serialNumber: "GTPL_061",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "After Heat(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
       compressor: {
         time: "Compressor_timer",
         hp: "HP_value",
@@ -693,7 +729,8 @@ export default function AutoPage() {
                       "GTPL-139-GT-300AP-S7-1200",
                       "GTPL-142-gT-450AP-S7-1200",
                       "GTPL-123-GT-450AP",
-                      "GTPL-143-gT-450AP-S7-1200"
+                      "GTPL-143-gT-450AP-S7-1200",
+                      "GTPL-061-gT-450T-S7-1200"
                     ].includes(auto as string) && (
                       <>
                         <motion.div

@@ -58,7 +58,7 @@ export default function TestPage() {
   useEffect(() => {
     setMounted(true);
     // Sync state with PLC data
-    if (test === "GTPL-60-gT-60T-P-S7-200") {
+    if (test === "GTPL-118-gT-60T-S7-200") {
       if (data?.Blower_speed_manual_set != null)
         setBlowerSpeed(data.Blower_speed_manual_set);
       if (data?.Condenser_fan_speed_set_in_manual != null)

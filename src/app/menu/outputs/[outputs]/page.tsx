@@ -97,7 +97,7 @@ export default function OutputsPage() {
     //     { id: "19", description: "Cond Fan 6 ON", dataKey: "Cond Fan 6 ON" },
     //   ];
     // }
-    else if (deviceType === "GTPL-60-gT-60T-P-S7-200") {
+    else if (deviceType === "GTPL-118-gT-60T-S7-200") {
       return [
         { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -143,7 +143,7 @@ export default function OutputsPage() {
         { id: "14", description: "Condenser fan2 on", dataKey: "Condenser_fan2_on_Q2_3" },
       ];
     }
-    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === 'GTPL-30-gT-180E-S7-1200') {
+    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === 'GTPL-30-gT-180E-S7-1200' || deviceType === "GTPL-119-gT-180E-S7-1200" || deviceType === "GTPL-120-gT-180E-S7-1200") {
       return [
         { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
         { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },
@@ -159,7 +159,7 @@ export default function OutputsPage() {
         { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
       ];
     }
-    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-GT-300AP-S7-1200' || deviceType === 'GTPL-142-gT-450AP-S7-1200' || deviceType === 'GTPL-123-GT-450AP' || deviceType === 'GTPL-143-gT-450AP-S7-1200') {
+    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-GT-300AP-S7-1200' || deviceType === 'GTPL-144-GT-300AP-S7-1200' || deviceType === 'GTPL-142-gT-450AP-S7-1200' || deviceType === 'GTPL-123-GT-450AP' || deviceType === 'GTPL-143-gT-450AP-S7-1200') {
       return [
         { id: "Q0.0", description: "Compressor_on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor_motor_reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -288,7 +288,7 @@ export default function OutputsPage() {
         { id: "Q2.7", description: "CR 100% ON", dataKey: "CR_100%_ON_Q2_7" },
       ];
     }
-    else if (deviceType === "GTPL-139-GT-300AP-S7-1200") {
+    else if (deviceType === "GTPL-139-GT-300AP-S7-1200" || deviceType === "GTPL-144-GT-300AP-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -368,7 +368,7 @@ export default function OutputsPage() {
     if (!data) return false;
     const value = resolveDataKey(dataKey);
 
-    if (device === "GTPL-60-gT-60T-P-S7-200") {
+    if (device === "GTPL-118-gT-60T-S7-200") {
       return value === "tr";
     }
 

@@ -211,7 +211,7 @@ const GPL_117_TAGS = [
 // Machine configuration mapping
 const MACHINE_CONFIG = {
   // S7-200
-  "GTPL-60-gT-60T-P-S7-200": { table: "GTPL_118_GT_60T_S7_1200", tags: S7_200_TAGS, type: "S7-200" },
+  "GTPL-118-gT-60T-S7-200": { table: "GTPL_118_GT_60T_S7_1200", tags: S7_200_TAGS, type: "S7-200" },
   "GTPL-108-gT-40E-P-S7-200": { table: "GTPL_108_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
   "GTPL-109-gT-40E-P-S7-200": { table: "GTPL_109_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },
   "GTPL-110-gT-40E-P-S7-200": { table: "GTPL_110_gT_40E_P_S7_200_Germany", tags: S7_200_TAGS, type: "S7-200" },

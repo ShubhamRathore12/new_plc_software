@@ -434,7 +434,7 @@ export const GTPL_134_135_OUTPUT_TAGS = [
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
-  "GTPL-60-gT-60T-P-S7-200": {
+  "GTPL-118-gT-60T-S7-200": {
     table: "GTPL_118_GT_60T_S7_1200",
     tags: GTPL_118_TAGS,
     type: "S7-1200",
@@ -568,6 +568,11 @@ export const MACHINE_CONFIG = {
   },
   "GTPL-139-GT-300AP-S7-1200": {
     table: "GTPL_139_GT300AP",
+    tags: GTPL_139_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-144-GT-300AP-S7-1200": {
+    table: "GTPL_144_GT_300AP_S7_1200",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
   },

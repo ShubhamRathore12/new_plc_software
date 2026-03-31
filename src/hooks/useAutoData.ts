@@ -19,7 +19,7 @@ export const useAutoData = (autoType: string) => {
   // AutoType → Table Name mapping
   const autoTypeToTableMap: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
-    "GTPL-60-gT-60T-P-S7-200": "GTPL_118_GT_60T_S7_1200",
+    "GTPL-118-gT-60T-S7-200": "GTPL_118_GT_60T_S7_1200",
     "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
     "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
     "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
@@ -46,6 +46,7 @@ export const useAutoData = (autoType: string) => {
    "GTPL-145-gT-450T-S7-1200":"GTPL_145_GT_450T_S7_1200",
    "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
    "GTPL-139-GT-300AP-S7-1200": "GTPL_139_GT300AP",
+   "GTPL-144-GT-300AP-S7-1200": "GTPL_144_GT_300AP_S7_1200",
    "GTPL-142-gT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
    "GTPL-123-GT-450AP": "GTPL_123_GT_450AP_S7_1200",
    "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200"
@@ -54,7 +55,7 @@ export const useAutoData = (autoType: string) => {
 
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
-    "GTPL-60-gT-60T-P-S7-200": "KABO_200",
+    "GTPL-118-gT-60T-S7-200": "KABO_200",
     "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
     "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
     "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
@@ -81,6 +82,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-145-gT-450T-S7-1200":"GTPL_145",
     "GTPL-061-gT-450T-S7-1200":"GTPL_061",
     "GTPL-139-GT-300AP-S7-1200":"GTPL_139",
+    "GTPL-144-GT-300AP-S7-1200":"GTPL_144_GT_300AP_S7_1200",
     "GTPL-142-gT-450AP-S7-1200":"GTPL_142",
     "GTPL-123-GT-450AP":"GTPL_123",
     "GTPL-143-gT-450AP-S7-1200":"GTPL_143"
