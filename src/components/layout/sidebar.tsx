@@ -36,19 +36,33 @@ export default function Sidebar() {
   const { isOpen, toggleSidebar } = useSidebarStore();
   const { data } = useDataStore() as { data: StoreData };
   const { t, language } = useLanguage();
+  const validMenuLabels = menuItems.map(item => item.label.toLowerCase());
 
   const [mounted, setMounted] = useState(false);
   const [monitorAccessItems, setMonitorAccessItems] = useState<string[]>([]);
+  const [showAllItems, setShowAllItems] = useState(false);
 
   // Parse monitorAccess from data
   useEffect(() => {
     if (typeof data?.user?.monitorAccess === "string") {
-      const parsed = data.user.monitorAccess
-        .split(",")
-        .map((item) => item.trim().toLowerCase());
-      setMonitorAccessItems(parsed);
+      const monitorAccessValue = data.user.monitorAccess;
+      
+      // If monitorAccess is "0" or empty, show all items
+      if (monitorAccessValue === "0" || monitorAccessValue === "") {
+        setMonitorAccessItems([]);
+        setShowAllItems(true);
+      } else {
+        // Otherwise, parse the access values
+        const parsed = monitorAccessValue
+          .split(",")
+          .map((item) => item.trim().toLowerCase())
+          .filter((item) => validMenuLabels.includes(item));
+        setMonitorAccessItems(parsed);
+        setShowAllItems(false);
+      }
     } else {
       setMonitorAccessItems([]);
+      setShowAllItems(true);
     }
   }, [data?.user?.monitorAccess, language]);
 
@@ -94,8 +108,11 @@ export default function Sidebar() {
           {menuItems
             .filter(
               (item) => {
-                // Hide items based on monitorAccess
-                const isHiddenByMonitorAccess = monitorAccessItems.includes(item.label.toLowerCase());
+                // If showAllItems is true (monitorAccess is "0" or empty), show all items
+                // Otherwise, hide items that are NOT in monitorAccess
+                const isHiddenByMonitorAccess = showAllItems 
+                  ? false  // Show all when monitorAccess is "0" or empty
+                  : !monitorAccessItems.includes(item.label.toLowerCase());
                 
                 // Hide overview for customer account type
                 const isOverviewHiddenForCustomer = item.label === "overview" && data?.user?.accountType === "customer";
