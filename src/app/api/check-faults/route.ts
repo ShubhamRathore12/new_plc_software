@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 
 // S7-200 specific tags
 const S7_200_TAGS = [
@@ -255,7 +255,7 @@ export async function GET(req: Request) {
     const table = machineConfig.table;
     
     // Get the latest record for the machine
-    const [rows]: any = await pool.query(
+    const rows: any = await query(
       `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT 1`
     );
     

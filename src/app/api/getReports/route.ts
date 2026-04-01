@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -69,7 +69,7 @@ export async function GET(req: Request) {
     // - When date filter: count the filtered set
     // - When no date filter: count entire table
     const countSql = `SELECT COUNT(*) AS total FROM \`${table}\` ${whereSql}`;
-    const [countRows]: any = await pool.query(countSql, params);
+    const countRows: any = await query(countSql, params);
     const total = Array.isArray(countRows) && countRows[0]?.total ? Number(countRows[0].total) : 0;
 
     // Data query
@@ -81,7 +81,7 @@ export async function GET(req: Request) {
       dataSql += ` LIMIT ? OFFSET ?`;
       dataParams.push(limit, offset);
     }
-    const [rows] = await pool.query(dataSql, dataParams);
+    const rows = await query(dataSql, dataParams);
 
     // Normalize rows: Format dates exactly as stored, no timezone conversion, no "T"
     const data = (Array.isArray(rows) ? rows : []).map((row: any) => {

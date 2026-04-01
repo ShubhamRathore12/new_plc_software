@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -8,12 +8,13 @@ export async function GET(req: Request) {
 
   try {
     // Get total count
-    const [[{ count }]]: any = await pool.query(
+    const countResult: any = await query(
       "SELECT COUNT(*) AS count FROM gtpl_122_s7_1200_01"
     );
+    const count = countResult[0]?.count || 0;
 
     // Get paginated rows
-    const [rows]: any = await pool.query(
+    const rows: any = await query(
       `SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT ? OFFSET ?`,
       [limit, offset]
     );

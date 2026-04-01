@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 
 // S7-200 specific tags
 const S7_200_TAGS = [
@@ -284,7 +284,7 @@ async function checkFaultsAndNotify(record: any, machineName: string) {
 
 async function getPreviousRecords(currentRecordId: number, machineName: string, table: string, limit = 10) {
   try {
-    const [rows]: any = await pool.query(
+    const rows: any = await query(
       `SELECT * FROM \`${table}\` WHERE id < ? ORDER BY id DESC LIMIT ?`,
       [currentRecordId, limit]
     );
@@ -350,12 +350,13 @@ const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG]
       }
     }
 
-    const [[{ count }]]: any = await pool.query(
+    const countResult: any = await query(
       `SELECT COUNT(*) AS count FROM \`${table}\` ${whereClause}`,
       values
     );
+    const count = countResult[0]?.count || 0;
 
-    const [result] = await pool.query(
+    const result = await query(
       `SELECT * FROM \`${table}\` ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`,
       [...values, limit, offset]
     );

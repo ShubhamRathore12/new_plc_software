@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 // Helper function to check if a value is considered "active"
@@ -55,7 +55,7 @@ export async function GET(req: Request) {
     const tags = machineConfig.tags;
     
     // Get all records for this machine
-    const [result] = await pool.query(
+    const result = await query(
       `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ? OFFSET ?`,
       [limit, offset]
     );
@@ -95,9 +95,10 @@ export async function GET(req: Request) {
     }
     
     // Get total count for pagination
-    const [[{ count }]]: any = await pool.query(
+    const countResult: any = await query(
       `SELECT COUNT(*) AS count FROM \`${table}\``
     );
+    const count = countResult[0]?.count || 0;
     
     const total = Number(count) || 0;
     const totalPages = Math.max(1, Math.ceil(total / limit));

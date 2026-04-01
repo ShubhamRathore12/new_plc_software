@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { pool, ensureUserTableExists } from "@/lib/db";
+import { query, ensureUserTableExists } from "@/lib/db";
 import jwt from "jsonwebtoken";
 
 // Secret key to sign JWT
@@ -18,13 +18,13 @@ type User = {
 };
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const { username, password } = body;
-
   try {
+    const body = await req.json();
+    const { username, password } = body;
+
     await ensureUserTableExists();
 
-    const [rows] = await pool.query<any>(
+    const rows = await query<any>(
       `SELECT * FROM kabu_users WHERE username = ? AND password = ?`,
       [username, password]
     );

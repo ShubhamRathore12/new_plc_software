@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 export async function GET(req: Request) {
@@ -55,10 +55,10 @@ export async function GET(req: Request) {
     );
 
     // 1) Total count
-    const [countRows] = (await pool.query(
+    const countResult: any = await query(
       `SELECT COUNT(*) AS cnt FROM \`${table}\``
-    )) as any[];
-    const total: number = countRows?.[0]?.cnt ?? 0;
+    );
+    const total: number = countResult[0]?.cnt ?? 0;
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     console.log(`Total records: ${total}, Total pages: ${totalPages}`);
@@ -77,7 +77,7 @@ export async function GET(req: Request) {
     }
 
     // 2) Page data ordered by newest first to enable correct pagination across history
-    const [rows] = (await pool.query(
+    const rows = (await query(
       `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ? OFFSET ?`,
       [limit, offset]
     )) as any[];

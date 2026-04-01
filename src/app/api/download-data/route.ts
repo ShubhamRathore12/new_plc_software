@@ -1,4 +1,4 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 
 // All available tables
 const ALLOWED_TABLES = [
@@ -41,7 +41,7 @@ export async function GET(req: Request) {
     }
 
     // Get data
-    const [rows]: any = await pool.query(
+    const rows: any = await query(
       `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ?`,
       [limit]
     );

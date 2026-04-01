@@ -1,26 +1,26 @@
 import { NextResponse } from "next/server";
-import { pool, ensureUserTableExists } from "@/lib/db";
+import { query, ensureUserTableExists } from "@/lib/db";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const {
-    accountType,
-    firstName,
-    lastName,
-    username,
-    email,
-    phoneNumber,
-    company,
-    password,
-    monitorAccess,
-    location, // Add location to the destructured properties
-  } = body;
-
   try {
+    const body = await req.json();
+    const {
+      accountType,
+      firstName,
+      lastName,
+      username,
+      email,
+      phoneNumber,
+      company,
+      password,
+      monitorAccess,
+      location,
+    } = body;
+
     await ensureUserTableExists();
 
     // Check for duplicate username
-    const [existingUser] = await pool.query(
+    const existingUser = await query(
       "SELECT * FROM kabu_users WHERE username = ?",
       [username]
     );
@@ -36,14 +36,14 @@ export async function POST(req: Request) {
       ? monitorAccess.join(",")
       : "";
 
-      const locationStr = Array.isArray(location) 
-  ? location.join(",")
-  : "";
+    const locationStr = Array.isArray(location) 
+      ? location.join(",")
+      : "";
 
-    await pool.query(
+    await query(
       `INSERT INTO kabu_users 
        (accountType, firstName, lastName, username, email, phoneNumber, company, password, monitorAccess, location) 
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, // Add location to the query
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         accountType,
         firstName,
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         company,
         password,
         monitorAccessStr,
-        locationStr, // Add location to the values
+        locationStr,
       ]
     );
 

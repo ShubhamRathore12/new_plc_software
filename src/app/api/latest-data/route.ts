@@ -1,16 +1,4 @@
-import mysql from "mysql2/promise";
-
-// Create a global connection pool (shared across requests)
-const pool = mysql.createPool({
-  host: "myshaa.com",
-  user: "myshaa_iotdatatest",
-  password: "j5f8%JUqUk_=",
-  database: "myshaa_iotdatatest",
-  port: 3306,
-  waitForConnections: true,
-  connectionLimit: 5,
-  queueLimit: 0,
-});
+import { query } from "@/lib/db";
 
 export async function GET(req: Request) {
   const { readable, writable } = new TransformStream();
@@ -22,11 +10,11 @@ export async function GET(req: Request) {
   );
 
   try {
-    const [rows]: any = await pool.execute(
+    const rows: any = await query(
       "SELECT * FROM iot_data ORDER BY id DESC LIMIT 1"
     );
 
-    const latest = rows[0];
+    const latest = rows?.[0];
 
     if (latest) {
       writer.write(

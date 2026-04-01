@@ -469,7 +469,7 @@
 //     },
 //   });
 // }
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 import * as XLSX from "xlsx";
 import type { RowDataPacket } from "mysql2";
 
@@ -576,7 +576,7 @@ const CHUNK_SIZE = 10000; // Process 10k rows at a time to manage memory
 // Helper function to detect the timestamp column name for a table
 async function getTimestampColumn(table: string): Promise<'created_at' | 'created_on'> {
   try {
-    const [columns] = await pool.query<RowDataPacket[]>(
+    const columns: any = await query(
       `SHOW COLUMNS FROM \`${table}\` WHERE Field IN ('created_at', 'created_on')`
     );
 
@@ -670,7 +670,7 @@ async function processDataInChunks(
   while (offset < effectiveLimit) {
     const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
 
-    const [chunkRows] = await pool.query<RowDataPacket[]>(
+    const chunkRows = await query<RowDataPacket[]>(
       `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
       [...params, currentChunkSize, offset]
     );
@@ -813,16 +813,16 @@ export async function GET(req: Request) {
     console.log("Where clause:", whereSql);
     console.log("Parameters:", params);
 
-    const [countRows] = await pool.query<RowDataPacket[]>(
+    const countRows = await query<RowDataPacket[]>(
       `SELECT COUNT(*) AS cnt FROM \`${table}\`${whereSql}`,
       params
     );
-    const totalCount = (countRows[0] as { cnt: number }).cnt;
+    const totalCount = (countRows[0] as unknown as { cnt: number }).cnt;
     console.log(`Total matching records: ${totalCount}`);
 
     // Show date range of actual data if filtered
     if (hasDateFilter && totalCount > 0) {
-      const [dateRangeRows] = await pool.query<RowDataPacket[]>(
+      const dateRangeRows = await query<RowDataPacket[]>(
         `SELECT 
           MIN(DATE(${timestampCol})) as earliest_date,
           MAX(DATE(${timestampCol})) as latest_date,

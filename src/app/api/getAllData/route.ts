@@ -1,9 +1,9 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 
 export async function GET(req: Request) {
   try {
-    const [rows]: any = await pool.query(
-      "SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT 100" // 🔥 Latest 100 rows
+    const rows: any = await query(
+      "SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT 100"
     );
 
     return new Response(JSON.stringify(rows), {

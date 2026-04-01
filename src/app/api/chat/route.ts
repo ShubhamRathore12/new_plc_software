@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 // Simple SSE stream helper
@@ -187,7 +187,7 @@ export async function POST(req: NextRequest) {
         throw new Error(`No configuration found for machine: ${machineName}`);
 
       const table = config.table;
-      let query = `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ${limit}`;
+      let sql = `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ${limit}`;
 
       if (dateFilter) {
         // Support date filters like "yesterday", "today", "2024-01-01"
@@ -202,10 +202,10 @@ export async function POST(req: NextRequest) {
           // Assume it's a date string
           dateCondition = `DATE(created_at) = '${dateFilter}' OR DATE(created_on) = '${dateFilter}'`;
         }
-        query = `SELECT * FROM \`${table}\` WHERE ${dateCondition} ORDER BY id DESC LIMIT ${limit}`;
+        sql = `SELECT * FROM \`${table}\` WHERE ${dateCondition} ORDER BY id DESC LIMIT ${limit}`;
       }
 
-      const [rows]: any = await pool.query(query);
+      const rows = await query<Record<string, any>>(sql);
       return rows || [];
     }
 

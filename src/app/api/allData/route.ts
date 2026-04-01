@@ -1,4 +1,4 @@
-import { ensureUserTableExists, pool } from "@/lib/db";
+import { ensureUserTableExists, query } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET() {
@@ -7,7 +7,7 @@ export async function GET() {
     await ensureUserTableExists();
 
     // Step 2: Fetch all users from the database (including password)
-    const [rows] = await pool.query<any>(`SELECT * FROM kabu_users`);
+    const rows = await query<any>(`SELECT * FROM kabu_users`);
 
     // Step 3: Return everything directly
     return NextResponse.json({ users: rows });

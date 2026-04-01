@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createFaultEmailTemplate } from "@/lib/email-templates";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 export async function POST(request: Request) {
   try {
     const { machineName, fault } = await request.json();
@@ -17,16 +15,26 @@ export async function POST(request: Request) {
 
     const fromEmail = process.env.EMAIL_FROM;
     const toEmail = process.env.EMAIL_TO;
+    const resendApiKey = process.env.RESEND_API_KEY;
 
     if (!fromEmail || !toEmail) {
       return NextResponse.json(
         {
-          message:
-            "Email sender or recipient is not configured in environment variables.",
+          message: "Email sender or recipient is not configured in environment variables.",
         },
         { status: 500 }
       );
     }
+
+    if (!resendApiKey) {
+      console.error("RESEND_API_KEY is not defined in environment variables");
+      return NextResponse.json(
+        { message: "Email service is not configured." },
+        { status: 500 }
+      );
+    }
+
+    const resend = new Resend(resendApiKey);
 
     const { data, error } = await resend.emails.send({
       from: fromEmail,

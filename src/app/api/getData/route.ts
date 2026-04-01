@@ -1,9 +1,9 @@
-import { pool } from "@/lib/db";
+import { query } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const [rows]: any[] = await pool.query(
+    const rows: any[] = await query(
       "SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT 1"
     );
 
