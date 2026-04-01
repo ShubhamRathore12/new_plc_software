@@ -134,12 +134,10 @@ export default function AutoPaddyPage() {
         BLOWER: { key: "Blower_speed", label: "Blower" },
         CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
       },
-      pressures: {
-        compressor: {
-          time: "Compressor_timer",
-          hp: "HP_value",
-          lp: "LP_value",
-        },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
       },
     },
     "GTPL-144-GT-300AP-S7-1200": {
