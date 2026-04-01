@@ -34,6 +34,11 @@ export default function ContactPage() {
     setStatus("");
 
     try {
+      // Email sending is temporarily disabled due to missing API key configuration
+      setStatus("Email service is temporarily unavailable. Please try again later.");
+      setIsSending(false);
+      return;
+      
       const data = await apiRequest("/api/send-email", {
         method: "POST",
         body: JSON.stringify(formData),
