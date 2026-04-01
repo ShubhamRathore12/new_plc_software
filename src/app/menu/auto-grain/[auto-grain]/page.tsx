@@ -119,12 +119,10 @@ export default function AutoGrainPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
       },
-      pressures: {
-        compressor: {
-          time: "Compressor_timer",
-          hp: "HP_value",
-          lp: "LP_value",
-        },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
       },
     },
     "GTPL-144-GT-300AP-S7-1200": {
