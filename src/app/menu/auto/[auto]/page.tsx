@@ -484,7 +484,8 @@ export default function AutoPage() {
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser Fan" },
       },
-      pressures: {
+      compressor: {
+        time: "Compressor_timer",
         hp: "HP_value",
         lp: "LP_value",
       },
