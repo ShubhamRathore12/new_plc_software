@@ -899,6 +899,8 @@ export default function AutoPage() {
                             </svg>
                             {t("LP")}
                           </span>
+
+                          
                           <span className="font-bold text-lg bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
                             {(() => {
                               const lpValue = data?.[currentConfig.compressor.lp];
