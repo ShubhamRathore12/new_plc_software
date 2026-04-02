@@ -1177,7 +1177,7 @@ export default function DevicesPage() {
                 const isMachineRunning = deviceStatus?.machineStatus ?? false;
                 const isInternetConnected =
                   deviceStatus?.internetStatus ?? false;
-                const isCoolingWorking = deviceStatus?.hasNewData ?? false;
+                const isCoolingWorking = deviceStatus?.coolingStatus ?? false;
 
                 return (
                   <div key={index} className="group relative">
