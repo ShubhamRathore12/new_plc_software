@@ -42,6 +42,7 @@ interface UserState {
   setUser: (
     user: { name: string; email: string; avatar: string } | null
   ) => void;
+  clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>()(
@@ -49,6 +50,7 @@ export const useUserStore = create<UserState>()(
     (set) => ({
       user: null,
       setUser: (user) => set({ user }),
+      clearUser: () => set({ user: null }),
     }),
     {
       name: "user-storage",

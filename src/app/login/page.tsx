@@ -14,11 +14,11 @@ import { Label } from "@/components/ui/label";
 import { MonitorIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { loginUser } from "@/lib/auth";
+import { useAuthRedirect } from "@/hooks/useAuthRedirect";
 
 const ThreeBackground = dynamic(() => import("@/components/ThreeBackground"), {
   ssr: false,
 });
-import RedirectIfAuthenticated from "@/components/auth/RedirectIfAuthenticated";
 import { useDataStore } from "@/lib/store";
 import { useLanguage } from "@/providers/language-provider";
 
@@ -31,6 +31,8 @@ export default function LoginPage() {
   const { data, setData, loading, setLoading } = useDataStore();
   const { t } = useLanguage();
 
+
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -40,12 +42,11 @@ export default function LoginPage() {
       const data = await loginUser(username, password);
 
       setData(data);
-      if(data?.user.accountType === "customer")
-      {
-      router.push("/devices");
-
+      if (data?.user.accountType === "customer") {
+        router.push("/devices");
+      } else {
+        router.push("/dashboard");
       }
-    else  router.push("/dashboard");
       setLoading(false);
     } catch (error) {
       console.error("Login error:", error);
