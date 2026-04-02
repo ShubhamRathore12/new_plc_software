@@ -1344,7 +1344,15 @@ export default function AutoDiagram1({
                   <div className="text-xs font-bold p-1 text-center">T0</div>
                   <div className="text-xs p-1 text-center">
                     {(() => {
-                      // Handle zero values correctly
+                      // For GTPL-118, show setpoint value
+                      if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
+                        if (data?.T0_set_point !== undefined && data?.T0_set_point !== null) return formatValue(data?.T0_set_point, "°C");
+                        if (data?.T1_set_point !== undefined && data?.T1_set_point !== null) return formatValue(data?.T1_set_point, "°C");
+                        if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
+                        return formatValue(undefined, "°C");
+                      }
+                      
+                      // For other machines, show actual value
                       if (data.AIR_OUTLET_TEMP !== undefined && data.AIR_OUTLET_TEMP !== null) return formatValue(data.AIR_OUTLET_TEMP, "°C");
                       if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
                       return formatValue(undefined, "°C");
