@@ -157,8 +157,9 @@ export async function POST(req: Request) {
     return response;
   } catch (error) {
     console.error("Login error:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
-      { message: "Server error while logging in" },
+      { message: "Server error while logging in", error: errorMessage },
       { status: 500 }
     );
   }

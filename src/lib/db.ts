@@ -100,7 +100,7 @@ export async function withTransaction<T>(
 // ======================================================
 export async function ensureUserTableExists() {
   const createTableSQL = `
-    CREATE TABLE IF NOT EXISTS kanaban_user (
+    CREATE TABLE IF NOT EXISTS kabu_users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       accountType VARCHAR(50),
       firstName VARCHAR(100),
