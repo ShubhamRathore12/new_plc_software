@@ -471,10 +471,7 @@
 // }
 import { query } from "@/lib/db";
 import * as XLSX from "xlsx";
-import * as ExcelJS from "exceljs";
 import type { RowDataPacket } from "mysql2";
-import * as path from "path";
-import * as fs from "fs";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -626,380 +623,71 @@ function is137or138(table: string): boolean {
   return table === "GTPL_137_GT_450T_S7_1200" || table === "GTPL_138_GT_450T_S7_1200";
 }
 
-// Brand colors
-const BRAND_TEAL = "00A7B5";
-const HEADER_BG = "00A7B5";
-const HEADER_FONT = "FFFFFF";
-const SECTION_BG = "D4A843";
-const SECTION_FONT = "FFFFFF";
-const ALT_ROW = "F0FAFA";
-const FAULT_TRUE_BG = "FFE0E0";
-const FAULT_TRUE_FONT = "CC0000";
-
 // Build professional Excel for 137/138 using exceljs
-async function build137_138Excel(
-  table: string,
-  rows: any[],
-  fromDate: string | null,
-  toDate: string | null,
-  timestampCol: string
-): Promise<Buffer> {
-  const wb = new ExcelJS.Workbook();
-  wb.creator = "Grain Technik";
-  wb.created = new Date();
+function build137_138Excel(rows: Record<string, unknown>[], timestampCol: string): Buffer {
+  const workbook = XLSX.utils.book_new();
 
-  // ── Load logo ──
-  // let logoId: number | null = null;
-  // try {
-  //   const logoPath = path.join(process.cwd(), "public", "logo.png");
-  //   if (fs.existsSync(logoPath)) {
-  //     const logoBuffer = fs.readFileSync(logoPath);
-  //     logoId = wb.addImage({
-  //       buffer: new Uint8Array(logoBuffer) as any,
-  //       extension: "png",
-  //     });
-  //   }
-  // } catch (e) {
-  //   console.error("Logo load failed:", e);
-  // }
+  const machineDataRows = rows.map((row) => {
+    const timestampValue = row[timestampCol] || row.created_at || row.created_on;
+    const { full, date, time } = normalizeCreatedAt(timestampValue);
+    return {
+      ...row,
+      created_at: full,
+      created_at_date: date,
+      created_at_time: time,
+    };
+  });
 
-  const machineName = table === "GTPL_137_GT_450T_S7_1200" ? "GTPL-137-GT-450T" : "GTPL-138-GT-450T";
-  const dateRangeText = fromDate && toDate ? `${fromDate} to ${toDate}` : "All Data";
+  const machineDataSheet = XLSX.utils.json_to_sheet(machineDataRows);
+  XLSX.utils.book_append_sheet(workbook, machineDataSheet, "Machine Data");
 
-  // ── Helper: add logo + title header to a sheet ──
-  function addSheetHeader(ws: ExcelJS.Worksheet, title: string) {
-    // Merge cells for logo area
-    ws.mergeCells("A1:C3");
-    // if (logoId !== null) {
-    //   ws.addImage(logoId, {
-    //     tl: { col: 0, row: 0 },
-    //     ext: { width: 220, height: 60 },
-    //   });
-    // }
-
-    // Machine title
-    ws.mergeCells("D1:J1");
-    const titleCell = ws.getCell("D1");
-    titleCell.value = `${machineName} — ${title}`;
-    titleCell.font = { name: "Calibri", size: 16, bold: true, color: { argb: BRAND_TEAL } };
-    titleCell.alignment = { vertical: "middle" };
-
-    // Date range
-    ws.mergeCells("D2:J2");
-    const dateCell = ws.getCell("D2");
-    dateCell.value = `Report Period: ${dateRangeText}`;
-    dateCell.font = { name: "Calibri", size: 11, italic: true, color: { argb: "666666" } };
-    dateCell.alignment = { vertical: "middle" };
-
-    // Record count
-    ws.mergeCells("D3:J3");
-    const countCell = ws.getCell("D3");
-    countCell.value = `Total Records: ${rows.length}`;
-    countCell.font = { name: "Calibri", size: 11, color: { argb: "666666" } };
-    countCell.alignment = { vertical: "middle" };
-
-    // Separator line row 4
-    ws.getRow(4).height = 4;
-
-    return 5; // data starts at row 5
-  }
-
-  // ── Helper: style header row ──
-  function styleHeaderRow(ws: ExcelJS.Worksheet, row: number, colCount: number) {
-    const headerRow = ws.getRow(row);
-    headerRow.height = 22;
-    for (let c = 1; c <= colCount; c++) {
-      const cell = headerRow.getCell(c);
-      cell.font = { name: "Calibri", size: 10, bold: true, color: { argb: HEADER_FONT } };
-      cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: HEADER_BG } };
-      cell.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
-      cell.border = {
-        bottom: { style: "thin", color: { argb: "CCCCCC" } },
-        right: { style: "thin", color: { argb: "CCCCCC" } },
+  const faultColumnMap = GTPL_137_138_COLUMNS.faultInputs.columns as Record<string, string>;
+  const allFaultKeys = Object.keys(faultColumnMap).filter((key) =>
+    rows.length > 0 ? key in rows[0] : false
+  );
+  const activeFaultRows = rows
+    .map((row) => {
+      const timestampValue = row[timestampCol] || row.created_at || row.created_on;
+      const { date, time } = normalizeCreatedAt(timestampValue);
+      const activeFaults = allFaultKeys
+        .filter((faultKey) => isTrueish(row[faultKey]))
+        .map((faultKey) => faultColumnMap[faultKey] || faultKey);
+      if (activeFaults.length === 0) return null;
+      return {
+        id: row.id ?? "",
+        created_at_date: date,
+        created_at_time: time,
+        active_faults: activeFaults.join(", "),
       };
+    })
+    .filter(Boolean) as Record<string, unknown>[];
+
+  const faultSheet = XLSX.utils.json_to_sheet(
+    activeFaultRows.length > 0 ? activeFaultRows : [{ note: "No active faults found." }]
+  );
+  XLSX.utils.book_append_sheet(workbook, faultSheet, "Active Faults");
+
+  const digitalOutputColumnMap = GTPL_137_138_COLUMNS.digitalOutputs.columns as Record<string, string>;
+  const outputKeys = Object.keys(digitalOutputColumnMap).filter((key) =>
+    rows.length > 0 ? key in rows[0] : false
+  );
+  const digitalOutputRows = rows.map((row) => {
+    const timestampValue = row[timestampCol] || row.created_at || row.created_on;
+    const { date, time } = normalizeCreatedAt(timestampValue);
+    const outputRow: Record<string, unknown> = {
+      id: row.id ?? "",
+      created_at_date: date,
+      created_at_time: time,
+    };
+    for (const key of outputKeys) {
+      outputRow[digitalOutputColumnMap[key] || key] = isTrueish(row[key]) ? "ON" : "OFF";
     }
-  }
-
-  // ── Helper: style data rows with alternating colors ──
-  function styleDataRows(ws: ExcelJS.Worksheet, startRow: number, endRow: number, colCount: number) {
-    for (let r = startRow; r <= endRow; r++) {
-      const row = ws.getRow(r);
-      for (let c = 1; c <= colCount; c++) {
-        const cell = row.getCell(c);
-        cell.font = { name: "Calibri", size: 10 };
-        cell.alignment = { horizontal: "center", vertical: "middle" };
-        cell.border = {
-          bottom: { style: "hair", color: { argb: "E0E0E0" } },
-          right: { style: "hair", color: { argb: "E0E0E0" } },
-        };
-        if ((r - startRow) % 2 === 1) {
-          cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: ALT_ROW } };
-        }
-      }
-    }
-  }
-
-  // ── SHEET 1: Machine Data ──
-  const wsData = wb.addWorksheet("Machine Data", {
-    views: [{ state: "frozen", ySplit: 5 }],
+    return outputRow;
   });
+  const digitalOutputsSheet = XLSX.utils.json_to_sheet(digitalOutputRows);
+  XLSX.utils.book_append_sheet(workbook, digitalOutputsSheet, "Digital Outputs");
 
-  let startRow = addSheetHeader(wsData, "Machine Data Report");
-
-  // Detect actual columns from first row
-  const actualCols = rows.length > 0 ? new Set(Object.keys(rows[0])) : new Set<string>();
-
-  // Build ordered columns: id, timestamp, then each group — only include columns that exist
-  const dataColumns: { dbKey: string; header: string; group: string }[] = [
-    { dbKey: "id", header: "Record #", group: "Info" },
-    { dbKey: "__date", header: "Date", group: "Info" },
-    { dbKey: "__time", header: "Time", group: "Info" },
-  ];
-
-  const groupsForDataSheet = ["analogInputs", "analogOutputs", "aeration", "modes"] as const;
-  for (const groupKey of groupsForDataSheet) {
-    const group = GTPL_137_138_COLUMNS[groupKey];
-    for (const [dbKey, header] of Object.entries(group.columns)) {
-      if (actualCols.has(dbKey)) {
-        dataColumns.push({ dbKey, header: header as string, group: group.label });
-      }
-    }
-  }
-
-  // Section header row (group labels)
-  const sectionRow = wsData.getRow(startRow);
-  let colIdx = 1;
-  let currentGroup = "";
-  let groupStart = 1;
-  const groupSpans: { label: string; start: number; end: number }[] = [];
-
-  for (const col of dataColumns) {
-    if (col.group !== currentGroup) {
-      if (currentGroup) {
-        groupSpans.push({ label: currentGroup, start: groupStart, end: colIdx - 1 });
-      }
-      currentGroup = col.group;
-      groupStart = colIdx;
-    }
-    colIdx++;
-  }
-  groupSpans.push({ label: currentGroup, start: groupStart, end: colIdx - 1 });
-
-  // Merge and style section headers
-  for (const span of groupSpans) {
-    if (span.start < span.end) {
-      wsData.mergeCells(startRow, span.start, startRow, span.end);
-    }
-    const cell = sectionRow.getCell(span.start);
-    cell.value = span.label;
-    cell.font = { name: "Calibri", size: 10, bold: true, color: { argb: SECTION_FONT } };
-    cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: SECTION_BG } };
-    cell.alignment = { horizontal: "center", vertical: "middle" };
-  }
-  sectionRow.height = 20;
-
-  // Column headers
-  const headerRowNum = startRow + 1;
-  const headerRow = wsData.getRow(headerRowNum);
-  dataColumns.forEach((col, i) => {
-    headerRow.getCell(i + 1).value = col.header;
-  });
-  styleHeaderRow(wsData, headerRowNum, dataColumns.length);
-
-  // Data rows
-  const dataStartRow = headerRowNum + 1;
-  rows.forEach((r, ri) => {
-    const row = wsData.getRow(dataStartRow + ri);
-    dataColumns.forEach((col, ci) => {
-      let val: any;
-      if (col.dbKey === "__date") {
-        const ts = r[timestampCol] || r.created_at || r.created_on;
-        val = normalizeCreatedAt(ts).date;
-      } else if (col.dbKey === "__time") {
-        const ts = r[timestampCol] || r.created_at || r.created_on;
-        val = normalizeCreatedAt(ts).time;
-      } else {
-        val = r[col.dbKey];
-      }
-      if (val === null || val === undefined) val = "";
-      if (val instanceof Date) val = formatDateTimeExact(val);
-      const numVal = typeof val === "string" ? Number(val) : val;
-      row.getCell(ci + 1).value = Number.isFinite(numVal) ? numVal : val;
-    });
-  });
-  styleDataRows(wsData, dataStartRow, dataStartRow + rows.length - 1, dataColumns.length);
-
-  // Auto-fit column widths
-  dataColumns.forEach((col, i) => {
-    wsData.getColumn(i + 1).width = Math.max(col.header.length + 2, 14);
-  });
-
-  // ── SHEET 2: Active Faults ──
-  const wsFaults = wb.addWorksheet("Active Faults", {
-    views: [{ state: "frozen", ySplit: 5 }],
-  });
-
-  const faultStartRow = addSheetHeader(wsFaults, "Active Faults Report");
-
-  // Fault columns: id, date, time, then each fault tag that exists, then summary
-  const allFaultKeys = Object.keys(GTPL_137_138_COLUMNS.faultInputs.columns).filter(k => actualCols.has(k));
-  const faultHeaders = [
-    "Record #", "Date", "Time",
-    ...allFaultKeys.map(k => (GTPL_137_138_COLUMNS.faultInputs.columns as Record<string, string>)[k] || k),
-    "Active Faults Summary",
-  ];
-
-  // Section header for faults
-  const faultSectionRow = wsFaults.getRow(faultStartRow);
-  wsFaults.mergeCells(faultStartRow, 1, faultStartRow, 3);
-  faultSectionRow.getCell(1).value = "Info";
-  faultSectionRow.getCell(1).font = { name: "Calibri", size: 10, bold: true, color: { argb: SECTION_FONT } };
-  faultSectionRow.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: SECTION_BG } };
-  faultSectionRow.getCell(1).alignment = { horizontal: "center", vertical: "middle" };
-
-  if (allFaultKeys.length > 0) {
-    wsFaults.mergeCells(faultStartRow, 4, faultStartRow, 3 + allFaultKeys.length);
-    faultSectionRow.getCell(4).value = "Fault Inputs";
-    faultSectionRow.getCell(4).font = { name: "Calibri", size: 10, bold: true, color: { argb: SECTION_FONT } };
-    faultSectionRow.getCell(4).fill = { type: "pattern", pattern: "solid", fgColor: { argb: SECTION_BG } };
-    faultSectionRow.getCell(4).alignment = { horizontal: "center", vertical: "middle" };
-  }
-  faultSectionRow.height = 20;
-
-  // Fault header row
-  const faultHeaderRowNum = faultStartRow + 1;
-  const faultHdrRow = wsFaults.getRow(faultHeaderRowNum);
-  faultHeaders.forEach((h, i) => {
-    faultHdrRow.getCell(i + 1).value = h;
-  });
-  styleHeaderRow(wsFaults, faultHeaderRowNum, faultHeaders.length);
-
-  // Filter rows that have at least one active fault
-  const faultDataStartRow = faultHeaderRowNum + 1;
-  let faultRowIdx = 0;
-
-  rows.forEach((r) => {
-    const activeFaults: string[] = [];
-    for (const fKey of allFaultKeys) {
-      if (isTrueish(r[fKey])) {
-        activeFaults.push((GTPL_137_138_COLUMNS.faultInputs.columns as Record<string, string>)[fKey] || fKey);
-      }
-    }
-
-    // Only include rows with at least one active fault
-    if (activeFaults.length === 0) return;
-
-    const row = wsFaults.getRow(faultDataStartRow + faultRowIdx);
-    const ts = r[timestampCol] || r.created_at || r.created_on;
-    const { date, time } = normalizeCreatedAt(ts);
-
-    row.getCell(1).value = r.id || "";
-    row.getCell(2).value = date;
-    row.getCell(3).value = time;
-
-    allFaultKeys.forEach((fKey, fi) => {
-      const val = isTrueish(r[fKey]);
-      const cell = row.getCell(4 + fi);
-      cell.value = val ? "ACTIVE" : "";
-      if (val) {
-        cell.font = { name: "Calibri", size: 10, bold: true, color: { argb: FAULT_TRUE_FONT } };
-        cell.fill = { type: "pattern", pattern: "solid", fgColor: { argb: FAULT_TRUE_BG } };
-      }
-    });
-
-    // Summary column
-    row.getCell(4 + allFaultKeys.length).value = activeFaults.join(", ");
-    row.getCell(4 + allFaultKeys.length).font = { name: "Calibri", size: 9, color: { argb: "CC0000" } };
-
-    faultRowIdx++;
-  });
-
-  if (faultRowIdx === 0) {
-    // No faults found - add a message
-    const noFaultRow = wsFaults.getRow(faultDataStartRow);
-    wsFaults.mergeCells(faultDataStartRow, 1, faultDataStartRow, faultHeaders.length);
-    noFaultRow.getCell(1).value = "No active faults found in the selected date range.";
-    noFaultRow.getCell(1).font = { name: "Calibri", size: 12, italic: true, color: { argb: "28A745" } };
-    noFaultRow.getCell(1).alignment = { horizontal: "center", vertical: "middle" };
-    faultRowIdx = 1;
-  }
-
-  styleDataRows(wsFaults, faultDataStartRow, faultDataStartRow + faultRowIdx - 1, faultHeaders.length);
-
-  // Auto-fit fault columns
-  faultHeaders.forEach((h, i) => {
-    wsFaults.getColumn(i + 1).width = Math.max(h.length + 2, 14);
-  });
-
-  // ── SHEET 3: Digital Outputs ──
-  const wsOutputs = wb.addWorksheet("Digital Outputs", {
-    views: [{ state: "frozen", ySplit: 5 }],
-  });
-
-  const outputStartRow = addSheetHeader(wsOutputs, "Digital Outputs Report");
-
-  const outputKeys = Object.keys(GTPL_137_138_COLUMNS.digitalOutputs.columns).filter(k => actualCols.has(k));
-  const outputHeaders = [
-    "Record #", "Date", "Time",
-    ...outputKeys.map(k => (GTPL_137_138_COLUMNS.digitalOutputs.columns as Record<string, string>)[k] || k),
-  ];
-
-  // Section header
-  const outSectionRow = wsOutputs.getRow(outputStartRow);
-  wsOutputs.mergeCells(outputStartRow, 1, outputStartRow, 3);
-  outSectionRow.getCell(1).value = "Info";
-  outSectionRow.getCell(1).font = { name: "Calibri", size: 10, bold: true, color: { argb: SECTION_FONT } };
-  outSectionRow.getCell(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: SECTION_BG } };
-  outSectionRow.getCell(1).alignment = { horizontal: "center", vertical: "middle" };
-
-  if (outputKeys.length > 0) {
-    wsOutputs.mergeCells(outputStartRow, 4, outputStartRow, 3 + outputKeys.length);
-    outSectionRow.getCell(4).value = "Digital Outputs";
-    outSectionRow.getCell(4).font = { name: "Calibri", size: 10, bold: true, color: { argb: SECTION_FONT } };
-    outSectionRow.getCell(4).fill = { type: "pattern", pattern: "solid", fgColor: { argb: SECTION_BG } };
-    outSectionRow.getCell(4).alignment = { horizontal: "center", vertical: "middle" };
-  }
-  outSectionRow.height = 20;
-
-  // Header row
-  const outHeaderRowNum = outputStartRow + 1;
-  const outHdrRow = wsOutputs.getRow(outHeaderRowNum);
-  outputHeaders.forEach((h, i) => {
-    outHdrRow.getCell(i + 1).value = h;
-  });
-  styleHeaderRow(wsOutputs, outHeaderRowNum, outputHeaders.length);
-
-  // Data rows
-  const outDataStartRow = outHeaderRowNum + 1;
-  rows.forEach((r, ri) => {
-    const row = wsOutputs.getRow(outDataStartRow + ri);
-    const ts = r[timestampCol] || r.created_at || r.created_on;
-    const { date, time } = normalizeCreatedAt(ts);
-
-    row.getCell(1).value = r.id || "";
-    row.getCell(2).value = date;
-    row.getCell(3).value = time;
-
-    outputKeys.forEach((oKey, oi) => {
-      const val = isTrueish(r[oKey]);
-      const cell = row.getCell(4 + oi);
-      cell.value = val ? "ON" : "OFF";
-      if (val) {
-        cell.font = { name: "Calibri", size: 10, bold: true, color: { argb: "28A745" } };
-      } else {
-        cell.font = { name: "Calibri", size: 10, color: { argb: "999999" } };
-      }
-    });
-  });
-  styleDataRows(wsOutputs, outDataStartRow, outDataStartRow + rows.length - 1, outputHeaders.length);
-
-  outputHeaders.forEach((h, i) => {
-    wsOutputs.getColumn(i + 1).width = Math.max(h.length + 2, 14);
-  });
-
-  // ── Write buffer ──
-  const buffer = await wb.xlsx.writeBuffer();
-  return Buffer.from(buffer);
+  return XLSX.write(workbook, { bookType: "xlsx", type: "buffer" });
 }
 
 const ALLOWED_TABLES = [
@@ -1462,8 +1150,8 @@ export async function GET(req: Request) {
         });
       }
 
-      console.log(`Building Excel with ${allRawRows.length} rows for ${table}...`);
-      const buffer = await build137_138Excel(table, allRawRows, fromDate, toDate, timestampCol);
+      console.log(`Building lightweight Excel with ${allRawRows.length} rows for ${table}...`);
+      const buffer = build137_138Excel(allRawRows, timestampCol);
 
       const recordCount = allRawRows.length;
       const dateRange = hasDateFilter ? `_${fromDate || 'start'}_to_${toDate || 'end'}` : '';
