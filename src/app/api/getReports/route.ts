@@ -34,6 +34,22 @@ const ALLOWED_TABLES = [
   "GTPL_143_GT_450AP_S7_1200"
 ];
 
+async function getTimestampColumn(table: string): Promise<'created_at' | 'created_on'> {
+  try {
+    const columns: any = await query(
+      `SHOW COLUMNS FROM \`${table}\` WHERE Field IN ('created_at', 'created_on')`
+    );
+    if (Array.isArray(columns) && columns.length > 0) {
+      const colName = columns[0].Field;
+      return colName === 'created_on' ? 'created_on' : 'created_at';
+    }
+    return 'created_at';
+  } catch (err) {
+    console.error('Error detecting timestamp column:', err);
+    return 'created_at';
+  }
+}
+
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -47,40 +63,35 @@ export async function GET(req: Request) {
 
     const hasDateFilter = !!(fromDate || toDate);
 
-    // If NO date filter -> hardcode limit to 100, allow ?page (defaults to 1)
-    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    const limit = hasDateFilter ? undefined : 100; // hardcoded 100 when no dates
-    const offset = hasDateFilter ? undefined : (page - 1) * (limit as number);
+    // Detect which timestamp column this table uses
+    const timestampCol = await getTimestampColumn(table);
 
-    // Build WHERE
+    // Always paginate — 100 rows per page
+    const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
+    const limit = 100;
+    const offset = (page - 1) * limit;
+
+    // Build WHERE — use index-friendly comparisons (no DATE() wrapper)
     const whereClauses: string[] = [];
     const params: any[] = [];
     if (fromDate) {
-      whereClauses.push("created_at >= ?");
-      params.push(fromDate);
+      whereClauses.push(`\`${timestampCol}\` >= ?`);
+      params.push(`${fromDate} 00:00:00`);
     }
     if (toDate) {
-      whereClauses.push("created_at <= ?");
-      params.push(toDate);
+      whereClauses.push(`\`${timestampCol}\` <= ?`);
+      params.push(`${toDate} 23:59:59`);
     }
     const whereSql = whereClauses.length ? `WHERE ${whereClauses.join(" AND ")}` : "";
 
     // Total count (for pagination UI)
-    // - When date filter: count the filtered set
-    // - When no date filter: count entire table
     const countSql = `SELECT COUNT(*) AS total FROM \`${table}\` ${whereSql}`;
     const countRows: any = await query(countSql, params);
     const total = Array.isArray(countRows) && countRows[0]?.total ? Number(countRows[0].total) : 0;
 
-    // Data query
-    let dataSql = `SELECT * FROM \`${table}\` ${whereSql} ORDER BY id DESC`;
-    const dataParams = [...params];
-
-    if (!hasDateFilter) {
-      // Hardcode 100 rows when no date range
-      dataSql += ` LIMIT ? OFFSET ?`;
-      dataParams.push(limit, offset);
-    }
+    // Data query — always paginated with LIMIT/OFFSET
+    const dataSql = `SELECT * FROM \`${table}\` ${whereSql} ORDER BY id DESC LIMIT ? OFFSET ?`;
+    const dataParams = [...params, limit, offset];
     const rows = await query(dataSql, dataParams);
 
     // Normalize rows: Format dates exactly as stored, no timezone conversion, no "T"
@@ -106,11 +117,11 @@ export async function GET(req: Request) {
 
     return Response.json({
       data,
-      page: hasDateFilter ? 1 : page,
-      limit: hasDateFilter ? total : (limit as number),
+      page,
+      limit,
       total,
       table,
-      timestampColumn: "created_at",
+      timestampColumn: timestampCol,
       dateFilter: {
         fromDate: fromDate || undefined,
         toDate: toDate || undefined,

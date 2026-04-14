@@ -138,12 +138,14 @@ const {t} = useLanguage()
 
           {/* Navigation buttons */}
           <div className="mb-4 flex justify-end gap-2">
-            <Button
+            {machineName === "GTPL-061-gT-450T-S7-1200" ? 
+             ""
+            :   <Button
               variant="secondary"
               onClick={() => setCurrentView("faultCodes")}
             >
               {t("Fault Codes")}
-            </Button>
+            </Button>}
             <Button
               variant="secondary"
               onClick={() => setCurrentView("allPaginatedLogs")}

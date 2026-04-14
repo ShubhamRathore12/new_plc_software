@@ -238,16 +238,16 @@ export default function TableWithDownload() {
     setLoading(true);
     try {
       let url: string;
+      const page = pageOverride ?? pagination.page ?? 1;
 
       if (range && range[0] && range[1]) {
-        // DATE SELECTED -> keep existing API
+        // DATE SELECTED -> use getReports with date params (returns JSON)
         const [startDate, endDate] = range;
-        url = `/api/getAllDataSmart200?table=${encodeURIComponent(tableName)}&fromDate=${startDate.format(
+        url = `/api/getReports?table=${encodeURIComponent(tableName)}&fromDate=${startDate.format(
           "YYYY-MM-DD"
-        )}&toDate=${endDate.format("YYYY-MM-DD")}`;
+        )}&toDate=${endDate.format("YYYY-MM-DD")}&page=${page}`;
       } else {
-        // NO DATE -> use getReport (hardcoded 100 rows) and pass page
-        const page = pageOverride ?? pagination.page ?? 1;
+        // NO DATE -> use getReports (hardcoded 100 rows) and pass page
         url = `/api/getReports?table=${encodeURIComponent(tableName)}&page=${page}`;
       }
 
@@ -257,7 +257,7 @@ export default function TableWithDownload() {
       setData(json?.data || []);
       setPagination({
         page: json.page || 1,
-        limit: json.limit || (range ? 1000 : 100), // expect 100 from getReport, big limit when date-selected
+        limit: json.limit || 100,
         total: json.total || 0,
       });
     } catch (err) {
@@ -332,14 +332,10 @@ export default function TableWithDownload() {
     }
   };
 
-  // CHANGED: also react to pagination.page when NO date
+  // Fetch data whenever device, date range, or page changes
   useEffect(() => {
     if (selectedDevice) {
-      if (dateRange) {
-        fetchData(selectedDevice, dateRange);
-      } else {
-        fetchData(selectedDevice, null, pagination.page);
-      }
+      fetchData(selectedDevice, dateRange, pagination.page);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedDevice, dateRange, pagination.page]);
@@ -534,9 +530,7 @@ export default function TableWithDownload() {
                 variant="outline"
                 onClick={() => {
                   if (pagination.page > 1) {
-                    const newPage = pagination.page - 1;
-                    setPagination((prev: any) => ({ ...prev, page: newPage }));
-                    if (!dateRange) fetchData(selectedDevice, null, newPage);
+                    setPagination((prev: any) => ({ ...prev, page: prev.page - 1 }));
                   }
                 }}
                 disabled={pagination.page === 1}
@@ -547,9 +541,7 @@ export default function TableWithDownload() {
                 variant="outline"
                 onClick={() => {
                   if (pagination.page * pagination.limit < pagination.total) {
-                    const newPage = pagination.page + 1;
-                    setPagination((prev: any) => ({ ...prev, page: newPage }));
-                    if (!dateRange) fetchData(selectedDevice, null, newPage);
+                    setPagination((prev: any) => ({ ...prev, page: prev.page + 1 }));
                   }
                 }}
                 disabled={pagination.page * pagination.limit >= pagination.total}

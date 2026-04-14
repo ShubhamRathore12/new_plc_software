@@ -21,7 +21,7 @@ export default function AnalogPage() {
     {
       section: "ANALOG INPUTS (4-20mA)",
       items: 
-        (device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") 
+        (device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-144-GT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") 
         ? [
             {
               description: "Suction pressure",
@@ -50,7 +50,7 @@ export default function AnalogPage() {
     {
       section: "ANALOG INPUTS (RTD Type)",
       items: 
-        (device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") 
+        (device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-144-GT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") 
         ? [
             {
               description: "T0 probe #1 (Afterheater)",
@@ -302,9 +302,33 @@ export default function AnalogPage() {
     },
   }
 
+  const S7_200_config = {
+    displayName: "S7-200 Machine",
+    inputs: {
+      "Suction Pressure": "LP",
+      "Discharge Pressure": "HP",
+      "T2.1 Ambient Temp": "AMBIENT_AIR_TEMP_T2",
+      "T2.2 Ambient Temp": "AMBIENT_AIR_TEMP_T2",
+      "T1.1 Cold Temp": "COLD_AIR_TEMP_T1",
+      "T1.2 Cold Temp": "COLD_AIR_TEMP_T1",
+      "TH.1 Supply Air": "AFTER_HEATER_TEMP_Th",
+      "TH.2 Supply Air": "AFTER_HEATER_TEMP_Th",
+    },
+    outputs: {
+      "Blower Speed": "BLOWER_RPM",
+      "Condenser fan speed": "CONDENSER_RPM",
+      "Hot Gas Valve": "HOT_GAS_VALVE_RPM",
+      "Afterheat Valve": "AFTER_HEAT_VALVE_RPM",
+    },
+  }
+
   const GTPL_30_config = {
     displayName: "S7-1200 Machine",
-    inputs: sharedS7_1200_config.inputs,
+    inputs: {
+      ...sharedS7_1200_config.inputs,
+      "TH.1 Supply Air": "TH_1_supply_air_temp",
+      "TH.2 Supply Air": "TH_2_supply_air_temp",
+    },
     outputs: {
       ...sharedS7_1200_config.outputs,
       "Heater": "Heater_speed",
@@ -345,6 +369,12 @@ export default function AnalogPage() {
     "GTPL-123-GT-450AP":GTPL_132_config,
     "GTPL-143-gT-450AP-S7-1200":GTPL_132_config,
     "GTPL-118-gT-60T-S7-200": GTPL_60_config,
+    "GTPL-108-gT-40E-P-S7-200": S7_200_config,
+    "GTPL-109-gT-40E-P-S7-200": S7_200_config,
+    "GTPL-110-gT-40E-P-S7-200": S7_200_config,
+    "GTPL-111-gT-80E-P-S7-200": S7_200_config,
+    "GTPL-112-gT-80E-P-S7-200": S7_200_config,
+    "GTPL-113-gT-80E-P-S7-200": S7_200_config,
     default: {
       displayName: "Default Machine",
       inputs: {
@@ -518,20 +548,21 @@ export default function AnalogPage() {
                     <div className="grid gap-3">
                       {section.items
                         .filter((item) => {
-                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") {
+                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-144-GT-300AP-S7-1200" || device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
                           if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
                           if ([ '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
-                            return !item.description.startsWith("T0 probe #2 (Afterheater)") && !item.description.startsWith("T2 probe #2 (Ambient Air)") && !item.description.startsWith("TH probe #2 (Supply Air)") && !item.description.startsWith("T1 probe #2 (Cold Air)") && !item.description.startsWith('T0.1 Air Outlet Temp') && !item.description.startsWith('T0.2 Air Outlet Temp')
+                            return !item.description.includes("T0") && !item.description.includes("Air Outlet")
                           }
                           if (device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-118-gT-60T-S7-200") {
+                            if (item.description.startsWith("TH")) return false;
                             return !item.description.includes(".2 ")
                           }
                           if (device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200") {
-                            return true;
+                            return !item.description.startsWith("TH")
                           }
                           return true
                         })
@@ -593,8 +624,11 @@ export default function AnalogPage() {
                         const liveKey = analogOutputValueMap[item.description];
                         if (!liveKey) return false;
                         
-                        // For GTPL-142, GTPL-123, GTPL-143 - exclude Heater only
-                        if (device === "GTPL-142-gT-450AP-S7-1200" ||
+                        // For grain/paddy AP machines - exclude Heater (no heater per spec)
+                        if (device === "GTPL-132-300-AP-S7-1200" ||
+                            device === "GTPL-136-gT-450AP" ||
+                            device === "GTPL-144-GT-300AP-S7-1200" ||
+                            device === "GTPL-142-gT-450AP-S7-1200" ||
                             device === "GTPL-123-GT-450AP" ||
                             device === "GTPL-143-gT-450AP-S7-1200") {
                           if (item.description === "Heater") return false;
@@ -618,7 +652,7 @@ export default function AnalogPage() {
                           device === 'GTPL-131-GT-650T-S7-1200' ||
                           device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === 
                           "GTPL-145-gT-450T-S7-1200" ||
-                          (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
+                          (['108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
                           if (item.description === "Cond. Fan speed" || item.description === "Condenser fan speed") return false;
                         }
                         if (device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200" || device === "GTPL-139-GT-300AP-S7-1200") {

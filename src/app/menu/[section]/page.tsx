@@ -76,8 +76,10 @@ export default function Home() {
     }
   };
 
-  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200' || device === 'GTPL-144-GT-300AP-S7-1200' || device === 'GTPL-142-gT-450AP-S7-1200' || device === 'GTPL-123-GT-450AP' || device === 'GTPL-143-gT-450AP-S7-1200';
-  const shouldHideAeration = device === "GTPL-061-gT-450T-S7-1200";
+  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200"  || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200' || device === 'GTPL-144-GT-300AP-S7-1200' || device === 'GTPL-142-gT-450AP-S7-1200' || device === 'GTPL-123-GT-450AP' || device === 'GTPL-143-gT-450AP-S7-1200' || device === 'GTPL-121-gT-1000T-S7-1200' || device === 'GTPL-122-gT-1000T-S7-1200'  || device === 'GTPL-131-GT-650T-S7-1200' || device === 'GTPL-133-GT-650T-S7-1200' || device === 'GTPL-134-gT-450T-S7-1200' || device === 'GTPL-135-gT-450T-S7-1200' || device === 'GTPL-145-gT-450T-S7-1200' || device === 'GTPL-124-GT-450T-S7-1200' || device === 'GTPL-137-GT-450T-S7-1200' || device === 'GTPL-138-GT-450T-S7-1200' ;
+  const shouldHideAeration = false;
+  const isS7200Device = ['108', '109', '110', '111', '112', '113'].some(code => device?.includes(`GTPL-${code}`));
+  const showAnalogMenu = isS7200Device || ['GTPL-30-', 'GTPL-115-', 'GTPL-116-', 'GTPL-117-', 'GTPL-119-', 'GTPL-120-'].some(code => device?.includes(code));
 
   const getMenuItems = (): MenuItem[] => {
     if (isGrainPaddyDevice) {
@@ -131,66 +133,84 @@ export default function Home() {
           gradient: "from-fuchsia-500 via-pink-500 to-rose-600",
           iconColor: "text-fuchsia-500"
         },
-        { 
-          icon: Construction, 
-          title: t("test"), 
+        {
+          icon: Activity,
+          title: "Analog",
+          path: "inputs/analog",
+          gradient: "from-teal-500 via-emerald-500 to-green-600",
+          iconColor: "text-teal-500"
+        },
+        {
+          icon: Construction,
+          title: t("test"),
           path: "test",
           gradient: "from-cyan-500 via-blue-500 to-indigo-600",
           iconColor: "text-cyan-500"
         },
       ];
     } else {
-      const baseMenuItems = [
-        { 
-          icon: Gauge, 
-          title: t("auto"), 
+      const baseMenuItems: MenuItem[] = [
+        {
+          icon: Gauge,
+          title: t("auto"),
           path: "auto",
           gradient: "from-indigo-500 via-blue-500 to-purple-600",
           iconColor: "text-indigo-500"
         },
-        { 
-          icon: Wind, 
-          title: t("aeration"), 
+        {
+          icon: Wind,
+          title: t("aeration"),
           path: "aerations",
           gradient: "from-sky-500 via-cyan-500 to-blue-600",
           iconColor: "text-sky-500"
         },
-        { 
-          icon: AlertTriangle, 
-          title: t("fault"), 
+        {
+          icon: AlertTriangle,
+          title: t("fault"),
           path: "fault",
           gradient: "from-red-500 via-orange-500 to-rose-600",
           iconColor: "text-red-500"
         },
-        { 
-          icon: Cog, 
-          title: t("settings"), 
+        {
+          icon: Cog,
+          title: t("settings"),
           path: "settings",
           gradient: "from-slate-500 via-zinc-500 to-gray-600",
           iconColor: "text-slate-500"
         },
-        { 
-          icon: Power, 
-          title: t("inputs"), 
+        {
+          icon: Power,
+          title: t("inputs"),
           path: "inputs",
           gradient: "from-violet-500 via-indigo-500 to-purple-600",
           iconColor: "text-violet-500"
         },
-        { 
-          icon: Zap, 
-          title: t("outputs"), 
+        {
+          icon: Zap,
+          title: t("outputs"),
           path: "outputs",
           gradient: "from-fuchsia-500 via-pink-500 to-rose-600",
           iconColor: "text-fuchsia-500"
         },
-        { 
-          icon: Construction, 
-          title: t("test"), 
+        {
+          icon: Construction,
+          title: t("test"),
           path: "test",
           gradient: "from-cyan-500 via-blue-500 to-indigo-600",
           iconColor: "text-cyan-500"
         },
       ];
+
+      // Add Analog menu item for machines that have analog screens
+      if (showAnalogMenu) {
+        baseMenuItems.splice(6, 0, {
+          icon: Activity,
+          title: "Analog",
+          path: "inputs/analog",
+          gradient: "from-teal-500 via-emerald-500 to-green-600",
+          iconColor: "text-teal-500"
+        });
+      }
 
       if (shouldHideAeration) {
         return baseMenuItems.filter(item => item.path !== "aerations");

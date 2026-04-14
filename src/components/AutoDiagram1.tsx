@@ -786,7 +786,6 @@
 import Image from "next/image";
 import Fan1200 from "../../public/images/fan.jpg";
 import Fan from "../../public/images/fan.png";
-import Fan1 from "../../public/images/124.png";
 import { usePathname } from "next/navigation";
 
 import { useEffect, useState } from "react";
@@ -952,6 +951,64 @@ export default function AutoDiagram1({
     "GTPL-117-gT-320E-S7-1200",
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
+    "GTPL-132-300-AP-S7-1200",
+    "GTPL-139-GT-300AP-S7-1200",
+    "GTPL-144-GT-300AP-S7-1200",
+    "GTPL-123-GT-450AP",
+    "GTPL-136-gT-450AP",
+    "GTPL-142-gT-450AP-S7-1200",
+    "GTPL-143-gT-450AP-S7-1200",
+    "GTPL-061-gT-450T-S7-1200",
+    "GTPL-131-GT-650T-S7-1200",
+    "GTPL-133-GT-650T-S7-1200",
+    "GTPL-134-gT-450T-S7-1200",
+    "GTPL-135-gT-450T-S7-1200",
+    "GTPL-145-gT-450T-S7-1200",
+    "GTPL-124-GT-450T-S7-1200",
+    "GTPL-137-GT-450T-S7-1200",
+    "GTPL-138-GT-450T-S7-1200",
+  ].some((name) => machineName.includes(name));
+
+  // Machines with 2 condenser fans
+  const is2FanMachine = [
+    "GTPL-116-gT-240E-S7-1200",
+    "GTPL-117-gT-320E-S7-1200",
+    "GTPL-132-300-AP-S7-1200",
+    "GTPL-139-GT-300AP-S7-1200",
+    "GTPL-144-GT-300AP-S7-1200",
+  ].some((name) => machineName.includes(name));
+
+  // Machines with 4 condenser fans
+  const is4FanMachine = [
+    "GTPL-123-GT-450AP",
+    "GTPL-136-gT-450AP",
+    "GTPL-142-gT-450AP-S7-1200",
+    "GTPL-143-gT-450AP-S7-1200",
+    "GTPL-061-gT-450T-S7-1200",
+    "GTPL-134-gT-450T-S7-1200",
+    "GTPL-135-gT-450T-S7-1200",
+    "GTPL-145-gT-450T-S7-1200",
+    "GTPL-124-GT-450T-S7-1200",
+    "GTPL-137-GT-450T-S7-1200",
+    "GTPL-138-GT-450T-S7-1200",
+  ].some((name) => machineName.includes(name));
+
+  // Machines with 6 condenser fans
+  const is6FanMachine = [
+    "GTPL-121-gT-1000T-S7-1200",
+    "GTPL-122-gT-1000T-S7-1200",
+    "GTPL-131-GT-650T-S7-1200",
+    "GTPL-133-GT-650T-S7-1200",
+  ].some((name) => machineName.includes(name));
+
+  // S7-200 machines (GTPL-108 to 113) - no T0 sensor, 1 fan each
+  const isS7200Machine = [
+    "GTPL-108-gT-40E-P-S7-200",
+    "GTPL-109-gT-40E-P-S7-200",
+    "GTPL-110-gT-40E-P-S7-200",
+    "GTPL-111-gT-80E-P-S7-200",
+    "GTPL-112-gT-80E-P-S7-200",
+    "GTPL-113-gT-80E-P-S7-200",
   ].some((name) => machineName.includes(name));
 
   return (
@@ -1253,14 +1310,17 @@ export default function AutoDiagram1({
                   strokeWidth="2"
                 />
               )}
-              <line
-                x1="380"
-                y1="120"
-                x2="380"
-                y2="150"
-                stroke="black"
-                strokeWidth="2"
-              />
+              {/* T0 vertical drop - hidden for S7-200 machines */}
+              {!isS7200Machine && (
+                <line
+                  x1="380"
+                  y1="120"
+                  x2="380"
+                  y2="150"
+                  stroke="black"
+                  strokeWidth="2"
+                />
+              )}
               <line
                 x1="480"
                 y1="120"
@@ -1337,30 +1397,32 @@ export default function AutoDiagram1({
   </div>
 )}
 
-            {/* T0 Thermometer */}
-            <div className="absolute" style={{ left: "360px", top: "152px" }}>
-              <div className="w-12 h-60 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
-                <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
-                  <div className="text-xs font-bold p-1 text-center">T0</div>
-                  <div className="text-xs p-1 text-center">
-                    {(() => {
-                      // For GTPL-118, show setpoint value
-                      if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
-                        if (data?.T0_set_point !== undefined && data?.T0_set_point !== null) return formatValue(data?.T0_set_point, "°C");
-                        if (data?.T1_set_point !== undefined && data?.T1_set_point !== null) return formatValue(data?.T1_set_point, "°C");
+            {/* T0 Thermometer - hidden for S7-200 machines (no T0 sensor) */}
+            {!isS7200Machine && (
+              <div className="absolute" style={{ left: "360px", top: "152px" }}>
+                <div className="w-12 h-60 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
+                  <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
+                    <div className="text-xs font-bold p-1 text-center">T0</div>
+                    <div className="text-xs p-1 text-center">
+                      {(() => {
+                        // For GTPL-118, show setpoint value
+                        if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
+                          if (data?.T0_set_point !== undefined && data?.T0_set_point !== null) return formatValue(data?.T0_set_point, "°C");
+                          if (data?.T1_set_point !== undefined && data?.T1_set_point !== null) return formatValue(data?.T1_set_point, "°C");
+                          if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
+                          return formatValue(undefined, "°C");
+                        }
+
+                        // For other machines, show actual value
+                        if (data.AIR_OUTLET_TEMP !== undefined && data.AIR_OUTLET_TEMP !== null) return formatValue(data.AIR_OUTLET_TEMP, "°C");
                         if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
                         return formatValue(undefined, "°C");
-                      }
-                      
-                      // For other machines, show actual value
-                      if (data.AIR_OUTLET_TEMP !== undefined && data.AIR_OUTLET_TEMP !== null) return formatValue(data.AIR_OUTLET_TEMP, "°C");
-                      if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
-                      return formatValue(undefined, "°C");
-                    })()}
+                      })()}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
             {/* T1 Thermometer */}
             <div className="absolute" style={{ left: "460px", top: "152px" }}>
@@ -1464,28 +1526,79 @@ export default function AutoDiagram1({
                 </div>
 
                 {/* Fan Images */}
-                {machineName.includes("GTPL-124-GT-450T-S7-1200") ? (
-                  <div className="absolute left-16 top-8">
-                    <div className="w-20 h-20 relative">
-                      <Image
-                        src={Fan1}
-                        alt="Fan1"
-                        fill
-                        className="object-contain"
-                      />
+                {isFanMachine ? (
+                  <>
+                    <div className="absolute left-16 top-2">
+                      <div className="w-16 h-16 relative">
+                        <Image
+                          src={Fan1200}
+                          alt="Fan 1"
+                          fill
+                          className="object-contain"
+                        />
+                      </div>
                     </div>
-                  </div>
-                ) : isFanMachine ? (
-                  <div className="absolute left-16 top-8">
-                    <div className="w-20 h-20 relative">
-                      <Image
-                        src={Fan1200}
-                        alt="Fan"
-                        fill
-                        className="object-contain"
-                      />
-                    </div>
-                  </div>
+                    {(is2FanMachine || is4FanMachine) && (
+                      <div className="absolute left-16 top-20">
+                        <div className="w-16 h-16 relative">
+                          <Image
+                            src={Fan1200}
+                            alt="Fan 2"
+                            fill
+                            className="object-contain"
+                          />
+                        </div>
+                      </div>
+                    )}
+                    {(is4FanMachine || is6FanMachine) && (
+                      <>
+                        <div className="absolute left-36 top-2">
+                          <div className="w-16 h-16 relative">
+                            <Image
+                              src={Fan1200}
+                              alt="Fan 3"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        </div>
+                        <div className="absolute left-36 top-20">
+                          <div className="w-16 h-16 relative">
+                            <Image
+                              src={Fan1200}
+                              alt="Fan 4"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    {is6FanMachine && (
+                      <>
+                        <div className="absolute left-56 top-2">
+                          <div className="w-16 h-16 relative">
+                            <Image
+                              src={Fan1200}
+                              alt="Fan 5"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        </div>
+                        <div className="absolute left-56 top-20">
+                          <div className="w-16 h-16 relative">
+                            <Image
+                              src={Fan1200}
+                              alt="Fan 6"
+                              fill
+                              className="object-contain"
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </>
                 ) : (
                   <div className="absolute left-16 top-8">
                     <div className="w-20 h-20 relative">

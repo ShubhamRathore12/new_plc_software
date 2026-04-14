@@ -98,7 +98,7 @@ export default function Home({ data, devices, heat, title, formatValue }: any) {
             />
 
             {/* TH */}
-            {devices === "GTPL-122-gT-1000T-S7-1200" ? (
+            {devices === "GTPL-122-gT-1000T-S7-1200" || devices === "GTPL-061-gT-450T-S7-1200" ? (
               <>
                 {" "}
                 <text
