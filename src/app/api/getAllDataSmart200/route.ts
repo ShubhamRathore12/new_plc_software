@@ -649,19 +649,19 @@ async function build137_138Excel(
   wb.created = new Date();
 
   // ── Load logo ──
-  let logoId: number | null = null;
-  try {
-    const logoPath = path.join(process.cwd(), "public", "logo.png");
-    if (fs.existsSync(logoPath)) {
-      const logoBuffer = fs.readFileSync(logoPath);
-      logoId = wb.addImage({
-        buffer: new Uint8Array(logoBuffer) as any,
-        extension: "png",
-      });
-    }
-  } catch (e) {
-    console.error("Logo load failed:", e);
-  }
+  // let logoId: number | null = null;
+  // try {
+  //   const logoPath = path.join(process.cwd(), "public", "logo.png");
+  //   if (fs.existsSync(logoPath)) {
+  //     const logoBuffer = fs.readFileSync(logoPath);
+  //     logoId = wb.addImage({
+  //       buffer: new Uint8Array(logoBuffer) as any,
+  //       extension: "png",
+  //     });
+  //   }
+  // } catch (e) {
+  //   console.error("Logo load failed:", e);
+  // }
 
   const machineName = table === "GTPL_137_GT_450T_S7_1200" ? "GTPL-137-GT-450T" : "GTPL-138-GT-450T";
   const dateRangeText = fromDate && toDate ? `${fromDate} to ${toDate}` : "All Data";
@@ -670,12 +670,12 @@ async function build137_138Excel(
   function addSheetHeader(ws: ExcelJS.Worksheet, title: string) {
     // Merge cells for logo area
     ws.mergeCells("A1:C3");
-    if (logoId !== null) {
-      ws.addImage(logoId, {
-        tl: { col: 0, row: 0 },
-        ext: { width: 220, height: 60 },
-      });
-    }
+    // if (logoId !== null) {
+    //   ws.addImage(logoId, {
+    //     tl: { col: 0, row: 0 },
+    //     ext: { width: 220, height: 60 },
+    //   });
+    // }
 
     // Machine title
     ws.mergeCells("D1:J1");
@@ -1590,8 +1590,8 @@ export async function GET(req: Request) {
   } catch (err: any) {
     console.error("Export error:", err);
     return Response.json(
-      {
-        error: err.message || "Internal error",
+      { 
+        error: err.message || "Internal error during Excel export",
         details: process.env.NODE_ENV === 'development' ? err.stack : undefined
       },
       {
