@@ -289,7 +289,7 @@ export default function TableWithDownload() {
         tableName
       )}&fromDate=${startDate.format("YYYY-MM-DD")}&toDate=${endDate.format(
         "YYYY-MM-DD"
-      )}&downloadAll=true`;
+      )}&downloadAll=true&format=xlsx`;
 
       const response = await fetch(url);
       if (!response.ok) {
@@ -301,7 +301,7 @@ export default function TableWithDownload() {
       if (!reader) throw new Error("No reader available");
       const contentLength = parseInt(response.headers.get("Content-Length") || "0", 10);
       let receivedLength = 0;
-      const chunks: Uint8Array[] = [];
+      const chunks: Uint8Array[] | any = [] ;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -327,6 +327,68 @@ export default function TableWithDownload() {
     } catch (err) {
       console.error("Download error:", err);
       message.error(err instanceof Error ? err.message : "An error occurred while downloading the data.");
+    } finally {
+      setIsDownloading(false);
+    }
+  };
+
+  // Download CSV (lightweight, no memory issues)
+  const downloadAllDataCSV = async () => {
+    if (!dateRange) return;
+
+    if (!validateDateRange(dateRange)) {
+      return;
+    }
+
+    const tableName = DEVICE_TO_TABLE_MAP[selectedDevice];
+    if (!tableName) return;
+
+    setIsDownloading(true);
+    setDownloadProgress(0);
+    try {
+      const [startDate, endDate] = dateRange;
+      const url = `/api/getAllDataSmart200?table=${encodeURIComponent(
+        tableName
+      )}&fromDate=${startDate.format("YYYY-MM-DD")}&toDate=${endDate.format(
+        "YYYY-MM-DD"
+      )}&downloadAll=true&format=csv`;
+
+      const response = await fetch(url);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Download failed");
+      }
+
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error("No reader available");
+      const contentLength = parseInt(response.headers.get("Content-Length") || "0", 10);
+      let receivedLength = 0;
+      const chunks: Uint8Array[] = [];
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        receivedLength += value.length;
+        if (contentLength > 0) {
+          setDownloadProgress(Math.round((receivedLength / contentLength) * 100));
+        }
+      }
+
+      const blob = new Blob(chunks, { type: "text/csv;charset=utf-8" });
+      const downloadUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.setAttribute("download", `${selectedDevice}_export.csv`);
+      document.body.appendChild(link);
+      link.click();
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(downloadUrl);
+
+      message.success("CSV data downloaded successfully!");
+    } catch (err) {
+      console.error("Download CSV error:", err);
+      message.error(err instanceof Error ? err.message : "An error occurred while downloading the CSV data.");
     } finally {
       setIsDownloading(false);
     }
@@ -435,6 +497,14 @@ export default function TableWithDownload() {
             >
               {isDownloading && <Spin size="small" className="mr-2" />}
               Download All (Date Range)
+            </Button>
+            <Button
+              onClick={downloadAllDataCSV}
+              disabled={!dateRange || isDownloading || storeData?.user?.firstName === "Prosafe"}
+              variant="outline"
+            >
+              {isDownloading && <Spin size="small" className="mr-2" />}
+              Download CSV
             </Button>
           </div>
         </div>

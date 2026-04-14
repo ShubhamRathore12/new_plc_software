@@ -1339,9 +1339,14 @@ export async function GET(req: Request) {
     const userLimitStr = (searchParams.get("limit") || "").toLowerCase();
     const hasDateFilter = !!(fromDate || toDate);
     const order = (searchParams.get("order") || "desc").toLowerCase() === "asc" ? "ASC" : "DESC";
+    const format = (searchParams.get("format") || "xlsx").toLowerCase();
 
     if (!table || !ALLOWED_TABLES.includes(table as any)) {
       return Response.json({ error: "Invalid or missing table name" }, { status: 400 });
+    }
+
+    if (!["xlsx", "csv"].includes(format)) {
+      return Response.json({ error: "Invalid format. Use 'xlsx' or 'csv'" }, { status: 400 });
     }
 
     // Detect which timestamp column this table uses
@@ -1431,6 +1436,32 @@ export async function GET(req: Request) {
         offset += currentChunkSize;
       }
 
+      // ── CSV Export for 137/138 ──
+      if (format === "csv") {
+        console.log(`Creating CSV with ${allRawRows.length} rows for ${table}...`);
+
+        const csvBuffer = XLSX.utils.sheet_to_csv(
+          XLSX.utils.json_to_sheet(allRawRows)
+        );
+
+        const recordCount = allRawRows.length;
+        const dateRange = hasDateFilter ? `_${fromDate || 'start'}_to_${toDate || 'end'}` : '';
+        const filename = `${table}${dateRange}_${new Date().toISOString().slice(0, 10)}_${recordCount}records.csv`;
+
+        console.log(`CSV Export complete: ${filename}`);
+
+        return new Response(csvBuffer, {
+          status: 200,
+          headers: {
+            "Content-Type": "text/csv;charset=utf-8",
+            "Content-Disposition": `attachment; filename="${filename}"`,
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Expose-Headers": "Content-Disposition",
+            "Cache-Control": "no-store, max-age=0",
+          },
+        });
+      }
+
       console.log(`Building Excel with ${allRawRows.length} rows for ${table}...`);
       const buffer = await build137_138Excel(table, allRawRows, fromDate, toDate, timestampCol);
 
@@ -1446,6 +1477,55 @@ export async function GET(req: Request) {
           "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
           "Content-Disposition": `attachment; filename="${filename}"`,
           "Content-Length": String(buffer.length),
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Expose-Headers": "Content-Disposition",
+          "Cache-Control": "no-store, max-age=0",
+        },
+      });
+    }
+
+    // ── CSV Export (lightweight, no memory issues) ──
+    if (format === "csv") {
+      console.log(`Using CSV export for ${table}`);
+
+      const allRawRows: any[] = [];
+      let offset = 0;
+
+      while (offset < effectiveLimit) {
+        const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
+        const chunkRows = await query<RowDataPacket[]>(
+          `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
+          [...params, currentChunkSize, offset]
+        );
+        if (!Array.isArray(chunkRows) || chunkRows.length === 0) break;
+
+        for (const r of chunkRows as any[]) {
+          for (const [k, v] of Object.entries(r)) {
+            if (v instanceof Date) (r as any)[k] = formatDateTimeExact(v);
+            else if (v === null || v === undefined) (r as any)[k] = "";
+          }
+        }
+        allRawRows.push(...(chunkRows as any[]));
+        offset += currentChunkSize;
+      }
+
+      console.log(`Creating CSV with ${allRawRows.length} rows...`);
+
+      const csvBuffer = XLSX.utils.sheet_to_csv(
+        XLSX.utils.json_to_sheet(allRawRows)
+      );
+
+      const recordCount = allRawRows.length;
+      const dateRange = hasDateFilter ? `_${fromDate || 'start'}_to_${toDate || 'end'}` : '';
+      const filename = `${table}${dateRange}_${new Date().toISOString().slice(0, 10)}_${recordCount}records.csv`;
+
+      console.log(`CSV Export complete: ${filename}`);
+
+      return new Response(csvBuffer, {
+        status: 200,
+        headers: {
+          "Content-Type": "text/csv;charset=utf-8",
+          "Content-Disposition": `attachment; filename="${filename}"`,
           "Access-Control-Allow-Origin": "*",
           "Access-Control-Expose-Headers": "Content-Disposition",
           "Cache-Control": "no-store, max-age=0",
