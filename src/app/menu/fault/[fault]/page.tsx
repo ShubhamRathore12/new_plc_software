@@ -138,7 +138,7 @@ const {t} = useLanguage()
 
           {/* Navigation buttons */}
           <div className="mb-4 flex justify-end gap-2">
-            {machineName === "GTPL-061-gT-450T-S7-1200" ? 
+            {machineName === "GTPL-061-gT-450T-S7-1200" || machineName === "GTPL-121-gT-1000T-S7-1200" || machineName === "GTPL-122-gT-1000T-S7-1200" ? 
              ""
             :   <Button
               variant="secondary"
