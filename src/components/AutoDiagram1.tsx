@@ -995,7 +995,7 @@ export default function AutoDiagram1({
 
   // Machines with 6 condenser fans
   const is6FanMachine = [
-    "GTPL-121-gT-1000T-S7-1200",
+    // "GTPL-121-gT-1000T-S7-1200",
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
