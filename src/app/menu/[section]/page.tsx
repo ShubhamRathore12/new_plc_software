@@ -76,7 +76,7 @@ export default function Home() {
     }
   };
 
-  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200"  || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200' || device === 'GTPL-144-GT-300AP-S7-1200' || device === 'GTPL-142-gT-450AP-S7-1200' || device === 'GTPL-123-GT-450AP' || device === 'GTPL-143-gT-450AP-S7-1200' || device === 'GTPL-121-gT-1000T-S7-1200' || device === 'GTPL-122-gT-1000T-S7-1200'  || device === 'GTPL-131-GT-650T-S7-1200' || device === 'GTPL-133-GT-650T-S7-1200' || device === 'GTPL-134-gT-450T-S7-1200' || device === 'GTPL-135-gT-450T-S7-1200' || device === 'GTPL-145-gT-450T-S7-1200' || device === 'GTPL-124-GT-450T-S7-1200'  ;
+  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200"  || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200' || device === 'GTPL-144-GT-300AP-S7-1200' || device === 'GTPL-142-gT-450AP-S7-1200' || device === 'GTPL-123-GT-450AP' || device === 'GTPL-143-gT-450AP-S7-1200' ||  device === 'GTPL-131-GT-650T-S7-1200' || device === 'GTPL-133-GT-650T-S7-1200' || device === 'GTPL-134-gT-450T-S7-1200' || device === 'GTPL-135-gT-450T-S7-1200' || device === 'GTPL-145-gT-450T-S7-1200' || device === 'GTPL-124-GT-450T-S7-1200'  ;
   const shouldHideAeration = false;
   const isS7200Device = ['108', '109', '110', '111', '112', '113'].some(code => device?.includes(`GTPL-${code}`));
   const showAnalogMenu = isS7200Device || ['GTPL-30-', 'GTPL-115-', 'GTPL-116-', 'GTPL-117-', 'GTPL-119-', 'GTPL-120-'].some(code => device?.includes(code));
