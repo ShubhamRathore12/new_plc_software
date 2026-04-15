@@ -624,12 +624,17 @@ export default function AnalogPage() {
                         const liveKey = analogOutputValueMap[item.description];
                         if (!liveKey) return false;
                         
+                        // For GTPL-123 - show only Blower, Condenser fan, AHT, Hot Gas (exclude Heater)
+                        if (device === "GTPL-123-GT-450AP") {
+                          if (item.description === "Heater") return false;
+                          return true;
+                        }
+                        
                         // For grain/paddy AP machines - exclude Heater (no heater per spec)
                         if (device === "GTPL-132-300-AP-S7-1200" ||
                             device === "GTPL-136-gT-450AP" ||
                             device === "GTPL-144-GT-300AP-S7-1200" ||
                             device === "GTPL-142-gT-450AP-S7-1200" ||
-                            device === "GTPL-123-GT-450AP" ||
                             device === "GTPL-143-gT-450AP-S7-1200") {
                           if (item.description === "Heater") return false;
                           return true;

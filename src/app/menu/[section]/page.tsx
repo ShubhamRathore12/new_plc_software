@@ -76,76 +76,99 @@ export default function Home() {
     }
   };
 
-  const isGrainPaddyDevice = device === "GTPL-132-300-AP-S7-1200"  || device === "GTPL-136-gT-450AP" || device === 'GTPL-139-GT-300AP-S7-1200' || device === 'GTPL-144-GT-300AP-S7-1200' || device === 'GTPL-142-gT-450AP-S7-1200' || device === 'GTPL-123-GT-450AP' || device === 'GTPL-143-gT-450AP-S7-1200' ||  device === 'GTPL-131-GT-650T-S7-1200' || device === 'GTPL-133-GT-650T-S7-1200' || device === 'GTPL-134-gT-450T-S7-1200' || device === 'GTPL-135-gT-450T-S7-1200' || device === 'GTPL-145-gT-450T-S7-1200' || device === 'GTPL-124-GT-450T-S7-1200'  ;
+  const isGrainPaddyDevice =
+    device === "GTPL-132-300-AP-S7-1200" ||
+    device === "GTPL-136-gT-450AP" ||
+    device === "GTPL-139-GT-300AP-S7-1200" ||
+    // device === "GTPL-144-GT-300AP-S7-1200" ||
+    device === "GTPL-142-gT-450AP-S7-1200" ||
+    // device === "GTPL-123-GT-450AP" ||
+    device === "GTPL-143-gT-450AP-S7-1200";
+  // device === "GTPL-131-GT-650T-S7-1200" ||
+  // device === "GTPL-133-GT-650T-S7-1200" ||
+  // device === "GTPL-134-gT-450T-S7-1200" ||
+  // device === "GTPL-135-gT-450T-S7-1200" ||
+  // device === "GTPL-145-gT-450T-S7-1200";
   const shouldHideAeration = false;
-  const isS7200Device = ['108', '109', '110', '111', '112', '113'].some(code => device?.includes(`GTPL-${code}`));
-  const showAnalogMenu = isS7200Device || ['GTPL-30-', 'GTPL-115-', 'GTPL-116-', 'GTPL-117-', 'GTPL-119-', 'GTPL-120-'].some(code => device?.includes(code));
+  const isS7200Device = ["108", "109", "110", "111", "112", "113"].some(
+    (code) => device?.includes(`GTPL-${code}`),
+  );
+  const showAnalogMenu =
+    isS7200Device ||
+    [
+      "GTPL-30-",
+      "GTPL-115-",
+      "GTPL-116-",
+      "GTPL-117-",
+      "GTPL-119-",
+      "GTPL-120-",
+    ].some((code) => device?.includes(code));
 
   const getMenuItems = (): MenuItem[] => {
     if (isGrainPaddyDevice) {
       return [
-        { 
-          icon: Factory, 
-          title: `Grain Chilling Mode`, 
+        {
+          icon: Factory,
+          title: `Grain Chilling Mode`,
           path: "auto-grain",
           gradient: "from-emerald-500 via-teal-500 to-green-600",
-          iconColor: "text-emerald-500"
+          iconColor: "text-emerald-500",
         },
-        { 
-          icon: Gauge, 
-          title: `Paddy Ageing Mode`, 
+        {
+          icon: Gauge,
+          title: `Paddy Ageing Mode`,
           path: "auto-paddy",
           gradient: "from-amber-500 via-yellow-500 to-orange-600",
-          iconColor: "text-amber-500"
+          iconColor: "text-amber-500",
         },
-        { 
-          icon: Wind, 
-          title: t("aeration"), 
+        {
+          icon: Wind,
+          title: t("aeration"),
           path: "aerations",
           gradient: "from-sky-500 via-cyan-500 to-blue-600",
-          iconColor: "text-sky-500"
+          iconColor: "text-sky-500",
         },
-        { 
-          icon: AlertTriangle, 
-          title: t("fault"), 
+        {
+          icon: AlertTriangle,
+          title: t("fault"),
           path: "fault",
           gradient: "from-red-500 via-orange-500 to-rose-600",
-          iconColor: "text-red-500"
+          iconColor: "text-red-500",
         },
-        { 
-          icon: Cog, 
-          title: t("settings"), 
+        {
+          icon: Cog,
+          title: t("settings"),
           path: "settings",
           gradient: "from-slate-500 via-zinc-500 to-gray-600",
-          iconColor: "text-slate-500"
+          iconColor: "text-slate-500",
         },
-        { 
-          icon: Power, 
-          title: t("inputs"), 
+        {
+          icon: Power,
+          title: t("inputs"),
           path: "inputs",
           gradient: "from-violet-500 via-indigo-500 to-purple-600",
-          iconColor: "text-violet-500"
+          iconColor: "text-violet-500",
         },
-        { 
-          icon: Zap, 
-          title: t("outputs"), 
+        {
+          icon: Zap,
+          title: t("outputs"),
           path: "outputs",
           gradient: "from-fuchsia-500 via-pink-500 to-rose-600",
-          iconColor: "text-fuchsia-500"
+          iconColor: "text-fuchsia-500",
         },
         {
           icon: Activity,
           title: "Analog",
           path: "inputs/analog",
           gradient: "from-teal-500 via-emerald-500 to-green-600",
-          iconColor: "text-teal-500"
+          iconColor: "text-teal-500",
         },
         {
           icon: Construction,
           title: t("test"),
           path: "test",
           gradient: "from-cyan-500 via-blue-500 to-indigo-600",
-          iconColor: "text-cyan-500"
+          iconColor: "text-cyan-500",
         },
       ];
     } else {
@@ -155,49 +178,49 @@ export default function Home() {
           title: t("auto"),
           path: "auto",
           gradient: "from-indigo-500 via-blue-500 to-purple-600",
-          iconColor: "text-indigo-500"
+          iconColor: "text-indigo-500",
         },
         {
           icon: Wind,
           title: t("aeration"),
           path: "aerations",
           gradient: "from-sky-500 via-cyan-500 to-blue-600",
-          iconColor: "text-sky-500"
+          iconColor: "text-sky-500",
         },
         {
           icon: AlertTriangle,
           title: t("fault"),
           path: "fault",
           gradient: "from-red-500 via-orange-500 to-rose-600",
-          iconColor: "text-red-500"
+          iconColor: "text-red-500",
         },
         {
           icon: Cog,
           title: t("settings"),
           path: "settings",
           gradient: "from-slate-500 via-zinc-500 to-gray-600",
-          iconColor: "text-slate-500"
+          iconColor: "text-slate-500",
         },
         {
           icon: Power,
           title: t("inputs"),
           path: "inputs",
           gradient: "from-violet-500 via-indigo-500 to-purple-600",
-          iconColor: "text-violet-500"
+          iconColor: "text-violet-500",
         },
         {
           icon: Zap,
           title: t("outputs"),
           path: "outputs",
           gradient: "from-fuchsia-500 via-pink-500 to-rose-600",
-          iconColor: "text-fuchsia-500"
+          iconColor: "text-fuchsia-500",
         },
         {
           icon: Construction,
           title: t("test"),
           path: "test",
           gradient: "from-cyan-500 via-blue-500 to-indigo-600",
-          iconColor: "text-cyan-500"
+          iconColor: "text-cyan-500",
         },
       ];
 
@@ -208,12 +231,12 @@ export default function Home() {
           title: "Analog",
           path: "inputs/analog",
           gradient: "from-teal-500 via-emerald-500 to-green-600",
-          iconColor: "text-teal-500"
+          iconColor: "text-teal-500",
         });
       }
 
       if (shouldHideAeration) {
-        return baseMenuItems.filter(item => item.path !== "aerations");
+        return baseMenuItems.filter((item) => item.path !== "aerations");
       }
 
       return baseMenuItems;
@@ -234,16 +257,16 @@ export default function Home() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20, scale: 0.9 },
-    show: { 
-      opacity: 1, 
-      y: 0, 
+    show: {
+      opacity: 1,
+      y: 0,
       scale: 1,
       transition: {
         type: "spring",
         stiffness: 100,
-        damping: 12
-      }
-    }
+        damping: 12,
+      },
+    },
   };
 
   return (
@@ -279,20 +302,24 @@ export default function Home() {
             animate="show"
           >
             {menuItems.map((item, index) => {
-              const pathMatch = monitorAccessItems.includes(item.path.toLowerCase());
-              const titleMatch = monitorAccessItems.includes(item.title.toLowerCase());
+              const pathMatch = monitorAccessItems.includes(
+                item.path.toLowerCase(),
+              );
+              const titleMatch = monitorAccessItems.includes(
+                item.title.toLowerCase(),
+              );
               const isDisabled = pathMatch || titleMatch;
               const shouldHide = isDisabled;
 
               if (shouldHide) return null;
 
               return (
-                <motion.div 
+                <motion.div
                   key={item.title}
                   variants={itemVariants}
-                  whileHover={{ 
+                  whileHover={{
                     scale: 1.05,
-                    transition: { type: "spring", stiffness: 300, damping: 20 }
+                    transition: { type: "spring", stiffness: 300, damping: 20 },
                   }}
                   whileTap={{ scale: 0.98 }}
                 >
@@ -309,14 +336,14 @@ export default function Home() {
                     }`}
                   >
                     {/* Full card animated gradient background on hover */}
-                    <motion.div 
+                    <motion.div
                       className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
                       initial={{ opacity: 0 }}
                       whileHover={{ opacity: 1 }}
                     />
-                    
+
                     {/* Animated gradient overlay with movement */}
-                    <motion.div 
+                    <motion.div
                       className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-20`}
                       animate={{
                         backgroundPosition: ["0% 0%", "100% 100%", "0% 0%"],
@@ -324,7 +351,7 @@ export default function Home() {
                       transition={{
                         duration: 8,
                         repeat: Infinity,
-                        repeatType: "reverse"
+                        repeatType: "reverse",
                       }}
                     />
 
@@ -338,20 +365,22 @@ export default function Home() {
                           duration: 1.5,
                           repeat: Infinity,
                           repeatType: "loop",
-                          ease: "linear"
-                        }
+                          ease: "linear",
+                        },
                       }}
                     >
                       <div className="h-full w-1/2 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12" />
                     </motion.div>
 
                     {/* Animated border gradient */}
-                    <div className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl`}></div>
+                    <div
+                      className={`absolute inset-0 bg-gradient-to-br ${item.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10 blur-xl`}
+                    ></div>
 
                     <CardContent className="relative p-8 flex flex-col items-center text-center h-full justify-between z-10">
                       {/* Icon container */}
                       <div className="relative mb-6">
-                        <motion.div 
+                        <motion.div
                           className="relative bg-gray-50 dark:bg-gray-900 p-6 rounded-2xl group-hover:bg-white/90 dark:group-hover:bg-gray-800/90 transition-all duration-300 backdrop-blur-sm"
                           animate={{
                             rotate: [0, 5, -5, 0],
@@ -359,21 +388,23 @@ export default function Home() {
                           transition={{
                             duration: 4,
                             repeat: Infinity,
-                            repeatType: "reverse"
+                            repeatType: "reverse",
                           }}
                         >
                           <motion.div
-                            whileHover={{ 
+                            whileHover={{
                               rotate: 360,
-                              scale: 1.2
+                              scale: 1.2,
                             }}
-                            transition={{ 
+                            transition={{
                               duration: 0.6,
                               type: "spring",
-                              stiffness: 200
+                              stiffness: 200,
                             }}
                           >
-                            <item.icon className={`h-16 w-16 ${item.iconColor} group-hover:text-white transition-colors duration-300`} />
+                            <item.icon
+                              className={`h-16 w-16 ${item.iconColor} group-hover:text-white transition-colors duration-300`}
+                            />
                           </motion.div>
                         </motion.div>
 
@@ -382,19 +413,19 @@ export default function Home() {
                           className={`absolute inset-0 bg-gradient-to-r ${item.gradient} rounded-2xl blur-md opacity-0 group-hover:opacity-50`}
                           animate={{
                             rotate: [0, 360],
-                            scale: [1, 1.1, 1]
+                            scale: [1, 1.1, 1],
                           }}
                           transition={{
                             duration: 3,
                             repeat: Infinity,
-                            ease: "linear"
+                            ease: "linear",
                           }}
                         />
                       </div>
 
                       {/* Title */}
                       <div className="flex-1 flex flex-col justify-center">
-                        <motion.h2 
+                        <motion.h2
                           className="text-xl font-bold text-gray-800 dark:text-white group-hover:text-white transition-colors duration-300"
                           whileHover={{ scale: 1.05 }}
                         >
@@ -410,7 +441,7 @@ export default function Home() {
                         transition={{
                           duration: 1.5,
                           repeat: Infinity,
-                          repeatType: "reverse"
+                          repeatType: "reverse",
                         }}
                       >
                         <div className="flex items-center justify-center gap-2 text-sm font-semibold text-white">
@@ -425,12 +456,12 @@ export default function Home() {
                         animate={{
                           y: [-10, 10, -10],
                           x: [-5, 5, -5],
-                          opacity: [0.3, 0.8, 0.3]
+                          opacity: [0.3, 0.8, 0.3],
                         }}
                         transition={{
                           duration: 3,
                           repeat: Infinity,
-                          repeatType: "reverse"
+                          repeatType: "reverse",
                         }}
                       />
                       <motion.div
@@ -438,13 +469,13 @@ export default function Home() {
                         animate={{
                           y: [10, -10, 10],
                           x: [5, -5, 5],
-                          opacity: [0.2, 0.7, 0.2]
+                          opacity: [0.2, 0.7, 0.2],
                         }}
                         transition={{
                           duration: 4,
                           repeat: Infinity,
                           repeatType: "reverse",
-                          delay: 0.5
+                          delay: 0.5,
                         }}
                       />
                     </CardContent>

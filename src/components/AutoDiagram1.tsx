@@ -786,6 +786,7 @@
 import Image from "next/image";
 import Fan1200 from "../../public/images/fan.jpg";
 import Fan from "../../public/images/fan.png";
+import Fan2 from "../../public/images/2fan.png";
 import Fan4 from "../../public/images/124.png";
 
 import { usePathname } from "next/navigation";
@@ -798,6 +799,7 @@ export default function AutoDiagram1({
   formatValue,
   machineName,
 }: any) {
+  const normalizedMachineName = (machineName || "").toUpperCase();
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
@@ -855,7 +857,7 @@ export default function AutoDiagram1({
     "Chiller_healthy_on",
     "Chiller_healthy",
     "Chiller_healthy_on_Q1_1",
-    'Chiller_healthy_Q1_1',
+    "Chiller_healthy_Q1_1",
     "Chiller_healthy_on_Q0_7",
     "Chiller_healthy_Q0_7",
   ];
@@ -869,7 +871,7 @@ export default function AutoDiagram1({
     "Chiller_Fault",
     "Chiller_fault_Q2_3",
     "Chiller_Fault_Q2_3",
-    'Chiller_fault_Q2_3',
+    "Chiller_fault_Q2_3",
     "Chiller_Fault_Q1_1",
   ];
 
@@ -888,7 +890,7 @@ export default function AutoDiagram1({
   const greenOn = greenLightFields.some((field) => isTrueValue(data?.[field]));
   const redOn = redLightFields.some((field) => isTrueValue(data?.[field]));
   const yellowOn = yellowLightFields.some((field) =>
-    isTrueValue(data?.[field])
+    isTrueValue(data?.[field]),
   );
 
   // Helper for lamp color
@@ -898,7 +900,9 @@ export default function AutoDiagram1({
     data?.COMPRESSOR_ON === "tr" ||
     data?.Compressor_on_Q0_4 === "True" ||
     data?.Compressor_start === "True" ||
-    data?.COMPRESSOR_ON === "True" || data?.Compressor_on_Q0_0 === "True" || data?.Compressor_start_Q0_0 === "true"
+    data?.COMPRESSOR_ON === "True" ||
+    data?.Compressor_on_Q0_0 === "True" ||
+    data?.Compressor_start_Q0_0 === "true";
 
   const isSpecialMachine = [
     "GTPL-122-gT-1000T-S7-1200",
@@ -942,33 +946,8 @@ export default function AutoDiagram1({
     "GTPL-135-gT-450T-S7-1200",
     "GTPL-145-gT-450T-S7-1200",
     "GTPL-061-gT-450T-S7-1200",
-    'GTPL-133-GT-650T-S7-1200',
-    'GTPL-131-GT-650T-S7-1200'
-
-
-  ].some((name) => machineName.includes(name));
-
-  const isFanMachine = [
-    "GTPL-116-gT-240E-S7-1200",
-    "GTPL-117-gT-320E-S7-1200",
-    "GTPL-122-gT-1000T-S7-1200",
-    "GTPL-121-gT-1000T-S7-1200",
-    "GTPL-132-300-AP-S7-1200",
-    "GTPL-139-GT-300AP-S7-1200",
-    "GTPL-144-GT-300AP-S7-1200",
-    "GTPL-123-GT-450AP",
-    "GTPL-136-gT-450AP",
-    "GTPL-142-gT-450AP-S7-1200",
-    "GTPL-143-gT-450AP-S7-1200",
-    "GTPL-061-gT-450T-S7-1200",
-    "GTPL-131-GT-650T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
-    "GTPL-134-gT-450T-S7-1200",
-    "GTPL-135-gT-450T-S7-1200",
-    "GTPL-145-gT-450T-S7-1200",
-    "GTPL-124-GT-450T-S7-1200",
-    "GTPL-137-GT-450T-S7-1200",
-    "GTPL-138-GT-450T-S7-1200",
+    "GTPL-131-GT-650T-S7-1200",
   ].some((name) => machineName.includes(name));
 
   // Machines with 2 condenser fans
@@ -978,7 +957,7 @@ export default function AutoDiagram1({
     "GTPL-132-300-AP-S7-1200",
     "GTPL-139-GT-300AP-S7-1200",
     "GTPL-144-GT-300AP-S7-1200",
-  ].some((name) => machineName.includes(name));
+  ].some((name) => normalizedMachineName.includes(name.toUpperCase()));
 
   // Machines with 4 condenser fans
   const is4FanMachine = [
@@ -993,15 +972,18 @@ export default function AutoDiagram1({
     "GTPL-124-GT-450T-S7-1200",
     "GTPL-137-GT-450T-S7-1200",
     "GTPL-138-GT-450T-S7-1200",
-  ].some((name) => machineName.includes(name));
+  ].some((name) => normalizedMachineName.includes(name.toUpperCase())) ||
+    normalizedMachineName.includes("GTPL-123") ||
+    normalizedMachineName.includes("450AT") ||
+    normalizedMachineName.includes("450AP");
 
   // Machines with 6 condenser fans
   const is6FanMachine = [
-    // "GTPL-121-gT-1000T-S7-1200",
-    // "GTPL-122-gT-1000T-S7-1200",
+    "GTPL-121-gT-1000T-S7-1200",
+    "GTPL-122-gT-1000T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
-  ].some((name) => machineName.includes(name));
+  ].some((name) => normalizedMachineName.includes(name.toUpperCase()));
 
   // S7-200 machines (GTPL-108 to 113) - no T0 sensor, 1 fan each
   const isS7200Machine = [
@@ -1011,7 +993,19 @@ export default function AutoDiagram1({
     "GTPL-111-gT-80E-P-S7-200",
     "GTPL-112-gT-80E-P-S7-200",
     "GTPL-113-gT-80E-P-S7-200",
+    "GTPL-115-gT-180E-S7-1200",
+    "GTPL-119-gT-180E-S7-1200",
+    "GTPL-030-gT-180E-S7-1200",
+    "GTPL-118-gT-60T-S7-1200",
   ].some((name) => machineName.includes(name));
+
+  const condenserFanImage = is6FanMachine
+    ? Fan1200
+    : is4FanMachine
+      ? Fan4
+      : is2FanMachine
+        ? Fan2
+        : Fan;
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-auto">
@@ -1135,80 +1129,92 @@ export default function AutoDiagram1({
             </div>
           )}
         </div> */}
-<div className="absolute top-4 right-1/2 transform translate-x-1/2 translate-x-48 space-y-2 z-10">
-  {machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
-    <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-      T1 ={" "}
-      {data?.T1_set_point ||
-       data?.T1_temp_mean ||
-       data?.COLD_AIR_TEMP_T1 ||
-       data?.T1_SET_POINT || "N/A"}°C
-    </div>
-  ) : isSpecialMachine ? (
-    <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-      T0 ={" "}
-      {isGrainChilling
-        ? data?.T0_set_point ||
-          data?.AIR_OUTLET_TEMP ||
-          data?.T1_set_point_in_grain_chilling_mode || 
-          data?.T0_set_point_in_grain_chilling_mode || "N/A"
-        : isPaddyChilling
-          ? data?.T0_set_point ||
-            data?.AIR_OUTLET_TEMP ||
-            data?.T1_set_point_in_paddy_aeging_mode || 
-            data?.T0_set_point_in_paddy_aeging_mode || "N/A"
-          : data?.T0_set_point ||
-            data?.AIR_OUTLET_TEMP ||
-            data?.T1_set_point_in_paddy_aeging_mode || 
-            data?.T0_temp_mean || "N/A"}°C
-    </div>
-  ) : (
-    <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-      T1 ={" "}
-      {data?.T1_set_point ||
-       data?.T1_temp_mean ||
-       data?.T1_SET_POINT ||
-       data?.Delta_T_set_point_paddy_aeging_mode || "N/A"}°C
-    </div>
-  )}
+        <div className="absolute top-4 right-1/2 transform translate-x-1/2 translate-x-48 space-y-2 z-10">
+          {machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T1 ={" "}
+              {data?.T1_set_point ||
+                data?.T1_temp_mean ||
+                data?.COLD_AIR_TEMP_T1 ||
+                data?.T1_SET_POINT ||
+                "N/A"}
+              °C
+            </div>
+          ) : isSpecialMachine ? (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T0 ={" "}
+              {isGrainChilling
+                ? data?.T0_set_point ||
+                  data?.AIR_OUTLET_TEMP ||
+                  data?.T1_set_point_in_grain_chilling_mode ||
+                  data?.T0_set_point_in_grain_chilling_mode ||
+                  "N/A"
+                : isPaddyChilling
+                  ? data?.T0_set_point ||
+                    data?.AIR_OUTLET_TEMP ||
+                    data?.T1_set_point_in_paddy_aeging_mode ||
+                    data?.T0_set_point_in_paddy_aeging_mode ||
+                    "N/A"
+                  : data?.T0_set_point ||
+                    data?.AIR_OUTLET_TEMP ||
+                    data?.T1_set_point_in_paddy_aeging_mode ||
+                    data?.T0_temp_mean ||
+                    "N/A"}
+              °C
+            </div>
+          ) : (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T1 ={" "}
+              {data?.T1_set_point ||
+                data?.T1_temp_mean ||
+                data?.T1_SET_POINT ||
+                data?.Delta_T_set_point_paddy_aeging_mode ||
+                "N/A"}
+              °C
+            </div>
+          )}
 
-  {isSpecialMachine ? (
-    <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-      T Delta ={" "}
-      {isGrainChilling
-        ? data.Delta_T_set_point ||
-          data?.Th_T1 ||
-          data?.Delta_T_set_point_in_grain_chilling_mode || "N/A"
-        : isPaddyChilling
-          ? data.Delta_T_set_point ||
-            data?.Th_T1 ||
-            data?.Delta_T_set_point_paddy_aeging_mode || "N/A"
-          : data.Delta_T_set_point ||
-            data?.Th_T1 ||
-            data?.Delta_T_set_point_in_grain_chilling_mode ||
-            data?.Delta_T_set_point_paddy_aeging_mode || "N/A"}°C
-    </div>
-  ) : machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
-    <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-      T0 - T1 ={" "}
-      {data?.T0_T1_set_point || 
-       data?.AIR_OUTLET_TEMP || 
-       data?.COLD_AIR_TEMP_T1 || 
-       data?.T1_temp_mean || "N/A"}°C
-    </div>
-  ) : (
-    <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-      TH - T1 ={" "}
-      {data.AI_TH_Act || 
-       data?.Th_T1 || 
-       data?.TH_T1_set_point || "N/A"}°C
-    </div>
-  )}
-</div>
+          {isSpecialMachine ? (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T Delta ={" "}
+              {isGrainChilling
+                ? data.Delta_T_set_point ||
+                  data?.Th_T1 ||
+                  data?.Delta_T_set_point_in_grain_chilling_mode ||
+                  "N/A"
+                : isPaddyChilling
+                  ? data.Delta_T_set_point ||
+                    data?.Th_T1 ||
+                    data?.Delta_T_set_point_paddy_aeging_mode ||
+                    "N/A"
+                  : data.Delta_T_set_point ||
+                    data?.Th_T1 ||
+                    data?.Delta_T_set_point_in_grain_chilling_mode ||
+                    data?.Delta_T_set_point_paddy_aeging_mode ||
+                    "N/A"}
+              °C
+            </div>
+          ) : machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              T0 - T1 ={" "}
+              {data?.T0_T1_set_point ||
+                data?.AIR_OUTLET_TEMP ||
+                data?.COLD_AIR_TEMP_T1 ||
+                data?.T1_temp_mean ||
+                "N/A"}
+              °C
+            </div>
+          ) : (
+            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
+              TH - T1 ={" "}
+              {data.AI_TH_Act || data?.Th_T1 || data?.TH_T1_set_point || "N/A"}
+              °C
+            </div>
+          )}
+        </div>
         {/* Main Content Container - Centered */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-[1200px] h-[600px] bg-gray-100">
-
             {/* SVG Container for Silo and Lines */}
             <svg
               className="absolute inset-0 w-full h-full"
@@ -1302,16 +1308,17 @@ export default function AutoDiagram1({
               />
 
               {/* Vertical drops from main line to thermometers */}
-              {!isSpecialMachine && machineName !== "GTPL-061-gT-450T-S7-1200" && (
-                <line
-                  x1="280"
-                  y1="120"
-                  x2="280"
-                  y2="150"
-                  stroke="black"
-                  strokeWidth="2"
-                />
-              )}
+              {!isSpecialMachine &&
+                machineName !== "GTPL-061-gT-450T-S7-1200" && (
+                  <line
+                    x1="280"
+                    y1="120"
+                    x2="280"
+                    y2="150"
+                    stroke="black"
+                    strokeWidth="2"
+                  />
+                )}
               {/* T0 vertical drop - hidden for S7-200 machines */}
               {!isS7200Machine && (
                 <line
@@ -1380,24 +1387,42 @@ export default function AutoDiagram1({
             </svg>
 
             {/* TH Thermometer */}
-            {!isSpecialMachine && machineName !== "GTPL-061-gT-450T-S7-1200" && (
-  <div className="absolute" style={{ left: "260px", top: "152px" }}>
-    <div className="w-12 h-60 bg-pink-200 border-2 border-red-300 rounded-lg relative">
-      <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
-      <div className="text-xs font-bold p-1 text-center w-full">TH</div>
-      <div className="text-xs font-bold p-1 text-center w-full">
-        {(() => {
-          // Handle zero values correctly
-          if (data.AI_TH_Act !== undefined && data.AI_TH_Act !== null) return formatValue(data.AI_TH_Act, "°C");
-          if (data?.AFTER_HEATER_TEMP_Th !== undefined && data?.AFTER_HEATER_TEMP_Th !== null) return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
-          if (data?.TH_temp_mean !== undefined && data?.TH_temp_mean !== null) return formatValue(data?.TH_temp_mean, "°C");
-          return formatValue(undefined, "°C");
-        })()}
-      </div>
-      <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
-    </div>
-  </div>
-)}
+            {!isSpecialMachine &&
+              machineName !== "GTPL-061-gT-450T-S7-1200" && (
+                <div
+                  className="absolute"
+                  style={{ left: "260px", top: "152px" }}
+                >
+                  <div className="w-12 h-60 bg-pink-200 border-2 border-red-300 rounded-lg relative">
+                    <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
+                    <div className="text-xs font-bold p-1 text-center w-full">
+                      TH
+                    </div>
+                    <div className="text-xs font-bold p-1 text-center w-full">
+                      {(() => {
+                        // Handle zero values correctly
+                        if (
+                          data.AI_TH_Act !== undefined &&
+                          data.AI_TH_Act !== null
+                        )
+                          return formatValue(data.AI_TH_Act, "°C");
+                        if (
+                          data?.AFTER_HEATER_TEMP_Th !== undefined &&
+                          data?.AFTER_HEATER_TEMP_Th !== null
+                        )
+                          return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
+                        if (
+                          data?.TH_temp_mean !== undefined &&
+                          data?.TH_temp_mean !== null
+                        )
+                          return formatValue(data?.TH_temp_mean, "°C");
+                        return formatValue(undefined, "°C");
+                      })()}
+                    </div>
+                    <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
+                  </div>
+                </div>
+              )}
 
             {/* T0 Thermometer - hidden for S7-200 machines (no T0 sensor) */}
             {!isS7200Machine && (
@@ -1409,15 +1434,35 @@ export default function AutoDiagram1({
                       {(() => {
                         // For GTPL-118, show setpoint value
                         if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
-                          if (data?.T0_set_point !== undefined && data?.T0_set_point !== null) return formatValue(data?.T0_set_point, "°C");
-                          if (data?.T1_set_point !== undefined && data?.T1_set_point !== null) return formatValue(data?.T1_set_point, "°C");
-                          if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
+                          if (
+                            data?.T0_set_point !== undefined &&
+                            data?.T0_set_point !== null
+                          )
+                            return formatValue(data?.T0_set_point, "°C");
+                          if (
+                            data?.T1_set_point !== undefined &&
+                            data?.T1_set_point !== null
+                          )
+                            return formatValue(data?.T1_set_point, "°C");
+                          if (
+                            data?.T0_temp_mean !== undefined &&
+                            data?.T0_temp_mean !== null
+                          )
+                            return formatValue(data?.T0_temp_mean, "°C");
                           return formatValue(undefined, "°C");
                         }
 
                         // For other machines, show actual value
-                        if (data.AIR_OUTLET_TEMP !== undefined && data.AIR_OUTLET_TEMP !== null) return formatValue(data.AIR_OUTLET_TEMP, "°C");
-                        if (data?.T0_temp_mean !== undefined && data?.T0_temp_mean !== null) return formatValue(data?.T0_temp_mean, "°C");
+                        if (
+                          data.AIR_OUTLET_TEMP !== undefined &&
+                          data.AIR_OUTLET_TEMP !== null
+                        )
+                          return formatValue(data.AIR_OUTLET_TEMP, "°C");
+                        if (
+                          data?.T0_temp_mean !== undefined &&
+                          data?.T0_temp_mean !== null
+                        )
+                          return formatValue(data?.T0_temp_mean, "°C");
                         return formatValue(undefined, "°C");
                       })()}
                     </div>
@@ -1434,8 +1479,16 @@ export default function AutoDiagram1({
                   <div className="text-xs p-1 text-center">
                     {(() => {
                       // Handle zero values correctly
-                      if (data?.COLD_AIR_TEMP_T1 !== undefined && data?.COLD_AIR_TEMP_T1 !== null) return formatValue(data?.COLD_AIR_TEMP_T1, "°C");
-                      if (data?.T1_temp_mean !== undefined && data?.T1_temp_mean !== null) return formatValue(data?.T1_temp_mean, "°C");
+                      if (
+                        data?.COLD_AIR_TEMP_T1 !== undefined &&
+                        data?.COLD_AIR_TEMP_T1 !== null
+                      )
+                        return formatValue(data?.COLD_AIR_TEMP_T1, "°C");
+                      if (
+                        data?.T1_temp_mean !== undefined &&
+                        data?.T1_temp_mean !== null
+                      )
+                        return formatValue(data?.T1_temp_mean, "°C");
                       return formatValue(undefined, "°C");
                     })()}
                   </div>
@@ -1444,28 +1497,50 @@ export default function AutoDiagram1({
             </div>
 
             {/* T2 Temperature Display */}
-            <div className="absolute text-center" style={{ left: "580px", top: "200px" }}>
+            <div
+              className="absolute text-center"
+              style={{ left: "580px", top: "200px" }}
+            >
               <div className="text-lg font-bold">T2</div>
               <div className="text-sm">
                 {(() => {
                   // Handle zero values correctly
-                  if (data?.T2_temp_mean !== undefined && data?.T2_temp_mean !== null) return formatValue(data?.T2_temp_mean, "°C");
-                  if (data?.AMBIENT_AIR_TEMP_T2 !== undefined && data?.AMBIENT_AIR_TEMP_T2 !== null) return formatValue(data?.AMBIENT_AIR_TEMP_T2, "°C");
+                  if (
+                    data?.T2_temp_mean !== undefined &&
+                    data?.T2_temp_mean !== null
+                  )
+                    return formatValue(data?.T2_temp_mean, "°C");
+                  if (
+                    data?.AMBIENT_AIR_TEMP_T2 !== undefined &&
+                    data?.AMBIENT_AIR_TEMP_T2 !== null
+                  )
+                    return formatValue(data?.AMBIENT_AIR_TEMP_T2, "°C");
                   return formatValue(undefined, "°C");
                 })()}
               </div>
             </div>
 
             {/* HTR Units */}
-            <div className={`absolute flex gap-14 z-10 ${isHTRMachine ? 'left-[350px]' : 'left-[200px]'}`} style={{ top: "430px" }}>
+            <div
+              className={`absolute flex gap-14 z-10 ${isHTRMachine ? "left-[350px]" : "left-[200px]"}`}
+              style={{ top: "430px" }}
+            >
               {!isHTRMachine && (
                 <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
                   <div className="text-xs font-bold">HTR</div>
                   <div className="text-sm font-bold">
                     {(() => {
                       // Handle zero values correctly
-                      if (data.Value_to_Display_HEATER !== undefined && data.Value_to_Display_HEATER !== null) return formatValue(data.Value_to_Display_HEATER, "%");
-                      if (data?.Heater_speed !== undefined && data?.Heater_speed !== null) return formatValue(data?.Heater_speed, "%");
+                      if (
+                        data.Value_to_Display_HEATER !== undefined &&
+                        data.Value_to_Display_HEATER !== null
+                      )
+                        return formatValue(data.Value_to_Display_HEATER, "%");
+                      if (
+                        data?.Heater_speed !== undefined &&
+                        data?.Heater_speed !== null
+                      )
+                        return formatValue(data?.Heater_speed, "%");
                       return formatValue(undefined, "%");
                     })()}
                   </div>
@@ -1476,10 +1551,29 @@ export default function AutoDiagram1({
                 <div className="text-sm font-bold">
                   {(() => {
                     // Handle zero values correctly
-                    if (data?.AHT_vale_speed !== undefined && data?.AHT_vale_speed !== null) return formatValue(data?.AHT_vale_speed, "%");
-                    if (data.Value_to_Display_AHT_VALE_OPEN !== undefined && data.Value_to_Display_AHT_VALE_OPEN !== null) return formatValue(data.Value_to_Display_AHT_VALE_OPEN, "%");
-                    if (data.AFTER_HEAT_VALVE_RPM !== undefined && data.AFTER_HEAT_VALVE_RPM !== null) return formatValue(data.AFTER_HEAT_VALVE_RPM, "%");
-                    if (data?.AHT_valve_speed !== undefined && data?.AHT_valve_speed !== null) return formatValue(data?.AHT_valve_speed, "%");
+                    if (
+                      data?.AHT_vale_speed !== undefined &&
+                      data?.AHT_vale_speed !== null
+                    )
+                      return formatValue(data?.AHT_vale_speed, "%");
+                    if (
+                      data.Value_to_Display_AHT_VALE_OPEN !== undefined &&
+                      data.Value_to_Display_AHT_VALE_OPEN !== null
+                    )
+                      return formatValue(
+                        data.Value_to_Display_AHT_VALE_OPEN,
+                        "%",
+                      );
+                    if (
+                      data.AFTER_HEAT_VALVE_RPM !== undefined &&
+                      data.AFTER_HEAT_VALVE_RPM !== null
+                    )
+                      return formatValue(data.AFTER_HEAT_VALVE_RPM, "%");
+                    if (
+                      data?.AHT_valve_speed !== undefined &&
+                      data?.AHT_valve_speed !== null
+                    )
+                      return formatValue(data?.AHT_valve_speed, "%");
                     return formatValue(undefined, "%");
                   })()}
                 </div>
@@ -1489,9 +1583,24 @@ export default function AutoDiagram1({
                 <div className="text-sm font-bold">
                   {(() => {
                     // Handle zero values correctly
-                    if (data.Value_to_Display_HOT_GAS_VALVE_OPEN !== undefined && data.Value_to_Display_HOT_GAS_VALVE_OPEN !== null) return formatValue(data.Value_to_Display_HOT_GAS_VALVE_OPEN, "%");
-                    if (data?.HOT_GAS_VALVE_RPM !== undefined && data?.HOT_GAS_VALVE_RPM !== null) return formatValue(data?.HOT_GAS_VALVE_RPM, "%");
-                    if (data?.Hot_valve_speed !== undefined && data?.Hot_valve_speed !== null) return formatValue(data?.Hot_valve_speed, "%");
+                    if (
+                      data.Value_to_Display_HOT_GAS_VALVE_OPEN !== undefined &&
+                      data.Value_to_Display_HOT_GAS_VALVE_OPEN !== null
+                    )
+                      return formatValue(
+                        data.Value_to_Display_HOT_GAS_VALVE_OPEN,
+                        "%",
+                      );
+                    if (
+                      data?.HOT_GAS_VALVE_RPM !== undefined &&
+                      data?.HOT_GAS_VALVE_RPM !== null
+                    )
+                      return formatValue(data?.HOT_GAS_VALVE_RPM, "%");
+                    if (
+                      data?.Hot_valve_speed !== undefined &&
+                      data?.Hot_valve_speed !== null
+                    )
+                      return formatValue(data?.Hot_valve_speed, "%");
                     return formatValue(undefined, "%");
                   })()}
                 </div>
@@ -1510,9 +1619,21 @@ export default function AutoDiagram1({
                 <div className="text-sm font-bold">
                   {(() => {
                     // Handle zero values correctly
-                    if (data?.Blower_speed !== undefined && data?.Blower_speed !== null) return formatValue(data?.Blower_speed, "%");
-                    if (data?.BLOWER_RPM !== undefined && data?.BLOWER_RPM !== null) return formatValue(data?.BLOWER_RPM, "%");
-                    if (data?.Value_to_Display_BLOWER !== undefined && data?.Value_to_Display_BLOWER !== null) return formatValue(data?.Value_to_Display_BLOWER, "%");
+                    if (
+                      data?.Blower_speed !== undefined &&
+                      data?.Blower_speed !== null
+                    )
+                      return formatValue(data?.Blower_speed, "%");
+                    if (
+                      data?.BLOWER_RPM !== undefined &&
+                      data?.BLOWER_RPM !== null
+                    )
+                      return formatValue(data?.BLOWER_RPM, "%");
+                    if (
+                      data?.Value_to_Display_BLOWER !== undefined &&
+                      data?.Value_to_Display_BLOWER !== null
+                    )
+                      return formatValue(data?.Value_to_Display_BLOWER, "%");
                     return formatValue(undefined, "%");
                   })()}
                 </div>
@@ -1527,63 +1648,17 @@ export default function AutoDiagram1({
                   <div className="w-3 h-3 bg-red-500 rounded-full"></div>
                 </div>
 
-                {/* Fan Images */}
-                {(machineName.includes("450AP") || machineName.includes("450T")) && machineName.includes("450AP") ? (
-                  <div className="absolute left-16 top-8">
-                    <div className="w-32 h-32 relative">
-                      <Image src={Fan4} alt="Fan" fill className="object-contain" />
-                    </div>
+                {/* Fan Image by machine fan configuration */}
+                <div className="absolute left-16 top-8">
+                  <div className="w-32 h-32 relative">
+                    <Image
+                      src={condenserFanImage}
+                      alt="Condenser Fan"
+                      fill
+                      className="object-contain"
+                    />
                   </div>
-                ) : isFanMachine ? (
-                  <>
-                    <div className="absolute left-16 top-2">
-                      <div className="w-24 h-24 relative">
-                        <Image src={Fan1200} alt="Fan 1" fill className="object-contain" />
-                      </div>
-                    </div>
-                    {(is2FanMachine || is4FanMachine) && (
-                      <div className="absolute left-16 top-20">
-                        <div className="w-24 h-24 relative">
-                          <Image src={Fan1200} alt="Fan 2" fill className="object-contain" />
-                        </div>
-                      </div>
-                    )}
-                    {(is4FanMachine || is6FanMachine) && (
-                      <>
-                        <div className="absolute left-36 top-2">
-                          <div className="w-24 h-24 relative">
-                            <Image src={Fan1200} alt="Fan 3" fill className="object-contain" />
-                          </div>
-                        </div>
-                        <div className="absolute left-36 top-20">
-                          <div className="w-24 h-24 relative">
-                            <Image src={Fan1200} alt="Fan 4" fill className="object-contain" />
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {is6FanMachine && (
-                      <>
-                        <div className="absolute left-56 top-2">
-                          <div className="w-24 h-24 relative">
-                            <Image src={Fan1200} alt="Fan 5" fill className="object-contain" />
-                          </div>
-                        </div>
-                        <div className="absolute left-56 top-20">
-                          <div className="w-24 h-24 relative">
-                            <Image src={Fan1200} alt="Fan 6" fill className="object-contain" />
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </>
-                ) : (
-                  <div className="absolute left-16 top-8">
-                    <div className="w-32 h-32 relative">
-                      <Image src={Fan} alt="Fan" fill className="object-contain" />
-                    </div>
-                  </div>
-                )}
+                </div>
               </div>
 
               <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
@@ -1591,10 +1666,29 @@ export default function AutoDiagram1({
                 <div className="text-xs">
                   {(() => {
                     // Handle zero values correctly
-                    if (data?.Cond_fan_speed !== undefined && data?.Cond_fan_speed !== null) return formatValue(data?.Cond_fan_speed, "%");
-                    if (data?.Value_to_Display_COND_ACT_SPEED !== undefined && data?.Value_to_Display_COND_ACT_SPEED !== null) return formatValue(data?.Value_to_Display_COND_ACT_SPEED, "%");
-                    if (data?.CONDENSER_RPM !== undefined && data?.CONDENSER_RPM !== null) return formatValue(data?.CONDENSER_RPM, "%");
-                    if (data?.Condenser_fan_speed !== undefined && data?.Condenser_fan_speed !== null) return formatValue(data?.Condenser_fan_speed, "%");
+                    if (
+                      data?.Cond_fan_speed !== undefined &&
+                      data?.Cond_fan_speed !== null
+                    )
+                      return formatValue(data?.Cond_fan_speed, "%");
+                    if (
+                      data?.Value_to_Display_COND_ACT_SPEED !== undefined &&
+                      data?.Value_to_Display_COND_ACT_SPEED !== null
+                    )
+                      return formatValue(
+                        data?.Value_to_Display_COND_ACT_SPEED,
+                        "%",
+                      );
+                    if (
+                      data?.CONDENSER_RPM !== undefined &&
+                      data?.CONDENSER_RPM !== null
+                    )
+                      return formatValue(data?.CONDENSER_RPM, "%");
+                    if (
+                      data?.Condenser_fan_speed !== undefined &&
+                      data?.Condenser_fan_speed !== null
+                    )
+                      return formatValue(data?.Condenser_fan_speed, "%");
                     return formatValue(undefined, "%");
                   })()}
                 </div>
@@ -1614,10 +1708,9 @@ export default function AutoDiagram1({
                 <div className="font-bold">
                   <span className="flex items-center gap-1">
                     <span
-                      className={`h-2 w-2 rounded-full ${isCompressorOn
-                        ? "bg-green-500"
-                        : "bg-red-500"
-                        } shadow-sm`}
+                      className={`h-2 w-2 rounded-full ${
+                        isCompressorOn ? "bg-green-500" : "bg-red-500"
+                      } shadow-sm`}
                     />
                     {isCompressorOn ? "ON" : "OFF"}
                   </span>
@@ -1626,7 +1719,10 @@ export default function AutoDiagram1({
             </div>
 
             {/* Pressure Readings */}
-            <div className="absolute flex gap-2 z-10" style={{ left: "850px", bottom: "0px" }}>
+            <div
+              className="absolute flex gap-2 z-10"
+              style={{ left: "850px", bottom: "0px" }}
+            >
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 LP
                 <br />
@@ -1636,15 +1732,27 @@ export default function AutoDiagram1({
                     machineName === "GTPL-138-GT-450T-S7-1200";
 
                   if (isBarMachine) {
-                    if (data.AI_SUC_PRESSURE !== undefined && data.AI_SUC_PRESSURE !== null) return formatValue(data.AI_SUC_PRESSURE, " bar");
-                    if (data?.LP !== undefined && data?.LP !== null) return formatValue(data?.LP, " bar");
-                    if (data?.LP_value !== undefined && data?.LP_value !== null) return formatValue(data?.LP_value, " bar");
+                    if (
+                      data.AI_SUC_PRESSURE !== undefined &&
+                      data.AI_SUC_PRESSURE !== null
+                    )
+                      return formatValue(data.AI_SUC_PRESSURE, " bar");
+                    if (data?.LP !== undefined && data?.LP !== null)
+                      return formatValue(data?.LP, " bar");
+                    if (data?.LP_value !== undefined && data?.LP_value !== null)
+                      return formatValue(data?.LP_value, " bar");
                     return formatValue(undefined, " bar");
                   }
 
-                  if (data.AI_SUC_PRESSURE !== undefined && data.AI_SUC_PRESSURE !== null) return formatValue(data.AI_SUC_PRESSURE);
-                  if (data?.LP !== undefined && data?.LP !== null) return formatValue(data?.LP);
-                  if (data?.LP_value !== undefined && data?.LP_value !== null) return formatValue(data?.LP_value);
+                  if (
+                    data.AI_SUC_PRESSURE !== undefined &&
+                    data.AI_SUC_PRESSURE !== null
+                  )
+                    return formatValue(data.AI_SUC_PRESSURE);
+                  if (data?.LP !== undefined && data?.LP !== null)
+                    return formatValue(data?.LP);
+                  if (data?.LP_value !== undefined && data?.LP_value !== null)
+                    return formatValue(data?.LP_value);
                   return formatValue(undefined);
                 })()}
               </div>
@@ -1657,19 +1765,47 @@ export default function AutoDiagram1({
                     machineName === "GTPL-138-GT-450T-S7-1200";
 
                   if (isBarMachine) {
-                    if (data.AI_COND_PRESSURE !== undefined && data.AI_COND_PRESSURE !== null) return formatValue(data.AI_COND_PRESSURE, " bar");
-                    if (data?.HP !== undefined && data?.HP !== null) return formatValue(data?.HP, " bar");
-                    if (data?.COMPRESSOR_TIME !== undefined && data?.COMPRESSOR_TIME !== null) return formatValue(data?.COMPRESSOR_TIME, " bar");
-                    if (data?.HP_value !== undefined && data?.HP_value !== null) return formatValue(data?.HP_value, " bar");
-                    if (data?.Compressor_timer !== undefined && data?.Compressor_timer !== null) return formatValue(data?.Compressor_timer, " bar");
+                    if (
+                      data.AI_COND_PRESSURE !== undefined &&
+                      data.AI_COND_PRESSURE !== null
+                    )
+                      return formatValue(data.AI_COND_PRESSURE, " bar");
+                    if (data?.HP !== undefined && data?.HP !== null)
+                      return formatValue(data?.HP, " bar");
+                    if (
+                      data?.COMPRESSOR_TIME !== undefined &&
+                      data?.COMPRESSOR_TIME !== null
+                    )
+                      return formatValue(data?.COMPRESSOR_TIME, " bar");
+                    if (data?.HP_value !== undefined && data?.HP_value !== null)
+                      return formatValue(data?.HP_value, " bar");
+                    if (
+                      data?.Compressor_timer !== undefined &&
+                      data?.Compressor_timer !== null
+                    )
+                      return formatValue(data?.Compressor_timer, " bar");
                     return formatValue(undefined, " bar");
                   }
 
-                  if (data.AI_COND_PRESSURE !== undefined && data.AI_COND_PRESSURE !== null) return formatValue(data.AI_COND_PRESSURE);
-                  if (data?.HP !== undefined && data?.HP !== null) return formatValue(data?.HP);
-                  if (data?.COMPRESSOR_TIME !== undefined && data?.COMPRESSOR_TIME !== null) return formatValue(data?.COMPRESSOR_TIME);
-                  if (data?.HP_value !== undefined && data?.HP_value !== null) return formatValue(data?.HP_value);
-                  if (data?.Compressor_timer !== undefined && data?.Compressor_timer !== null) return formatValue(data?.Compressor_timer);
+                  if (
+                    data.AI_COND_PRESSURE !== undefined &&
+                    data.AI_COND_PRESSURE !== null
+                  )
+                    return formatValue(data.AI_COND_PRESSURE);
+                  if (data?.HP !== undefined && data?.HP !== null)
+                    return formatValue(data?.HP);
+                  if (
+                    data?.COMPRESSOR_TIME !== undefined &&
+                    data?.COMPRESSOR_TIME !== null
+                  )
+                    return formatValue(data?.COMPRESSOR_TIME);
+                  if (data?.HP_value !== undefined && data?.HP_value !== null)
+                    return formatValue(data?.HP_value);
+                  if (
+                    data?.Compressor_timer !== undefined &&
+                    data?.Compressor_timer !== null
+                  )
+                    return formatValue(data?.Compressor_timer);
                   return formatValue(undefined);
                 })()}
               </div>

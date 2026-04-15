@@ -32,7 +32,7 @@ export default function FaultPage() {
   // Resolve machine name using the configuration
   const machineName = resolveMachineName(fault as string);
   const { data, isConnected, error, formatValue } = useAutoData(machineName);
-const {t} = useLanguage()
+  const { t } = useLanguage();
   // Get machine configuration
   const machineConfig = getMachineConfig(machineName);
   const machineType = getMachineType(machineName);
@@ -65,13 +65,25 @@ const {t} = useLanguage()
           <Card>
             <CardContent className="p-6">
               <div className="mb-4">
-                <h3 className="text-lg font-semibold mb-2">Fault Information</h3>
+                <h3 className="text-lg font-semibold mb-2">
+                  Fault Information
+                </h3>
                 <div className="bg-muted p-4 rounded-lg mb-6">
-                  <p><strong>Fault Code:</strong> {selectedFault.code}</p>
-                  <p><strong>Description:</strong> {selectedFault.description}</p>
-                  <p><strong>Model:</strong> {machineType}</p>
-                  <p><strong>Machine Name:</strong> {machineName}</p>
-                  <p><strong>Timestamp:</strong> {new Date().toLocaleString()}</p>
+                  <p>
+                    <strong>Fault Code:</strong> {selectedFault.code}
+                  </p>
+                  <p>
+                    <strong>Description:</strong> {selectedFault.description}
+                  </p>
+                  <p>
+                    <strong>Model:</strong> {machineType}
+                  </p>
+                  <p>
+                    <strong>Machine Name:</strong> {machineName}
+                  </p>
+                  <p>
+                    <strong>Timestamp:</strong> {new Date().toLocaleString()}
+                  </p>
                 </div>
               </div>
 
@@ -119,7 +131,7 @@ const {t} = useLanguage()
         <main className="flex-1 container py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {t("Active Alarms")} 
+              {t("Active Alarms")}
             </h1>
             <p className="text-muted-foreground">
               {t("Current active fault tags for")} {machineName}
@@ -138,14 +150,20 @@ const {t} = useLanguage()
 
           {/* Navigation buttons */}
           <div className="mb-4 flex justify-end gap-2">
-            {machineName === "GTPL-061-gT-450T-S7-1200" || machineName === "GTPL-121-gT-1000T-S7-1200" || machineName === "GTPL-122-gT-1000T-S7-1200" || machineName === "GTPL-123-GT-450AP" ? 
-             ""
-            :   <Button
-              variant="secondary"
-              onClick={() => setCurrentView("faultCodes")}
-            >
-              {t("Fault Codes")}
-            </Button>}
+            {machineName === "GTPL-061-gT-450T-S7-1200" ||
+            machineName === "GTPL-121-gT-1000T-S7-1200" ||
+            machineName === "GTPL-122-gT-1000T-S7-1200" ||
+            machineName === "GTPL-123-GT-450AP" ||
+            machineName === "GTPL-124-GT-450T-S7-1200" ? (
+              ""
+            ) : (
+              <Button
+                variant="secondary"
+                onClick={() => setCurrentView("faultCodes")}
+              >
+                {t("Fault Codes")}
+              </Button>
+            )}
             <Button
               variant="secondary"
               onClick={() => setCurrentView("allPaginatedLogs")}
@@ -157,14 +175,12 @@ const {t} = useLanguage()
           <Card>
             <CardContent className="p-6">
               <div className="mb-4">
-                <h3 className="text-lg font-semibold">
-                  {t("Active Tags")}
-                </h3>
+                <h3 className="text-lg font-semibold">{t("Active Tags")}</h3>
                 <p className="text-sm text-muted-foreground">
                   {t("Showing currently active fault conditions")}
                 </p>
               </div>
-              
+
               <ActiveTagsTable tags={currentTags} />
             </CardContent>
 
@@ -185,10 +201,8 @@ const {t} = useLanguage()
       <main className="flex-1 container py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {t("Fault Codes")} 
+            {t("Fault Codes")}
           </h1>
-     
-         
         </div>
 
         <Card>
@@ -205,9 +219,9 @@ const {t} = useLanguage()
               </Button>
             </div>
 
-            <FaultCodeTable 
-              faultCodes={faultCodes} 
-              onViewDetails={handleViewFaultCode} 
+            <FaultCodeTable
+              faultCodes={faultCodes}
+              onViewDetails={handleViewFaultCode}
             />
           </CardContent>
 
