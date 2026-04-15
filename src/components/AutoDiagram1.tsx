@@ -1529,7 +1529,7 @@ export default function AutoDiagram1({
                 {isFanMachine ? (
                   <>
                     <div className="absolute left-16 top-2">
-                      <div className="w-16 h-16 relative">
+                      <div className="w-24 h-24 relative">
                         <Image
                           src={Fan1200}
                           alt="Fan 1"
@@ -1540,7 +1540,7 @@ export default function AutoDiagram1({
                     </div>
                     {(is2FanMachine || is4FanMachine) && (
                       <div className="absolute left-16 top-20">
-                        <div className="w-16 h-16 relative">
+                        <div className="w-24 h-24 relative">
                           <Image
                             src={Fan1200}
                             alt="Fan 2"
@@ -1553,7 +1553,7 @@ export default function AutoDiagram1({
                     {(is4FanMachine || is6FanMachine) && (
                       <>
                         <div className="absolute left-36 top-2">
-                          <div className="w-16 h-16 relative">
+                          <div className="w-24 h-24 relative">
                             <Image
                               src={Fan1200}
                               alt="Fan 3"
@@ -1563,7 +1563,7 @@ export default function AutoDiagram1({
                           </div>
                         </div>
                         <div className="absolute left-36 top-20">
-                          <div className="w-16 h-16 relative">
+                          <div className="w-24 h-24 relative">
                             <Image
                               src={Fan1200}
                               alt="Fan 4"
@@ -1577,7 +1577,7 @@ export default function AutoDiagram1({
                     {is6FanMachine && (
                       <>
                         <div className="absolute left-56 top-2">
-                          <div className="w-16 h-16 relative">
+                          <div className="w-24 h-24 relative">
                             <Image
                               src={Fan1200}
                               alt="Fan 5"
@@ -1587,7 +1587,7 @@ export default function AutoDiagram1({
                           </div>
                         </div>
                         <div className="absolute left-56 top-20">
-                          <div className="w-16 h-16 relative">
+                          <div className="w-24 h-24 relative">
                             <Image
                               src={Fan1200}
                               alt="Fan 6"
@@ -1601,7 +1601,7 @@ export default function AutoDiagram1({
                   </>
                 ) : (
                   <div className="absolute left-16 top-8">
-                    <div className="w-20 h-20 relative">
+                    <div className="w-32 h-32 relative">
                       <Image
                         src={Fan}
                         alt="Fan"
