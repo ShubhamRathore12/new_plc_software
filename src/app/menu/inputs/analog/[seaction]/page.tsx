@@ -552,7 +552,7 @@ export default function AnalogPage() {
                             return !item.description.startsWith("TH probe")
                           }
                           if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
-                            return !item.description.startsWith("TH probe")
+                            return !item.description.startsWith("TH probe") && !item.description.startsWith("TH.")
                           }
                           if ([ '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
                             return !item.description.includes("T0") && !item.description.includes("Air Outlet")
