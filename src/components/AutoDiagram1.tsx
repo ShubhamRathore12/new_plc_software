@@ -786,6 +786,8 @@
 import Image from "next/image";
 import Fan1200 from "../../public/images/fan.jpg";
 import Fan from "../../public/images/fan.png";
+import Fan4 from "../../public/images/124.png";
+
 import { usePathname } from "next/navigation";
 
 import { useEffect, useState } from "react";
@@ -1526,27 +1528,23 @@ export default function AutoDiagram1({
                 </div>
 
                 {/* Fan Images */}
-                {isFanMachine ? (
+                {(machineName.includes("450AP") || machineName.includes("450T")) && machineName.includes("450AP") ? (
+                  <div className="absolute left-16 top-8">
+                    <div className="w-32 h-32 relative">
+                      <Image src={Fan4} alt="Fan" fill className="object-contain" />
+                    </div>
+                  </div>
+                ) : isFanMachine ? (
                   <>
                     <div className="absolute left-16 top-2">
                       <div className="w-24 h-24 relative">
-                        <Image
-                          src={Fan1200}
-                          alt="Fan 1"
-                          fill
-                          className="object-contain"
-                        />
+                        <Image src={Fan1200} alt="Fan 1" fill className="object-contain" />
                       </div>
                     </div>
                     {(is2FanMachine || is4FanMachine) && (
                       <div className="absolute left-16 top-20">
                         <div className="w-24 h-24 relative">
-                          <Image
-                            src={Fan1200}
-                            alt="Fan 2"
-                            fill
-                            className="object-contain"
-                          />
+                          <Image src={Fan1200} alt="Fan 2" fill className="object-contain" />
                         </div>
                       </div>
                     )}
@@ -1554,22 +1552,12 @@ export default function AutoDiagram1({
                       <>
                         <div className="absolute left-36 top-2">
                           <div className="w-24 h-24 relative">
-                            <Image
-                              src={Fan1200}
-                              alt="Fan 3"
-                              fill
-                              className="object-contain"
-                            />
+                            <Image src={Fan1200} alt="Fan 3" fill className="object-contain" />
                           </div>
                         </div>
                         <div className="absolute left-36 top-20">
                           <div className="w-24 h-24 relative">
-                            <Image
-                              src={Fan1200}
-                              alt="Fan 4"
-                              fill
-                              className="object-contain"
-                            />
+                            <Image src={Fan1200} alt="Fan 4" fill className="object-contain" />
                           </div>
                         </div>
                       </>
@@ -1578,22 +1566,12 @@ export default function AutoDiagram1({
                       <>
                         <div className="absolute left-56 top-2">
                           <div className="w-24 h-24 relative">
-                            <Image
-                              src={Fan1200}
-                              alt="Fan 5"
-                              fill
-                              className="object-contain"
-                            />
+                            <Image src={Fan1200} alt="Fan 5" fill className="object-contain" />
                           </div>
                         </div>
                         <div className="absolute left-56 top-20">
                           <div className="w-24 h-24 relative">
-                            <Image
-                              src={Fan1200}
-                              alt="Fan 6"
-                              fill
-                              className="object-contain"
-                            />
+                            <Image src={Fan1200} alt="Fan 6" fill className="object-contain" />
                           </div>
                         </div>
                       </>
@@ -1602,12 +1580,7 @@ export default function AutoDiagram1({
                 ) : (
                   <div className="absolute left-16 top-8">
                     <div className="w-32 h-32 relative">
-                      <Image
-                        src={Fan}
-                        alt="Fan"
-                        fill
-                        className="object-contain"
-                      />
+                      <Image src={Fan} alt="Fan" fill className="object-contain" />
                     </div>
                   </div>
                 )}
