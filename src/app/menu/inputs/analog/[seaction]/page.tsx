@@ -181,10 +181,10 @@ export default function AnalogPage() {
       "TH probe #2 (Supply Air)": "TH_2_supply_air_temp",
     },
     outputs: {
-      "Blower speed": "Blower_speed",
-      "Cond. Fan speed": "Condenser_fan_speed",
-      "Hot gas valve": "Hot_valve_speed",
-      "Afterheat valve": "AHT_vale_speed",
+      "Blower Speed": "Blower_speed",
+      "Condenser fan speed": "Condenser_fan_speed",
+      "Hot Gas Valve": "Hot_valve_speed",
+      "Afterheat Valve": "AHT_vale_speed",
       "Heater": "Heater_speed",
     },
   }
@@ -240,6 +240,7 @@ export default function AnalogPage() {
       "T1.2 Cold Temp": "T1_2_cold_air_temp",
       "T0.1 Air Outlet Temp": "T0_1_air_outlet_temp",
       "T0.2 Air Outlet Temp": "T0_2_air_outlet_temp",
+    
     },
     outputs: {
       "Blower Speed": "Blower_speed",
@@ -548,10 +549,10 @@ export default function AnalogPage() {
                     <div className="grid gap-3">
                       {section.items
                         .filter((item) => {
-                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-144-GT-300AP-S7-1200" || device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") {
+                          if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-144-GT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
-                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200") {
+                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200") {
                             return !item.description.startsWith("TH probe") && !item.description.startsWith("TH.")
                           }
                           if ([ '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
