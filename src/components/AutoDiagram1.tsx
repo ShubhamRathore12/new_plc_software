@@ -904,6 +904,16 @@ export default function AutoDiagram1({
     data?.Compressor_on_Q0_0 === "True" ||
     data?.Compressor_start_Q0_0 === "true";
 
+  const isCondenserFanOn =
+    isTrueValue(data?.Cond_fan_on) ||
+    isTrueValue(data?.Condenser_fan_on) ||
+    isTrueValue(data?.Cond_Fan_on) ||
+    isTrueValue(data?.CONDENSER_FAN_ON) ||
+    (data?.Cond_fan_speed !== undefined && data?.Cond_fan_speed !== null && parseFloat(data?.Cond_fan_speed) > 0) ||
+    (data?.Condenser_fan_speed !== undefined && data?.Condenser_fan_speed !== null && parseFloat(data?.Condenser_fan_speed) > 0) ||
+    (data?.CONDENSER_RPM !== undefined && data?.CONDENSER_RPM !== null && parseFloat(data?.CONDENSER_RPM) > 0) ||
+    (data?.Value_to_Display_COND_ACT_SPEED !== undefined && data?.Value_to_Display_COND_ACT_SPEED !== null && parseFloat(data?.Value_to_Display_COND_ACT_SPEED) > 0);
+
   const isSpecialMachine = [
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
@@ -1645,7 +1655,7 @@ export default function AutoDiagram1({
               <div className="w-12 h-56 bg-pink-200 border-2 border-red-300 rounded-lg relative">
                 <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
                 <div className="absolute top-2 right-2">
-                  <div className="w-3 h-3 bg-red-500 rounded-full"></div>
+                  <div className={`w-3 h-3 rounded-full ${isCondenserFanOn ? "bg-green-500" : "bg-red-500"}`}></div>
                 </div>
 
                 {/* Fan Image by machine fan configuration */}

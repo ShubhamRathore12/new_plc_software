@@ -82,7 +82,7 @@ export default function Home() {
     device === "GTPL-139-GT-300AP-S7-1200" ||
     // device === "GTPL-144-GT-300AP-S7-1200" ||
     device === "GTPL-142-gT-450AP-S7-1200" ||
-    // device === "GTPL-123-GT-450AP" ||
+    device === "GTPL-123-GT-450AP" ||
     device === "GTPL-143-gT-450AP-S7-1200";
   // device === "GTPL-131-GT-650T-S7-1200" ||
   // device === "GTPL-133-GT-650T-S7-1200" ||
