@@ -120,7 +120,16 @@ export const useAutoData = (autoType: string) => {
       );
 
       if (result?.data) {
-        setData([result.data]);
+        const normalized = { ...result.data };
+        // Some devices send "AHT_vale_speed" (typo) instead of "AHT_valve_speed"
+        // Normalize so both variants are available
+        if (normalized.AHT_vale_speed !== undefined && normalized.AHT_valve_speed === undefined) {
+          normalized.AHT_valve_speed = normalized.AHT_vale_speed;
+        }
+        if (normalized.AHT_valve_speed !== undefined && normalized.AHT_vale_speed === undefined) {
+          normalized.AHT_vale_speed = normalized.AHT_valve_speed;
+        }
+        setData([normalized]);
         setIsConnected(true);
         setError(null);
         setRetryCount(0);

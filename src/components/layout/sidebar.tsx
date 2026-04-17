@@ -1,6 +1,6 @@
 "use client";
 
-import { MonitorIcon, LayoutDashboard, Users } from "lucide-react";
+import { MonitorIcon, LayoutDashboard, Users, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
 import { useDataStore, useSidebarStore } from "@/lib/store";
@@ -41,6 +41,7 @@ export default function Sidebar() {
   const [mounted, setMounted] = useState(false);
   const [monitorAccessItems, setMonitorAccessItems] = useState<string[]>([]);
   const [showAllItems, setShowAllItems] = useState(false);
+  const [navigatingTo, setNavigatingTo] = useState<string | null>(null);
 
   // Parse monitorAccess from data
   useEffect(() => {
@@ -70,9 +71,16 @@ export default function Sidebar() {
     setMounted(true);
   }, []);
 
+  // Clear navigating state when pathname changes (navigation completed)
+  useEffect(() => {
+    setNavigatingTo(null);
+  }, [pathname]);
+
   if (!mounted) return null;
 
   const handleNavigation = (href: string) => {
+    if (pathname === href || navigatingTo === href) return;
+    setNavigatingTo(href);
     router.push(href);
   };
 
@@ -121,17 +129,26 @@ export default function Sidebar() {
               }
             )
             .map((item, index) => {
-              const active = pathname === item.href;
+              // Keep "devices" active when on /menu/... pages
+              const active = pathname === item.href ||
+                (item.href === "/devices" && pathname.startsWith("/menu"));
+              const isNavigating = navigatingTo === item.href;
               return (
                 <button
                   key={index}
                   onClick={() => handleNavigation(item.href)}
+                  disabled={isNavigating}
                   className={cn(
-                    "flex items-center space-x-2 px-3 py-2 rounded text-sm w-full text-left",
-                    active ? "bg-blue-600" : "hover:bg-gray-700"
+                    "flex items-center space-x-2 px-3 py-2 rounded text-sm w-full text-left transition-colors",
+                    active ? "bg-blue-600" : "hover:bg-gray-700",
+                    isNavigating && "opacity-70"
                   )}
                 >
-                  <item.icon className="h-4 w-4" />
+                  {isNavigating ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <item.icon className="h-4 w-4" />
+                  )}
                   <span>{t(item.label)}</span>
                 </button>
               );
