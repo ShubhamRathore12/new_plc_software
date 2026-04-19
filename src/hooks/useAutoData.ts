@@ -116,7 +116,7 @@ export const useAutoData = (autoType: string) => {
 
     try {
       const result = await apiRequest(
-        `/api/fetchData?table=${encodeURIComponent(table)}`
+        `https://grain-backend-1.onrender.com/api/fetchData?table=${encodeURIComponent(table)}`
       );
 
       if (result?.data) {
