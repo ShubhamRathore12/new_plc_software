@@ -76,7 +76,7 @@
 //   }
 // }
 import { NextResponse } from "next/server";
-import { query, ensureUserTableExists } from "@/lib/db";
+import { query } from "@/lib/db";
 import { signToken, setAuthCookie, type JWTPayload } from "@/lib/auth";
 
 export async function POST(req: Request) {
@@ -89,8 +89,6 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
-
-    await ensureUserTableExists();
 
     const rows = await query<{
       id: number;

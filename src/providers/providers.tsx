@@ -8,11 +8,6 @@ import { AppPerformanceProvider } from "./performance-provider";
 import dynamic from "next/dynamic";
 import { Toaster } from "@/components/ui/sonner";
 
-const FaultToastPoller = dynamic(
-  () => import("@/components/FaultToastPoller"),
-  { ssr: false }
-);
-
 // Dynamically import RoutePrefetcher to avoid SSR issues
 const RoutePrefetcher = dynamic(
   () => import("@/components/layout/RoutePrefetcher"),
@@ -31,8 +26,6 @@ export default function Providers({ children }: ProvidersProps) {
           <ThemeProvider>
             {children}
             <RoutePrefetcher />
-            {/* <FaultToastPoller /> */}
-
             <Toaster richColors />
           </ThemeProvider>
         </AppPerformanceProvider>

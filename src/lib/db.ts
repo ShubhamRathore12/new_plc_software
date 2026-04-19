@@ -20,7 +20,7 @@ export const pool =
     waitForConnections: true, // ✅ queue requests instead of crashing
     queueLimit: 0,            // ✅ unlimited queue
     idleTimeout: 30000,       // ✅ kill idle connections after 30s
-    connectTimeout: 10000,    // ✅ timeout if can't connect in 10s
+    connectTimeout: 5000,     // ✅ timeout if can't connect in 5s (fits Vercel limit)
 
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,
