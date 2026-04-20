@@ -16,11 +16,11 @@ export const pool =
     database: process.env.DATABASE_NAME,
     port: Number(process.env.DATABASE_PORT),
 
-    connectionLimit: 2,       // ✅ stay within shared hosting limit
+    connectionLimit: 3,       // ✅ stay within shared hosting limit
     waitForConnections: true, // ✅ queue requests instead of crashing
     queueLimit: 0,            // ✅ unlimited queue
-    idleTimeout: 30000,       // ✅ kill idle connections after 30s
-    connectTimeout: 5000,     // ✅ timeout if can't connect in 5s (fits Vercel limit)
+    idleTimeout: 10000,       // ✅ kill idle connections after 10s (Vercel serverless)
+    connectTimeout: 10000,    // ✅ timeout if can't connect in 10s (cold start tolerance)
 
     enableKeepAlive: true,
     keepAliveInitialDelay: 0,

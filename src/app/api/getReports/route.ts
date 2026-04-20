@@ -1,5 +1,11 @@
 import { query } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
+
+// Cache timestamp column per table to avoid SHOW COLUMNS on every request
+const timestampColumnCache = new Map<string, { col: 'created_at' | 'created_on'; cachedAt: number }>();
+
 const ALLOWED_TABLES = [
   "GTPL_108_gT_40E_P_S7_200_Germany",
   "GTPL_109_gT_40E_P_S7_200_Germany",
@@ -34,16 +40,25 @@ const ALLOWED_TABLES = [
   "GTPL_143_GT_450AP_S7_1200"
 ];
 
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
+
 async function getTimestampColumn(table: string): Promise<'created_at' | 'created_on'> {
+  // Return cached value if fresh
+  const cached = timestampColumnCache.get(table);
+  if (cached && Date.now() - cached.cachedAt < CACHE_TTL) {
+    return cached.col;
+  }
+
   try {
     const columns: any = await query(
       `SHOW COLUMNS FROM \`${table}\` WHERE Field IN ('created_at', 'created_on')`
     );
+    let col: 'created_at' | 'created_on' = 'created_at';
     if (Array.isArray(columns) && columns.length > 0) {
-      const colName = columns[0].Field;
-      return colName === 'created_on' ? 'created_on' : 'created_at';
+      col = columns[0].Field === 'created_on' ? 'created_on' : 'created_at';
     }
-    return 'created_at';
+    timestampColumnCache.set(table, { col, cachedAt: Date.now() });
+    return col;
   } catch (err) {
     console.error('Error detecting timestamp column:', err);
     return 'created_at';
@@ -129,7 +144,14 @@ export async function GET(req: Request) {
       },
     });
   } catch (err: any) {
-    return Response.json({ error: err?.message || "Internal error" }, { status: 500 });
+    console.error("getReports error:", err?.code, err?.message);
+    const message =
+      err?.code === "ECONNREFUSED" || err?.code === "ETIMEDOUT"
+        ? "Database connection failed"
+        : err?.code === "ER_TOO_MANY_USER_CONNECTIONS"
+        ? "Too many database connections, please retry"
+        : err?.message || "Internal error";
+    return Response.json({ error: message }, { status: 500 });
   }
 }
 

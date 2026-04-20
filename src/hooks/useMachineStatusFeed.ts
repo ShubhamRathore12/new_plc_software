@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
+const BACKEND_URL = "https://grain-backend-1.onrender.com";
+
 type MessageLog = {
   message: string;
   type: "info" | "error" | "warning" | "status";
@@ -51,7 +53,7 @@ export const useMachineStatusFeed = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch("https://grain-backend-1.onrender.com/api/machine/status-public");
+      const res = await fetch(`${BACKEND_URL}/api/machine/status-public`);
       const result = await res.json();
 
       if (result.success && Array.isArray(result.data)) {

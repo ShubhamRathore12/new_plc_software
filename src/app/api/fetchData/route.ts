@@ -1,6 +1,8 @@
-
 import { query } from "@/lib/db";
 import { NextRequest, NextResponse } from "next/server";
+
+export const dynamic = "force-dynamic";
+export const maxDuration = 30;
 
 const allowedTables = new Set([
   "GTPL_108_gT_40E_P_S7_200_Germany",
@@ -49,7 +51,13 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ table, data: rows || null }, { status: 200 });
   } catch (err: any) {
-    console.error("DB fetch error:", err?.message || err);
-    return NextResponse.json({ error: "Database error" }, { status: 500 });
+    console.error("fetchData error:", err?.code, err?.message || err);
+    const message =
+      err?.code === "ECONNREFUSED" || err?.code === "ETIMEDOUT"
+        ? "Database connection failed"
+        : err?.code === "ER_TOO_MANY_USER_CONNECTIONS"
+        ? "Too many database connections, please retry"
+        : "Database error";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }

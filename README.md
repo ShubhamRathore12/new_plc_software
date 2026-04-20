@@ -34,3 +34,4 @@ npm run dev
 ## Getting Started
 
 Open [http://localhost:3000](http://localhost:3000) to see the app. Edit pages under `src/app`.
+# grain_technik_app_web
