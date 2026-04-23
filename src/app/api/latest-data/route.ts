@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 
 export async function GET(req: Request) {
   const { readable, writable } = new TransformStream();
@@ -10,15 +10,11 @@ export async function GET(req: Request) {
   );
 
   try {
-    const rows: any = await query(
-      "SELECT * FROM iot_data ORDER BY id DESC LIMIT 1"
-    );
+    const result = await backendJson("/api/table?table=GTPL_118_GT_60T_S7_1200");
 
-    const latest = rows?.[0];
-
-    if (latest) {
+    if (result.success && result.data) {
       writer.write(
-        encoder.encode(`event: message\ndata: ${JSON.stringify(latest)}\n\n`)
+        encoder.encode(`event: message\ndata: ${JSON.stringify(result.data)}\n\n`)
       );
     } else {
       writer.write(
@@ -30,7 +26,7 @@ export async function GET(req: Request) {
       );
     }
   } catch (err: any) {
-    console.error("❌ DB Error:", err);
+    console.error("Backend API Error:", err);
     writer.write(
       encoder.encode(
         `event: error\ndata: ${JSON.stringify({ error: err.message })}\n\n`
@@ -39,7 +35,7 @@ export async function GET(req: Request) {
   }
 
   req.signal.addEventListener("abort", () => {
-    console.log("🔌 SSE client disconnected.");
+    console.log("SSE client disconnected.");
     writer.close();
   });
 

@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 import { NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -6,53 +6,25 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const tableName = searchParams.get("table") || "gtpl_122_s7_1200_01";
 
-    console.log(`🔍 Testing table: ${tableName}`);
+    console.log(`Testing table: ${tableName}`);
 
-    // Test 1: Check if table exists
-    const tableExists: any = await query(
-      `SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?`,
-      [tableName]
-    );
+    // Fetch latest record from Go backend
+    const result = await backendJson(`/api/table?table=${encodeURIComponent(tableName)}`);
 
-    if (!tableExists || tableExists.length === 0) {
+    if (!result.success) {
       return NextResponse.json({
         success: false,
-        error: `Table '${tableName}' does not exist`,
-        availableTables: await getAvailableTables(),
+        error: result.error || `Failed to fetch from table '${tableName}'`,
       });
     }
 
-    // Test 2: Get row count
-    const countResult: any = await query(
-      `SELECT COUNT(*) as cnt FROM \`${tableName}\``
-    );
-    const rowCount = countResult[0]?.cnt || 0;
-
-    // Test 3: Get latest record
-    let latestRecord = null;
-    if (rowCount > 0) {
-      const latest: any = await query(
-        `SELECT * FROM \`${tableName}\` ORDER BY id DESC LIMIT 1`
-      );
-      latestRecord = latest[0] || null;
-    }
-
-    // Test 4: Get column info
-    const columns: any = await query(
-      `SHOW COLUMNS FROM \`${tableName}\``
-    );
+    const latestRecord = result.data;
 
     return NextResponse.json({
       success: true,
       table: tableName,
       exists: true,
-      rowCount,
-      hasData: rowCount > 0,
-      columns: columns.map((c: any) => ({
-        name: c.Field,
-        type: c.Type,
-        nullable: c.Null,
-      })),
+      hasData: !!latestRecord,
       latestRecord: latestRecord ? {
         id: latestRecord.id,
         created_at: latestRecord.created_at,
@@ -69,16 +41,5 @@ export async function GET(req: Request) {
       },
       { status: 500 }
     );
-  }
-}
-
-async function getAvailableTables() {
-  try {
-    const tables: any = await query(
-      "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = DATABASE()"
-    );
-    return tables.map((t: any) => t.TABLE_NAME);
-  } catch {
-    return [];
   }
 }

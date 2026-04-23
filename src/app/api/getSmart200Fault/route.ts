@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 
 // S7-200 specific tags
 const S7_200_TAGS = [
@@ -284,13 +284,12 @@ async function checkFaultsAndNotify(record: any, machineName: string) {
 
 async function getPreviousRecords(currentRecordId: number, machineName: string, table: string, limit = 10) {
   try {
-    const rows: any = await query(
-      `SELECT * FROM \`${table}\` WHERE id < ? ORDER BY id DESC LIMIT ?`,
-      [currentRecordId, limit]
-    );
-    return rows || [];
+    const result = await backendJson(`/api/all700data/paginatedSmart200?table=${encodeURIComponent(table)}&page=1&limit=${limit}`);
+    const rows = Array.isArray(result.data) ? result.data : [];
+    // Filter records with id less than current
+    return rows.filter((r: any) => r.id < currentRecordId).slice(0, limit);
   } catch (error) {
-    console.error("DB fetch error:", error);
+    console.error("Backend fetch error:", error);
     return [];
   }
 }
@@ -350,19 +349,38 @@ const machineConfig = MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG]
       }
     }
 
-    const countResult: any = await query(
-      `SELECT COUNT(*) AS count FROM \`${table}\` ${whereClause}`,
-      values
-    );
-    const count = countResult[0]?.count || 0;
-
-    const result = await query(
-      `SELECT * FROM \`${table}\` ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`,
-      [...values, limit, offset]
+    // Fetch paginated data from Go backend
+    const paginatedResult = await backendJson(
+      `/api/all700data/paginatedSmart200?table=${encodeURIComponent(table)}&page=${page}&limit=${limit}`
     );
 
-    const rows = Array.isArray(result) ? result : [];
-    const total = Number(count) || 0;
+    let rows = Array.isArray(paginatedResult.data) ? paginatedResult.data : [];
+    let total = paginatedResult.total || 0;
+
+    // Apply search filter locally if needed
+    if (search && whereClause) {
+      const tags = machineConfig.tags;
+      const matchingTags = tags.filter(tag =>
+        tag.toLowerCase().includes(search.toLowerCase())
+      );
+      if (matchingTags.length > 0) {
+        rows = rows.filter((record: any) => {
+          return matchingTags.some(tag => {
+            const value = record[tag];
+            if (machineConfig.type === "S7-200") {
+              return value === "tr" || value === "True" || value === true || value === 1;
+            } else {
+              return value === "true" || value === "True" || value === true || value === 1 || value === "1";
+            }
+          });
+        });
+        total = rows.length;
+      } else {
+        rows = [];
+        total = 0;
+      }
+    }
+
     const totalPages = Math.max(1, Math.ceil(total / limit));
 
     if (rows.length === 0) {

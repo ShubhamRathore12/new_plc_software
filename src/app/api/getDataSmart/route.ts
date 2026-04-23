@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 
 export async function GET(req: Request) {
   const { readable, writable } = new TransformStream();
@@ -8,7 +8,7 @@ export async function GET(req: Request) {
   // Set headers for SSE
   writer.write(
     encoder.encode(
-      "retry: 2000\n" + // Try to reconnect every 10s if disconnected
+      "retry: 2000\n" +
         "event: connected\ndata: connected\n\n"
     )
   );
@@ -17,10 +17,8 @@ export async function GET(req: Request) {
 
   const interval = setInterval(async () => {
     try {
-      const [rows]: any = await query(
-        "SELECT * FROM GTPL_118_GT_60T_S7_1200 ORDER BY id DESC LIMIT 1"
-      );
-      const latest = rows[0];
+      const result = await backendJson("/api/table?table=GTPL_118_GT_60T_S7_1200");
+      const latest = result.success ? result.data : null;
 
       if (latest && latest.id > lastInsertedId) {
         lastInsertedId = latest.id;
@@ -29,21 +27,20 @@ export async function GET(req: Request) {
         );
       }
     } catch (err) {
-      console.error("DB fetch error:", err);
+      console.error("Backend fetch error:", err);
       writer.write(
         encoder.encode(
-          `event: error\ndata: ${JSON.stringify({ error: "DB error" })}\n\n`
+          `event: error\ndata: ${JSON.stringify({ error: "Backend API error" })}\n\n`
         )
       );
     }
-  }, 2000); // Check every 5 seconds
+  }, 2000);
 
   const close = () => {
     clearInterval(interval);
     writer.close();
   };
 
-  // Auto-close the connection if the client disconnects
   req.signal.addEventListener("abort", () => {
     console.log("SSE client disconnected.");
     close();

@@ -469,9 +469,8 @@
 //     },
 //   });
 // }
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 import * as XLSX from "xlsx";
-import type { RowDataPacket } from "mysql2";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -829,18 +828,21 @@ function getFaultKeysForRow(keys: string[]): string[] {
   return cached;
 }
 
-// Cache timestamp column per table to avoid repeated SHOW COLUMNS
+// Cache timestamp column per table
 const _tsColCache = new Map<string, 'created_at' | 'created_on'>();
+
+function detectTimestampColumn(row: any): 'created_at' | 'created_on' {
+  if (row && 'created_on' in row && !('created_at' in row)) return 'created_on';
+  return 'created_at';
+}
 
 async function getTimestampColumn(table: string): Promise<'created_at' | 'created_on'> {
   const cached = _tsColCache.get(table);
   if (cached) return cached;
   try {
-    const columns: any = await query(
-      `SHOW COLUMNS FROM \`${table}\` WHERE Field IN ('created_at', 'created_on')`
-    );
-    const col: 'created_at' | 'created_on' = (Array.isArray(columns) && columns.length > 0 && columns[0].Field === 'created_on')
-      ? 'created_on' : 'created_at';
+    // Fetch a single row to detect timestamp column
+    const result = await backendJson(`/api/table?table=${encodeURIComponent(table)}`);
+    const col = detectTimestampColumn(result.data);
     _tsColCache.set(table, col);
     return col;
   } catch (err) {
@@ -922,13 +924,20 @@ async function processDataInChunks(
 
   while (offset < effectiveLimit) {
     const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
+    const chunkPage = Math.floor(offset / currentChunkSize) + 1;
 
-    const chunkRows = await query<RowDataPacket[]>(
-      `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
-      [...params, currentChunkSize, offset]
-    );
+    const chunkParams = new URLSearchParams({
+      table,
+      page: String(chunkPage),
+      limit: String(currentChunkSize),
+    });
+    if (params.length >= 1 && params[0]) chunkParams.set("from", String(params[0]));
+    if (params.length >= 2 && params[1]) chunkParams.set("to", String(params[1]));
 
-    if (!Array.isArray(chunkRows) || chunkRows.length === 0) break;
+    const chunkResult = await backendJson(`/api/all700data/paginatedSmart200?${chunkParams.toString()}`);
+    const chunkRows = Array.isArray(chunkResult.data) ? chunkResult.data : [];
+
+    if (chunkRows.length === 0) break;
 
     const rows = chunkRows as any[];
 
@@ -1062,11 +1071,12 @@ export async function GET(req: Request) {
     console.log("Where clause:", whereSql);
     console.log("Parameters:", params);
 
-    const countRows = await query<RowDataPacket[]>(
-      `SELECT COUNT(*) AS cnt FROM \`${table}\`${whereSql}`,
-      params
-    );
-    const totalCount = (countRows[0] as unknown as { cnt: number }).cnt;
+    // Get total count from Go backend paginated endpoint
+    const countParams = new URLSearchParams({ table, page: "1", limit: "1" });
+    if (fromDate) countParams.set("from", `${fromDate} 00:00:00`);
+    if (toDate) countParams.set("to", `${toDate} 23:59:59`);
+    const countResult = await backendJson(`/api/all700data/paginatedSmart200?${countParams.toString()}`);
+    const totalCount = countResult.total || 0;
     console.log(`Total matching records: ${totalCount}`);
 
     let effectiveLimit: number;
@@ -1107,20 +1117,25 @@ export async function GET(req: Request) {
 
       while (offset < effectiveLimit) {
         const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
-        const chunkRows = await query<RowDataPacket[]>(
-          `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
-          [...params, currentChunkSize, offset]
-        );
-        if (!Array.isArray(chunkRows) || chunkRows.length === 0) break;
+        const chunkPage = Math.floor(offset / currentChunkSize) + 1;
+        const chunkParams = new URLSearchParams({
+          table, page: String(chunkPage), limit: String(currentChunkSize),
+        });
+        if (fromDate) chunkParams.set("from", `${fromDate} 00:00:00`);
+        if (toDate) chunkParams.set("to", `${toDate} 23:59:59`);
+
+        const chunkResult = await backendJson(`/api/all700data/paginatedSmart200?${chunkParams.toString()}`);
+        const chunkRows = Array.isArray(chunkResult.data) ? chunkResult.data : [];
+        if (chunkRows.length === 0) break;
 
         // Normalize dates in chunk
         for (const r of chunkRows as any[]) {
           for (const [k, v] of Object.entries(r)) {
-            if (v instanceof Date) (r as any)[k] = formatDateTimeExact(v);
+            if (v instanceof Date) (r as any)[k] = formatDateTimeExact(v as Date);
             else if (v === null || v === undefined) (r as any)[k] = "";
           }
         }
-        allRawRows.push(...(chunkRows as any[]));
+        allRawRows.push(...chunkRows);
         offset += currentChunkSize;
       }
 
@@ -1181,19 +1196,24 @@ export async function GET(req: Request) {
 
       while (offset < effectiveLimit) {
         const currentChunkSize = Math.min(CHUNK_SIZE, effectiveLimit - offset);
-        const chunkRows = await query<RowDataPacket[]>(
-          `SELECT * FROM \`${table}\`${whereSql} ORDER BY id ${order} LIMIT ? OFFSET ?`,
-          [...params, currentChunkSize, offset]
-        );
-        if (!Array.isArray(chunkRows) || chunkRows.length === 0) break;
+        const chunkPage = Math.floor(offset / currentChunkSize) + 1;
+        const csvChunkParams = new URLSearchParams({
+          table, page: String(chunkPage), limit: String(currentChunkSize),
+        });
+        if (fromDate) csvChunkParams.set("from", `${fromDate} 00:00:00`);
+        if (toDate) csvChunkParams.set("to", `${toDate} 23:59:59`);
+
+        const chunkResult = await backendJson(`/api/all700data/paginatedSmart200?${csvChunkParams.toString()}`);
+        const chunkRows = Array.isArray(chunkResult.data) ? chunkResult.data : [];
+        if (chunkRows.length === 0) break;
 
         for (const r of chunkRows as any[]) {
           for (const [k, v] of Object.entries(r)) {
-            if (v instanceof Date) (r as any)[k] = formatDateTimeExact(v);
+            if (v instanceof Date) (r as any)[k] = formatDateTimeExact(v as Date);
             else if (v === null || v === undefined) (r as any)[k] = "";
           }
         }
-        allRawRows.push(...(chunkRows as any[]));
+        allRawRows.push(...chunkRows);
         offset += currentChunkSize;
       }
 

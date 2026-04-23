@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 
 // All available tables
 const ALLOWED_TABLES = [
@@ -23,10 +23,9 @@ export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const table = searchParams.get("table") || "GTPL_118_GT_60T_S7_1200";
-    const format = searchParams.get("format") || "csv"; // csv or json
+    const format = searchParams.get("format") || "csv";
     const limit = parseInt(searchParams.get("limit") || "1000", 10);
 
-    // Validate table name
     if (!ALLOWED_TABLES.includes(table)) {
       return new Response(
         JSON.stringify({
@@ -40,14 +39,14 @@ export async function GET(req: Request) {
       );
     }
 
-    // Get data
-    const rows: any = await query(
-      `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ?`,
-      [limit]
+    // Get paginated data from Go backend
+    const result = await backendJson(
+      `/api/all700data/paginatedSmart200?table=${encodeURIComponent(table)}&page=1&limit=${limit}`
     );
 
+    const rows = Array.isArray(result.data) ? result.data : [];
+
     if (format === "csv") {
-      // Convert to CSV
       if (rows.length === 0) {
         return new Response("No data found", {
           status: 404,
@@ -62,7 +61,6 @@ export async function GET(req: Request) {
           headers
             .map((header) => {
               const value = row[header];
-              // Escape commas and quotes in CSV
               if (
                 typeof value === "string" &&
                 (value.includes(",") || value.includes('"'))
@@ -85,7 +83,6 @@ export async function GET(req: Request) {
         },
       });
     } else {
-      // Return JSON
       const filename = `${table}_${new Date().toISOString().split("T")[0]}.json`;
 
       return new Response(JSON.stringify(rows, null, 2), {
@@ -98,7 +95,7 @@ export async function GET(req: Request) {
     }
   } catch (err: any) {
     console.error("Download error:", err?.message || err);
-    return new Response(JSON.stringify({ error: "Database error" }), {
+    return new Response(JSON.stringify({ error: "Backend API error" }), {
       status: 500,
       headers: {
         "Content-Type": "application/json",

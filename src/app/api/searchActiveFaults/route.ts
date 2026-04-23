@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 // Helper function to check if a value is considered "active"
@@ -54,13 +54,12 @@ export async function GET(req: Request) {
     const table = machineConfig.table;
     const tags = machineConfig.tags;
     
-    // Get all records for this machine
-    const result = await query(
-      `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ? OFFSET ?`,
-      [limit, offset]
+    // Get paginated records from Go backend
+    const paginatedResult = await backendJson(
+      `/api/all700data/paginatedSmart200?table=${encodeURIComponent(table)}&page=${page}&limit=${limit}`
     );
 
-    const rows = Array.isArray(result) ? result : [];
+    const rows = Array.isArray(paginatedResult.data) ? paginatedResult.data : [];
     
     // Process the records to find active faults
     const processedData = [];
@@ -94,14 +93,8 @@ export async function GET(req: Request) {
       }
     }
     
-    // Get total count for pagination
-    const countResult: any = await query(
-      `SELECT COUNT(*) AS count FROM \`${table}\``
-    );
-    const count = countResult[0]?.count || 0;
-    
-    const total = Number(count) || 0;
-    const totalPages = Math.max(1, Math.ceil(total / limit));
+    const total = paginatedResult.total || 0;
+    const totalPages = paginatedResult.totalPages || Math.max(1, Math.ceil(total / limit));
 
     return new Response(
       JSON.stringify({

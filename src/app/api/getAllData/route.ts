@@ -1,24 +1,17 @@
-import { query } from "@/lib/db";
+import { NextResponse } from "next/server";
+import { backendJson } from "@/lib/backendApi";
 
-export async function GET(req: Request) {
+export async function GET() {
   try {
-    const rows: any = await query(
-      "SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT 100"
-    );
+    const result = await backendJson("/api/table?table=gtpl_122_s7_1200_01");
 
-    return new Response(JSON.stringify(rows), {
-      status: 200,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    if (!result.success) {
+      return NextResponse.json({ error: result.error || "Failed to fetch data" }, { status: 500 });
+    }
+
+    return NextResponse.json(result.data ? [result.data] : [], { status: 200 });
   } catch (err: any) {
     console.error("DB fetch error:", err?.message || err);
-    return new Response(JSON.stringify({ error: "Database error" }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    return NextResponse.json({ error: "Backend API error" }, { status: 500 });
   }
 }

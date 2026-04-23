@@ -1,23 +1,15 @@
-import { ensureUserTableExists, query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    // Step 1: Ensure the table exists
-    await ensureUserTableExists();
+    const result = await backendJson("/api/alldata/alldata");
 
-    // Step 2: Fetch all users from the database (including password)
-    const rows = await query<any>(`SELECT * FROM kabu_users`);
-
-    // Step 3: Return everything directly
-    return NextResponse.json({ users: rows });
+    return NextResponse.json({ users: result.data || result });
   } catch (error: any) {
-    console.error(
-      "GET error:",
-      JSON.stringify(error, Object.getOwnPropertyNames(error))
-    );
+    console.error("GET error:", error?.message || error);
     return NextResponse.json(
-      { message: "Failed to fetch users", error: error.message },
+      { message: "Failed to fetch data", error: error.message },
       { status: 500 }
     );
   }

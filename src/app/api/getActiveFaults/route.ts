@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 export async function GET(req: Request) {
@@ -54,12 +54,14 @@ export async function GET(req: Request) {
       `Fetching data for machine: ${machineName}, table: ${table}, page: ${page}, limit: ${limit}, offset: ${offset}`
     );
 
-    // 1) Total count
-    const countResult: any = await query(
-      `SELECT COUNT(*) AS cnt FROM \`${table}\``
+    // Fetch paginated data from Go backend
+    const paginatedResult = await backendJson(
+      `/api/all700data/paginatedSmart200?table=${encodeURIComponent(table)}&page=${page}&limit=${limit}`
     );
-    const total: number = countResult[0]?.cnt ?? 0;
-    const totalPages = Math.max(1, Math.ceil(total / limit));
+
+    const data = Array.isArray(paginatedResult.data) ? paginatedResult.data : [];
+    const total: number = paginatedResult.total ?? 0;
+    const totalPages = paginatedResult.totalPages ?? Math.max(1, Math.ceil(total / limit));
 
     console.log(`Total records: ${total}, Total pages: ${totalPages}`);
 
@@ -76,13 +78,6 @@ export async function GET(req: Request) {
       );
     }
 
-    // 2) Page data ordered by newest first to enable correct pagination across history
-    const rows = (await query(
-      `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ? OFFSET ?`,
-      [limit, offset]
-    )) as any[];
-
-    const data = Array.isArray(rows) ? rows : [];
     console.log(`Returned ${data.length} records for page ${page}`);
 
     return new Response(

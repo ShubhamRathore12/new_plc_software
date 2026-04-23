@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -7,20 +7,14 @@ export async function GET(req: Request) {
   const offset = (page - 1) * limit;
 
   try {
-    // Get total count
-    const countResult: any = await query(
-      "SELECT COUNT(*) AS count FROM gtpl_122_s7_1200_01"
-    );
-    const count = countResult[0]?.count || 0;
-
-    // Get paginated rows
-    const rows: any = await query(
-      `SELECT * FROM gtpl_122_s7_1200_01 ORDER BY id DESC LIMIT ? OFFSET ?`,
-      [limit, offset]
+    // Get paginated data from Go backend
+    const result = await backendJson(
+      `/api/all700data/paginatedSmart1200?table=gtpl_122_s7_1200_01&page=${page}&limit=${limit}`
     );
 
-    const total = Number(count);
-    const totalPages = Math.ceil(total / limit);
+    const rows = Array.isArray(result.data) ? result.data : [];
+    const total = result.total || 0;
+    const totalPages = result.totalPages || Math.ceil(total / limit);
 
     return new Response(
       JSON.stringify({

@@ -1,4 +1,4 @@
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 
 // S7-200 specific tags
 const S7_200_TAGS = [
@@ -254,10 +254,9 @@ export async function GET(req: Request) {
     
     const table = machineConfig.table;
     
-    // Get the latest record for the machine
-    const rows: any = await query(
-      `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT 1`
-    );
+    // Get the latest record from Go backend
+    const apiResult = await backendJson(`/api/table?table=${encodeURIComponent(table)}`);
+    const rows: any = apiResult.success && apiResult.data ? [apiResult.data] : [];
     
     if (rows.length === 0) {
       return new Response(

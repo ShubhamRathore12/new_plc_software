@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { query } from "@/lib/db";
+import { backendJson } from "@/lib/backendApi";
 import { MACHINE_CONFIG, MACHINE_NAME_ALIASES } from "@/lib/machineConfig";
 
 // Simple SSE stream helper
@@ -187,26 +187,36 @@ export async function POST(req: NextRequest) {
         throw new Error(`No configuration found for machine: ${machineName}`);
 
       const table = config.table;
-      let sql = `SELECT * FROM \`${table}\` ORDER BY id DESC LIMIT ${limit}`;
 
       if (dateFilter) {
-        // Support date filters like "yesterday", "today", "2024-01-01"
-        let dateCondition = "";
+        // Use Go backend paginated endpoint with date filtering
+        let fromDate = "";
+        let toDate = "";
         if (dateFilter.toLowerCase() === "yesterday") {
-          dateCondition =
-            "DATE(created_at) = DATE(NOW() - INTERVAL 1 DAY) OR DATE(created_on) = DATE(NOW() - INTERVAL 1 DAY)";
+          const yesterday = new Date(Date.now() - 86400000);
+          fromDate = yesterday.toISOString().split("T")[0];
+          toDate = fromDate;
         } else if (dateFilter.toLowerCase() === "today") {
-          dateCondition =
-            "DATE(created_at) = DATE(NOW()) OR DATE(created_on) = DATE(NOW())";
+          fromDate = new Date().toISOString().split("T")[0];
+          toDate = fromDate;
         } else {
-          // Assume it's a date string
-          dateCondition = `DATE(created_at) = '${dateFilter}' OR DATE(created_on) = '${dateFilter}'`;
+          fromDate = dateFilter;
+          toDate = dateFilter;
         }
-        sql = `SELECT * FROM \`${table}\` WHERE ${dateCondition} ORDER BY id DESC LIMIT ${limit}`;
+        const params = new URLSearchParams({ table, page: "1", limit: String(limit) });
+        if (fromDate) params.set("from", `${fromDate} 00:00:00`);
+        if (toDate) params.set("to", `${toDate} 23:59:59`);
+        const result = await backendJson(`/api/all700data/paginatedSmart200?${params.toString()}`);
+        return Array.isArray(result.data) ? result.data : [];
       }
 
-      const rows = await query<Record<string, any>>(sql);
-      return rows || [];
+      // No date filter - get latest records
+      if (limit === 1) {
+        const result = await backendJson(`/api/table?table=${encodeURIComponent(table)}`);
+        return result.success && result.data ? [result.data] : [];
+      }
+      const result = await backendJson(`/api/all700data/paginatedSmart200?table=${encodeURIComponent(table)}&page=1&limit=${limit}`);
+      return Array.isArray(result.data) ? result.data : [];
     }
 
     function formatMachineData(

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 
-const BACKEND_URL = "https://grain-backend-1.onrender.com";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://91.98.235.142:3000";
 
 type MessageLog = {
   message: string;
