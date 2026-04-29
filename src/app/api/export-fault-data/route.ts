@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import * as XLSX from "xlsx"
 
 // External API URL
-const EXTERNAL_API_URL = (process.env.BACKEND_URL || "http://91.98.235.142:3000") + "/api/alldata/alldata"
+const EXTERNAL_API_URL = (process.env.BACKEND_URL || "https://grain-backend-1.onrender.com") + "/api/alldata/alldata"
 
 export async function POST(request: NextRequest) {
   try {

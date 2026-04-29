@@ -223,7 +223,7 @@ export default function OutputsPage() {
         { id: "Q2.7", description: "CR valve 100% on", dataKey: "CR_valve_100_on_Q2_7" },
       ];
     }
-    else if (deviceType === "GTPL-134-gT-450T-S7-1200" || deviceType === "GTPL-135-gT-450T-S7-1200" || deviceType === "GTPL-145-gT-450T-S7-1200") {
+    else if (deviceType === "GTPL-134-gT-450T-S7-1200" || deviceType === "GTPL-135-gT-450T-S7-1200" || deviceType === "GTPL-145-gT-450T-S7-1200" || deviceType === "GTPL-148-gT-450T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },

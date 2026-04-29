@@ -20,7 +20,7 @@ export default function AerationPage() {
   const {t } = useLanguage()
 
   useEffect(() => {
-    if (device === "GTPL-122-gT-1000T-S7-1200"|| device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-143-gT-450AP-S7-1200" || device=== "GTPL-124-GT-450T-S7-1200" ||device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-132-300-AP-S7-1200"|| device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-118-gT-60T-S7-200" || device === "GTPL-121-gT-1000T-S7-1200" || device  === "GTPL-123-GT-450AP") {
+    if (device === "GTPL-122-gT-1000T-S7-1200"|| device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-143-gT-450AP-S7-1200" || device=== "GTPL-124-GT-450T-S7-1200" ||device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-132-300-AP-S7-1200"|| device === "GTPL-137-GT-450T-S7-1200" || device === "GTPL-138-GT-450T-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-148-gT-450T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200" || device === "GTPL-118-gT-60T-S7-200" || device === "GTPL-121-gT-1000T-S7-1200" || device  === "GTPL-123-GT-450AP") {
       setShouldRender(false); // prevent cards from rendering
       router.push(`/menu/aerations/without-heating/${device}`);
     }

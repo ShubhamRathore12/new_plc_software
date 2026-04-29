@@ -959,6 +959,13 @@ export default function DevicesPage() {
       plc: "S7-1200",
       chillerModel: "gT-450T",
     },
+    {
+      name: "GTPL-148-gT-450T-S7-1200",
+      location: "Tamil Nadu",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-450T",
+    },
   ].sort((a, b) => {
     const numA = parseInt(a.name.match(/\d+/)?.[0] || "0");
     const numB = parseInt(b.name.match(/\d+/)?.[0] || "0");
@@ -1034,6 +1041,7 @@ export default function DevicesPage() {
     "GTPL-134-gT-450T-S7-1200": "GTPL_134",
     "GTPL-135-gT-450T-S7-1200": "GTPL_135",
     "GTPL-145-gT-450T-S7-1200": "GTPL_145",
+    "GTPL-148-gT-450T-S7-1200": "GTPL_148",
     "GTPL-061-gT-450T-S7-1200": "GTPL_061",
     "GTPL-139-GT-300AP-S7-1200": "GTPL_139",
     "GTPL-144-GT-300AP-S7-1200": "GTPL_144_GT_300AP_S7_1200",

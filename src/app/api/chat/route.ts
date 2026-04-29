@@ -78,7 +78,7 @@ async function* callProviderStream({
       Authorization: authHeader,
       ...(provider === "openrouter"
         ? {
-            "HTTP-Referer": process.env.APP_URL || "http://localhost:3000",
+            "HTTP-Referer": process.env.APP_URL || "https://grain-backend-1.onrender.com",
             "X-Title": "New HMI Dashboard",
           }
         : {}),
