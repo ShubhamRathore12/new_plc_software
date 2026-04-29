@@ -8,6 +8,10 @@ import { DatePicker, Spin, message } from "antd";
 import type { DatePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "https://grain-backend-1.onrender.com";
+
 import {
   Table,
   TableBody,
@@ -226,7 +230,7 @@ export default function TableWithDownload() {
     return true;
   };
 
-  // CHANGED: fetchData now decides endpoint based on dateRange
+  // Fetch data directly from Go backend
   const fetchData = async (
     deviceName: string,
     range?: [Dayjs, Dayjs] | null,
@@ -240,21 +244,18 @@ export default function TableWithDownload() {
 
     setLoading(true);
     try {
-      let url: string;
       const page = pageOverride ?? pagination.page ?? 1;
+      const params = new URLSearchParams({
+        table: tableName,
+        page: String(page),
+      });
 
       if (range && range[0] && range[1]) {
-        // DATE SELECTED -> use getReports with date params (returns JSON)
-        const [startDate, endDate] = range;
-        url = `/api/getReports?table=${encodeURIComponent(tableName)}&fromDate=${startDate.format(
-          "YYYY-MM-DD"
-        )}&toDate=${endDate.format("YYYY-MM-DD")}&page=${page}`;
-      } else {
-        // NO DATE -> use getReports (hardcoded 100 rows) and pass page
-        url = `/api/getReports?table=${encodeURIComponent(tableName)}&page=${page}`;
+        params.set("fromDate", range[0].format("YYYY-MM-DD"));
+        params.set("toDate", range[1].format("YYYY-MM-DD"));
       }
 
-      const res = await fetch(url);
+      const res = await fetch(`${BACKEND_URL}/api/reports?${params.toString()}`);
       const json: any = await res.json();
 
       setData(json?.data || []);
@@ -272,11 +273,10 @@ export default function TableWithDownload() {
     setLoading(false);
   };
 
-  // Keep your downloadAllData as-is
+  // Download Excel directly from Go backend
   const downloadAllData = async () => {
     if (!dateRange) return;
 
-    // Validate date range before downloading
     if (!validateDateRange(dateRange)) {
       return;
     }
@@ -288,23 +288,29 @@ export default function TableWithDownload() {
     setDownloadProgress(0);
     try {
       const [startDate, endDate] = dateRange;
-      const url = `/api/getAllDataSmart200?table=${encodeURIComponent(
-        tableName
-      )}&fromDate=${startDate.format("YYYY-MM-DD")}&toDate=${endDate.format(
-        "YYYY-MM-DD"
-      )}&downloadAll=true&format=xlsx`;
+      const params = new URLSearchParams({
+        table: tableName,
+        fromDate: startDate.format("YYYY-MM-DD"),
+        toDate: endDate.format("YYYY-MM-DD"),
+        limit: "50000",
+      });
 
-      const response = await fetch(url);
+      const response = await fetch(
+        `${BACKEND_URL}/api/export/excel?${params.toString()}`
+      );
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Download failed");
+        throw new Error(`Download failed (HTTP ${response.status})`);
       }
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No reader available");
-      const contentLength = parseInt(response.headers.get("Content-Length") || "0", 10);
+      const contentLength = parseInt(
+        response.headers.get("Content-Length") || "0",
+        10
+      );
       let receivedLength = 0;
-      const chunks: Uint8Array[] | any = [] ;
+      const chunks: Uint8Array[] = [];
 
       while (true) {
         const { done, value } = await reader.read();
@@ -312,11 +318,18 @@ export default function TableWithDownload() {
         chunks.push(value);
         receivedLength += value.length;
         if (contentLength > 0) {
-          setDownloadProgress(Math.round((receivedLength / contentLength) * 100));
+          setDownloadProgress(
+            Math.round((receivedLength / contentLength) * 100)
+          );
+        } else {
+          // Estimate progress when Content-Length is unknown
+          setDownloadProgress(Math.min(95, Math.round(receivedLength / 1024)));
         }
       }
 
-      const blob = new Blob(chunks);
+      const blob = new Blob(chunks, {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -326,16 +339,20 @@ export default function TableWithDownload() {
       link.parentNode?.removeChild(link);
       window.URL.revokeObjectURL(downloadUrl);
 
-      message.success("Data downloaded successfully!");
+      message.success("Excel data downloaded successfully!");
     } catch (err) {
       console.error("Download error:", err);
-      message.error(err instanceof Error ? err.message : "An error occurred while downloading the data.");
+      message.error(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while downloading the data."
+      );
     } finally {
       setIsDownloading(false);
     }
   };
 
-  // Download CSV (lightweight, no memory issues)
+  // Download CSV directly from Go backend
   const downloadAllDataCSV = async () => {
     if (!dateRange) return;
 
@@ -350,21 +367,26 @@ export default function TableWithDownload() {
     setDownloadProgress(0);
     try {
       const [startDate, endDate] = dateRange;
-      const url = `/api/getAllDataSmart200?table=${encodeURIComponent(
-        tableName
-      )}&fromDate=${startDate.format("YYYY-MM-DD")}&toDate=${endDate.format(
-        "YYYY-MM-DD"
-      )}&downloadAll=true&format=csv`;
+      const params = new URLSearchParams({
+        table: tableName,
+        fromDate: startDate.format("YYYY-MM-DD"),
+        toDate: endDate.format("YYYY-MM-DD"),
+      });
 
-      const response = await fetch(url);
+      const response = await fetch(
+        `${BACKEND_URL}/api/export?${params.toString()}`
+      );
+
       if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || "Download failed");
+        throw new Error(`CSV download failed (HTTP ${response.status})`);
       }
 
       const reader = response.body?.getReader();
       if (!reader) throw new Error("No reader available");
-      const contentLength = parseInt(response.headers.get("Content-Length") || "0", 10);
+      const contentLength = parseInt(
+        response.headers.get("Content-Length") || "0",
+        10
+      );
       let receivedLength = 0;
       const chunks: Uint8Array[] = [];
 
@@ -374,7 +396,11 @@ export default function TableWithDownload() {
         chunks.push(value);
         receivedLength += value.length;
         if (contentLength > 0) {
-          setDownloadProgress(Math.round((receivedLength / contentLength) * 100));
+          setDownloadProgress(
+            Math.round((receivedLength / contentLength) * 100)
+          );
+        } else {
+          setDownloadProgress(Math.min(95, Math.round(receivedLength / 1024)));
         }
       }
 
@@ -391,7 +417,11 @@ export default function TableWithDownload() {
       message.success("CSV data downloaded successfully!");
     } catch (err) {
       console.error("Download CSV error:", err);
-      message.error(err instanceof Error ? err.message : "An error occurred while downloading the CSV data.");
+      message.error(
+        err instanceof Error
+          ? err.message
+          : "An error occurred while downloading the CSV data."
+      );
     } finally {
       setIsDownloading(false);
     }

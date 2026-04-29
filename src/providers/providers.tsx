@@ -5,6 +5,7 @@ import QueryProvider from "./query-provider";
 import { ThemeProvider } from "./theme-provider";
 import { LanguageProvider } from "./language-provider";
 import { AppPerformanceProvider } from "./performance-provider";
+import { MachineStatusProvider } from "./machine-status-provider";
 import dynamic from "next/dynamic";
 import { Toaster } from "@/components/ui/sonner";
 
@@ -24,9 +25,11 @@ export default function Providers({ children }: ProvidersProps) {
       <LanguageProvider>
         <AppPerformanceProvider>
           <ThemeProvider>
-            {children}
-            <RoutePrefetcher />
-            <Toaster richColors />
+            <MachineStatusProvider>
+              {children}
+              <RoutePrefetcher />
+              <Toaster richColors />
+            </MachineStatusProvider>
           </ThemeProvider>
         </AppPerformanceProvider>
       </LanguageProvider>

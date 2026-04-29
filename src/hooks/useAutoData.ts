@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "@/lib/utils";
-import { useMachineStatusFeed } from "./useMachineStatusFeed";
+import { useMachineStatus } from "@/providers/machine-status-provider";
 import { apiRequest } from "@/lib/api";
 
 interface AutoData {
@@ -8,7 +8,7 @@ interface AutoData {
 }
 
 export const useAutoData = (autoType: string) => {
-  const { status } = useMachineStatusFeed();
+  const { status } = useMachineStatus();
 
   const [data, setData] = useState<AutoData[]>([]);
   const [isConnected, setIsConnected] = useState(false);
@@ -55,7 +55,7 @@ export const useAutoData = (autoType: string) => {
   };
 
   const deviceNameToStatusKey: Record<string, string> = {
-    "GTPL-122-gT-1000T-S7-1200": "GTPL_122_S7_1200",
+    "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
     "GTPL-118-gT-60T-S7-200": "KABO_200",
     "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
     "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
@@ -72,7 +72,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-120-gT-180E-S7-1200": "GTPL_120",
     "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
     'GTPL-124-GT-450T-S7-1200':"GTPL_124",
-    "GTPL-133-GT-650T-S7-1200":"GTPL_131",
+    "GTPL-133-GT-650T-S7-1200":"GTPL_133",
     "GTPL-131-GT-650T-S7-1200":"GTPL_131",
     "GTPL-132-300-AP-S7-1200":"GTPL_132",
     "GTPL-137-GT-450T-S7-1200":"GTPL_137",
@@ -84,7 +84,7 @@ export const useAutoData = (autoType: string) => {
     "GTPL-148-gT-450T-S7-1200":"GTPL_148",
     "GTPL-061-gT-450T-S7-1200":"GTPL_061",
     "GTPL-139-GT-300AP-S7-1200":"GTPL_139",
-    "GTPL-144-GT-300AP-S7-1200":"GTPL_144_GT_300AP_S7_1200",
+    "GTPL-144-GT-300AP-S7-1200":"GTPL_144",
     "GTPL-142-gT-450AP-S7-1200":"GTPL_142",
     "GTPL-123-GT-450AP":"GTPL_123",
     "GTPL-143-gT-450AP-S7-1200":"GTPL_143"
