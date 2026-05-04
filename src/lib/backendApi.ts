@@ -1,4 +1,4 @@
-const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "https://grain-backend-1.onrender.com";
+const BACKEND_URL = process.env.BACKEND_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "https://www.primeosys.com/backend";
 
 /**
  * Helper to call the Go backend API from Next.js server-side routes.

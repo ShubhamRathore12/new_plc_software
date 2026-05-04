@@ -11,6 +11,7 @@ import { useLanguage } from "@/providers/language-provider";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -200,7 +201,11 @@ export default function RegistrationForm() {
         locations: values.locations || [],
       };
 
-      const response = await fetch("/api/register", {
+      const BACKEND_URL =
+        process.env.NEXT_PUBLIC_BACKEND_URL ||
+        "https://www.primeosys.com/backend";
+
+      const response = await fetch(`${BACKEND_URL}/api/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -557,10 +562,15 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="password"
+                          minLength={8}
+                          placeholder="Minimum 8 characters"
                           {...field}
                           className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                         />
                       </FormControl>
+                      <FormDescription>
+                        Password must be at least 8 characters.
+                      </FormDescription>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -576,6 +586,8 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="password"
+                          minLength={8}
+                          placeholder="Re-enter password"
                           {...field}
                           className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
                         />

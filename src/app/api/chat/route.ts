@@ -78,7 +78,7 @@ async function* callProviderStream({
       Authorization: authHeader,
       ...(provider === "openrouter"
         ? {
-            "HTTP-Referer": process.env.APP_URL || "https://grain-backend-1.onrender.com",
+            "HTTP-Referer": process.env.APP_URL || "https://www.primeosys.com/backend",
             "X-Title": "New HMI Dashboard",
           }
         : {}),

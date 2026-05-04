@@ -61,11 +61,16 @@ export function clearAuthCookie(res: NextResponse): void {
   res.cookies.set(COOKIE_NAME, "", { maxAge: 0, path: "/" });
 }
 
-/** Client-side login function */
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "https://www.primeosys.com/backend";
+
+/** Client-side login function — calls Go backend directly */
 export async function loginUser(username: string, password: string) {
-  const res = await fetch("/api/login", {
+  const res = await fetch(`${BACKEND_URL}/api/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: "include",
     body: JSON.stringify({ username, password }),
   });
 

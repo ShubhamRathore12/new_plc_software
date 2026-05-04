@@ -10,7 +10,7 @@ import dayjs, { Dayjs } from "dayjs";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
-  "https://grain-backend-1.onrender.com";
+  "https://www.primeosys.com/backend";
 
 import {
   Table,

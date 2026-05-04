@@ -1,7 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "@/lib/utils";
 import { useMachineStatus } from "@/providers/machine-status-provider";
-import { apiRequest } from "@/lib/api";
+
+const BACKEND_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL ||
+  "https://www.primeosys.com/backend";
 
 interface AutoData {
   [key: string]: any;
@@ -117,11 +120,17 @@ export const useAutoData = (autoType: string) => {
     }
 
     try {
-      const result = await apiRequest(
-        `/api/fetchData?table=${encodeURIComponent(table)}`
+      const res = await fetch(
+        `${BACKEND_URL}/api/table?table=${encodeURIComponent(table)}`
       );
+      const result = await res.json();
 
-      if (result?.data) {
+      if (result?.success && result?.data) {
+        setData([result.data]);
+        setIsConnected(true);
+        setError(null);
+        setRetryCount(0);
+      } else if (result?.data) {
         setData([result.data]);
         setIsConnected(true);
         setError(null);

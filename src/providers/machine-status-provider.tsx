@@ -12,7 +12,7 @@ import {
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
-  "https://grain-backend-1.onrender.com";
+  "https://www.primeosys.com/backend";
 
 const POLL_INTERVAL = 18 * 1000; // 18 seconds
 

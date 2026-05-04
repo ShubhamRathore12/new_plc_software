@@ -3,7 +3,7 @@ import { type NextRequest, NextResponse } from "next/server"
 // Test endpoint to check the external API structure
 export async function GET(request: NextRequest) {
   try {
-    const response = await fetch((process.env.BACKEND_URL || "https://grain-backend-1.onrender.com") + "/api/alldata/alldata", {
+    const response = await fetch((process.env.BACKEND_URL || "https://www.primeosys.com/backend") + "/api/alldata/alldata", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
