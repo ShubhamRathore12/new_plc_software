@@ -91,7 +91,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_valve_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-           CONDENSORFANSPEED :{key:'Condenser_fan_speed' ,label:'Cond. Fan'}
+           CONDENSORFANSPEED :{key:'Cond_fan_speed' ,label:'Cond. Fan'}
 
       },
       compressor: {
@@ -112,7 +112,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED :{key:'Condenser_fan_speed' ,label:'Cond. Fan'}
+        CONDENSORFANSPEED :{key:'Cond_fan_speed' ,label:'Cond. Fan'}
 
       },
       compressor: {
@@ -132,7 +132,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" }
       },
       compressor: {
         time: "Compressor_timer",
@@ -151,7 +151,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" }
       },
       compressor: {
         time: "Compressor_timer",
@@ -170,7 +170,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" }
       },
       compressor: {
         time: "Compressor_timer",
@@ -189,7 +189,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" }
       },
       compressor: {
         time: "Compressor_timer",
@@ -208,7 +208,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" }
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" }
       },
       compressor: {
         time: "Compressor_timer",
@@ -227,7 +227,7 @@ export default function AutoPaddyPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        CONDENSORFANSPEED: { key: "Condenser_fan_speed", label: "Cond. Fan" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" },
       },
       compressor: {
         time: "Compressor_timer",

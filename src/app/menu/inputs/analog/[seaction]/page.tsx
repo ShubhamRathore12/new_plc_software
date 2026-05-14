@@ -162,6 +162,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Cond_fan_speed",
+      "Cond. Fan Speed": "Condenser_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -183,6 +184,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Condenser_fan_speed",
+      "Cond. Fan Speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
       "Heater": "Heater_speed",
@@ -204,6 +206,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Cond_fan_speed",
+      "Cond. Fan Speed": "Condenser_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -224,6 +227,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Cond_fan_speed",
+      "Cond. Fan Speed": "Condenser_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -261,6 +265,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Cond_fan_speed",
+      "Cond. Fan Speed": "Condenser_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -281,6 +286,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Condenser_fan_speed",
+      "Cond. Fan Speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -298,6 +304,7 @@ export default function AnalogPage() {
     outputs: {
       "Blower Speed": "Blower_speed",
       "Condenser fan speed": "Condenser_fan_speed",
+      "Cond. Fan Speed": "Cond_fan_speed",
       "Hot Gas Valve": "Hot_valve_speed",
       "Afterheat Valve": "AHT_valve_speed",
     },
@@ -394,6 +401,7 @@ export default function AnalogPage() {
       outputs: {
         "Blower speed": "BLOWER_RPM",
         "Cond. Fan speed": "Condenser_fan_speed",
+        "Cond. Fan Speed": "Cond_fan_speed",
         "Hot gas valve": "HOT_GAS_VALVE_RPM",
         "Afterheat valve": "AFTER_HEAT_VALVE_RPM",
         "Heater": "Heater_speed",

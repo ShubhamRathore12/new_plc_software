@@ -1,0 +1,13 @@
+{
+  "$schema": "./schema.note",
+  "_comment": "Generic additive sync of named exports between TS/JS files. Paths are resolved relative to this config file. Each sync only ADDS missing keys to target — never overwrites or deletes. To sync more exports, add more entries to the syncs array.",
+  "syncs": [
+    {
+      "name": "MACHINE_CONFIG (devices: dashboard -> grain_technik mobile app)",
+      "source": "../../src/lib/machineConfig.ts",
+      "target": "../../../grain_technik/expo_latest/constants/machine-config.ts",
+      "export": "MACHINE_CONFIG",
+      "mode": "additive"
+    }
+  ]
+}

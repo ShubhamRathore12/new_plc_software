@@ -115,6 +115,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
         HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
@@ -136,6 +137,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
         HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
@@ -157,6 +159,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
         HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
@@ -178,6 +181,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
         HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
@@ -199,6 +203,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
         HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
@@ -219,7 +224,8 @@ export default function AutoPage() {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
-        COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        // COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
         HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
