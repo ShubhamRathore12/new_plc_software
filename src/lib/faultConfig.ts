@@ -117,6 +117,7 @@ export const GPL_115_TAGS = [
   "Delta_not_achieved_in_aeration_mode",
   "Warning_LP_transducer_failure",
   "Warning_HP_transducer_failure",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GPL_117_TAGS = [
@@ -168,6 +169,7 @@ export const GPL_117_TAGS = [
   "Warning_LP_transducer_failure",
   "Warning_HP_transducer_failure",
   "Cond_fan_drive_circuit_breaker_fault",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GPL_124_TAGS = [
@@ -204,6 +206,7 @@ export const GPL_124_TAGS = [
   "T0_1_sensor_short",
   "T0_2_sensor_open",
   "T0_2_sensor_short",
+    "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GPL_132_TAGS = [
@@ -236,6 +239,7 @@ export const GPL_132_TAGS = [
   "Air_outlet_sensor_T0_1_short_circuit",
   "Air_outlet_sensor_T0_2_open",
   "Air_outlet_sensor_T0_2_short_circuit",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GTPL_136_TAGS = [
@@ -272,6 +276,7 @@ export const GTPL_136_TAGS = [
   "Air_outlet_sensor_T0_1_short_circuit",
   "Air_outlet_sensor_T0_2_open",
   "Air_outlet_sensor_T0_2_short_circuit",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GTPL_137_138_TAGS = [
@@ -308,6 +313,7 @@ export const GTPL_137_138_TAGS = [
   "Air_outlet_sensor_T0_1_short_circuit",
   "Air_outlet_sensor_T0_2_open",
   "Air_outlet_sensor_T0_2_short_circuit",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GTPL_134_135_TAGS = [
@@ -344,6 +350,7 @@ export const GTPL_134_135_TAGS = [
   "Air_outlet_sensor_T0_1_short_circuit",
   "Air_outlet_sensor_T0_2_open",
   "Air_outlet_sensor_T0_2_short_circuit",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GTPL_139_TAGS = [
@@ -376,6 +383,7 @@ export const GTPL_139_TAGS = [
   "Air_outlet_sensor_T0_1_short_circuit",
   "Air_outlet_sensor_T0_2_open",
   "Air_outlet_sensor_T0_2_short_circuit",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 // Machine configuration type
@@ -466,6 +474,11 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     type: "S7-1200",
   },
   "GTPL-121-gT-1000T-S7-1200": {
+    table: "GTPL_121_GT1000T",
+    tags: GPL_124_TAGS,
+    type: "S7-1200",
+  },
+    "GTPL-131-GT-650T-S7-1200": {
     table: "GTPL_121_GT1000T",
     tags: GPL_124_TAGS,
     type: "S7-1200",

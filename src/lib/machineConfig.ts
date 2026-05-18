@@ -118,6 +118,7 @@ export const GPL_115_TAGS = [
   "Delta_not_achieved_in_aeration_mode",
   "Warning_LP_transducer_failure",
   "Warning_HP_transducer_failure",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
 ];
 
 export const GPL_117_TAGS = [
