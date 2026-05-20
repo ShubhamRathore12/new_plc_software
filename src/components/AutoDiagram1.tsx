@@ -879,6 +879,7 @@ export default function AutoDiagram1({
   const yellowLightFields = [
     "YELLOW_LIGHT",
     "System_warnning_(Q1.0)",
+    "System_warning_Q1_0",
     "Collective_Trouble_Signal_on_Q2_1",
     "Collective_Trouble_Signal_on",
     "Collective_Trouble_Signal",
