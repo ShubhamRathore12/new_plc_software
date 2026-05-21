@@ -241,6 +241,8 @@ export default function RegistrationForm() {
     // ✅ Devices from allDevices array (all machines from devices page)
     { value: "GTPL-30-gT-180E-S7-1200", label: "GTPL-30-gT-180E-S7-1200" },
     { value: "GTPL-061-gT-450T-S7-1200", label: "GTPL-061-gT-450T-S7-1200" },
+    { value: "GTPL-081-GT-650T-S7-1200", label: "GTPL-081-GT-650T-S7-1200" },
+    { value: "GTPL-105-GT-650T-S7-1200", label: "GTPL-105-GT-650T-S7-1200" },
     { value: "GTPL-108-gT-40E-P-S7-200", label: "GTPL-108-gT-40E-P-S7-200" },
     { value: "GTPL-109-gT-40E-P-S7-200", label: "GTPL-109-gT-40E-P-S7-200" },
     { value: "GTPL-110-gT-40E-P-S7-200", label: "GTPL-110-gT-40E-P-S7-200" },
@@ -286,6 +288,7 @@ export default function RegistrationForm() {
     { value: t("Salem (Tamil Nadu)"), label: t("Salem (Tamil Nadu)") },
     { value: t("Thailand"), label: t("Thailand") },
     { value: t("Turkey"), label: t("Turkey") },
+    { value: t("Dharuhera"), label: t("Dharuhera") },
   ]);
 
   // Update monitor options based on selected company and locations
