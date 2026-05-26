@@ -483,6 +483,16 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
+  "GTPL-081-GT-650T-S7-1200": {
+    table: "GTPL_081_GT_650T_S7_1200",
+    tags: GPL_124_TAGS,
+    type: "S7-1200",
+  },
+  "GTPL-105-GT-650T-S7-1200": {
+    table: "GTPL_105_GT_650T_S7_1200",
+    tags: GPL_124_TAGS,
+    type: "S7-1200",
+  },
   "GTPL-124-GT-450T-S7-1200": {
     table: "GTPL_124_GT450T",
     tags: GPL_124_TAGS,
@@ -1086,7 +1096,9 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GPL-117"];
   } else if (
     resolvedName.includes("GPL-124") ||
-    resolvedName.includes("GTPL-124")
+    resolvedName.includes("GTPL-124") ||
+    resolvedName.includes("GTPL-081") ||
+    resolvedName.includes("GTPL-105")
   ) {
     return FAULT_CODES["GTPL-124"];
   } else if (config.type === "S7-200") {
