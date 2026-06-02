@@ -1242,6 +1242,39 @@ export default function AutoDiagram1({
               viewBox="0 0 1200 600"
               preserveAspectRatio="none"
             >
+              {/* Animated Flow Defs */}
+              <defs>
+                <style>
+                  {`
+                    @keyframes flowForward {
+                      from { stroke-dashoffset: 24; }
+                      to { stroke-dashoffset: 0; }
+                    }
+                    @keyframes flowReverse {
+                      from { stroke-dashoffset: 0; }
+                      to { stroke-dashoffset: 24; }
+                    }
+                    .flow-line {
+                      stroke: #ef4444;
+                      stroke-width: 3;
+                      fill: none;
+                      stroke-dasharray: 12, 12;
+                    }
+                    .flow-line.active {
+                      animation: flowForward 1s linear infinite;
+                    }
+                    .flow-line.active-reverse {
+                      animation: flowReverse 1s linear infinite;
+                    }
+                    .flow-line.inactive {
+                      stroke: #9ca3af;
+                      stroke-dasharray: none;
+                      stroke-width: 2;
+                    }
+                  `}
+                </style>
+              </defs>
+
               {/* Silo */}
               <g>
                 <ellipse
@@ -1309,22 +1342,21 @@ export default function AutoDiagram1({
                 </text>
               </g>
 
-              {/* Connecting Lines */}
+              {/* Animated Connecting Lines - Top horizontal (Silo to Condenser) */}
               <line
                 x1="200"
                 y1="120"
                 x2="800"
                 y2="120"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
               />
+              {/* Silo outlet to top line */}
               <line
                 x1="170"
                 y1="180"
                 x2="200"
                 y2="120"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
               />
 
               {/* Vertical drops from main line to thermometers */}
@@ -1335,8 +1367,7 @@ export default function AutoDiagram1({
                     y1="120"
                     x2="280"
                     y2="150"
-                    stroke="black"
-                    strokeWidth="2"
+                    className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
                   />
                 )}
               {/* T0 vertical drop - hidden for S7-200 machines */}
@@ -1346,8 +1377,7 @@ export default function AutoDiagram1({
                   y1="120"
                   x2="380"
                   y2="150"
-                  stroke="black"
-                  strokeWidth="2"
+                  className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
                 />
               )}
               <line
@@ -1355,26 +1385,24 @@ export default function AutoDiagram1({
                 y1="120"
                 x2="480"
                 y2="150"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
               />
 
-              {/* Connection to blower */}
+              {/* Connection to blower - top */}
               <line
                 x1="800"
                 y1="120"
                 x2="800"
                 y2="150"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
               />
+              {/* Connection to blower - bottom */}
               <line
                 x1="800"
                 y1="500"
                 x2="800"
                 y2="380"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
               />
 
               {/* Lower horizontal line for HTR units */}
@@ -1383,16 +1411,15 @@ export default function AutoDiagram1({
                 y1="400"
                 x2="600"
                 y2="400"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
               />
+              {/* Left vertical line (silo bottom to lower horizontal) */}
               <line
                 x1="170"
                 y1="240"
                 x2="170"
                 y2="400"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
               />
 
               {/* Line to compressor */}
@@ -1401,8 +1428,7 @@ export default function AutoDiagram1({
                 y1="400"
                 x2="750"
                 y2="500"
-                stroke="black"
-                strokeWidth="2"
+                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
               />
             </svg>
 
