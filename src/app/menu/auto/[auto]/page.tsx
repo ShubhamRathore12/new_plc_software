@@ -218,7 +218,7 @@ export default function AutoPage() {
         TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
-        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        // T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
       },
       controls: {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },

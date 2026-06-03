@@ -1015,6 +1015,8 @@ export default function AutoDiagram1({
     "GTPL-113-gT-80E-P-S7-200",
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-119-gT-180E-S7-1200",
+    "GTPL-120-gT-180E-S7-1200",
+
     "GTPL-030-gT-180E-S7-1200",
     "GTPL-118-gT-60T-S7-1200",
   ].some((name) => machineName.includes(name));
@@ -1568,7 +1570,7 @@ export default function AutoDiagram1({
 
             {/* HTR Units */}
             <div
-              className={`absolute flex gap-14 z-10 ${isHTRMachine ? "left-[350px]" : "left-[200px]"}`}
+              className={`absolute flex gap-14 z-10 ${isHTRMachine ? "left-[350px]" : "left-[255px]"}`}
               style={{ top: "430px" }}
             >
               {!isHTRMachine && (
