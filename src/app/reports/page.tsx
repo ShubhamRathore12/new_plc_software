@@ -477,13 +477,29 @@ export default function TableWithDownload() {
     const aLower = a.toLowerCase();
     const bLower = b.toLowerCase();
     
-    // ID comes first
-    if (aLower === 'id') return -1;
-    if (bLower === 'id') return 1;
+    // Define priority order for specific fields
+    const priorityOrder: Record<string, number> = {
+      'id': 0,
+      'created_on': 1,
+      't0_1_air_outlet_temp': 2,
+      't0_2_air_outlet_temp': 3,
+      't0_set_point': 4,
+      't0_temp_mean': 5,
+      't1_1_cold_air_temp': 6,
+      't1_2_cold_air_temp': 7,
+      't1_temp_mean': 8,
+      't2_1_ambient_temp': 9,
+      't2_2_ambient_temp': 10,
+      't2_temp_mean': 11,
+    };
     
-    // created_on comes second
-    if (aLower === 'created_on') return -1;
-    if (bLower === 'created_on') return 1;
+    const aPriority = priorityOrder[aLower] ?? Infinity;
+    const bPriority = priorityOrder[bLower] ?? Infinity;
+    
+    // If both have priority, sort by priority
+    if (aPriority !== Infinity || bPriority !== Infinity) {
+      if (aPriority !== bPriority) return aPriority - bPriority;
+    }
     
     // Rest in alphabetical order
     return aLower.localeCompare(bLower);
