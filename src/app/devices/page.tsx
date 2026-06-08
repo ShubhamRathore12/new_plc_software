@@ -772,14 +772,14 @@ export default function DevicesPage() {
     },
     {
       name: "GTPL-068-GT-650T-S7-1200",
-      location: "Ganganagar, Rajasthan",
+      location: "Keshwana, Rajasthan",
       image: "/images/1200.jpg",
       plc: "S7-1200",
       chillerModel: "GT-650T",
     },
     {
       name: "GTPL-104-GT-650T-S7-1200",
-      location: "Ganganagar, Rajasthan",
+      location: "Keshwana, Rajasthan",
       image: "/images/1200.jpg",
       plc: "S7-1200",
       chillerModel: "GT-650T",

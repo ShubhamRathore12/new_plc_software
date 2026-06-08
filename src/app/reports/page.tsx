@@ -2,10 +2,7 @@
 
 import { useEffect, useState } from "react";
 import * as XLSX from "xlsx";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
 import { DatePicker, Spin, message } from "antd";
-import type { DatePickerProps } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
 const BACKEND_URL =
@@ -165,8 +162,6 @@ const ALLOWED_TABLES = [
   "GTPL_068_GT_650T_S7_1200",
   "GTPL_104_GT_650T_S7_1200"
 ] as const;
-
-type TableName = typeof ALLOWED_TABLES[number];
 
 export default function TableWithDownload() {
   const [data, setData] = useState<Record<string, any>[]>([]);
@@ -339,7 +334,7 @@ export default function TableWithDownload() {
         }
       }
 
-      const blob = new Blob(chunks, {
+      const blob = new Blob(chunks as BlobPart[], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       const downloadUrl = window.URL.createObjectURL(blob);
@@ -416,7 +411,7 @@ export default function TableWithDownload() {
         }
       }
 
-      const blob = new Blob(chunks, { type: "text/csv;charset=utf-8" });
+      const blob = new Blob(chunks as BlobPart[], { type: "text/csv;charset=utf-8" });
       const downloadUrl = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = downloadUrl;
@@ -476,21 +471,23 @@ export default function TableWithDownload() {
     message.success("Excel file downloaded successfully!");
   };
 
-  const downloadPDF = async () => {
-    const input = document.getElementById("table-container");
-    if (!input) return;
-    const canvas = await html2canvas(input);
-    const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF();
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${selectedDevice}_data.pdf`);
-    message.success("PDF file downloaded successfully!");
-  };
-
   const keys = data.length ? Object.keys(data[0]) : [];
+
+  const sortedKeys = keys.sort((a: string, b: string) => {
+    const aLower = a.toLowerCase();
+    const bLower = b.toLowerCase();
+    
+    // ID comes first
+    if (aLower === 'id') return -1;
+    if (bLower === 'id') return 1;
+    
+    // created_on comes second
+    if (aLower === 'created_on') return -1;
+    if (bLower === 'created_on') return 1;
+    
+    // Rest in alphabetical order
+    return aLower.localeCompare(bLower);
+  });
 
   const disabledDate = (current: Dayjs) => {
     const today = dayjs();
@@ -596,7 +593,7 @@ export default function TableWithDownload() {
             <Table className="min-w-full border border-gray-300">
               <TableHeader>
                 <TableRow className="border-b border-gray-300">
-                  {keys.map((key) => (
+                  {sortedKeys.map((key) => (
                     <TableHead
                       key={key}
                       className="border border-gray-300 bg-gray-100 text-center font-semibold text-sm p-2 whitespace-nowrap"
@@ -609,14 +606,14 @@ export default function TableWithDownload() {
               <TableBody>
                 {data.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={keys.length || 1} className="text-center py-10 text-gray-500 text-sm">
+                    <TableCell colSpan={sortedKeys.length || 1} className="text-center py-10 text-gray-500 text-sm">
                       No records found
                     </TableCell>
                   </TableRow>
                 ) : (
                   data.map((row, rowIndex) => (
                     <TableRow key={rowIndex} className="border-b border-gray-200 hover:bg-gray-50">
-                      {keys.map((key) => (
+                      {sortedKeys.map((key) => (
                         <TableCell
                           key={key}
                           className="border border-gray-300 text-center text-sm p-2 whitespace-nowrap overflow-hidden text-ellipsis"
