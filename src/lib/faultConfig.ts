@@ -494,12 +494,12 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     type: "S7-1200",
   },
   "GTPL-068-GT-650T-S7-1200": {
-    table: "GTPL_068_GT_650T_S7_1200",
+    table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
   "GTPL-104-GT-650T-S7-1200": {
-    table: "GTPL_104_GT_650T_S7_1200",
+    table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
