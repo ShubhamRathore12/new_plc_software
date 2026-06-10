@@ -408,12 +408,14 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+  
     "GTPL-104-GT-650T-S7-1200": {
       serialNumber: "GTPL_104",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
       },
       controls: {
         AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
@@ -828,6 +830,8 @@ export default function AutoPage() {
                       "GTPL-081-GT-650T-S7-1200",
                       "GTPL-105-GT-650T-S7-1200",
                       "GTPL-131-GT-650T-S7-1200",
+                      "GTPL-068-GT-650T-S7-1200",
+                      "GTPL-104-GT-650T-S7-1200",
                       "GTPL-132-300-AP-S7-1200",
                       "GTPL-134-gT-450T-S7-1200",
                       "GTPL-135-gT-450T-S7-1200",

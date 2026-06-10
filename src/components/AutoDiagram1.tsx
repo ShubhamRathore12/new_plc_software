@@ -934,6 +934,8 @@ export default function AutoDiagram1({
     "GTPL-081-GT-650T-S7-1200",
     "GTPL-105-GT-650T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
+    "GTPL-068-GT-650T-S7-1200",
+    "GTPL-104-GT-650T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
@@ -965,6 +967,8 @@ export default function AutoDiagram1({
     "GTPL-081-GT-650T-S7-1200",
     "GTPL-105-GT-650T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
+    "GTPL-068-GT-650T-S7-1200",
+    "GTPL-104-GT-650T-S7-1200",
   ].some((name) => machineName.includes(name));
 
   // Machines with 2 condenser fans
@@ -1003,6 +1007,8 @@ export default function AutoDiagram1({
     "GTPL-133-GT-650T-S7-1200",
     "GTPL-081-GT-650T-S7-1200",
     "GTPL-105-GT-650T-S7-1200",
+    "GTPL-068-GT-650T-S7-1200",
+    "GTPL-104-GT-650T-S7-1200",
   ].some((name) => normalizedMachineName.includes(name.toUpperCase()));
 
   // S7-200 machines (GTPL-108 to 113) - no T0 sensor, 1 fan each
