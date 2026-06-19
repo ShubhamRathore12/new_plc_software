@@ -898,12 +898,17 @@ export default function AutoDiagram1({
   const lampColor = (on: boolean, color: string) => (on ? color : "#d1d5db");
 
   const isCompressorOn =
-    data?.COMPRESSOR_ON === "tr" ||
-    data?.Compressor_on_Q0_4 === "True" ||
-    data?.Compressor_start === "True" ||
-    data?.COMPRESSOR_ON === "True" ||
-    data?.Compressor_on_Q0_0 === "True" ||
-    data?.Compressor_start_Q0_0 === "true";
+    isTrueValue(data?.COMPRESSOR_ON) ||
+    isTrueValue(data?.Compressor_on_Q0_4) ||
+    isTrueValue(data?.Compressor_start) ||
+    isTrueValue(data?.Compressor_on_Q0_0) ||
+    isTrueValue(data?.Compressor_start_Q0_0) ||
+    isTrueValue(data?.Compressor_on_Q0_0) ||
+    isTrueValue(data?.Compressor_start_Q0_0) ||
+    isTrueValue(data?.Compressor_on_Q0_1) ||
+    isTrueValue(data?.Compressor_start_Q0_1) ||
+    isTrueValue(data?.Compressor_on) ||
+    isTrueValue(data?.Comp_start);
 
   const isCondenserFanOn =
     isTrueValue(data?.Cond_fan_on) ||
