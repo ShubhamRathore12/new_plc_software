@@ -361,6 +361,8 @@ export default function AnalogPage() {
     "GTPL-121-gT-1000T-S7-1200": sharedS7_1200_config,
     "GTPL-122-gT-1000T-S7-1200": sharedS7_1200_config,
     "GTPL-133-GT-650T-S7-1200": sharedS7_1200_config,
+    "GTPL-154-GT-650T-S7-1200": sharedS7_1200_config,
+    "GTPL-155-GT-650T-S7-1200": sharedS7_1200_config,
     "GTPL-081-GT-650T-S7-1200": sharedS7_1200_config,
     "GTPL-105-GT-650T-S7-1200": sharedS7_1200_config,
     "GTPL-131-GT-650T-S7-1200": sharedS7_1200_config,
@@ -565,7 +567,7 @@ export default function AnalogPage() {
                           if (device === "GTPL-124-GT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-GT-300AP-S7-1200" || device === "GTPL-144-GT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
-                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-081-GT-650T-S7-1200" || device === "GTPL-105-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-068-GT-650T-S7-1200" || device === "GTPL-104-GT-650T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200") {
+                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-154-GT-650T-S7-1200" || device === "GTPL-155-GT-650T-S7-1200" || device === "GTPL-081-GT-650T-S7-1200" || device === "GTPL-105-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-068-GT-650T-S7-1200" || device === "GTPL-104-GT-650T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200") {
                             return !item.description.startsWith("TH probe") && !item.description.startsWith("TH.")
                           }
                           if ([ '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
@@ -659,6 +661,8 @@ export default function AnalogPage() {
                           device === 'GTPL-121-gT-1000T-S7-1200' ||
                           device === 'GTPL-122-gT-1000T-S7-1200' ||
                           device === 'GTPL-133-GT-650T-S7-1200' ||
+                          device === 'GTPL-154-GT-650T-S7-1200' ||
+                          device === 'GTPL-155-GT-650T-S7-1200' ||
                           device === 'GTPL-081-GT-650T-S7-1200' ||
                           device === 'GTPL-105-GT-650T-S7-1200' ||
                           device === 'GTPL-131-GT-650T-S7-1200' ||
@@ -672,6 +676,8 @@ export default function AnalogPage() {
                           device === 'GTPL-121-gT-1000T-S7-1200' ||
                           device === 'GTPL-122-gT-1000T-S7-1200' ||
                           device === 'GTPL-133-GT-650T-S7-1200' ||
+                          device === 'GTPL-154-GT-650T-S7-1200' ||
+                          device === 'GTPL-155-GT-650T-S7-1200' ||
                           device === 'GTPL-081-GT-650T-S7-1200' ||
                           device === 'GTPL-105-GT-650T-S7-1200' ||
                           device === 'GTPL-131-GT-650T-S7-1200' ||

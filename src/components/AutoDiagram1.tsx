@@ -936,6 +936,8 @@ export default function AutoDiagram1({
     "GTPL-145-gT-450T-S7-1200",
     "GTPL-148-gT-450T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
+    "GTPL-154-GT-650T-S7-1200",
+    "GTPL-155-GT-650T-S7-1200",
     "GTPL-081-GT-650T-S7-1200",
     "GTPL-105-GT-650T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
@@ -969,6 +971,8 @@ export default function AutoDiagram1({
     "GTPL-148-gT-450T-S7-1200",
     "GTPL-061-gT-450T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
+    "GTPL-154-GT-650T-S7-1200",
+    "GTPL-155-GT-650T-S7-1200",
     "GTPL-081-GT-650T-S7-1200",
     "GTPL-105-GT-650T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
@@ -1010,6 +1014,8 @@ export default function AutoDiagram1({
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-131-GT-650T-S7-1200",
     "GTPL-133-GT-650T-S7-1200",
+    "GTPL-154-GT-650T-S7-1200",
+    "GTPL-155-GT-650T-S7-1200",
     "GTPL-081-GT-650T-S7-1200",
     "GTPL-105-GT-650T-S7-1200",
     "GTPL-068-GT-650T-S7-1200",
@@ -1030,6 +1036,16 @@ export default function AutoDiagram1({
 
     "GTPL-030-gT-180E-S7-1200",
     "GTPL-118-gT-60T-S7-1200",
+  ].some((name) => machineName.includes(name));
+
+  // Machines with no T0 (Air Outlet) sensor — hide T0 thermometer, show only TH/T1/T2
+  const isNoT0Machine = [
+    "GTPL-30-gT-180E-S7-1200",
+    "GTPL-115-gT-180E-S7-1200",
+    "GTPL-116-gT-240E-S7-1200",
+    "GTPL-117-gT-320E-S7-1200",
+    "GTPL-119-gT-180E-S7-1200",
+    "GTPL-120-gT-180E-S7-1200",
   ].some((name) => machineName.includes(name));
 
   const condenserFanImage = is6FanMachine
@@ -1383,8 +1399,8 @@ export default function AutoDiagram1({
                     className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
                   />
                 )}
-              {/* T0 vertical drop - hidden for S7-200 machines */}
-              {!isS7200Machine && (
+              {/* T0 vertical drop - hidden for S7-200 machines and E-series 30/115-120 (no T0 sensor) */}
+              {!isS7200Machine && !isNoT0Machine && (
                 <line
                   x1="380"
                   y1="120"
@@ -1483,8 +1499,8 @@ export default function AutoDiagram1({
                 </div>
               )}
 
-            {/* T0 Thermometer - hidden for S7-200 machines (no T0 sensor) */}
-            {!isS7200Machine && (
+            {/* T0 Thermometer - hidden for S7-200 machines and E-series 30/115-120 (no T0 sensor) */}
+            {!isS7200Machine && !isNoT0Machine && (
               <div className="absolute" style={{ left: "360px", top: "152px" }}>
                 <div className="w-12 h-60 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
                   <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">

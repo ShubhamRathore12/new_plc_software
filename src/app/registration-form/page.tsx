@@ -262,6 +262,8 @@ export default function RegistrationForm() {
     { value: "GTPL-131-GT-650T-S7-1200", label: "GTPL-131-GT-650T-S7-1200" },
     { value: "GTPL-132-300-AP-S7-1200", label: "GTPL-132-300-AP-S7-1200" },
     { value: "GTPL-133-GT-650T-S7-1200", label: "GTPL-133-GT-650T-S7-1200" },
+    { value: "GTPL-154-GT-650T-S7-1200", label: "GTPL-154-GT-650T-S7-1200" },
+    { value: "GTPL-155-GT-650T-S7-1200", label: "GTPL-155-GT-650T-S7-1200" },
     { value: "GTPL-134-gT-450T-S7-1200", label: "GTPL-134-gT-450T-S7-1200" },
     { value: "GTPL-135-gT-450T-S7-1200", label: "GTPL-135-gT-450T-S7-1200" },
     { value: "GTPL-136-gT-450AP", label: "GTPL-136-gT-450AP" },
@@ -292,6 +294,8 @@ export default function RegistrationForm() {
     { value: t("Thailand"), label: t("Thailand") },
     { value: t("Turkey"), label: t("Turkey") },
     { value: t("Dharuhera"), label: t("Dharuhera") },
+    { value: t("Ganga Nagar"), label: t("Ganga Nagar") },
+    { value: t("Rajasthan"), label: t("Rajasthan") },
   ]);
 
   // Update monitor options based on selected company and locations
