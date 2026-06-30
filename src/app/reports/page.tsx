@@ -477,36 +477,58 @@ export default function TableWithDownload() {
     message.success("Excel file downloaded successfully!");
   };
 
-  const keys = data.length ? Object.keys(data[0]) : [];
+  // Machines that physically have a heater (reference: auto screen HTR config).
+  // Heater column hidden for every other device, and for any S7-200 device.
+  const HEATER_DEVICES = [
+    "GTPL-30-gT-180E-S7-1200",
+    "GTPL-115-gT-180E-S7-1200",
+    "GTPL-116-gT-240E-S7-1200",
+    "GTPL-117-gT-320E-S7-1200",
+    "GTPL-119-gT-180E-S7-1200",
+    "GTPL-120-gT-180E-S7-1200",
+  ];
+  const showHeater =
+    HEATER_DEVICES.includes(selectedDevice) && !selectedDevice.endsWith("200");
+
+  const rawKeys = data.length ? Object.keys(data[0]) : [];
+
+  // Drop heater columns when this machine has no heater
+  const keys = showHeater
+    ? rawKeys
+    : rawKeys.filter((k) => !k.toLowerCase().includes("heater"));
 
   const sortedKeys = keys.sort((a: string, b: string) => {
     const aLower = a.toLowerCase();
     const bLower = b.toLowerCase();
-    
+
     // Define priority order for specific fields
+    // Temperature columns must group right after created_on (incl. TH/supply-air
+    // variants) so they never fall to the end of the table.
     const priorityOrder: Record<string, number> = {
       'id': 0,
       'created_on': 1,
-      't0_1_air_outlet_temp': 2,
-      't0_2_air_outlet_temp': 3,
-      't0_set_point': 4,
-      't0_temp_mean': 5,
-      't1_1_cold_air_temp': 6,
-      't1_2_cold_air_temp': 7,
-      't1_temp_mean': 8,
-      't2_1_ambient_temp': 9,
-      't2_2_ambient_temp': 10,
-      't2_temp_mean': 11,
+      'th_temp_mean': 2,
+      'after_heater_temp_th': 2,
+      't0_1_air_outlet_temp': 3,
+      't0_2_air_outlet_temp': 4,
+      't0_set_point': 5,
+      't0_temp_mean': 6,
+      't1_1_cold_air_temp': 7,
+      't1_2_cold_air_temp': 8,
+      't1_temp_mean': 9,
+      't2_1_ambient_temp': 10,
+      't2_2_ambient_temp': 11,
+      't2_temp_mean': 12,
     };
-    
+
     const aPriority = priorityOrder[aLower] ?? Infinity;
     const bPriority = priorityOrder[bLower] ?? Infinity;
-    
+
     // If both have priority, sort by priority
     if (aPriority !== Infinity || bPriority !== Infinity) {
       if (aPriority !== bPriority) return aPriority - bPriority;
     }
-    
+
     // Rest in alphabetical order
     return aLower.localeCompare(bLower);
   });
