@@ -340,6 +340,7 @@ export default function AnalogPage() {
     outputs: {
       ...sharedS7_1200_config.outputs,
       "Heater": "Heater_speed",
+         "Afterheat Valve": "AHT_vale_speed",
     },
   }
 
@@ -441,20 +442,27 @@ export default function AnalogPage() {
     return value
   }
 
-  // Debug logging for GTPL-136
+  // Debug logging for GTPL-136 and GTPL-30
   useEffect(() => {
-    if (device === "GTPL-136-gT-450AP" && data) {
-      console.log("GTPL-136 Device detected:", device);
+    if ((device === "GTPL-136-gT-450AP" || device === "GTPL-30-gT-180E-S7-1200") && data) {
+      console.log("Device detected:", device);
       console.log("Current config:", currentMachineConfig);
       console.log("Raw data received:", data);
-      console.log("Looking for these fields:", analogInputValueMap);
+      console.log("All available data fields:", Object.keys(data));
+      console.log("Looking for input fields:", analogInputValueMap);
+      console.log("Looking for output fields:", analogOutputValueMap);
       
       // Check specific fields
       Object.entries(analogInputValueMap).forEach(([description, fieldName]) => {
-        console.log(`${description} -> ${fieldName}: ${data[fieldName]}`);
+        console.log(`Input: ${description} -> ${fieldName}: ${data[fieldName]}`);
+      });
+      
+      // Check output fields
+      Object.entries(analogOutputValueMap).forEach(([description, fieldName]) => {
+        console.log(`Output: ${description} -> ${fieldName}: ${data[fieldName]}`);
       });
     }
-  }, [device, data, currentMachineConfig, analogInputValueMap])
+  }, [device, data, currentMachineConfig, analogInputValueMap, analogOutputValueMap])
 
   // GSAP animations
   useEffect(() => {
