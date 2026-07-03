@@ -46,7 +46,7 @@ export default function AutoPage() {
   const cr100 = resolveCR(["CR_valve_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_7", "CR_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_5", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7"]);
 
   // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
-  const isBarMachine = auto === "GTPL-137-GT-450T-S7-1200" || auto === "GTPL-138-GT-450T-S7-1200";
+  const isBarMachine = auto === "GTPL-137-gT-450T-S7-1200" || auto === "GTPL-138-gT-450T-S7-1200";
 
   // Helper function to convert psi values to bar for display
   const convertPressureToBar = (value: any) => {
@@ -235,7 +235,7 @@ export default function AutoPage() {
       },
     },
 
-    "GTPL-124-GT-450T-S7-1200": {
+    "GTPL-124-gT-450T-S7-1200": {
       serialNumber: "GTPL_124",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -335,7 +335,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-      "GTPL-133-GT-650T-S7-1200": {
+      "GTPL-133-gT-650T-S7-1200": {
       serialNumber: "GTPL_132",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -354,7 +354,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-      "GTPL-154-GT-650T-S7-1200": {
+      "GTPL-154-gT-650T-S7-1200": {
       serialNumber: "GTPL_154",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -373,7 +373,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-      "GTPL-155-GT-650T-S7-1200": {
+      "GTPL-155-gT-650T-S7-1200": {
       serialNumber: "GTPL_155",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -392,7 +392,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-      "GTPL-081-GT-650T-S7-1200": {
+      "GTPL-081-gT-650T-S7-1200": {
       serialNumber: "GTPL_081",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -410,7 +410,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-      "GTPL-105-GT-650T-S7-1200": {
+      "GTPL-105-gT-650T-S7-1200": {
       serialNumber: "GTPL_105",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -428,7 +428,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-068-GT-650T-S7-1200": {
+    "GTPL-068-gT-650T-S7-1200": {
       serialNumber: "GTPL_068",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -447,7 +447,7 @@ export default function AutoPage() {
       },
     },
   
-    "GTPL-104-GT-650T-S7-1200": {
+    "GTPL-104-gT-650T-S7-1200": {
       serialNumber: "GTPL_104",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -466,7 +466,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-      "GTPL-131-GT-650T-S7-1200": {
+      "GTPL-131-gT-650T-S7-1200": {
       serialNumber: "GTPL_131",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -484,7 +484,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-137-GT-450T-S7-1200": {
+    "GTPL-137-gT-450T-S7-1200": {
       serialNumber: "GTPL_137",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -504,7 +504,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-138-GT-450T-S7-1200": {
+    "GTPL-138-gT-450T-S7-1200": {
       serialNumber: "GTPL_138",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -615,7 +615,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-139-GT-300AP-S7-1200": {
+    "GTPL-139-gT-300AP-S7-1200": {
       serialNumber: "GTPL_139",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -634,7 +634,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-144-GT-300AP-S7-1200": {
+    "GTPL-144-gT-300AP-S7-1200": {
       serialNumber: "GTPL_144_GT_300AP_S7_1200",
       temperatureSensors: {
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
@@ -864,25 +864,25 @@ export default function AutoPage() {
                     {[
                       "GTPL-121-gT-1000T-S7-1200",
                       "GTPL-122-gT-1000T-S7-1200",
-                      "GTPL-133-GT-650T-S7-1200",
-                      "GTPL-154-GT-650T-S7-1200",
-                      "GTPL-155-GT-650T-S7-1200",
-                      "GTPL-081-GT-650T-S7-1200",
-                      "GTPL-105-GT-650T-S7-1200",
-                      "GTPL-131-GT-650T-S7-1200",
-                      "GTPL-068-GT-650T-S7-1200",
-                      "GTPL-104-GT-650T-S7-1200",
+                      "GTPL-133-gT-650T-S7-1200",
+                      "GTPL-154-gT-650T-S7-1200",
+                      "GTPL-155-gT-650T-S7-1200",
+                      "GTPL-081-gT-650T-S7-1200",
+                      "GTPL-105-gT-650T-S7-1200",
+                      "GTPL-131-gT-650T-S7-1200",
+                      "GTPL-068-gT-650T-S7-1200",
+                      "GTPL-104-gT-650T-S7-1200",
                       "GTPL-132-300-AP-S7-1200",
                       "GTPL-134-gT-450T-S7-1200",
                       "GTPL-135-gT-450T-S7-1200",
                       "GTPL-145-gT-450T-S7-1200",
                       "GTPL-148-gT-450T-S7-1200",
                       "GTPL-136-gT-450AP",
-                      "GTPL-139-GT-300AP-S7-1200",
+                      "GTPL-139-gT-300AP-S7-1200",
                       "GTPL-142-gT-450AP-S7-1200",
-                      "GTPL-123-GT-450AP",
+                      "GTPL-123-gT-450AP",
                       "GTPL-143-gT-450AP-S7-1200",
-                      "GTPL-144-GT-300AP-S7-1200",
+                      "GTPL-144-gT-300AP-S7-1200",
                       "GTPL-061-gT-450T-S7-1200"
                     ].includes(auto as string) && (
                       <>
@@ -959,6 +959,13 @@ export default function AutoPage() {
                       let value;
                       if (data?.[control.key] !== undefined && data?.[control.key] !== null) {
                         value = data[control.key];
+                      } else if (key === "COND" || key === "CONDENSORFANSPEED") {
+                        // Condenser field name varies by PLC — fall back across all variants
+                        value =
+                          data?.Cond_fan_speed ??
+                          data?.Condenser_fan_speed ??
+                          data?.Value_to_Display_COND_ACT_SPEED ??
+                          data?.CONDENSER_RPM;
                       }
 
                       const percentage = parseFloat(value) || 0;
@@ -1037,7 +1044,7 @@ export default function AutoPage() {
                     }
 
                     {/* Add bar values after HP and LP for machines 137 and 138 */}
-                    {['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+                    {['GTPL-137-gT-450T-S7-1200', 'GTPL-138-gT-450T-S7-1200'].includes(auto as string) && (
                       <>
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}
@@ -1091,7 +1098,7 @@ export default function AutoPage() {
                     )}
 
                     {/* For other machines, show standard HP and LP */}
-                    {!['GTPL-137-GT-450T-S7-1200', 'GTPL-138-GT-450T-S7-1200'].includes(auto as string) && (
+                    {!['GTPL-137-gT-450T-S7-1200', 'GTPL-138-gT-450T-S7-1200'].includes(auto as string) && (
                       <>
                         <motion.div
                           initial={{ opacity: 0, scale: 0.9 }}

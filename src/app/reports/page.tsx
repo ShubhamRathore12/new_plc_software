@@ -35,6 +35,7 @@ import {
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useDataStore } from "@/lib/store";
 import { toast } from "sonner";
+import { getSchemaForTable } from "@/lib/dbSchema";
 
 const { RangePicker } = DatePicker;
 
@@ -55,29 +56,29 @@ const allDevices = [
   "GTPL-119-gT-180E-S7-1200",
   "GTPL-120-gT-180E-S7-1200",
   "GTPL-121-gT-1000T-S7-1200",
-  "GTPL-124-GT-450T-S7-1200",
-  "GTPL-133-GT-650T-S7-1200",
-  "GTPL-154-GT-650T-S7-1200",
-  "GTPL-155-GT-650T-S7-1200",
-  "GTPL-081-GT-650T-S7-1200",
-  "GTPL-105-GT-650T-S7-1200",
-  "GTPL-131-GT-650T-S7-1200",
+  "GTPL-124-gT-450T-S7-1200",
+  "GTPL-133-gT-650T-S7-1200",
+  "GTPL-154-gT-650T-S7-1200",
+  "GTPL-155-gT-650T-S7-1200",
+  "GTPL-081-gT-650T-S7-1200",
+  "GTPL-105-gT-650T-S7-1200",
+  "GTPL-131-gT-650T-S7-1200",
   "GTPL-132-300-AP-S7-1200",
-  "GTPL-134-GT-450T-S7-1200",
-  "GTPL-135-GT-450T-S7-1200",
-  "GTPL-145-GT-450T-S7-1200",
-  "GTPL-148-GT-450T-S7-1200",
-  "GTPL-136-GT-300AP-S7-1200",
-  "GTPL-137-GT-450T-S7-1200",
-  "GTPL-138-GT-450T-S7-1200",
-  "GTPL-139-GT-300AP-S7-1200",
-  "GTPL-144-GT-300AP-S7-1200",
+  "GTPL-134-gT-450T-S7-1200",
+  "GTPL-135-gT-450T-S7-1200",
+  "GTPL-145-gT-450T-S7-1200",
+  "GTPL-148-gT-450T-S7-1200",
+  "GTPL-136-gT-300AP-S7-1200",
+  "GTPL-137-gT-450T-S7-1200",
+  "GTPL-138-gT-450T-S7-1200",
+  "GTPL-139-gT-300AP-S7-1200",
+  "GTPL-144-gT-300AP-S7-1200",
   "GTPL-061-gT-450T-S7-1200",
-  "GTPL-142-GT-450AP-S7-1200",
-  "GTPL-123-GT-450AP",
-  "GTPL-143-GT-450AP-S7-1200",
-  "GTPL-068-GT-650T-S7-1200",
-  "GTPL-104-GT-650T-S7-1200"
+  "GTPL-142-gT-450AP-S7-1200",
+  "GTPL-123-gT-450AP",
+  "GTPL-143-gT-450AP-S7-1200",
+  "GTPL-068-gT-650T-S7-1200",
+  "GTPL-104-gT-650T-S7-1200"
 ];
 
 // Create a mapping from device name to table name
@@ -97,31 +98,31 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-119-gT-180E-S7-1200": "GTPL_119_GT_180E_S7_1200",
   "GTPL-120-gT-180E-S7-1200": "GTPL_120_GT_180E_S7_1200",
   "GTPL-121-gT-1000T-S7-1200": "GTPL_121_GT1000T",
-  "GTPL-124-GT-450T-S7-1200": "GTPL_124_GT_450T_S7_1200",
-  "GTPL-133-GT-650T-S7-1200": "GTPL_133_GT_650T_S7_1200",
-  "GTPL-154-GT-650T-S7-1200": "GTPL_154_GT_650T_S7_1200",
-  "GTPL-155-GT-650T-S7-1200": "GTPL_155_GT_650T_S7_1200",
-  "GTPL-081-GT-650T-S7-1200": "GTPL_081_GT_650T_S7_1200",
-  "GTPL-105-GT-650T-S7-1200": "GTPL_105_GT_650T_S7_1200",
-  "GTPL-068-GT-650T-S7-1200": "GTPL_068_GT_650T_S7_1200",
-  "GTPL-104-GT-650T-S7-1200": "GTPL_104_GT_650T_S7_1200",
-  "GTPL-131-GT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
+  "GTPL-124-gT-450T-S7-1200": "GTPL_124_GT_450T_S7_1200",
+  "GTPL-133-gT-650T-S7-1200": "GTPL_133_GT_650T_S7_1200",
+  "GTPL-154-gT-650T-S7-1200": "GTPL_154_GT_650T_S7_1200",
+  "GTPL-155-gT-650T-S7-1200": "GTPL_155_GT_650T_S7_1200",
+  "GTPL-081-gT-650T-S7-1200": "GTPL_081_GT_650T_S7_1200",
+  "GTPL-105-gT-650T-S7-1200": "GTPL_105_GT_650T_S7_1200",
+  "GTPL-068-gT-650T-S7-1200": "GTPL_068_GT_650T_S7_1200",
+  "GTPL-104-gT-650T-S7-1200": "GTPL_104_GT_650T_S7_1200",
+  "GTPL-131-gT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
   "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
   "GTPL-118-gT-60T-S7-200": "GTPL_118_GT_60T_S7_1200",
-  "GTPL-137-GT-450T-S7-1200": "GTPL_137_GT_450T_S7_1200",
-  "GTPL-138-GT-450T-S7-1200": "GTPL_138_GT_450T_S7_1200",
+  "GTPL-137-gT-450T-S7-1200": "GTPL_137_GT_450T_S7_1200",
+  "GTPL-138-gT-450T-S7-1200": "GTPL_138_GT_450T_S7_1200",
   "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
- "GTPL-134-GT-450T-S7-1200":  "GTPL_134_GT_450T_S7_1200",
-  "GTPL-135-GT-450T-S7-1200": "GTPL_135_GT_450T_S7_1200",
-  "GTPL-145-GT-450T-S7-1200": "GTPL_145_GT_450T_S7_1200",
-  "GTPL-148-GT-450T-S7-1200": "GTPL_148_GT_450T_S7_1200",
-  "GTPL-136-GT-300AP-S7-1200": "GTPL_136_GT_450AP_S7_1200",
+ "GTPL-134-gT-450T-S7-1200":  "GTPL_134_GT_450T_S7_1200",
+  "GTPL-135-gT-450T-S7-1200": "GTPL_135_GT_450T_S7_1200",
+  "GTPL-145-gT-450T-S7-1200": "GTPL_145_GT_450T_S7_1200",
+  "GTPL-148-gT-450T-S7-1200": "GTPL_148_GT_450T_S7_1200",
+  "GTPL-136-gT-300AP-S7-1200": "GTPL_136_GT_450AP_S7_1200",
  
-     "GTPL-139-GT-300AP-S7-1200": 'GTPL_139_GT300AP',
-  "GTPL-144-GT-300AP-S7-1200": 'GTPL_144_GT_300AP_S7_1200',
-  "GTPL-142-GT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
-  "GTPL-123-GT-450AP": "GTPL_123_GT_450AP_S7_1200",
-  "GTPL-143-GT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200",
+     "GTPL-139-gT-300AP-S7-1200": 'GTPL_139_GT300AP',
+  "GTPL-144-gT-300AP-S7-1200": 'GTPL_144_GT_300AP_S7_1200',
+  "GTPL-142-gT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
+  "GTPL-123-gT-450AP": "GTPL_123_GT_450AP_S7_1200",
+  "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200",
 };
 
 
@@ -180,6 +181,7 @@ export default function TableWithDownload() {
   });
   const [downloadProgress, setDownloadProgress] = useState(0);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [schemaOpen, setSchemaOpen] = useState(false);
   const { data: storeData } = useDataStore() as { data: any };
 
   // UPDATED: Get access array and handle empty/null cases
@@ -533,6 +535,9 @@ export default function TableWithDownload() {
     return aLower.localeCompare(bLower);
   });
 
+  // Column schema for the selected machine's DB table (for the "View Schema" dialog)
+  const schemaCols = getSchemaForTable(DEVICE_TO_TABLE_MAP[selectedDevice]);
+
   const disabledDate = (current: Dayjs) => {
     const today = dayjs();
     const fiveDaysAgo = today.subtract(60, 'day');
@@ -592,8 +597,63 @@ export default function TableWithDownload() {
               {isDownloading && <Spin size="small" className="mr-2" />}
               Download CSV
             </Button>
+            <Button
+              onClick={() => setSchemaOpen(true)}
+              disabled={!schemaCols}
+              variant="outline"
+            >
+              View Schema
+            </Button>
           </div>
         </div>
+
+        {/* Schema / Column View Dialog */}
+        <Dialog open={schemaOpen} onOpenChange={setSchemaOpen}>
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>
+                {selectedDevice} — {DEVICE_TO_TABLE_MAP[selectedDevice]} (
+                {schemaCols?.length ?? 0} columns)
+              </DialogTitle>
+            </DialogHeader>
+            {schemaCols ? (
+              <Table className="border border-gray-300">
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="border border-gray-300 bg-gray-100 font-semibold text-sm p-2">
+                      Column Name
+                    </TableHead>
+                    <TableHead className="border border-gray-300 bg-gray-100 font-semibold text-sm p-2">
+                      Type
+                    </TableHead>
+                    <TableHead className="border border-gray-300 bg-gray-100 font-semibold text-sm p-2">
+                      Nullable
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {schemaCols.map((c) => (
+                    <TableRow key={c.name}>
+                      <TableCell className="border border-gray-300 text-sm p-2 font-mono">
+                        {c.name}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-sm p-2">
+                        {c.type}
+                      </TableCell>
+                      <TableCell className="border border-gray-300 text-sm p-2">
+                        {c.nullable ? "YES" : "NO"}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            ) : (
+              <p className="text-sm text-gray-500 py-6 text-center">
+                No schema available for this machine.
+              </p>
+            )}
+          </DialogContent>
+        </Dialog>
 
         {/* Date Range Info */}
         {dateRange && (

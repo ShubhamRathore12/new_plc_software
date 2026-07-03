@@ -267,7 +267,7 @@ export default function DefaultsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" || defaults === 
+                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-gT-450T-S7-1200" || defaults === 
                     'GTPL-121-gT-1000T-S7-1200' ? (
                       <Label htmlFor="t1" className="text-right font-medium">
                         T0
@@ -291,7 +291,7 @@ export default function DefaultsPage() {
                     />
                     <div>°C</div>
                   </motion.div>
-                  {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200" || defaults === 'GTPL-121-gT-1000T-S7-1200' ? null : (
+                  {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-gT-450T-S7-1200" || defaults === 'GTPL-121-gT-1000T-S7-1200' ? null : (
                     <motion.div
                       className="grid grid-cols-3 items-center gap-4"
                       initial={{ opacity: 0, y: 10 }}
@@ -321,7 +321,7 @@ export default function DefaultsPage() {
     transition={{ delay: 0.4 }}
   >
     <Label htmlFor="delta-a" className="text-right font-medium">
-      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-GT-450T-S7-1200"  ? "(T)" : "(A)"}
+      Delta {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-gT-450T-S7-1200"  ? "(T)" : "(A)"}
     </Label>
     <Input
       id="delta-a"

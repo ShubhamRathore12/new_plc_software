@@ -522,57 +522,57 @@ export const MACHINE_CONFIG = {
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
-  "GTPL-081-GT-650T-S7-1200": {
+  "GTPL-081-gT-650T-S7-1200": {
     table: "GTPL_081_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-105-GT-650T-S7-1200": {
+  "GTPL-105-gT-650T-S7-1200": {
     table: "GTPL_105_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-068-GT-650T-S7-1200": {
+  "GTPL-068-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-104-GT-650T-S7-1200": {
+  "GTPL-104-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-133-GT-650T-S7-1200": {
+  "GTPL-133-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-154-GT-650T-S7-1200": {
+  "GTPL-154-gT-650T-S7-1200": {
     table: "GTPL_154_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-155-GT-650T-S7-1200": {
+  "GTPL-155-gT-650T-S7-1200": {
     table: "GTPL_155_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-131-GT-650T-S7-1200": {
+  "GTPL-131-gT-650T-S7-1200": {
     table: "GTPL_131_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-124-GT-450T-S7-1200": {
+  "GTPL-124-gT-450T-S7-1200": {
     table: "GTPL_124_GT_450T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-137-GT-450T-S7-1200": {
+  "GTPL-137-gT-450T-S7-1200": {
     table: "GTPL_137_GT_450T_S7_1200",
     tags: GTPL_137_TAGS,
     type: "S7-1200",
   },
-  "GTPL-138-GT-450T-S7-1200": {
+  "GTPL-138-gT-450T-S7-1200": {
     table: "GTPL_138_GT_450T_S7_1200",
     tags: GTPL_138_TAGS,
     type: "S7-1200",
@@ -602,22 +602,22 @@ export const MACHINE_CONFIG = {
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
   },
-  "GTPL-139-GT-300AP-S7-1200": {
+  "GTPL-139-gT-300AP-S7-1200": {
     table: "GTPL_139_GT300AP",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
   },
-  "GTPL-144-GT-300AP-S7-1200": {
+  "GTPL-144-gT-300AP-S7-1200": {
     table: "GTPL_144_GT_300AP_S7_1200",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
   },
-  "GTPL-142-GT-450AP-S7-1200": {
+  "GTPL-142-gT-450AP-S7-1200": {
     table: "GTPL_142_GT_450AP_S7_1200",
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
-  "GTPL-123-GT-450AP": {
+  "GTPL-123-gT-450AP": {
     table: "GTPL_123_GT_450AP_S7_1200",
     tags: GPL_132_TAGS,
     type: "S7-1200",

@@ -139,7 +139,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
     <div className="text-sm font-bold text-gray-700">
       T2:
     </div>
-    <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
+    <div className="border border-black text-black px-2 py-1 rounded text-sm font-bold min-w-[56px] text-center">
       {formatValue(
         data?.T2_temp_mean || data?.AMBIENT_AIR_TEMP_T2,
         "°C"
@@ -158,10 +158,10 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 <div className="absolute left-[170px] top-[180px]">
   <div className="flex flex-row items-center px-2 py-1 gap-2">
     <div className="text-sm font-bold text-gray-700">
-    {machineName === "GTPL-124-GT-450T-S7-1200" || machineName === "GTPL-122-gT-1000T-S7-1200" || machineName === 
-    'GTPL-121-gT-1000T-S7-1200' || machineName ==="GTPL-132-300-AP-S7-1200" || machineName === "GTPL-142-gT-450AP-S7-1200" || machineName === "GTPL-123-GT-450AP" || machineName === "GTPL-143-gT-450AP-S7-1200" ||machineName === "GTPL-137-GT-450T-S7-1200"  || machineName === "GTPL-138-GT-450T-S7-1200" || machineName === "GTPL-136-gT-450AP" || machineName === "GTPL-061-gT-450T-S7-1200" || machineName === "GTPL-139-GT-300AP-S7-1200" || machineName === "GTPL-144-GT-300AP-S7-1200" ? "T0" : "TH"}
+    {machineName === "GTPL-124-gT-450T-S7-1200" || machineName === "GTPL-122-gT-1000T-S7-1200" || machineName ===
+    'GTPL-121-gT-1000T-S7-1200' || machineName ==="GTPL-132-300-AP-S7-1200" || machineName === "GTPL-142-gT-450AP-S7-1200" || machineName === "GTPL-123-gT-450AP" || machineName === "GTPL-143-gT-450AP-S7-1200" ||machineName === "GTPL-137-gT-450T-S7-1200"  || machineName === "GTPL-138-gT-450T-S7-1200" || machineName === "GTPL-136-gT-450AP" || machineName === "GTPL-061-gT-450T-S7-1200" || machineName === "GTPL-139-gT-300AP-S7-1200" || machineName === "GTPL-144-gT-300AP-S7-1200" || machineName === "GTPL-133-gT-650T-S7-1200" || machineName === "GTPL-154-gT-650T-S7-1200" || machineName === "GTPL-155-gT-650T-S7-1200" || machineName === "GTPL-131-gT-650T-S7-1200" || machineName === "GTPL-081-gT-650T-S7-1200" || machineName === "GTPL-105-gT-650T-S7-1200" || machineName === "GTPL-068-gT-650T-S7-1200" || machineName === "GTPL-104-gT-650T-S7-1200" || machineName === "GTPL-134-gT-450T-S7-1200" || machineName === "GTPL-135-gT-450T-S7-1200" || machineName === "GTPL-145-gT-450T-S7-1200" || machineName === "GTPL-148-gT-450T-S7-1200" ? "T0" : "TH"}
     </div>
-    <div className="border border-black text-black px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
+    <div className="border border-black text-black px-2 py-1 rounded text-sm font-bold min-w-[56px] text-center">
       {formatValue(
         data?.AI_TH_Act || data?.AFTER_HEATER_TEMP_Th || data?.TH_temp_mean  || data?.T0_temp_mean ,
         "°C"
@@ -191,7 +191,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
     <div className="flex gap-4 mt-2 justify-center">
       {/* Hour Box */}
       <div className="flex flex-col items-center">
-        <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[60px] text-center">
+        <div className="bg-black text-white px-2 py-1 rounded text-sm font-bold min-w-[44px] text-center">
           {formatValue(data?.Running_time_hour || data?.RUNNING_HOUR1 || data?.Running_time_hour || "0")}
         </div>
         <div className="text-xs text-gray-600 mt-1">Hours</div>
@@ -199,7 +199,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
 
       {/* Minute Box */}
       <div className="flex flex-col items-center">
-        <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[60px] text-center">
+        <div className="bg-black text-white px-2 py-1 rounded text-sm font-bold min-w-[44px] text-center">
           {formatValue(data?.Running_time_minute || data?.RUNNING_MINUTE1 || data?.Running_time_minute || "0")}
         </div>
         <div className="text-xs text-gray-600 mt-1">Minutes</div>
@@ -222,7 +222,7 @@ export default function AerationwithHeating({blower,data,formatValue,machineName
       </div>
 
       {/* Value in black box */}
-      <div className="bg-black text-white px-4 py-2 rounded text-lg font-bold min-w-[80px] text-center">
+      <div className="bg-black text-white px-2 py-1 rounded text-sm font-bold min-w-[56px] text-center">
         {formatValue(data?.HEATING_MODE_Set_Run_Duration || data?.SET_DURATION || data?.Aeration_duration_set) || "00:00"}h
       </div>
     </div>

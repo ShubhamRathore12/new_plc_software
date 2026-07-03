@@ -478,42 +478,42 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-    "GTPL-131-GT-650T-S7-1200": {
-    table: "GTPL_121_GT1000T",
+    "GTPL-131-gT-650T-S7-1200": {
+    table: "GTPL_131_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-081-GT-650T-S7-1200": {
+  "GTPL-081-gT-650T-S7-1200": {
     table: "GTPL_081_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-105-GT-650T-S7-1200": {
+  "GTPL-105-gT-650T-S7-1200": {
     table: "GTPL_105_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-068-GT-650T-S7-1200": {
+  "GTPL-068-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-104-GT-650T-S7-1200": {
+  "GTPL-104-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-154-GT-650T-S7-1200": {
+  "GTPL-154-gT-650T-S7-1200": {
     table: "GTPL_154_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-155-GT-650T-S7-1200": {
+  "GTPL-155-gT-650T-S7-1200": {
     table: "GTPL_155_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
   },
-  "GTPL-124-GT-450T-S7-1200": {
+  "GTPL-124-gT-450T-S7-1200": {
     table: "GTPL_124_GT450T",
     tags: GPL_124_TAGS,
     type: "S7-1200",
@@ -523,12 +523,12 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
-  "GTPL-137-GT-450T-S7-1200": {
+  "GTPL-137-gT-450T-S7-1200": {
     table: "GTPL_137_GT_450T_S7_1200",
     tags: GTPL_137_138_TAGS,
     type: "S7-1200",
   },
-  "GTPL-138-GT-450T-S7-1200": {
+  "GTPL-138-gT-450T-S7-1200": {
     table: "GTPL_138_GT_450T_S7_1200",
     tags: GTPL_137_138_TAGS,
     type: "S7-1200",
@@ -563,12 +563,12 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
   },
-  "GTPL-139-GT-300AP-S7-1200": {
+  "GTPL-139-gT-300AP-S7-1200": {
     table: "GTPL_139_GT300AP",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
   },
-  "GTPL-144-GT-300AP-S7-1200": {
+  "GTPL-144-gT-300AP-S7-1200": {
     table: "GTPL_144_GT_300AP_S7_1200",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
@@ -578,7 +578,7 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_132_TAGS,
     type: "S7-1200",
   },
-  "GTPL-123-GT-450AP": {
+  "GTPL-123-gT-450AP": {
     table: "GTPL_123_GT_450AP_S7_1200",
     tags: GPL_132_TAGS,
     type: "S7-1200",
@@ -1088,15 +1088,15 @@ export function getFaultCodesForMachine(machineName: string) {
     resolvedName === "GTPL-120-gT-180E-S7-1200"
   ) {
     return FAULT_CODES["GPL-115"];
-  } else if (resolvedName === "GTPL-132-300-AP-S7-1200" || resolvedName === "GTPL-142-gT-450AP-S7-1200" || resolvedName === "GTPL-123-GT-450AP" || resolvedName === "GTPL-143-gT-450AP-S7-1200") {
+  } else if (resolvedName === "GTPL-132-300-AP-S7-1200" || resolvedName === "GTPL-142-gT-450AP-S7-1200" || resolvedName === "GTPL-123-gT-450AP" || resolvedName === "GTPL-143-gT-450AP-S7-1200") {
     return FAULT_CODES["GTPL_132"];
   } else if (resolvedName === "GTPL-136-gT-450AP") {
     return FAULT_CODES["GTPL_136"];
   } else if (resolvedName === "GTPL-118-gT-60T-S7-200") {
     return FAULT_CODES["GTPL_118"];
-  } else if (resolvedName === "GTPL-137-GT-450T-S7-1200") {
+  } else if (resolvedName === "GTPL-137-gT-450T-S7-1200") {
     return FAULT_CODES["GTPL_137"];
-  } else if (resolvedName === "GTPL-138-GT-450T-S7-1200") {
+  } else if (resolvedName === "GTPL-138-gT-450T-S7-1200") {
     return FAULT_CODES["GTPL_138"];
   } else if (resolvedName === "GTPL-134-gT-450T-S7-1200") {
     return FAULT_CODES["GTPL_134"];
@@ -1106,8 +1106,11 @@ export function getFaultCodesForMachine(machineName: string) {
     return FAULT_CODES["GTPL_135"];
   } else if (resolvedName === "GTPL-148-gT-450T-S7-1200") {
     return FAULT_CODES["GTPL_135"];
-  } else if (resolvedName === "GTPL-139-GT-300AP-S7-1200") {
+  } else if (resolvedName === "GTPL-139-gT-300AP-S7-1200") {
     return FAULT_CODES["GTPL_139"];
+  } else if (resolvedName === "GTPL-144-gT-300AP-S7-1200") {
+    // 144 is a 300AP machine — reuse 132's fault-code table
+    return FAULT_CODES["GTPL_132"];
   } else if (
     resolvedName.includes("GPL-117") ||
     resolvedName.includes("GTPL-117") ||

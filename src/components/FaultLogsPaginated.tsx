@@ -78,8 +78,13 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       // Determine how many tag entries we need to cover the requested tag page
       const endIdxNeeded = pageNum * PAGE_SIZE;
 
+      // Safety cap: never scan more than MAX_API_PAGES data pages in one fetch.
+      // Prevents endless API calls when few/no active faults exist in the data.
+      const MAX_API_PAGES = 25;
+      const scanPages = Math.min(totalPages, MAX_API_PAGES);
+
       // Iterate through API pages until we have enough tag entries or exhaust pages
-      for (let apiPage = 1; apiPage <= totalPages; apiPage++) {
+      for (let apiPage = 1; apiPage <= scanPages; apiPage++) {
         const url = new URL("/api/getActiveFaults", window.location.origin);
         url.searchParams.append("machineName", machineName);
         url.searchParams.append("page", apiPage.toString());

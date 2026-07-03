@@ -292,18 +292,26 @@ export default function AerationWithoutHeatingPage() {
                       <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
                         {(
-                          devices === "GTPL-124-GT-450T-S7-1200" ||
+                          devices === "GTPL-124-gT-450T-S7-1200" ||
                           devices === "GTPL-122-gT-1000T-S7-1200" ||
                           devices === "GTPL-121-gT-1000T-S7-1200" ||
                           devices === "GTPL-132-300-AP-S7-1200" ||
-                          devices === "GTPL-137-GT-450T-S7-1200" ||
-                          devices === "GTPL-138-GT-450T-S7-1200" ||
+                          devices === "GTPL-137-gT-450T-S7-1200" ||
+                          devices === "GTPL-138-gT-450T-S7-1200" ||
                           devices === "GTPL-136-gT-450AP" ||
                           devices === "GTPL-134-gT-450T-S7-1200" ||
                           devices === "GTPL-135-gT-450T-S7-1200" ||
                           devices === "GTPL-145-gT-450T-S7-1200" ||
                           devices === "GTPL-148-gT-450T-S7-1200" ||
-                          devices === "GTPL-061-gT-450T-S7-1200"
+                          devices === "GTPL-061-gT-450T-S7-1200" ||
+                          devices === "GTPL-133-gT-650T-S7-1200" ||
+                          devices === "GTPL-154-gT-650T-S7-1200" ||
+                          devices === "GTPL-155-gT-650T-S7-1200" ||
+                          devices === "GTPL-131-gT-650T-S7-1200" ||
+                          devices === "GTPL-081-gT-650T-S7-1200" ||
+                          devices === "GTPL-105-gT-650T-S7-1200" ||
+                          devices === "GTPL-068-gT-650T-S7-1200" ||
+                          devices === "GTPL-104-gT-650T-S7-1200"
                         )
                           ? t("T0")
                           : t("TH")}{" "}

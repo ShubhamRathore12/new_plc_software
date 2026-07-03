@@ -51,7 +51,7 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-133-GT-650T-S7-1200" || deviceType === "GTPL-154-GT-650T-S7-1200" || deviceType === "GTPL-155-GT-650T-S7-1200" || deviceType === "GTPL-131-GT-650T-S7-1200" || deviceType === "GTPL-081-GT-650T-S7-1200" || deviceType === "GTPL-105-GT-650T-S7-1200" || deviceType === "GTPL-068-GT-650T-S7-1200" || deviceType === "GTPL-104-GT-650T-S7-1200") {
+    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-133-gT-650T-S7-1200" || deviceType === "GTPL-154-gT-650T-S7-1200" || deviceType === "GTPL-155-gT-650T-S7-1200" || deviceType === "GTPL-131-gT-650T-S7-1200" || deviceType === "GTPL-081-gT-650T-S7-1200" || deviceType === "GTPL-105-gT-650T-S7-1200" || deviceType === "GTPL-068-gT-650T-S7-1200" || deviceType === "GTPL-104-gT-650T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor Start", dataKey: "Compressor_start_Q0_0" },
         { id: "Q0.1", description: "Compressor Module Reset", dataKey: "Compressor_module_reset_Q0_1" },
@@ -159,7 +159,7 @@ export default function OutputsPage() {
         { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
       ];
     }
-    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-GT-300AP-S7-1200' || deviceType === 'GTPL-144-GT-300AP-S7-1200' || deviceType === 'GTPL-142-gT-450AP-S7-1200' || deviceType === 'GTPL-123-GT-450AP' || deviceType === 'GTPL-143-gT-450AP-S7-1200') {
+    else if (deviceType === "GTPL-132-300-AP-S7-1200" || deviceType === 'GTPL-139-gT-300AP-S7-1200' || deviceType === 'GTPL-144-gT-300AP-S7-1200' || deviceType === 'GTPL-142-gT-450AP-S7-1200' || deviceType === 'GTPL-123-gT-450AP' || deviceType === 'GTPL-143-gT-450AP-S7-1200') {
       return [
         { id: "Q0.0", description: "Compressor_on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor_motor_reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -180,7 +180,7 @@ export default function OutputsPage() {
         { id: "Q2.6", description: "Spare", dataKey: "Spare_Q2_6" },
       ];
     }
-    else if (deviceType === "GTPL-124-GT-450T-S7-1200") {
+    else if (deviceType === "GTPL-124-gT-450T-S7-1200") {
       return [
         { id: "1", description: "Compressor", dataKey: "Compressor_on_Q0_0" },
         { id: "2", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -245,7 +245,7 @@ export default function OutputsPage() {
         { id: "Q2.7", description: "CR 100% ON", dataKey: "CR_100_percent_ON_Q2_7" },
       ];
     }
-    else if (deviceType === "GTPL-137-GT-450T-S7-1200" || deviceType === "GTPL-138-GT-450T-S7-1200") {
+    else if (deviceType === "GTPL-137-gT-450T-S7-1200" || deviceType === "GTPL-138-gT-450T-S7-1200") {
       return [
         { id: "1", description: "Compressor", dataKey: "Compressor_on_Q0_0" },
         { id: "2", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -288,7 +288,7 @@ export default function OutputsPage() {
         { id: "Q2.7", description: "CR 100% ON", dataKey: "CR_100%_ON_Q2_7" },
       ];
     }
-    else if (deviceType === "GTPL-139-GT-300AP-S7-1200" || deviceType === "GTPL-144-GT-300AP-S7-1200") {
+    else if (deviceType === "GTPL-139-gT-300AP-S7-1200" || deviceType === "GTPL-144-gT-300AP-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
         { id: "Q0.1", description: "Compressor motor reset", dataKey: "Compressor_motor_reset_Q0_1" },
@@ -372,7 +372,7 @@ export default function OutputsPage() {
       return value === "tr";
     }
 
-    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-GT-650T-S7-1200" || device === "GTPL-154-GT-650T-S7-1200" || device === "GTPL-155-GT-650T-S7-1200" || device === "GTPL-131-GT-650T-S7-1200" || device === "GTPL-081-GT-650T-S7-1200" || device === "GTPL-105-GT-650T-S7-1200" || device === "GTPL-068-GT-650T-S7-1200" || device === "GTPL-104-GT-650T-S7-1200") {
+    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-gT-650T-S7-1200" || device === "GTPL-154-gT-650T-S7-1200" || device === "GTPL-155-gT-650T-S7-1200" || device === "GTPL-131-gT-650T-S7-1200" || device === "GTPL-081-gT-650T-S7-1200" || device === "GTPL-105-gT-650T-S7-1200" || device === "GTPL-068-gT-650T-S7-1200" || device === "GTPL-104-gT-650T-S7-1200") {
       return value === "true" || value === 1 || value === "1" || value === true || value === "True";
     }
 
@@ -387,7 +387,7 @@ export default function OutputsPage() {
       return value === true || value === 1 || value === "1" || value === "True" || value === "true";
     }
 
-    if (device === "GTPL-139-GT-300AP-S7-1200") {
+    if (device === "GTPL-139-gT-300AP-S7-1200") {
       return value === true || value === 1 || value === "1" || value === "True" || value === "true";
     }
 

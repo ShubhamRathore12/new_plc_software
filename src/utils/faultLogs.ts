@@ -1,4 +1,5 @@
 import { machine } from "os";
+import { getFaultColumnsFromSchema } from "@/lib/dbSchema";
 
 export const PAGE_SIZE = 200;
 
@@ -306,6 +307,31 @@ export const GTPL_134_135_TAGS = [
   "Tdelta_sensor_short",
 ];
 
+// 650T machines (GTPL_154/155 table structure) — fault columns are PLC input bits
+export const GTPL_650T_TAGS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Comp_module_fdk_error_I0_1",
+  "Oil_level_I0_3",
+  "Blower_drive_I0_4",
+  "Blower_circuit_breaker_I0_6",
+  "Cond_fan_1_TOP_I0_7",
+  "Cond_fan_1_circuit_breaker_I1_0",
+  "Low_pressure_fault_I1_1",
+  "Compressor_OLR_trip_I1_2",
+  "High_pressure_fault_I1_3",
+  "Three_phase_monitoring_fault_I2_0",
+  "Cond_fan_2_TOP_I2_2",
+  "Cond_fan_3_TOP_I2_3",
+  "Cond_fan_4_TOP_I2_4",
+  "Cond_fan_2_circuit_breaker_I2_5",
+  "Cond_fan_3_circuit_breaker_I2_6",
+  "Cond_fan_4_circuit_breaker_I2_7",
+  "Cond_fan_5_TOP_I3_0",
+  "Cond_fan_6_TOP_I3_1",
+  "Cond_fan_5_circuit_breaker_I3_2",
+  "Cond_fan_6_circuit_breaker_I3_3",
+];
+
 export const S7_200_MACHINES = [
   "GTPL-118-gT-60T-S7-200",
   "GTPL-108-gT-40E-P-S7-200",
@@ -317,6 +343,11 @@ export const S7_200_MACHINES = [
 ];
 
 export function getTagsForMachine(machineName: string): string[] {
+  // Prefer exact DB column names from the schema (in schema order) when
+  // available — these match the real fault columns after FAULT_CODE.
+  const fromSchema = getFaultColumnsFromSchema(machineName);
+  if (fromSchema && fromSchema.length) return fromSchema;
+
   if (machineName === "GTPL-30-gT-180E-S7-1200") return GTPL_30_TAGS;
   if (
     machineName === "GTPL-115-gT-180E-P-S7-1200" ||
@@ -336,6 +367,25 @@ export function getTagsForMachine(machineName: string): string[] {
   if (machineName === "GTPL-135-gT-450T-S7-1200") return GTPL_134_135_TAGS;
   if (machineName === "GTPL-145-gT-450T-S7-1200") return GTPL_134_135_TAGS;
   if (machineName === "GTPL-148-gT-450T-S7-1200") return GTPL_134_135_TAGS;
+  // 300AP machines share the GTPL_132 (300AP) fault column set
+  if (
+    machineName === "GTPL-144-gT-300AP-S7-1200" ||
+    machineName === "GTPL-139-gT-300AP-S7-1200" ||
+    machineName === "GTPL-140-gT-300AP-S7-1200"
+  )
+    return GPL_132_TAGS;
+  // 650T family shares the GTPL_154/155 input-bit fault columns
+  if (
+    machineName === "GTPL-154-gT-650T-S7-1200" ||
+    machineName === "GTPL-155-gT-650T-S7-1200" ||
+    machineName === "GTPL-133-gT-650T-S7-1200" ||
+    machineName === "GTPL-131-gT-650T-S7-1200" ||
+    machineName === "GTPL-081-gT-650T-S7-1200" ||
+    machineName === "GTPL-105-gT-650T-S7-1200" ||
+    machineName === "GTPL-068-gT-650T-S7-1200" ||
+    machineName === "GTPL-104-gT-650T-S7-1200"
+  )
+    return GTPL_650T_TAGS;
   if (S7_200_MACHINES.includes(machineName)) return S7_200_TAGS;
   return S7_1200_TAGS;
 }
@@ -358,8 +408,12 @@ export function extractTagDataFromRecords(
       record.updated_at ||
       new Date().toISOString();
 
+    // Normalized index of this record's real keys -> lets us match tags
+    // regardless of case, punctuation, degree symbols, etc.
+    const normIndex = buildNormalizedIndex(record as Record<string, any>);
+
     for (const tag of tags) {
-      const value = getRecordValueForTag(record as any, tag);
+      const value = getRecordValueForTag(record as any, tag, normIndex);
       if (
         value !== undefined &&
         value !== null &&
@@ -374,11 +428,39 @@ export function extractTagDataFromRecords(
   return tagData;
 }
 
+// Collapse a key to a comparable form: lowercase, alphanumerics only.
+// "Ambient_temp_over_45°C" and "ambient temp over 45 c" both -> "ambienttempover45c"
+export function normalizeKey(k: string): string {
+  return k.toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+// normalized-key -> real record key
+function buildNormalizedIndex(record: Record<string, any>): Record<string, string> {
+  const idx: Record<string, string> = {};
+  for (const realKey of Object.keys(record)) {
+    const n = normalizeKey(realKey);
+    if (!(n in idx)) idx[n] = realKey;
+  }
+  return idx;
+}
+
 // Try to resolve DB field names that may not match tag text exactly
-function getRecordValueForTag(record: Record<string, any>, tag: string) {
+function getRecordValueForTag(
+  record: Record<string, any>,
+  tag: string,
+  normIndex?: Record<string, string>
+) {
   const candidates = generateTagKeyCandidates(tag);
+  // 1) exact key hits
   for (const key of candidates) {
     if (key in record) return record[key];
+  }
+  // 2) normalized (case/punctuation-insensitive) hits
+  if (normIndex) {
+    for (const key of candidates) {
+      const real = normIndex[normalizeKey(key)];
+      if (real !== undefined) return record[real];
+    }
   }
   return undefined;
 }
@@ -445,7 +527,7 @@ export function getTagCategory(tag: string): "fault" {
 
 export function getTableNameForMachine(machineName: string): string {
   if (machineName === "GTPL-30-gT-180E-S7-1200") return "gplt_144";
-  if (machineName === "GTPL-139-GT-300AP-S7-1200") return "GTPL_139_GT300AP";
+  if (machineName === "GTPL-139-gT-300AP-S7-1200") return "GTPL_139_GT300AP";
   return "default_table";
 }
 

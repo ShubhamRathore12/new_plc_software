@@ -166,7 +166,7 @@
 //           {[
 //             "GTPL-122-gT-1000T-S7-1200",
 //             "GTPL-121-gT-1000T-S7-1200",
-//             "GTPL-124-GT-450T-S7-1200",
+//             "GTPL-124-gT-450T-S7-1200",
 //             "GTPL-132-300-AP-S7-1200",
 //           ].some((name) => machineName.includes(name)) ? (
 //             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
@@ -219,7 +219,7 @@
 // ) :[
 //             "GTPL-122-gT-1000T-S7-1200",
 //             "GTPL-121-gT-1000T-S7-1200",
-//             "GTPL-124-GT-450T-S7-1200",
+//             "GTPL-124-gT-450T-S7-1200",
 
 //           ].some((name) => machineName.includes(name)) ? (
 //             <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
@@ -358,7 +358,7 @@
 //               {![
 //                 "GTPL-122-gT-1000T-S7-1200",
 //                 "GTPL-121-gT-1000T-S7-1200",
-//                 "GTPL-124-GT-450T-S7-1200",
+//                 "GTPL-124-gT-450T-S7-1200",
 //                 "GTPL-132-300-AP-S7-1200",
 //               ].some((name) => machineName.includes(name)) && (
 //                 <line
@@ -438,7 +438,7 @@
 //             {![
 //               "GTPL-122-gT-1000T-S7-1200",
 //               "GTPL-121-gT-1000T-S7-1200",
-//               "GTPL-124-GT-450T-S7-1200",
+//               "GTPL-124-gT-450T-S7-1200",
 //               "GTPL-132-300-AP-S7-1200",
 //             ].some((name) => machineName.includes(name)) && (
 //               <div
@@ -547,7 +547,7 @@
 //                 transform: [
 //                   "GTPL-122-gT-1000T-S7-1200",
 //                   "GTPL-121-gT-1000T-S7-1200",
-//                   "GTPL-124-GT-450T-S7-1200",
+//                   "GTPL-124-gT-450T-S7-1200",
 //                   "GTPL-118-gT-60T-S7-200",
 //                   "GTPL-108-gT-40E-P-S7-200",
 //                   "GTPL-109-gT-40E-P-S7-200",
@@ -564,7 +564,7 @@
 //               {![
 //                 "GTPL-122-gT-1000T-S7-1200",
 //                 "GTPL-121-gT-1000T-S7-1200",
-//                 "GTPL-124-GT-450T-S7-1200",
+//                 "GTPL-124-gT-450T-S7-1200",
 //                 "GTPL-118-gT-60T-S7-200",
 //                 "GTPL-108-gT-40E-P-S7-200",
 //                 "GTPL-109-gT-40E-P-S7-200",
@@ -653,7 +653,7 @@
 //                 </div>
 
 //                 {/* ✅ Ensure parent is relative and image wrapper is sized */}
-//                 {machineName.includes("GTPL-124-GT-450T-S7-1200") ? (
+//                 {machineName.includes("GTPL-124-gT-450T-S7-1200") ? (
 //                   // Show Fan1 if machineName contains 124
 //                   <div className="absolute left-16 top-[6rem] transform -translate-y-1/2">
 //                     <div className="w-20 h-20 relative">
@@ -783,12 +783,6 @@
 //     </div>
 //   );
 // }
-import Image from "next/image";
-import Fan1200 from "../../public/images/fan.jpg";
-import Fan from "../../public/images/fan.png";
-import Fan2 from "../../public/images/2fan.png";
-import Fan4 from "../../public/images/124.png";
-
 import { usePathname } from "next/navigation";
 
 import { useEffect, useState } from "react";
@@ -923,26 +917,26 @@ export default function AutoDiagram1({
   const isSpecialMachine = [
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
-    "GTPL-124-GT-450T-S7-1200",
-    "GTPL-137-GT-450T-S7-1200",
-    "GTPL-138-GT-450T-S7-1200",
+    "GTPL-124-gT-450T-S7-1200",
+    "GTPL-137-gT-450T-S7-1200",
+    "GTPL-138-gT-450T-S7-1200",
     "GTPL-136-gT-450AP",
     "GTPL-132-300-AP-S7-1200",
     "GTPL-142-gT-450AP-S7-1200",
-    "GTPL-123-GT-450AP",
+    "GTPL-123-gT-450AP",
     "GTPL-143-gT-450AP-S7-1200",
     "GTPL-134-gT-450T-S7-1200",
     "GTPL-135-gT-450T-S7-1200",
     "GTPL-145-gT-450T-S7-1200",
     "GTPL-148-gT-450T-S7-1200",
-    "GTPL-133-GT-650T-S7-1200",
-    "GTPL-154-GT-650T-S7-1200",
-    "GTPL-155-GT-650T-S7-1200",
-    "GTPL-081-GT-650T-S7-1200",
-    "GTPL-105-GT-650T-S7-1200",
-    "GTPL-131-GT-650T-S7-1200",
-    "GTPL-068-GT-650T-S7-1200",
-    "GTPL-104-GT-650T-S7-1200",
+    "GTPL-133-gT-650T-S7-1200",
+    "GTPL-154-gT-650T-S7-1200",
+    "GTPL-155-gT-650T-S7-1200",
+    "GTPL-081-gT-650T-S7-1200",
+    "GTPL-105-gT-650T-S7-1200",
+    "GTPL-131-gT-650T-S7-1200",
+    "GTPL-068-gT-650T-S7-1200",
+    "GTPL-104-gT-650T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
@@ -950,7 +944,7 @@ export default function AutoDiagram1({
   const isHTRMachine = [
     "GTPL-122-gT-1000T-S7-1200",
     "GTPL-121-gT-1000T-S7-1200",
-    "GTPL-124-GT-450T-S7-1200",
+    "GTPL-124-gT-450T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
     "GTPL-108-gT-40E-P-S7-200",
     "GTPL-109-gT-40E-P-S7-200",
@@ -960,24 +954,24 @@ export default function AutoDiagram1({
     "GTPL-113-gT-80E-P-S7-200",
     "GTPL-132-300-AP-S7-1200",
     "GTPL-142-gT-450AP-S7-1200",
-    "GTPL-123-GT-450AP",
+    "GTPL-123-gT-450AP",
     "GTPL-143-gT-450AP-S7-1200",
-    "GTPL-137-GT-450T-S7-1200",
-    "GTPL-138-GT-450T-S7-1200",
+    "GTPL-137-gT-450T-S7-1200",
+    "GTPL-138-gT-450T-S7-1200",
     "GTPL-136-gT-450AP",
     "GTPL-134-gT-450T-S7-1200",
     "GTPL-135-gT-450T-S7-1200",
     "GTPL-145-gT-450T-S7-1200",
     "GTPL-148-gT-450T-S7-1200",
     "GTPL-061-gT-450T-S7-1200",
-    "GTPL-133-GT-650T-S7-1200",
-    "GTPL-154-GT-650T-S7-1200",
-    "GTPL-155-GT-650T-S7-1200",
-    "GTPL-081-GT-650T-S7-1200",
-    "GTPL-105-GT-650T-S7-1200",
-    "GTPL-131-GT-650T-S7-1200",
-    "GTPL-068-GT-650T-S7-1200",
-    "GTPL-104-GT-650T-S7-1200",
+    "GTPL-133-gT-650T-S7-1200",
+    "GTPL-154-gT-650T-S7-1200",
+    "GTPL-155-gT-650T-S7-1200",
+    "GTPL-081-gT-650T-S7-1200",
+    "GTPL-105-gT-650T-S7-1200",
+    "GTPL-131-gT-650T-S7-1200",
+    "GTPL-068-gT-650T-S7-1200",
+    "GTPL-104-gT-650T-S7-1200",
   ].some((name) => machineName.includes(name));
 
   // Machines with 2 condenser fans
@@ -985,13 +979,13 @@ export default function AutoDiagram1({
     "GTPL-116-gT-240E-S7-1200",
     "GTPL-117-gT-320E-S7-1200",
     "GTPL-132-300-AP-S7-1200",
-    "GTPL-139-GT-300AP-S7-1200",
-    "GTPL-144-GT-300AP-S7-1200",
+    "GTPL-139-gT-300AP-S7-1200",
+    "GTPL-144-gT-300AP-S7-1200",
   ].some((name) => normalizedMachineName.includes(name.toUpperCase()));
 
   // Machines with 4 condenser fans
   const is4FanMachine = [
-    "GTPL-123-GT-450AP",
+    "GTPL-123-gT-450AP",
     "GTPL-136-gT-450AP",
     "GTPL-142-gT-450AP-S7-1200",
     "GTPL-143-gT-450AP-S7-1200",
@@ -1000,9 +994,9 @@ export default function AutoDiagram1({
     "GTPL-135-gT-450T-S7-1200",
     "GTPL-145-gT-450T-S7-1200",
     "GTPL-148-gT-450T-S7-1200",
-    "GTPL-124-GT-450T-S7-1200",
-    "GTPL-137-GT-450T-S7-1200",
-    "GTPL-138-GT-450T-S7-1200",
+    "GTPL-124-gT-450T-S7-1200",
+    "GTPL-137-gT-450T-S7-1200",
+    "GTPL-138-gT-450T-S7-1200",
   ].some((name) => normalizedMachineName.includes(name.toUpperCase())) ||
     normalizedMachineName.includes("GTPL-123") ||
     normalizedMachineName.includes("450AT") ||
@@ -1012,14 +1006,14 @@ export default function AutoDiagram1({
   const is6FanMachine = [
     "GTPL-121-gT-1000T-S7-1200",
     "GTPL-122-gT-1000T-S7-1200",
-    "GTPL-131-GT-650T-S7-1200",
-    "GTPL-133-GT-650T-S7-1200",
-    "GTPL-154-GT-650T-S7-1200",
-    "GTPL-155-GT-650T-S7-1200",
-    "GTPL-081-GT-650T-S7-1200",
-    "GTPL-105-GT-650T-S7-1200",
-    "GTPL-068-GT-650T-S7-1200",
-    "GTPL-104-GT-650T-S7-1200",
+    "GTPL-131-gT-650T-S7-1200",
+    "GTPL-133-gT-650T-S7-1200",
+    "GTPL-154-gT-650T-S7-1200",
+    "GTPL-155-gT-650T-S7-1200",
+    "GTPL-081-gT-650T-S7-1200",
+    "GTPL-105-gT-650T-S7-1200",
+    "GTPL-068-gT-650T-S7-1200",
+    "GTPL-104-gT-650T-S7-1200",
   ].some((name) => normalizedMachineName.includes(name.toUpperCase()));
 
   // S7-200 machines (GTPL-108 to 113) - no T0 sensor, 1 fan each
@@ -1048,16 +1042,215 @@ export default function AutoDiagram1({
     "GTPL-120-gT-180E-S7-1200",
   ].some((name) => machineName.includes(name));
 
-  const condenserFanImage = is6FanMachine
-    ? Fan1200
+  // Number of condenser fans for this machine
+  const fanCount = is6FanMachine
+    ? 6
     : is4FanMachine
-      ? Fan4
+      ? 4
       : is2FanMachine
-        ? Fan2
-        : Fan;
+        ? 2
+        : 1;
+
+  // Pick first defined numeric value from a list of data fields
+  const pickNum = (...vals: any[]): number => {
+    for (const v of vals) {
+      if (v === undefined || v === null || v === "") continue;
+      const n = parseFloat(String(v));
+      if (!isNaN(n)) return n;
+    }
+    return 0;
+  };
+
+  const blowerPct = pickNum(
+    data?.Blower_speed,
+    data?.BLOWER_RPM,
+    data?.Value_to_Display_BLOWER,
+  );
+  const condPct = pickNum(
+    data?.Cond_fan_speed,
+    data?.Value_to_Display_COND_ACT_SPEED,
+    data?.CONDENSER_RPM,
+    data?.Condenser_fan_speed,
+  );
+  const isBlowerOn = blowerPct > 0;
+
+  // Higher % => faster spin. Returns CSS animation-duration.
+  const spinDur = (pct: number): string => {
+    if (pct <= 0) return "0s";
+    const clamped = Math.min(Math.max(pct, 1), 100);
+    return `${(2 - (clamped / 100) * 1.6).toFixed(2)}s`;
+  };
+
+  // Industrial axial condenser fan with 3D shading (spins when running)
+  const FanSVG = ({
+    size,
+    spinning,
+    duration,
+  }: {
+    size: number;
+    spinning: boolean;
+    duration: string;
+  }) => (
+    <svg width={size} height={size} viewBox="0 0 100 100">
+      <defs>
+        {/* 3D metallic shroud */}
+        <radialGradient id="fanShroud" cx="38%" cy="34%" r="70%">
+          <stop offset="0%" stopColor="#f8fafc" />
+          <stop offset="55%" stopColor="#cbd5e1" />
+          <stop offset="100%" stopColor="#64748b" />
+        </radialGradient>
+        {/* recessed throat */}
+        <radialGradient id="fanThroat" cx="50%" cy="50%" r="55%">
+          <stop offset="0%" stopColor="#1e293b" />
+          <stop offset="100%" stopColor="#475569" />
+        </radialGradient>
+        {/* blade with light-to-dark shading for depth */}
+        <linearGradient id="fanBlade" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor={spinning ? "#60a5fa" : "#cbd5e1"} />
+          <stop offset="100%" stopColor={spinning ? "#1d4ed8" : "#64748b"} />
+        </linearGradient>
+        <radialGradient id="fanHub" cx="40%" cy="35%" r="70%">
+          <stop offset="0%" stopColor="#94a3b8" />
+          <stop offset="100%" stopColor="#0f172a" />
+        </radialGradient>
+        <filter id="fanShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="1.5" dy="2" stdDeviation="1.8" floodColor="#000" floodOpacity="0.35" />
+        </filter>
+      </defs>
+      {/* outer bevel ring (raised look) */}
+      <circle cx="50" cy="50" r="48" fill="url(#fanShroud)" stroke="#475569" strokeWidth="1.5" filter="url(#fanShadow)" />
+      <circle cx="50" cy="50" r="41" fill="url(#fanThroat)" stroke="#334155" strokeWidth="1" />
+      <g
+        style={{
+          transformOrigin: "50px 50px",
+          animation: spinning ? `acSpin ${duration} linear infinite` : "none",
+        }}
+      >
+        {[0, 1, 2, 3, 4].map((i) => (
+          <path
+            key={i}
+            d="M50 50 C 60 32, 70 24, 62 12 C 52 18, 45 32, 50 50 Z"
+            fill="url(#fanBlade)"
+            stroke="#0f172a"
+            strokeWidth="0.5"
+            transform={`rotate(${i * 72} 50 50)`}
+          />
+        ))}
+        <circle cx="50" cy="50" r="10" fill="url(#fanHub)" stroke="#0f172a" strokeWidth="0.8" />
+        <circle cx="46" cy="46" r="3" fill="#e2e8f0" opacity="0.6" />
+      </g>
+    </svg>
+  );
+
+  // 3D glass thermometer. Mercury height scales with temperature.
+  const Thermo = ({
+    label,
+    display,
+    tint = "#ef4444",
+  }: {
+    label: string;
+    display: string;
+    tint?: string;
+  }) => {
+    const n = parseFloat(String(display).replace(/[^0-9.\-]/g, ""));
+    const pct = isNaN(n)
+      ? 0
+      : Math.min(100, Math.max(6, ((n + 10) / 70) * 100)); // -10..60°C -> %
+    const topY = 118 - (pct / 100) * 92; // column top
+    const uid = label; // gradient id namespace
+    return (
+      <div className="flex flex-col items-center">
+        <svg width="44" height="150" viewBox="0 0 44 150">
+          <defs>
+            <linearGradient id={`glass${uid}`} x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stopColor="#e2e8f0" />
+              <stop offset="45%" stopColor="#f8fafc" />
+              <stop offset="100%" stopColor="#94a3b8" />
+            </linearGradient>
+            <radialGradient id={`bulb${uid}`} cx="38%" cy="35%" r="70%">
+              <stop offset="0%" stopColor={tint} stopOpacity="0.9" />
+              <stop offset="100%" stopColor={tint} />
+            </radialGradient>
+            <filter id={`sh${uid}`} x="-40%" y="-10%" width="180%" height="120%">
+              <feDropShadow dx="1.5" dy="2" stdDeviation="1.6" floodColor="#000" floodOpacity="0.3" />
+            </filter>
+          </defs>
+          {/* glass tube */}
+          <rect x="15" y="8" width="14" height="112" rx="7" fill={`url(#glass${uid})`} stroke="#64748b" strokeWidth="1" filter={`url(#sh${uid})`} />
+          {/* mercury column */}
+          <rect x="18" y={topY} width="8" height={122 - topY} rx="4" fill={tint} />
+          {/* bulb */}
+          <circle cx="22" cy="128" r="12" fill={`url(#bulb${uid})`} stroke="#64748b" strokeWidth="1" />
+          {/* pulsing glow when hot */}
+          <circle cx="22" cy="128" r="12" fill={tint} opacity="0.35"
+            style={{ transformOrigin: "22px 128px", animation: `acPulse 1.6s ease-in-out infinite` }} />
+          {/* gloss highlight */}
+          <rect x="17" y="12" width="3" height="104" rx="1.5" fill="#ffffff" opacity="0.5" />
+        </svg>
+        <div className="text-xs font-bold -mt-1">{label}</div>
+        <div className="text-xs">{display}</div>
+      </div>
+    );
+  };
+
+  // 3D globe valve / actuator. Handwheel spins when open (value > 0).
+  const ValveUnit = ({
+    label,
+    display,
+  }: {
+    label: string;
+    display: string;
+  }) => {
+    const n = parseFloat(String(display).replace(/[^0-9.\-]/g, ""));
+    const open = !isNaN(n) && n > 0;
+    const uid = label;
+    return (
+      <div className="flex flex-col items-center">
+        <svg width="58" height="58" viewBox="0 0 100 100">
+          <defs>
+            <radialGradient id={`vbody${uid}`} cx="38%" cy="34%" r="72%">
+              <stop offset="0%" stopColor="#f87171" />
+              <stop offset="55%" stopColor="#dc2626" />
+              <stop offset="100%" stopColor="#7f1d1d" />
+            </radialGradient>
+            <linearGradient id={`vflange${uid}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#cbd5e1" />
+              <stop offset="100%" stopColor="#475569" />
+            </linearGradient>
+            <filter id={`vsh${uid}`} x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="1.5" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.4" />
+            </filter>
+          </defs>
+          {/* pipe flanges */}
+          <rect x="2" y="52" width="18" height="20" rx="2" fill={`url(#vflange${uid})`} stroke="#0f172a" strokeWidth="1" />
+          <rect x="80" y="52" width="18" height="20" rx="2" fill={`url(#vflange${uid})`} stroke="#0f172a" strokeWidth="1" />
+          {/* valve globe body (3D) */}
+          <circle cx="50" cy="62" r="26" fill={`url(#vbody${uid})`} stroke="#450a0a" strokeWidth="1.5" filter={`url(#vsh${uid})`} />
+          <ellipse cx="42" cy="54" rx="8" ry="5" fill="#fecaca" opacity="0.5" />
+          {/* bonnet / stem */}
+          <rect x="46" y="20" width="8" height="24" rx="2" fill={`url(#vflange${uid})`} stroke="#0f172a" strokeWidth="1" />
+          {/* handwheel (spins when open) */}
+          <g style={{ transformOrigin: "50px 18px", animation: open ? "acSpin 2.4s linear infinite" : "none" }}>
+            <circle cx="50" cy="18" r="14" fill="none" stroke={open ? "#22c55e" : "#94a3b8"} strokeWidth="4" />
+            <line x1="36" y1="18" x2="64" y2="18" stroke={open ? "#22c55e" : "#94a3b8"} strokeWidth="3" />
+            <line x1="50" y1="4" x2="50" y2="32" stroke={open ? "#22c55e" : "#94a3b8"} strokeWidth="3" />
+            <circle cx="50" cy="18" r="4" fill="#1f2937" />
+          </g>
+        </svg>
+        <div className="text-xs font-bold -mt-1">{label}</div>
+        <div className="text-sm font-bold">{display}</div>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full h-screen bg-gray-100 overflow-auto">
+      {/* Animation keyframes for rotating/pulsing machinery */}
+      <style>{`
+        @keyframes acSpin { to { transform: rotate(360deg); } }
+        @keyframes acPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
+        @keyframes acWobble { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+      `}</style>
       {/* Container with fixed aspect ratio */}
       <div className="relative w-full h-full min-w-[1200px] min-h-[800px]">
         {/* Status Indicators - Top Left */}
@@ -1302,68 +1495,73 @@ export default function AutoDiagram1({
                     }
                   `}
                 </style>
+                {/* Silo metallic (galvanised) gradient */}
+                <linearGradient id="siloGrad" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#94a3b8" />
+                  <stop offset="30%" stopColor="#f1f5f9" />
+                  <stop offset="55%" stopColor="#cbd5e1" />
+                  <stop offset="100%" stopColor="#64748b" />
+                </linearGradient>
+                <linearGradient id="siloCap" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#64748b" />
+                  <stop offset="50%" stopColor="#e2e8f0" />
+                  <stop offset="100%" stopColor="#475569" />
+                </linearGradient>
               </defs>
 
-              {/* Silo */}
+              {/* Silo — galvanised corrugated grain bin (conical roof + legs) */}
               <g>
-                <ellipse
-                  cx="120"
-                  cy="120"
-                  rx="50"
-                  ry="20"
-                  fill={getSiloColor(status.TS1)}
-                  stroke="#6b7280"
+                {/* conical roof */}
+                <polygon
+                  points="120,94 66,134 174,134"
+                  fill="url(#siloCap)"
+                  stroke="#475569"
                   strokeWidth="2"
-                  opacity="0.8"
                 />
-                <rect
-                  x="70"
-                  y="120"
-                  width="100"
-                  height="150"
-                  fill={getSiloColor(status.TS1)}
-                  stroke="#6b7280"
-                  strokeWidth="2"
-                  opacity="0.8"
-                />
-                <ellipse
-                  cx="120"
-                  cy="270"
-                  rx="50"
-                  ry="20"
-                  fill={getSiloColor(status.TS1)}
-                  stroke="#6b7280"
-                  strokeWidth="2"
-                  opacity="0.9"
-                />
-
-                {/* Horizontal lines */}
+                {/* roof ridge lines */}
+                <line x1="120" y1="94" x2="86" y2="134" stroke="#94a3b8" strokeWidth="1" />
+                <line x1="120" y1="94" x2="120" y2="134" stroke="#94a3b8" strokeWidth="1" />
+                <line x1="120" y1="94" x2="154" y2="134" stroke="#94a3b8" strokeWidth="1" />
+                {/* roof cap / vent */}
+                <rect x="113" y="86" width="14" height="9" rx="2" fill="#475569" />
+                {/* eave ring */}
+                <rect x="63" y="132" width="114" height="7" fill="#94a3b8" stroke="#475569" strokeWidth="1" />
+                {/* body */}
+                <rect x="66" y="139" width="108" height="129" fill="url(#siloGrad)" stroke="#475569" strokeWidth="2" />
+                {/* corrugation ribs */}
                 {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
                   <line
                     key={i}
-                    x1="72"
-                    y1={130 + i * 12}
-                    x2="168"
-                    y2={130 + i * 12}
-                    stroke="#9ca3af"
+                    x1="66"
+                    y1={148 + i * 10}
+                    x2="174"
+                    y2={148 + i * 10}
+                    stroke="#64748b"
                     strokeWidth="1"
-                    opacity="0.7"
+                    opacity="0.6"
                   />
                 ))}
-
-                {/* Silo outlet */}
-                <rect
-                  x="115"
-                  y="270"
-                  width="10"
-                  height="25"
-                  fill="#9ca3af"
-                  stroke="#6b7280"
-                  strokeWidth="1"
-                />
+                {/* vertical seams */}
+                <line x1="102" y1="139" x2="102" y2="268" stroke="#64748b" strokeWidth="0.6" opacity="0.5" />
+                <line x1="138" y1="139" x2="138" y2="268" stroke="#64748b" strokeWidth="0.6" opacity="0.5" />
+                {/* left gloss highlight */}
+                <rect x="78" y="141" width="5" height="125" fill="#ffffff" opacity="0.35" />
+                {/* ladder */}
+                <line x1="158" y1="139" x2="158" y2="266" stroke="#475569" strokeWidth="1" />
+                <line x1="164" y1="139" x2="164" y2="266" stroke="#475569" strokeWidth="1" />
+                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
+                  <line key={`r${i}`} x1="158" y1={150 + i * 17} x2="164" y2={150 + i * 17} stroke="#475569" strokeWidth="1" />
+                ))}
+                {/* base skirt + legs */}
+                <rect x="62" y="266" width="116" height="8" fill="#475569" />
+                <line x1="74" y1="274" x2="70" y2="300" stroke="#334155" strokeWidth="4" />
+                <line x1="120" y1="274" x2="120" y2="300" stroke="#334155" strokeWidth="4" />
+                <line x1="166" y1="274" x2="170" y2="300" stroke="#334155" strokeWidth="4" />
+                {/* outlet stub to pipe (right) */}
+                <rect x="174" y="172" width="18" height="14" fill="#94a3b8" stroke="#475569" strokeWidth="1" rx="1" />
                 <text
                   x="120"
-                  y="320"
+                  y="316"
                   textAnchor="middle"
                   className="text-sm font-bold fill-gray-800"
                 >
@@ -1466,120 +1664,101 @@ export default function AutoDiagram1({
               machineName !== "GTPL-061-gT-450T-S7-1200" && (
                 <div
                   className="absolute"
-                  style={{ left: "260px", top: "152px" }}
+                  style={{ left: "255px", top: "150px" }}
                 >
-                  <div className="w-12 h-60 bg-pink-200 border-2 border-red-300 rounded-lg relative">
-                    <div className="absolute inset-1 bg-gradient-to-b from-transparent via-pink-300 to-red-400 rounded"></div>
-                    <div className="text-xs font-bold p-1 text-center w-full">
-                      TH
-                    </div>
-                    <div className="text-xs font-bold p-1 text-center w-full">
-                      {(() => {
-                        // Handle zero values correctly
-                        if (
-                          data.AI_TH_Act !== undefined &&
-                          data.AI_TH_Act !== null
-                        )
-                          return formatValue(data.AI_TH_Act, "°C");
-                        if (
-                          data?.AFTER_HEATER_TEMP_Th !== undefined &&
-                          data?.AFTER_HEATER_TEMP_Th !== null
-                        )
-                          return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
-                        if (
-                          data?.TH_temp_mean !== undefined &&
-                          data?.TH_temp_mean !== null
-                        )
-                          return formatValue(data?.TH_temp_mean, "°C");
-                        return formatValue(undefined, "°C");
-                      })()}
-                    </div>
-                    <div className="absolute bottom-1 left-1 right-1 h-2 bg-red-500 rounded-full"></div>
-                  </div>
+                  <Thermo
+                    label="TH"
+                    tint="#ef4444"
+                    display={(() => {
+                      if (data.AI_TH_Act !== undefined && data.AI_TH_Act !== null)
+                        return formatValue(data.AI_TH_Act, "°C");
+                      if (
+                        data?.AFTER_HEATER_TEMP_Th !== undefined &&
+                        data?.AFTER_HEATER_TEMP_Th !== null
+                      )
+                        return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
+                      if (
+                        data?.TH_temp_mean !== undefined &&
+                        data?.TH_temp_mean !== null
+                      )
+                        return formatValue(data?.TH_temp_mean, "°C");
+                      return formatValue(undefined, "°C");
+                    })()}
+                  />
                 </div>
               )}
 
             {/* T0 Thermometer - hidden for S7-200 machines and E-series 30/115-120 (no T0 sensor) */}
             {!isS7200Machine && !isNoT0Machine && (
-              <div className="absolute" style={{ left: "360px", top: "152px" }}>
-                <div className="w-12 h-60 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
-                  <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
-                    <div className="text-xs font-bold p-1 text-center">T0</div>
-                    <div className="text-xs p-1 text-center">
-                      {(() => {
-                        // For GTPL-118, show setpoint value
-                        if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
-                          if (
-                            data?.T0_set_point !== undefined &&
-                            data?.T0_set_point !== null
-                          )
-                            return formatValue(data?.T0_set_point, "°C");
-                          if (
-                            data?.T1_set_point !== undefined &&
-                            data?.T1_set_point !== null
-                          )
-                            return formatValue(data?.T1_set_point, "°C");
-                          if (
-                            data?.T0_temp_mean !== undefined &&
-                            data?.T0_temp_mean !== null
-                          )
-                            return formatValue(data?.T0_temp_mean, "°C");
-                          return formatValue(undefined, "°C");
-                        }
-
-                        // For other machines, show actual value
-                        if (
-                          data.AIR_OUTLET_TEMP !== undefined &&
-                          data.AIR_OUTLET_TEMP !== null
-                        )
-                          return formatValue(data.AIR_OUTLET_TEMP, "°C");
-                        if (
-                          data?.T0_temp_mean !== undefined &&
-                          data?.T0_temp_mean !== null
-                        )
-                          return formatValue(data?.T0_temp_mean, "°C");
-                        return formatValue(undefined, "°C");
-                      })()}
-                    </div>
-                  </div>
-                </div>
+              <div className="absolute" style={{ left: "355px", top: "150px" }}>
+                <Thermo
+                  label="T0"
+                  tint="#2563eb"
+                  display={(() => {
+                    if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
+                      if (
+                        data?.T0_set_point !== undefined &&
+                        data?.T0_set_point !== null
+                      )
+                        return formatValue(data?.T0_set_point, "°C");
+                      if (
+                        data?.T1_set_point !== undefined &&
+                        data?.T1_set_point !== null
+                      )
+                        return formatValue(data?.T1_set_point, "°C");
+                      if (
+                        data?.T0_temp_mean !== undefined &&
+                        data?.T0_temp_mean !== null
+                      )
+                        return formatValue(data?.T0_temp_mean, "°C");
+                      return formatValue(undefined, "°C");
+                    }
+                    if (
+                      data.AIR_OUTLET_TEMP !== undefined &&
+                      data.AIR_OUTLET_TEMP !== null
+                    )
+                      return formatValue(data.AIR_OUTLET_TEMP, "°C");
+                    if (
+                      data?.T0_temp_mean !== undefined &&
+                      data?.T0_temp_mean !== null
+                    )
+                      return formatValue(data?.T0_temp_mean, "°C");
+                    return formatValue(undefined, "°C");
+                  })()}
+                />
               </div>
             )}
 
             {/* T1 Thermometer */}
-            <div className="absolute" style={{ left: "460px", top: "152px" }}>
-              <div className="w-12 h-60 bg-blue-100 border-2 border-blue-300 rounded-lg relative">
-                <div className="absolute inset-1 bg-gradient-to-b from-blue-200 to-blue-300 rounded">
-                  <div className="text-xs font-bold p-1 text-center">T1</div>
-                  <div className="text-xs p-1 text-center">
-                    {(() => {
-                      // Handle zero values correctly
-                      if (
-                        data?.COLD_AIR_TEMP_T1 !== undefined &&
-                        data?.COLD_AIR_TEMP_T1 !== null
-                      )
-                        return formatValue(data?.COLD_AIR_TEMP_T1, "°C");
-                      if (
-                        data?.T1_temp_mean !== undefined &&
-                        data?.T1_temp_mean !== null
-                      )
-                        return formatValue(data?.T1_temp_mean, "°C");
-                      return formatValue(undefined, "°C");
-                    })()}
-                  </div>
-                </div>
-              </div>
+            <div className="absolute" style={{ left: "455px", top: "150px" }}>
+              <Thermo
+                label="T1"
+                tint="#0891b2"
+                display={(() => {
+                  if (
+                    data?.COLD_AIR_TEMP_T1 !== undefined &&
+                    data?.COLD_AIR_TEMP_T1 !== null
+                  )
+                    return formatValue(data?.COLD_AIR_TEMP_T1, "°C");
+                  if (
+                    data?.T1_temp_mean !== undefined &&
+                    data?.T1_temp_mean !== null
+                  )
+                    return formatValue(data?.T1_temp_mean, "°C");
+                  return formatValue(undefined, "°C");
+                })()}
+              />
             </div>
 
             {/* T2 Temperature Display */}
             <div
               className="absolute text-center"
-              style={{ left: "580px", top: "200px" }}
+              style={{ left: "560px", top: "150px" }}
             >
-              <div className="text-lg font-bold">T2</div>
-              <div className="text-sm">
-                {(() => {
-                  // Handle zero values correctly
+              <Thermo
+                label="T2"
+                tint="#16a34a"
+                display={(() => {
                   if (
                     data?.T2_temp_mean !== undefined &&
                     data?.T2_temp_mean !== null
@@ -1592,104 +1771,152 @@ export default function AutoDiagram1({
                     return formatValue(data?.AMBIENT_AIR_TEMP_T2, "°C");
                   return formatValue(undefined, "°C");
                 })()}
-              </div>
+              />
             </div>
 
             {/* HTR Units */}
             <div
-              className={`absolute flex gap-14 z-10 ${isHTRMachine ? "left-[350px]" : "left-[255px]"}`}
-              style={{ top: "430px" }}
+              className={`absolute flex items-start z-10 ${
+                isS7200Machine && isHTRMachine
+                  ? "left-[260px] gap-[150px]"
+                  : isHTRMachine
+                    ? "left-[350px] gap-14"
+                    : "left-[255px] gap-14"
+              }`}
+              style={{ top: "360px" }}
             >
               {!isHTRMachine && (
-                <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
-                  <div className="text-xs font-bold">HTR</div>
-                  <div className="text-sm font-bold">
-                    {(() => {
-                      // Handle zero values correctly
-                      if (
-                        data.Value_to_Display_HEATER !== undefined &&
-                        data.Value_to_Display_HEATER !== null
-                      )
-                        return formatValue(data.Value_to_Display_HEATER, "%");
-                      if (
-                        data?.Heater_speed !== undefined &&
-                        data?.Heater_speed !== null
-                      )
-                        return formatValue(data?.Heater_speed, "%");
-                      return formatValue(undefined, "%");
-                    })()}
-                  </div>
-                </div>
+                <ValveUnit
+                  label="HTR"
+                  display={(() => {
+                    if (
+                      data.Value_to_Display_HEATER !== undefined &&
+                      data.Value_to_Display_HEATER !== null
+                    )
+                      return formatValue(data.Value_to_Display_HEATER, "%");
+                    if (
+                      data?.Heater_speed !== undefined &&
+                      data?.Heater_speed !== null
+                    )
+                      return formatValue(data?.Heater_speed, "%");
+                    return formatValue(undefined, "%");
+                  })()}
+                />
               )}
-              <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
-                <div className="text-xs font-bold">AHT</div>
-                <div className="text-sm font-bold">
-                  {(() => {
-                    // Handle zero values correctly
-                    if (
-                      data?.AHT_vale_speed !== undefined &&
-                      data?.AHT_vale_speed !== null
-                    )
-                      return formatValue(data?.AHT_vale_speed, "%");
-                    if (
-                      data.Value_to_Display_AHT_VALE_OPEN !== undefined &&
-                      data.Value_to_Display_AHT_VALE_OPEN !== null
-                    )
-                      return formatValue(
-                        data.Value_to_Display_AHT_VALE_OPEN,
-                        "%",
-                      );
-                    if (
-                      data.AFTER_HEAT_VALVE_RPM !== undefined &&
-                      data.AFTER_HEAT_VALVE_RPM !== null
-                    )
-                      return formatValue(data.AFTER_HEAT_VALVE_RPM, "%");
-                    if (
-                      data?.AHT_valve_speed !== undefined &&
-                      data?.AHT_valve_speed !== null
-                    )
-                      return formatValue(data?.AHT_valve_speed, "%");
-                    return formatValue(undefined, "%");
-                  })()}
-                </div>
-              </div>
-              <div className="bg-red-600 text-white px-3 py-4 text-center rounded">
-                <div className="text-xs font-bold">HGS</div>
-                <div className="text-sm font-bold">
-                  {(() => {
-                    // Handle zero values correctly
-                    if (
-                      data.Value_to_Display_HOT_GAS_VALVE_OPEN !== undefined &&
-                      data.Value_to_Display_HOT_GAS_VALVE_OPEN !== null
-                    )
-                      return formatValue(
-                        data.Value_to_Display_HOT_GAS_VALVE_OPEN,
-                        "%",
-                      );
-                    if (
-                      data?.HOT_GAS_VALVE_RPM !== undefined &&
-                      data?.HOT_GAS_VALVE_RPM !== null
-                    )
-                      return formatValue(data?.HOT_GAS_VALVE_RPM, "%");
-                    if (
-                      data?.Hot_valve_speed !== undefined &&
-                      data?.Hot_valve_speed !== null
-                    )
-                      return formatValue(data?.Hot_valve_speed, "%");
-                    return formatValue(undefined, "%");
-                  })()}
-                </div>
-              </div>
+              <ValveUnit
+                label="AHT"
+                display={(() => {
+                  if (
+                    data?.AHT_vale_speed !== undefined &&
+                    data?.AHT_vale_speed !== null
+                  )
+                    return formatValue(data?.AHT_vale_speed, "%");
+                  if (
+                    data.Value_to_Display_AHT_VALE_OPEN !== undefined &&
+                    data.Value_to_Display_AHT_VALE_OPEN !== null
+                  )
+                    return formatValue(data.Value_to_Display_AHT_VALE_OPEN, "%");
+                  if (
+                    data.AFTER_HEAT_VALVE_RPM !== undefined &&
+                    data.AFTER_HEAT_VALVE_RPM !== null
+                  )
+                    return formatValue(data.AFTER_HEAT_VALVE_RPM, "%");
+                  if (
+                    data?.AHT_valve_speed !== undefined &&
+                    data?.AHT_valve_speed !== null
+                  )
+                    return formatValue(data?.AHT_valve_speed, "%");
+                  return formatValue(undefined, "%");
+                })()}
+              />
+              <ValveUnit
+                label="HGS"
+                display={(() => {
+                  if (
+                    data.Value_to_Display_HOT_GAS_VALVE_OPEN !== undefined &&
+                    data.Value_to_Display_HOT_GAS_VALVE_OPEN !== null
+                  )
+                    return formatValue(data.Value_to_Display_HOT_GAS_VALVE_OPEN, "%");
+                  if (
+                    data?.HOT_GAS_VALVE_RPM !== undefined &&
+                    data?.HOT_GAS_VALVE_RPM !== null
+                  )
+                    return formatValue(data?.HOT_GAS_VALVE_RPM, "%");
+                  if (
+                    data?.Hot_valve_speed !== undefined &&
+                    data?.Hot_valve_speed !== null
+                  )
+                    return formatValue(data?.Hot_valve_speed, "%");
+                  return formatValue(undefined, "%");
+                })()}
+              />
             </div>
 
             {/* Blower Unit */}
             <div className="absolute" style={{ left: "730px", top: "470px" }}>
               <div className="text-black px-4 py-2 text-center rounded">
-                <img
-                  src="https://www.thumbsfrog.com/1046553/pages/low-pressure-blower-image-1695819922-1046553.jpg"
-                  alt="Blower"
-                  className="w-16 h-16 object-contain mx-auto"
-                />
+                {/* Industrial centrifugal (scroll) blower — 3D shaded */}
+                <svg
+                  width="68"
+                  height="68"
+                  viewBox="0 0 100 100"
+                  className="mx-auto"
+                >
+                  <defs>
+                    <radialGradient id="blowerBody" cx="38%" cy="32%" r="75%">
+                      <stop offset="0%" stopColor="#94a3b8" />
+                      <stop offset="60%" stopColor="#475569" />
+                      <stop offset="100%" stopColor="#1e293b" />
+                    </radialGradient>
+                    <radialGradient id="blowerEye" cx="42%" cy="38%" r="70%">
+                      <stop offset="0%" stopColor="#e2e8f0" />
+                      <stop offset="100%" stopColor="#64748b" />
+                    </radialGradient>
+                    <linearGradient id="blowerVane" x1="0" y1="0" x2="1" y2="1">
+                      <stop offset="0%" stopColor={isBlowerOn ? "#60a5fa" : "#cbd5e1"} />
+                      <stop offset="100%" stopColor={isBlowerOn ? "#1d4ed8" : "#64748b"} />
+                    </linearGradient>
+                    <filter id="blowerShadow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="1.5" dy="2.5" stdDeviation="2" floodColor="#000" floodOpacity="0.4" />
+                    </filter>
+                  </defs>
+                  {/* mounting base + feet */}
+                  <rect x="28" y="76" width="44" height="7" rx="1" fill="#334155" />
+                  <path d="M32 83 L26 96 L35 96 L40 83 Z" fill="#475569" stroke="#0f172a" strokeWidth="0.8" />
+                  <path d="M68 83 L74 96 L65 96 L60 83 Z" fill="#475569" stroke="#0f172a" strokeWidth="0.8" />
+                  {/* discharge outlet (top) */}
+                  <rect x="36" y="6" width="20" height="22" rx="2" fill="url(#blowerBody)" stroke="#0f172a" strokeWidth="1.5" />
+                  <rect x="33" y="4" width="26" height="5" rx="1" fill="#64748b" stroke="#0f172a" strokeWidth="0.8" />
+                  {/* side inlet cone */}
+                  <path d="M70 32 L96 26 L96 62 L70 56 Z" fill="url(#blowerBody)" stroke="#0f172a" strokeWidth="1.5" />
+                  <ellipse cx="94" cy="44" rx="3" ry="16" fill="#334155" />
+                  {/* volute (scroll) housing */}
+                  <circle cx="46" cy="44" r="30" fill="url(#blowerBody)" stroke="#0f172a" strokeWidth="1.5" filter="url(#blowerShadow)" />
+                  <circle cx="46" cy="44" r="24" fill="#334155" stroke="#1e293b" strokeWidth="1" />
+                  {/* impeller (spins with speed) */}
+                  <g
+                    style={{
+                      transformOrigin: "46px 44px",
+                      animation: isBlowerOn
+                        ? `acSpin ${spinDur(blowerPct)} linear infinite`
+                        : "none",
+                    }}
+                  >
+                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
+                      <path
+                        key={i}
+                        d="M46 44 C 50 28, 54 22, 50 16 C 45 20, 43 30, 46 44 Z"
+                        fill="url(#blowerVane)"
+                        stroke="#0f172a"
+                        strokeWidth="0.4"
+                        transform={`rotate(${i * 30} 46 44)`}
+                      />
+                    ))}
+                  </g>
+                  {/* inlet eye */}
+                  <circle cx="46" cy="44" r="10" fill="url(#blowerEye)" stroke="#334155" strokeWidth="1.2" />
+                  <circle cx="43" cy="41" r="3" fill="#f8fafc" opacity="0.7" />
+                </svg>
                 <div className="text-xs font-bold mt-1">BLOWER</div>
                 <div className="text-sm font-bold">
                   {(() => {
@@ -1717,22 +1944,74 @@ export default function AutoDiagram1({
 
             {/* Condenser Fan */}
             <div className="absolute" style={{ left: "780px", top: "150px" }}>
-              <div className="w-12 h-56 bg-pink-200 border-2 border-red-300 rounded-lg relative">
-                <div className="absolute bottom-1 left-1 right-1 h-3 bg-red-400 rounded-full"></div>
-                <div className="absolute top-2 right-2">
-                  <div className={`w-3 h-3 rounded-full ${isCondenserFanOn ? "bg-green-500" : "bg-red-500"}`}></div>
+              {/* Finned condenser coil + mounted fans (reference style) */}
+              <div className="relative flex items-start gap-2">
+                {/* run status LED */}
+                <div className="absolute -top-3 right-0 z-10">
+                  <div
+                    className={`w-3 h-3 rounded-full border border-slate-600 ${
+                      isCompressorOn || isCondenserFanOn
+                        ? "bg-green-500"
+                        : "bg-red-500"
+                    }`}
+                  ></div>
                 </div>
 
-                {/* Fan Image by machine fan configuration */}
-                <div className="absolute left-16 top-8">
-                  <div className="w-32 h-32 relative">
-                    <Image
-                      src={condenserFanImage}
-                      alt="Condenser Fan"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
+                {/* finned condenser coil (heat exchanger) */}
+                <svg width="42" height="150" viewBox="0 0 42 150">
+                  <defs>
+                    <linearGradient id="coilG" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#94a3b8" />
+                      <stop offset="45%" stopColor="#e2e8f0" />
+                      <stop offset="100%" stopColor="#64748b" />
+                    </linearGradient>
+                    <pattern
+                      id="coilHatch"
+                      width="9"
+                      height="9"
+                      patternUnits="userSpaceOnUse"
+                      patternTransform="rotate(45)"
+                    >
+                      <line x1="0" y1="0" x2="0" y2="9" stroke="#475569" strokeWidth="1" opacity="0.45" />
+                    </pattern>
+                  </defs>
+                  {/* coil body + fin hatch */}
+                  <rect x="4" y="8" width="34" height="134" rx="3" fill="url(#coilG)" stroke="#334155" strokeWidth="1.5" />
+                  <rect x="4" y="8" width="34" height="134" rx="3" fill="url(#coilHatch)" />
+                  {/* top / bottom manifolds */}
+                  <rect x="2" y="3" width="38" height="7" rx="2" fill="#475569" />
+                  <rect x="2" y="140" width="38" height="7" rx="2" fill="#475569" />
+                  {/* header pipes */}
+                  <rect x="18" y="0" width="6" height="4" fill="#334155" />
+                  <rect x="18" y="146" width="6" height="4" fill="#334155" />
+                </svg>
+
+                {/* Animated fans in recessed mounts (2/4/6/1) */}
+                <div
+                  className="grid gap-2"
+                  style={{
+                    gridTemplateColumns:
+                      fanCount >= 4 ? "repeat(2, 1fr)" : "repeat(1, 1fr)",
+                  }}
+                >
+                  {Array.from({ length: fanCount }).map((_, i) => (
+                    <div
+                      key={i}
+                      className="rounded-full"
+                      style={{
+                        background:
+                          "radial-gradient(circle at 38% 32%, #475569, #0f172a)",
+                        padding: "3px",
+                        boxShadow: "inset 0 2px 6px rgba(0,0,0,0.75)",
+                      }}
+                    >
+                      <FanSVG
+                        size={fanCount >= 4 ? 44 : 58}
+                        spinning={isCompressorOn || isCondenserFanOn}
+                        duration={condPct > 0 ? spinDur(condPct) : "1.1s"}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -1772,12 +2051,70 @@ export default function AutoDiagram1({
 
             {/* Compressor Unit */}
             <div className="absolute" style={{ left: "840px", top: "470px" }}>
-              <div className="w-20 h-12 rounded relative">
-                <img
-                  src="https://tse2.mm.bing.net/th/id/OIP.I6O7E9W-F27nxBsa_GZ35wAAAA?r=0&w=370&h=370&rs=1&pid=ImgDetMain&cb=idpwebp2&o=7&rm=3"
-                  className="w-20 h-12 object-contain"
-                  alt="Compressor"
-                />
+              <div
+                className="w-24 h-16 rounded relative"
+                style={{
+                  transformOrigin: "center",
+                  animation: isCompressorOn
+                    ? "acWobble 0.25s ease-in-out infinite"
+                    : "none",
+                }}
+              >
+                {/* Industrial reciprocating compressor on skid */}
+                <svg width="100" height="58" viewBox="0 0 120 70">
+                  <defs>
+                    <linearGradient id="compMotor" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#e2e8f0" />
+                      <stop offset="40%" stopColor="#94a3b8" />
+                      <stop offset="100%" stopColor="#334155" />
+                    </linearGradient>
+                    <linearGradient id="compHead" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#cbd5e1" />
+                      <stop offset="100%" stopColor="#1e293b" />
+                    </linearGradient>
+                    <radialGradient id="compWheel" cx="38%" cy="34%" r="72%">
+                      <stop offset="0%" stopColor="#94a3b8" />
+                      <stop offset="100%" stopColor="#0f172a" />
+                    </radialGradient>
+                    <filter id="compShadow" x="-20%" y="-20%" width="140%" height="140%">
+                      <feDropShadow dx="1.5" dy="2.5" stdDeviation="2" floodColor="#000" floodOpacity="0.4" />
+                    </filter>
+                  </defs>
+                  {/* skid base + bolt holes */}
+                  <rect x="4" y="56" width="112" height="10" rx="1" fill="#334155" stroke="#0f172a" strokeWidth="1" />
+                  {[12, 42, 72, 102].map((x) => (
+                    <circle key={x} cx={x} cy="61" r="1.6" fill="#0f172a" />
+                  ))}
+                  {/* crankcase */}
+                  <rect x="14" y="34" width="70" height="24" rx="4" fill="url(#compMotor)" stroke="#0f172a" strokeWidth="1.5" filter="url(#compShadow)" />
+                  {/* finned cylinder bank */}
+                  <rect x="30" y="16" width="44" height="20" rx="3" fill="url(#compHead)" stroke="#0f172a" strokeWidth="1.5" />
+                  {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
+                    <line key={i} x1={34 + i * 5} y1="17" x2={34 + i * 5} y2="35" stroke="#0f172a" strokeWidth="0.8" opacity="0.5" />
+                  ))}
+                  {/* cylinder head */}
+                  <rect x="36" y="10" width="32" height="7" rx="2" fill="#64748b" stroke="#0f172a" strokeWidth="1" />
+                  {/* suction/discharge pipes */}
+                  <rect x="6" y="38" width="9" height="4" rx="1" fill="#1e293b" />
+                  <rect x="6" y="48" width="9" height="4" rx="1" fill="#1e293b" />
+                  {/* shaft */}
+                  <rect x="82" y="42" width="8" height="4" fill="#475569" />
+                  {/* flywheel (spins when ON) */}
+                  <g
+                    style={{
+                      transformOrigin: "100px 44px",
+                      animation: isCompressorOn ? "acSpin 0.5s linear infinite" : "none",
+                    }}
+                  >
+                    <circle cx="100" cy="44" r="15" fill="url(#compWheel)" stroke="#0f172a" strokeWidth="2" filter="url(#compShadow)" />
+                    <line x1="100" y1="30" x2="100" y2="58" stroke="#475569" strokeWidth="2" />
+                    <line x1="86" y1="44" x2="114" y2="44" stroke="#475569" strokeWidth="2" />
+                    <line x1="90" y1="34" x2="110" y2="54" stroke="#475569" strokeWidth="2" />
+                    <circle cx="100" cy="44" r="4" fill="#1f2937" />
+                  </g>
+                  {/* run LED */}
+                  <circle cx="24" cy="26" r="3" fill={isCompressorOn ? "#22c55e" : "#ef4444"} stroke="#0f172a" strokeWidth="0.6" />
+                </svg>
               </div>
               <div className="absolute -bottom-8 bg-red-600 text-white px-2 py-1 text-center rounded text-xs left-1/2 transform -translate-x-1/2 whitespace-nowrap">
                 <div className="font-bold">
@@ -1803,8 +2140,8 @@ export default function AutoDiagram1({
                 <br />
                 {(() => {
                   const isBarMachine =
-                    machineName === "GTPL-137-GT-450T-S7-1200" ||
-                    machineName === "GTPL-138-GT-450T-S7-1200";
+                    machineName === "GTPL-137-gT-450T-S7-1200" ||
+                    machineName === "GTPL-138-gT-450T-S7-1200";
 
                   if (isBarMachine) {
                     if (
@@ -1836,8 +2173,8 @@ export default function AutoDiagram1({
                 <br />
                 {(() => {
                   const isBarMachine =
-                    machineName === "GTPL-137-GT-450T-S7-1200" ||
-                    machineName === "GTPL-138-GT-450T-S7-1200";
+                    machineName === "GTPL-137-gT-450T-S7-1200" ||
+                    machineName === "GTPL-138-gT-450T-S7-1200";
 
                   if (isBarMachine) {
                     if (

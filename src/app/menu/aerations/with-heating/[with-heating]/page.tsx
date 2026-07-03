@@ -33,6 +33,11 @@ export default function AerationWithHeatingPage() {
     devices as string
   ); // ✅ FETCH VIA HOOK
 
+  // 40E-P / 80E-P S7-200 machines (108-113): no heater in temperature card
+  const isS7200EP = ["108", "109", "110", "111", "112", "113"].some((c) =>
+    String(devices ?? "").includes(c)
+  );
+
   const [isRunning, setIsRunning] = useState(false);
 
   const [runningTime, setRunningTime] = useState({ hours: 0, minutes: 0 });
@@ -421,7 +426,8 @@ export default function AerationWithHeatingPage() {
                         {(() => {
                           const blowerValue =
                             Value_to_Display_EVAP_ACT_SPEED ??
-                            data?.Blower_speed;
+                            data?.Blower_speed ??
+                            data?.BLOWER_RPM;
                           const percentage =
                             parseFloat(blowerValue as any) || 0;
 
@@ -472,6 +478,7 @@ export default function AerationWithHeatingPage() {
                       </motion.div>
                     )}
 
+                    {!isS7200EP && (
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -529,6 +536,7 @@ export default function AerationWithHeatingPage() {
                         );
                       })()}
                     </motion.div>
+                    )}
                   </div>
                 </CardContent>
               </Card>

@@ -79,13 +79,13 @@ export default function Home() {
   const isGrainPaddyDevice =
     device === "GTPL-132-300-AP-S7-1200" ||
     device === "GTPL-136-gT-450AP" ||
-    device === "GTPL-139-GT-300AP-S7-1200" ||
-    device === "GTPL-144-GT-300AP-S7-1200" ||
+    device === "GTPL-139-gT-300AP-S7-1200" ||
+    device === "GTPL-144-gT-300AP-S7-1200" ||
     device === "GTPL-142-gT-450AP-S7-1200" ||
-    device === "GTPL-123-GT-450AP" ||
+    device === "GTPL-123-gT-450AP" ||
     device === "GTPL-143-gT-450AP-S7-1200";
-  // device === "GTPL-131-GT-650T-S7-1200" ||
-  // device === "GTPL-133-GT-650T-S7-1200" ||
+  // device === "GTPL-131-gT-650T-S7-1200" ||
+  // device === "GTPL-133-gT-650T-S7-1200" ||
   // device === "GTPL-134-gT-450T-S7-1200" ||
   // device === "GTPL-135-gT-450T-S7-1200" ||
   // device === "GTPL-145-gT-450T-S7-1200";

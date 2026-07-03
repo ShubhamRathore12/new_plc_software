@@ -153,8 +153,8 @@ export default function FaultPage() {
             {machineName === "GTPL-061-gT-450T-S7-1200" ||
             machineName === "GTPL-121-gT-1000T-S7-1200" ||
             machineName === "GTPL-122-gT-1000T-S7-1200" ||
-            machineName === "GTPL-123-GT-450AP" ||
-            machineName === "GTPL-124-GT-450T-S7-1200" ? (
+            machineName === "GTPL-123-gT-450AP" ||
+            machineName === "GTPL-124-gT-450T-S7-1200" ? (
               ""
             ) : (
               <Button

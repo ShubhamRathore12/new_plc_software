@@ -20,19 +20,19 @@ export default function InputsPage() {
 
   const isGTPL118 = device === "GTPL-118-gT-60T-S7-200";
   const isGT80E = !isGTPL118 && ['108', '109', '110', '111', '112', '113'].some(code => device?.includes(code));
-  const isGtpl122 = ['122', '121', '133', '154', '155', '131','068','104'].some(code => device?.includes(code))
+  const isGtpl122 = ['122', '121', '133', '154', '155', '131','068','104','081','105'].some(code => device?.includes(code))
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";
   const isGtpl115 = device === "GTPL-115-gT-180E-S7-1200" || device === "GTPL-30-gT-180E-S7-1200" || device === 'GTPL-119-gT-180E-S7-1200' || device === "GTPL-120-gT-180E-S7-1200";
-  const isGtpl124 = device === "GTPL-124-GT-450T-S7-1200";
+  const isGtpl124 = device === "GTPL-124-gT-450T-S7-1200";
   const isGTPL116 = device === "GTPL-116-gT-240E-S7-1200" || device === "GTPL-117-gT-320E-S7-1200"
-  const isGTPL132 = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-GT-450AP" || device === "GTPL-143-gT-450AP-S7-1200"
+  const isGTPL132 = device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-gT-450AP" || device === "GTPL-143-gT-450AP-S7-1200"
   const isGTPL136 = device === "GTPL-136-gT-450AP"
-  const isGTPL137 = device === "GTPL-137-GT-450T-S7-1200"
-  const isGTPL138 = device === "GTPL-138-GT-450T-S7-1200"
+  const isGTPL137 = device === "GTPL-137-gT-450T-S7-1200"
+  const isGTPL138 = device === "GTPL-138-gT-450T-S7-1200"
   const isGTPL134_135 = device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-148-gT-450T-S7-1200"
   const isGTPL061 = device === "GTPL-061-gT-450T-S7-1200"
-  const isGTPL139 = device === "GTPL-139-GT-300AP-S7-1200"
-  const isGTPL144 = device === "GTPL-144-GT-300AP-S7-1200"
+  const isGTPL139 = device === "GTPL-139-gT-300AP-S7-1200"
+  const isGTPL144 = device === "GTPL-144-gT-300AP-S7-1200"
   const { data } = useAutoData(device as string);
 
   useEffect(() => {
