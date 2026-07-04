@@ -51,6 +51,19 @@ export default function FaultLogsPaginated({ machineName }: Props) {
     setError(null);
 
     try {
+      // Calculate 2-month date range (60 days ago to today)
+      const today = new Date();
+      const twoMonthsAgo = new Date(today);
+      twoMonthsAgo.setDate(twoMonthsAgo.getDate() - 60);
+
+      // Format dates as YYYY-MM-DD
+      const formatDate = (date: Date) => {
+        return date.toISOString().split('T')[0];
+      };
+
+      const fromDate = formatDate(twoMonthsAgo);
+      const toDate = formatDate(today);
+
       // We need enough true-like tag entries to cover the requested page of tag results.
       // Accumulate tag entries across API pages until we have enough to slice the requested page.
       let accumulated: TagData[] = [];
@@ -61,6 +74,8 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       firstUrl.searchParams.append("machineName", machineName);
       firstUrl.searchParams.append("page", "1");
       firstUrl.searchParams.append("limit", PAGE_SIZE.toString());
+      firstUrl.searchParams.append("fromDate", fromDate);
+      firstUrl.searchParams.append("toDate", toDate);
       if (machineName === "GTPL-30-gT-180E-S7-1200") {
         firstUrl.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
       }
@@ -89,6 +104,8 @@ export default function FaultLogsPaginated({ machineName }: Props) {
         url.searchParams.append("machineName", machineName);
         url.searchParams.append("page", apiPage.toString());
         url.searchParams.append("limit", PAGE_SIZE.toString());
+        url.searchParams.append("fromDate", fromDate);
+        url.searchParams.append("toDate", toDate);
         if (machineName === "GTPL-30-gT-180E-S7-1200") {
           url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
         }

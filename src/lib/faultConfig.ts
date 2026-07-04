@@ -391,45 +391,66 @@ interface MachineConfig {
   table: string;
   tags: string[];
   type: string;
+  faultCodeColumn: string; // Column name for FAULT_CODE in database
+  activeFaultColumns: string[]; // Columns that represent active faults (boolean/enum columns)
+  alarmHistoryTable?: string; // Optional separate alarm history table
 }
 
-// Machine configuration mapping
+// Fault columns for each machine type (columns after FAULT_CODE in database)
+// Imported from faultConfig_complete.ts
+import { MACHINE_FAULT_COLUMNS as COMPLETE_FAULT_COLUMNS } from "./faultConfig_complete";
+
+export const MACHINE_FAULT_COLUMNS = COMPLETE_FAULT_COLUMNS;
 export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   // S7-200
   "GTPL-118-gT-60T-S7-200": {
     table: "GTPL_118_GT_60T_S7_1200",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-108-gT-40E-P-S7-200": {
     table: "GTPL_108_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-109-gT-40E-P-S7-200": {
     table: "GTPL_109_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-110-gT-40E-P-S7-200": {
     table: "GTPL_110_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-111-gT-80E-P-S7-200": {
     table: "GTPL_111_gT_80E_P_S7_200_Germany",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-112-gT-80E-P-S7-200": {
     table: "GTPL_112_gT_80E_P_S7_200_Germany",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-113-gT-80E-P-S7-200": {
     table: "GTPL_113_gT_80E_P_S7_200_Germany",
     tags: S7_200_TAGS,
     type: "S7-200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
 
   // S7-1200 (including GTPL-115)
@@ -437,156 +458,218 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     table: "gtpl_122_s7_1200_01",
     tags: S7_1200_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "Gtpl-S7-1200-02": {
     table: "gtpl_122_s7_1200_01",
     tags: S7_1200_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-30-gT-180E-S7-1200": {
     table: "GTPL_114_GT_140E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-115-gT-180E-S7-1200": {
     table: "GTPL_115_GT_180E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-116-gT-240E-S7-1200": {
     table: "GTPL_116_GT_240E_S7_1200",
     tags: GPL_117_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-117-gT-320E-S7-1200": {
     table: "GTPL_117_GT_320E_S7_1200",
     tags: GPL_117_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-119-gT-180E-S7-1200": {
     table: "GTPL_119_GT_180E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-120-gT-180E-S7-1200": {
     table: "GTPL_120_GT_180E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-121-gT-1000T-S7-1200": {
     table: "GTPL_121_GT1000T",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
-    "GTPL-131-gT-650T-S7-1200": {
+  "GTPL-131-gT-650T-S7-1200": {
     table: "GTPL_131_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_131_GT_650T_S7_1200"],
   },
   "GTPL-081-gT-650T-S7-1200": {
     table: "GTPL_081_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_081_GT_650T_S7_1200"],
   },
   "GTPL-105-gT-650T-S7-1200": {
     table: "GTPL_105_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_105_GT_650T_S7_1200"],
   },
   "GTPL-068-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-104-gT-650T-S7-1200": {
     table: "GTPL_133_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_104_GT_650T_S7_1200"],
   },
   "GTPL-154-gT-650T-S7-1200": {
     table: "GTPL_154_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-155-gT-650T-S7-1200": {
     table: "GTPL_155_GT_650T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-124-gT-450T-S7-1200": {
-    table: "GTPL_124_GT450T",
+    table: "GTPL_124_GT_450T_S7_1200",
     tags: GPL_124_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-132-300-AP-S7-1200": {
     table: "GTPL_132_GT650T",
     tags: GPL_132_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-137-gT-450T-S7-1200": {
     table: "GTPL_137_GT_450T_S7_1200",
     tags: GTPL_137_138_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-138-gT-450T-S7-1200": {
     table: "GTPL_138_GT_450T_S7_1200",
     tags: GTPL_137_138_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-136-gT-450AP": {
     table: "GTPL_136_GT_450AP_S7_1200",
     tags: GTPL_136_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-134-gT-450T-S7-1200": {
     table: "GTPL_134_GT_450T_S7_1200",
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-135-gT-450T-S7-1200": {
     table: "GTPL_135_GT_450T_S7_1200",
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-145-gT-450T-S7-1200": {
     table: "GTPL_145_GT_450T_S7_1200",
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-148-gT-450T-S7-1200": {
     table: "GTPL_148_GT_450T_S7_1200",
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-061-gT-450T-S7-1200": {
     table: "GTPL_061_GT_450T_S7_1200",
     tags: GTPL_134_135_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_061_GT_450T_S7_1200"],
   },
   "GTPL-139-gT-300AP-S7-1200": {
     table: "GTPL_139_GT300AP",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-144-gT-300AP-S7-1200": {
     table: "GTPL_144_GT_300AP_S7_1200",
     tags: GTPL_139_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-142-gT-450AP-S7-1200": {
     table: "GTPL_132_GT650T",
     tags: GPL_132_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-123-gT-450AP": {
     table: "GTPL_123_GT_450AP_S7_1200",
     tags: GPL_132_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-143-gT-450AP-S7-1200": {
     table: "GTPL_132_GT650T",
     tags: GPL_132_TAGS,
     type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
 };
 
@@ -1072,6 +1155,24 @@ export function resolveMachineName(machineName: string): string {
 export function getMachineConfig(machineName: string) {
   const resolvedName = resolveMachineName(machineName);
   return MACHINE_CONFIG[resolvedName];
+}
+
+export function getActiveFaultColumns(machineName: string): string[] {
+  const resolvedName = resolveMachineName(machineName);
+  const config = MACHINE_CONFIG[resolvedName];
+  return config?.activeFaultColumns || [];
+}
+
+export function getActiveFaults(machineName: string, data: any): Array<{column: string; value: any; isActive: boolean}> {
+  const faultColumns = getActiveFaultColumns(machineName);
+  
+  return faultColumns
+    .map((column) => ({
+      column,
+      value: data?.[column],
+      isActive: isActiveTag(data?.[column]),
+    }))
+    .filter((fault) => fault.isActive);
 }
 
 export function getFaultCodesForMachine(machineName: string) {

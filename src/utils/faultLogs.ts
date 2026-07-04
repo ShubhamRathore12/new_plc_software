@@ -1,5 +1,6 @@
 import { machine } from "os";
 import { getFaultColumnsFromSchema } from "@/lib/dbSchema";
+import { getActiveFaultColumns, isActiveTag as isActiveFault } from "@/lib/faultConfig";
 
 export const PAGE_SIZE = 200;
 
@@ -395,7 +396,11 @@ export function extractTagDataFromRecords(
   machineName: string
 ): TagData[] {
   if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
-  const tags = getTagsForMachine(machineName);
+  
+  // Use fault columns from the machine configuration (from database schema)
+  const faultColumns = getActiveFaultColumns(machineName);
+  const tags = faultColumns.length > 0 ? faultColumns : getTagsForMachine(machineName);
+  
   const tagData: TagData[] = [];
 
   for (const record of dataArray) {

@@ -15,6 +15,8 @@ import {
   getTagsForMachine,
   getMachineType,
   isActiveTag,
+  getActiveFaults,
+  getActiveFaultColumns,
 } from "@/lib/faultConfig";
 import { useLanguage } from "@/providers/language-provider";
 
@@ -37,6 +39,10 @@ export default function FaultPage() {
   const machineConfig = getMachineConfig(machineName);
   const machineType = getMachineType(machineName);
   const faultCodes = getFaultCodesForMachine(machineName);
+  const faultColumns = getActiveFaultColumns(machineName);
+  
+  // Get active faults from the fault columns in database
+  const activeFaults = getActiveFaults(machineName, data);
   const currentTags = getTagsForMachine(machineName, data);
 
   const handleViewFaultCode = (faultItem: FaultCode) => {
@@ -181,7 +187,10 @@ export default function FaultPage() {
                 </p>
               </div>
 
-              <ActiveTagsTable tags={currentTags} />
+              <ActiveTagsTable tags={activeFaults.map(fault => ({
+                tag: fault.column,
+                value: fault.value,
+              }))} />
             </CardContent>
 
             <div className="p-6 pt-0">

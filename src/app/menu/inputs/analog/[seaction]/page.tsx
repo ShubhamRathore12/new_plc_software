@@ -597,7 +597,7 @@ export default function AnalogPage() {
                             return !item.description.includes(".2 ")
                           }
                           if (device === "GTPL-134-gT-450T-S7-1200" || device === "GTPL-135-gT-450T-S7-1200" || device === "GTPL-145-gT-450T-S7-1200" || device === "GTPL-148-gT-450T-S7-1200") {
-                            // Show both .1 and .2 variants; hide TH
+                            // Show both .1 and .2 variants for T2, T1, T0; hide TH
                             return !item.description.startsWith("TH")
                           }
                           if (device === "GTPL-137-gT-450T-S7-1200" || device === "GTPL-138-gT-450T-S7-1200") {

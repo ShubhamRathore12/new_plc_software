@@ -602,7 +602,7 @@ export default function AutoPaddyPage() {
     <PageTransition>
       <div className="flex flex-col min-h-screen">
         <ConnectionStatus isConnected={isConnected} error={error} />
-        <main className="flex-1 container py-8">
+        <main className="flex-1 w-full px-4 md:px-8 py-8">
           <AnimatedContainer className="mb-8">
             <motion.h1 
               className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3"
@@ -708,8 +708,8 @@ export default function AutoPaddyPage() {
             </motion.div>
           </AnimatedContainer>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <AnimatedContainer className="lg:col-span-2" delay={1}>
+          <div className="grid grid-cols-1 gap-8">
+            <AnimatedContainer delay={1}>
               <div className="relative w-full h-full">
                 {isMobile ? (
                   <Home

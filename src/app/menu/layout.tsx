@@ -85,7 +85,7 @@ export default function DashboardLayout({
           >
             {children}
             <footer className="mt-6 text-center text-sm text-muted-foreground">
-              © 2025, powered by Prosafe Automation
+              © 2026, powered by Grain Technik
             </footer>
           </div>
         </main>

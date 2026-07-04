@@ -785,7 +785,7 @@
 // }
 import { usePathname } from "next/navigation";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function AutoDiagram1({
   blower,
@@ -797,6 +797,22 @@ export default function AutoDiagram1({
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
+
+  // Scale the fixed 1200x800 canvas to fit container width → no horizontal scroll
+  const DESIGN_W = 1200;
+  const DESIGN_H = 800;
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+  useEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const update = () => setScale(Math.min(1, el.clientWidth / DESIGN_W));
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
   const getSiloColor = (temp: number) => {
     return "#10b981"; // Green color
   };
@@ -1051,6 +1067,28 @@ export default function AutoDiagram1({
         ? 2
         : 1;
 
+  // Per-fan run status from machine output tags.
+  // Matches any key like Cond_fan_1_ON_Q2_1 / Condenser_fan1_on_Q2_1 for fan n.
+  // Single-fan machines have no fan number in tag → use aggregate isCondenserFanOn.
+  const condFanOn = (n: number): boolean => {
+    if (fanCount <= 1) return isCondenserFanOn;
+    if (!data) return false;
+    for (const [k, v] of Object.entries(data)) {
+      const kl = k.toLowerCase();
+      if (!kl.includes("cond") || !kl.includes("fan")) continue;
+      const m = kl.match(/fan[_ ]?(\d+)/);
+      if (!m || parseInt(m[1], 10) !== n) continue;
+      const on =
+        v === true ||
+        v === 1 ||
+        v === "1" ||
+        String(v).toLowerCase() === "true" ||
+        String(v).toLowerCase() === "tr";
+      if (on) return true;
+    }
+    return false;
+  };
+
   // Pick first defined numeric value from a list of data fields
   const pickNum = (...vals: any[]): number => {
     for (const v of vals) {
@@ -1203,40 +1241,23 @@ export default function AutoDiagram1({
   }) => {
     const n = parseFloat(String(display).replace(/[^0-9.\-]/g, ""));
     const open = !isNaN(n) && n > 0;
-    const uid = label;
     return (
       <div className="flex flex-col items-center">
-        <svg width="58" height="58" viewBox="0 0 100 100">
-          <defs>
-            <radialGradient id={`vbody${uid}`} cx="38%" cy="34%" r="72%">
-              <stop offset="0%" stopColor="#f87171" />
-              <stop offset="55%" stopColor="#dc2626" />
-              <stop offset="100%" stopColor="#7f1d1d" />
-            </radialGradient>
-            <linearGradient id={`vflange${uid}`} x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#cbd5e1" />
-              <stop offset="100%" stopColor="#475569" />
-            </linearGradient>
-            <filter id={`vsh${uid}`} x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="1.5" dy="2" stdDeviation="2" floodColor="#000" floodOpacity="0.4" />
-            </filter>
-          </defs>
-          {/* pipe flanges */}
-          <rect x="2" y="52" width="18" height="20" rx="2" fill={`url(#vflange${uid})`} stroke="#0f172a" strokeWidth="1" />
-          <rect x="80" y="52" width="18" height="20" rx="2" fill={`url(#vflange${uid})`} stroke="#0f172a" strokeWidth="1" />
-          {/* valve globe body (3D) */}
-          <circle cx="50" cy="62" r="26" fill={`url(#vbody${uid})`} stroke="#450a0a" strokeWidth="1.5" filter={`url(#vsh${uid})`} />
-          <ellipse cx="42" cy="54" rx="8" ry="5" fill="#fecaca" opacity="0.5" />
-          {/* bonnet / stem */}
-          <rect x="46" y="20" width="8" height="24" rx="2" fill={`url(#vflange${uid})`} stroke="#0f172a" strokeWidth="1" />
-          {/* handwheel (spins when open) */}
-          <g style={{ transformOrigin: "50px 18px", animation: open ? "acSpin 2.4s linear infinite" : "none" }}>
-            <circle cx="50" cy="18" r="14" fill="none" stroke={open ? "#22c55e" : "#94a3b8"} strokeWidth="4" />
-            <line x1="36" y1="18" x2="64" y2="18" stroke={open ? "#22c55e" : "#94a3b8"} strokeWidth="3" />
-            <line x1="50" y1="4" x2="50" y2="32" stroke={open ? "#22c55e" : "#94a3b8"} strokeWidth="3" />
-            <circle cx="50" cy="18" r="4" fill="#1f2937" />
-          </g>
-        </svg>
+        <img
+          src="/valve.jpeg"
+          alt={label}
+          style={{
+            width: 50,
+            height: 58,
+            objectFit: "contain",
+            mixBlendMode: "multiply",
+            transformOrigin: "center",
+            filter: open
+              ? "drop-shadow(0 0 5px rgba(34,197,94,0.6))"
+              : "grayscale(1) brightness(0.9)",
+            animation: open ? "acPulse 1.4s ease-in-out infinite" : "none",
+          }}
+        />
         <div className="text-xs font-bold -mt-1">{label}</div>
         <div className="text-sm font-bold">{display}</div>
       </div>
@@ -1244,15 +1265,27 @@ export default function AutoDiagram1({
   };
 
   return (
-    <div className="w-full h-screen bg-gray-100 overflow-auto">
+    <div
+      ref={wrapRef}
+      className="w-full bg-gray-100 overflow-hidden"
+      style={{ height: DESIGN_H * scale }}
+    >
       {/* Animation keyframes for rotating/pulsing machinery */}
       <style>{`
         @keyframes acSpin { to { transform: rotate(360deg); } }
         @keyframes acPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
         @keyframes acWobble { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
       `}</style>
-      {/* Container with fixed aspect ratio */}
-      <div className="relative w-full h-full min-w-[1200px] min-h-[800px]">
+      {/* Fixed 1200x800 canvas, scaled to fit width */}
+      <div
+        className="relative bg-gray-100"
+        style={{
+          width: DESIGN_W,
+          height: DESIGN_H,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+        }}
+      >
         {/* Status Indicators - Top Left */}
         <div className="absolute top-4 left-1/2 transform -translate-x-1/2 -translate-x-48 flex gap-4 items-center z-10">
           <div className="flex flex-col items-center">
@@ -1856,67 +1889,24 @@ export default function AutoDiagram1({
             <div className="absolute" style={{ left: "730px", top: "470px" }}>
               <div className="text-black px-4 py-2 text-center rounded">
                 {/* Industrial centrifugal (scroll) blower — 3D shaded */}
-                <svg
-                  width="68"
-                  height="68"
-                  viewBox="0 0 100 100"
+                <img
+                  src={isBlowerOn ? "/blower%20on.jpeg" : "/blower%20off.jpeg"}
+                  alt="Blower"
                   className="mx-auto"
-                >
-                  <defs>
-                    <radialGradient id="blowerBody" cx="38%" cy="32%" r="75%">
-                      <stop offset="0%" stopColor="#94a3b8" />
-                      <stop offset="60%" stopColor="#475569" />
-                      <stop offset="100%" stopColor="#1e293b" />
-                    </radialGradient>
-                    <radialGradient id="blowerEye" cx="42%" cy="38%" r="70%">
-                      <stop offset="0%" stopColor="#e2e8f0" />
-                      <stop offset="100%" stopColor="#64748b" />
-                    </radialGradient>
-                    <linearGradient id="blowerVane" x1="0" y1="0" x2="1" y2="1">
-                      <stop offset="0%" stopColor={isBlowerOn ? "#60a5fa" : "#cbd5e1"} />
-                      <stop offset="100%" stopColor={isBlowerOn ? "#1d4ed8" : "#64748b"} />
-                    </linearGradient>
-                    <filter id="blowerShadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="1.5" dy="2.5" stdDeviation="2" floodColor="#000" floodOpacity="0.4" />
-                    </filter>
-                  </defs>
-                  {/* mounting base + feet */}
-                  <rect x="28" y="76" width="44" height="7" rx="1" fill="#334155" />
-                  <path d="M32 83 L26 96 L35 96 L40 83 Z" fill="#475569" stroke="#0f172a" strokeWidth="0.8" />
-                  <path d="M68 83 L74 96 L65 96 L60 83 Z" fill="#475569" stroke="#0f172a" strokeWidth="0.8" />
-                  {/* discharge outlet (top) */}
-                  <rect x="36" y="6" width="20" height="22" rx="2" fill="url(#blowerBody)" stroke="#0f172a" strokeWidth="1.5" />
-                  <rect x="33" y="4" width="26" height="5" rx="1" fill="#64748b" stroke="#0f172a" strokeWidth="0.8" />
-                  {/* side inlet cone */}
-                  <path d="M70 32 L96 26 L96 62 L70 56 Z" fill="url(#blowerBody)" stroke="#0f172a" strokeWidth="1.5" />
-                  <ellipse cx="94" cy="44" rx="3" ry="16" fill="#334155" />
-                  {/* volute (scroll) housing */}
-                  <circle cx="46" cy="44" r="30" fill="url(#blowerBody)" stroke="#0f172a" strokeWidth="1.5" filter="url(#blowerShadow)" />
-                  <circle cx="46" cy="44" r="24" fill="#334155" stroke="#1e293b" strokeWidth="1" />
-                  {/* impeller (spins with speed) */}
-                  <g
-                    style={{
-                      transformOrigin: "46px 44px",
-                      animation: isBlowerOn
-                        ? `acSpin ${spinDur(blowerPct)} linear infinite`
-                        : "none",
-                    }}
-                  >
-                    {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
-                      <path
-                        key={i}
-                        d="M46 44 C 50 28, 54 22, 50 16 C 45 20, 43 30, 46 44 Z"
-                        fill="url(#blowerVane)"
-                        stroke="#0f172a"
-                        strokeWidth="0.4"
-                        transform={`rotate(${i * 30} 46 44)`}
-                      />
-                    ))}
-                  </g>
-                  {/* inlet eye */}
-                  <circle cx="46" cy="44" r="10" fill="url(#blowerEye)" stroke="#334155" strokeWidth="1.2" />
-                  <circle cx="43" cy="41" r="3" fill="#f8fafc" opacity="0.7" />
-                </svg>
+                  style={{
+                    width: 78,
+                    height: 78,
+                    objectFit: "contain",
+                    mixBlendMode: "multiply",
+                    transformOrigin: "center",
+                    animation: isBlowerOn
+                      ? "acWobble 0.35s ease-in-out infinite"
+                      : "none",
+                    filter: isBlowerOn
+                      ? "drop-shadow(0 0 5px rgba(34,197,94,0.55))"
+                      : "none",
+                  }}
+                />
                 <div className="text-xs font-bold mt-1">BLOWER</div>
                 <div className="text-sm font-bold">
                   {(() => {
@@ -1950,9 +1940,7 @@ export default function AutoDiagram1({
                 <div className="absolute -top-3 right-0 z-10">
                   <div
                     className={`w-3 h-3 rounded-full border border-slate-600 ${
-                      isCompressorOn || isCondenserFanOn
-                        ? "bg-green-500"
-                        : "bg-red-500"
+                      isCondenserFanOn ? "bg-green-500" : "bg-red-500"
                     }`}
                   ></div>
                 </div>
@@ -2007,7 +1995,7 @@ export default function AutoDiagram1({
                     >
                       <FanSVG
                         size={fanCount >= 4 ? 44 : 58}
-                        spinning={isCompressorOn || isCondenserFanOn}
+                        spinning={condFanOn(i + 1)}
                         duration={condPct > 0 ? spinDur(condPct) : "1.1s"}
                       />
                     </div>
@@ -2060,61 +2048,19 @@ export default function AutoDiagram1({
                     : "none",
                 }}
               >
-                {/* Industrial reciprocating compressor on skid */}
-                <svg width="100" height="58" viewBox="0 0 120 70">
-                  <defs>
-                    <linearGradient id="compMotor" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#e2e8f0" />
-                      <stop offset="40%" stopColor="#94a3b8" />
-                      <stop offset="100%" stopColor="#334155" />
-                    </linearGradient>
-                    <linearGradient id="compHead" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="#cbd5e1" />
-                      <stop offset="100%" stopColor="#1e293b" />
-                    </linearGradient>
-                    <radialGradient id="compWheel" cx="38%" cy="34%" r="72%">
-                      <stop offset="0%" stopColor="#94a3b8" />
-                      <stop offset="100%" stopColor="#0f172a" />
-                    </radialGradient>
-                    <filter id="compShadow" x="-20%" y="-20%" width="140%" height="140%">
-                      <feDropShadow dx="1.5" dy="2.5" stdDeviation="2" floodColor="#000" floodOpacity="0.4" />
-                    </filter>
-                  </defs>
-                  {/* skid base + bolt holes */}
-                  <rect x="4" y="56" width="112" height="10" rx="1" fill="#334155" stroke="#0f172a" strokeWidth="1" />
-                  {[12, 42, 72, 102].map((x) => (
-                    <circle key={x} cx={x} cy="61" r="1.6" fill="#0f172a" />
-                  ))}
-                  {/* crankcase */}
-                  <rect x="14" y="34" width="70" height="24" rx="4" fill="url(#compMotor)" stroke="#0f172a" strokeWidth="1.5" filter="url(#compShadow)" />
-                  {/* finned cylinder bank */}
-                  <rect x="30" y="16" width="44" height="20" rx="3" fill="url(#compHead)" stroke="#0f172a" strokeWidth="1.5" />
-                  {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-                    <line key={i} x1={34 + i * 5} y1="17" x2={34 + i * 5} y2="35" stroke="#0f172a" strokeWidth="0.8" opacity="0.5" />
-                  ))}
-                  {/* cylinder head */}
-                  <rect x="36" y="10" width="32" height="7" rx="2" fill="#64748b" stroke="#0f172a" strokeWidth="1" />
-                  {/* suction/discharge pipes */}
-                  <rect x="6" y="38" width="9" height="4" rx="1" fill="#1e293b" />
-                  <rect x="6" y="48" width="9" height="4" rx="1" fill="#1e293b" />
-                  {/* shaft */}
-                  <rect x="82" y="42" width="8" height="4" fill="#475569" />
-                  {/* flywheel (spins when ON) */}
-                  <g
-                    style={{
-                      transformOrigin: "100px 44px",
-                      animation: isCompressorOn ? "acSpin 0.5s linear infinite" : "none",
-                    }}
-                  >
-                    <circle cx="100" cy="44" r="15" fill="url(#compWheel)" stroke="#0f172a" strokeWidth="2" filter="url(#compShadow)" />
-                    <line x1="100" y1="30" x2="100" y2="58" stroke="#475569" strokeWidth="2" />
-                    <line x1="86" y1="44" x2="114" y2="44" stroke="#475569" strokeWidth="2" />
-                    <line x1="90" y1="34" x2="110" y2="54" stroke="#475569" strokeWidth="2" />
-                    <circle cx="100" cy="44" r="4" fill="#1f2937" />
-                  </g>
-                  {/* run LED */}
-                  <circle cx="24" cy="26" r="3" fill={isCompressorOn ? "#22c55e" : "#ef4444"} stroke="#0f172a" strokeWidth="0.6" />
-                </svg>
+                {/* Industrial reciprocating compressor image */}
+                <img
+                  src="/compressor%20off.jpeg"
+                  alt="Compressor"
+                  style={{
+                    width: 100,
+                    objectFit: "contain",
+                    mixBlendMode: "multiply",
+                    filter: isCompressorOn
+                      ? "sepia(1) hue-rotate(65deg) saturate(3.2) brightness(1.05) drop-shadow(0 0 6px rgba(34,197,94,0.7))"
+                      : "grayscale(0.15)",
+                  }}
+                />
               </div>
               <div className="absolute -bottom-8 bg-red-600 text-white px-2 py-1 text-center rounded text-xs left-1/2 transform -translate-x-1/2 whitespace-nowrap">
                 <div className="font-bold">
@@ -2133,7 +2079,7 @@ export default function AutoDiagram1({
             {/* Pressure Readings */}
             <div
               className="absolute flex gap-2 z-10"
-              style={{ left: "850px", bottom: "0px" }}
+              style={{ left: "965px", top: "500px" }}
             >
               <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
                 LP
