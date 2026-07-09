@@ -789,6 +789,7 @@ export default function AutoPage() {
                     data={data}
                     formatValue={formatValue}
                     machineName={auto}
+                    config={currentConfig}
                   />
                 )}
               </div>

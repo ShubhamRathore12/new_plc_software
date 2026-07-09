@@ -792,15 +792,16 @@ export default function AutoDiagram1({
   data,
   formatValue,
   machineName,
+  config,
 }: any) {
   const normalizedMachineName = (machineName || "").toUpperCase();
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
 
-  // Scale the fixed 1200x800 canvas to fit container width → no horizontal scroll
-  const DESIGN_W = 1200;
-  const DESIGN_H = 800;
+  // Scale the fixed 1500x760 canvas to fit container width → no horizontal scroll
+  const DESIGN_W = 1500;
+  const DESIGN_H = 760;
   const wrapRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
   useEffect(() => {
@@ -1067,24 +1068,51 @@ export default function AutoDiagram1({
         ? 2
         : 1;
 
-  // Per-fan run status from machine output tags.
-  // Matches any key like Cond_fan_1_ON_Q2_1 / Condenser_fan1_on_Q2_1 for fan n.
-  // Single-fan machines have no fan number in tag → use aggregate isCondenserFanOn.
+  // Per-fan run status — driven ONLY by the PLC output relay tag for that fan.
+  // Output tag naming per machine family (from DATABASE_SCHEMA.md):
+  //   650T  : Cond_fan_1_ON_Q2_1 ... Cond_fan_6_ON_Q3_1
+  //   450T  : Condenser_fan1_on_Q2_1 ... Condenser_fan4_on_Q2_6
+  //   300AP : Condenser_fan1_on_Q2_1 / Condenser_fan2_on_Q2_4 (or _Q2_3, _Q0_1)
+  // Q address varies per machine → match by prefix up to "..._ON_Q".
+  // Fault / TOP / breaker input bits (_Ix_x) never spin a fan.
+  const COND_FAN_ON_PREFIXES = (n: number) => [
+    `cond_fan_${n}_on_q`, // 650T style
+    `condenser_fan${n}_on_q`, // 300AP / 450T style
+    `condenser_fan_${n}_on_q`,
+    `cond_fan${n}_on_q`,
+  ];
+
+  const isTruthyTag = (v: any) =>
+    v === true ||
+    v === 1 ||
+    v === "1" ||
+    String(v).toLowerCase() === "true" ||
+    String(v).toLowerCase() === "tr";
+
   const condFanOn = (n: number): boolean => {
-    if (fanCount <= 1) return isCondenserFanOn;
     if (!data) return false;
+    // Single-fan machines: dedicated single ON tags, else aggregate speed.
+    if (fanCount <= 1) {
+      for (const [k, v] of Object.entries(data)) {
+        const kl = k.toLowerCase();
+        if (
+          kl === "cond_fan_on" ||
+          kl.startsWith("condenser_fan_on_q") ||
+          kl.startsWith("condenser_fan_drive_on_q")
+        ) {
+          return isTruthyTag(v);
+        }
+      }
+      return isCondenserFanOn;
+    }
+    // Multi-fan: exact ON output tag for fan n. If tag exists → its value
+    // decides (True = spin, False = stop). No tag → fan off.
+    const prefixes = COND_FAN_ON_PREFIXES(n);
     for (const [k, v] of Object.entries(data)) {
       const kl = k.toLowerCase();
-      if (!kl.includes("cond") || !kl.includes("fan")) continue;
-      const m = kl.match(/fan[_ ]?(\d+)/);
-      if (!m || parseInt(m[1], 10) !== n) continue;
-      const on =
-        v === true ||
-        v === 1 ||
-        v === "1" ||
-        String(v).toLowerCase() === "true" ||
-        String(v).toLowerCase() === "tr";
-      if (on) return true;
+      if (prefixes.some((p) => kl.startsWith(p))) {
+        return isTruthyTag(v);
+      }
     }
     return false;
   };
@@ -1264,21 +1292,461 @@ export default function AutoDiagram1({
     );
   };
 
+
+  // ---------- Reference (IOLens) UI value mapping — new tag names with legacy fallbacks ----------
+  const pickVal = (...vals: any[]) => {
+    for (const v of vals) {
+      if (v !== undefined && v !== null && v !== "") return v;
+    }
+    return undefined;
+  };
+
+  const fmt = (v: any) =>
+    v === undefined || v === null || v === "" ? "N/A" : formatValue(v);
+
+  // Temperatures always 1 decimal — consistent across diagram + defaults
+  const fmtTemp = (v: any) => {
+    if (v === undefined || v === null || v === "") return "N/A";
+    const n = parseFloat(String(v));
+    if (isNaN(n)) return String(v);
+    return n.toFixed(1);
+  };
+
+  // TS1 = supply air temp (air into silo), TC1 = cold air temp, TA1 = ambient temp
+  const ts1Val = pickVal(
+    data?.TS1,
+    data?.TS1_temp,
+    data?.SPLY_AIR_TEMP,
+    data?.AIR_OUTLET_TEMP,
+    data?.T0_temp_mean,
+  );
+  const tc1Val = pickVal(
+    data?.TC1,
+    data?.TC1_temp,
+    data?.COLD_AIR_TEMP_T1,
+    data?.T1_temp_mean,
+  );
+  const ta1Val = pickVal(
+    data?.TA1,
+    data?.TA1_temp,
+    data?.AMBIENT_AIR_TEMP_T2,
+    data?.T2_temp_mean,
+  );
+
+  const htrPct = pickVal(
+    data?.Value_to_Display_HEATER,
+    data?.Heater_speed,
+    data?.HTR,
+    0,
+  );
+  const ahtPct = pickVal(
+    data?.AHT_vale_speed,
+    data?.Value_to_Display_AHT_VALE_OPEN,
+    data?.AFTER_HEAT_VALVE_RPM,
+    data?.AHT_valve_speed,
+    0,
+  );
+  const hgsPct = pickVal(
+    data?.Value_to_Display_HOT_GAS_VALVE_OPEN,
+    data?.HOT_GAS_VALVE_RPM,
+    data?.Hot_valve_speed,
+    0,
+  );
+  const compPct = pickVal(
+    data?.Compressor_speed,
+    data?.COMP_SPEED,
+    data?.Value_to_Display_COMP_SPEED,
+    isCompressorOn ? 100 : 0,
+  );
+  const hpVal = pickVal(
+    data?.AI_COND_PRESSURE,
+    data?.HP,
+    data?.HP_value,
+    data?.Compressor_timer,
+  );
+  const lpVal = pickVal(data?.AI_SUC_PRESSURE, data?.LP, data?.LP_value);
+  const pressureUnit =
+    machineName === "GTPL-137-gT-450T-S7-1200" ||
+    machineName === "GTPL-138-gT-450T-S7-1200"
+      ? "bar"
+      : "psi";
+
+  // Set points — special machines run on T0 / Delta T, the rest on T1 / TH-T1
+  const defTC1 = pickVal(
+    data?.TC1_set_point,
+    data?.T1_set_point,
+    data?.T0_set_point,
+    data?.T1_SET_POINT,
+    isGrainChilling
+      ? data?.T1_set_point_in_grain_chilling_mode
+      : data?.T1_set_point_in_paddy_aeging_mode,
+    data?.T1_set_point_in_grain_chilling_mode,
+    data?.T1_set_point_in_paddy_aeging_mode,
+  );
+  const defTsTc1 = pickVal(
+    data?.TS_TC1_set_point,
+    data?.Delta_T_set_point,
+    data?.TH_T1_set_point,
+    data?.Th_T1,
+    isGrainChilling
+      ? data?.Delta_T_set_point_in_grain_chilling_mode
+      : data?.Delta_T_set_point_paddy_aeging_mode,
+    data?.Delta_T_set_point_in_grain_chilling_mode,
+    data?.Delta_T_set_point_paddy_aeging_mode,
+    data?.AI_TH_Act,
+  );
+  const setPoint1Label = isSpecialMachine ? "T0" : "T1";
+  const setPoint2Label = isSpecialMachine ? "Delta T" : "TH-T1";
+  const defHP = pickVal(data?.HP_set_point, data?.HP_set, data?.HP_default);
+  const defLP = pickVal(data?.LP_set_point, data?.LP_set, data?.LP_default);
+  const defBlower = pickVal(
+    data?.Blower_set_point,
+    data?.Blower_default,
+    data?.Blower_speed,
+    data?.BLOWER_RPM,
+  );
+  const defAeration = pickVal(
+    data?.Aeration_fan_set_point,
+    data?.Aeration_fan_speed,
+    data?.AERATION_FAN,
+    0,
+  );
+
+  const anyFlow = isCompressorOn || isBlowerOn;
+
+  // CR valve tags — name variants differ per machine family (same resolution as [auto] page)
+  const resolveCR = (keys: string[]): string | undefined => {
+    if (!data) return undefined;
+    for (const k of keys) {
+      if (data[k] !== undefined) return String(data[k]);
+    }
+    return undefined;
+  };
+  const crValves = [
+    { label: "CR 25%", val: resolveCR(["CR_valve_25_percent_ON_Q0_2", "CR_valve_25_percent_on_Q0_2", "CR_25_percent_ON_Q0_2", "CR_25%_ON_Q0_2", "CR_valve_25_on_Q0_2"]) },
+    { label: "CR 50%", val: resolveCR(["CR_valve_50_percent_ON_Q0_3", "CR_valve_50_percent_on_Q0_3", "CR_50_percent_ON_Q0_3", "CR_50%_ON_Q0_3", "CR_valve_50_on_Q0_3"]) },
+    { label: "CR 75%", val: resolveCR(["CR_valve_75_percent_ON_Q2_2", "CR_valve_75_percent_on_Q2_2", "CR_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2", "CR_valve_75_on_Q2_2"]) },
+    { label: "CR 100%", val: resolveCR(["CR_valve_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_7", "CR_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_5", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7"]) },
+  ].filter((c) => c.val !== undefined);
+
+  // GTPL-108..113 (40E/80E-P S7-200): no T0 on the coil, condenser fan speed
+  // shown under the fans.
+  const isPaddy200Machine = [
+    "GTPL-108",
+    "GTPL-109",
+    "GTPL-110",
+    "GTPL-111",
+    "GTPL-112",
+    "GTPL-113",
+  ].some((n) => String(machineName).includes(n));
+
+  // Heater coil (with TH, no HTR % box) — GTPL-108..113 plus
+  // GTPL-115/116/117/119/120. Every other machine: no heater coil, no TH.
+  const isHeaterCoilMachine = [
+    "GTPL-115",
+    "GTPL-116",
+    "GTPL-117",
+    "GTPL-119",
+    "GTPL-120",
+  ].some((n) => String(machineName).includes(n));
+  const hasHeater = isPaddy200Machine || isHeaterCoilMachine;
+  const thVal = config?.temperatureSensors?.TH
+    ? data?.[config.temperatureSensors.TH.key]
+    : pickVal(data?.AI_TH_Act, data?.AFTER_HEATER_TEMP_Th, data?.TH_temp_mean);
+
+  // Two evaporator coils always: AHT coil (orange zigzag) + HGS coil (blue
+  // zigzag). Temp label only when the machine has that sensor — heater
+  // machines have no T0, so their AHT coil is unlabeled (per reference image).
+  const evapCoils: {
+    key: string;
+    label?: string;
+    value?: string;
+    zig: string;
+    box: string;
+    pct: any;
+  }[] = (() => {
+    const ts: any = config?.temperatureSensors || {};
+    const t0 = ts.T0;
+    const t1 = ts.T1;
+    return [
+      {
+        key: "AHT",
+        label:
+          isPaddy200Machine ? undefined : t0 ? "T0" : config ? undefined : "T0",
+        value: isPaddy200Machine
+          ? undefined
+          : t0
+            ? fmtTemp(data?.[t0.key])
+            : config
+              ? undefined
+              : fmtTemp(ts1Val),
+        zig: "#f97316",
+        box: "AHT",
+        pct: ahtPct,
+      },
+      {
+        key: "HGS",
+        label: "T1",
+        value: t1 ? fmtTemp(data?.[t1.key]) : fmtTemp(tc1Val),
+        zig: "#2563eb",
+        box: "HGS",
+        pct: hgsPct,
+      },
+    ];
+  })();
+
+  // Salmon dashed process piping — exact reference-image pattern, right angles only:
+  // top edge: silo top port -> short right -> straight up -> along the top ->
+  //           straight down into the blower inlet flange
+  // bottom edge: silo bottom port -> short right -> down -> along the bottom past
+  //           the coils -> up -> into the flange from the left
+  const PIPES = [
+    // short stub right, then slanted rise to the top edge (chamfer, per image)
+    "M 223 470 H 268 L 310 252 H 848 V 380",
+    "M 223 508 H 280 V 572 H 745 V 392 H 826",
+    // blower outlet -> compressor panel (T2 badge sits on this run)
+    "M 963 467 H 1078",
+    // condenser coil bottom -> compressor panel top
+    "M 1241 388 V 422",
+  ];
+
+  const DefaultCell = ({ label, value }: { label: string; value: string }) => (
+    <div className="flex items-center justify-between bg-white border border-gray-300 rounded px-3 py-1.5">
+      <span className="text-sm font-bold text-gray-700">{label}</span>
+      <span className="text-sm font-bold text-gray-900">{value}</span>
+    </div>
+  );
+
+  const SensorBadge = ({
+    label,
+    value,
+    color,
+    bg,
+    border,
+  }: {
+    label: string;
+    value: string;
+    color: string;
+    bg: string;
+    border: string;
+  }) => (
+    <div
+      className="px-2.5 py-1 rounded text-sm font-bold whitespace-nowrap"
+      style={{
+        backgroundColor: bg,
+        border: `1.5px dashed ${border}`,
+        color,
+      }}
+    >
+      {label} :&nbsp;<span>{value}</span>
+    </div>
+  );
+
+  // Cross-hatched heat-exchanger coil with zigzag (evaporator / condenser)
+  const CoilSVG = ({
+    w,
+    h,
+    uid,
+    zig = "#111827",
+  }: {
+    w: number;
+    h: number;
+    uid: string;
+    zig?: string;
+  }) => {
+    const seg = 8;
+    const pts: string[] = [];
+    for (let i = 0; i <= seg; i++) {
+      const y = 12 + ((h - 24) / seg) * i;
+      const x = i === 0 || i === seg ? w / 2 : i % 2 ? w - 10 : 10;
+      pts.push(`${x},${y}`);
+    }
+    return (
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
+        <defs>
+          <pattern
+            id={`hatchA${uid}`}
+            width="7"
+            height="7"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(45)"
+          >
+            <line x1="0" y1="0" x2="0" y2="7" stroke="#9ca3af" strokeWidth="1.3" />
+          </pattern>
+          <pattern
+            id={`hatchB${uid}`}
+            width="7"
+            height="7"
+            patternUnits="userSpaceOnUse"
+            patternTransform="rotate(-45)"
+          >
+            <line x1="0" y1="0" x2="0" y2="7" stroke="#b6bcc6" strokeWidth="1.1" />
+          </pattern>
+        </defs>
+        <rect x="2" y="10" width={w - 4} height={h - 20} fill="#e8eaee" stroke="#9ca3af" strokeWidth="1.2" />
+        <rect x="2" y="10" width={w - 4} height={h - 20} fill={`url(#hatchA${uid})`} />
+        <rect x="2" y="10" width={w - 4} height={h - 20} fill={`url(#hatchB${uid})`} />
+        <polyline points={pts.join(" ")} fill="none" stroke={zig} strokeWidth="2" strokeLinejoin="round" />
+        <rect x={w / 2 - 4} y="0" width="8" height="11" fill="#374151" />
+        <rect x={w / 2 - 4} y={h - 11} width="8" height="11" fill="#374151" />
+      </svg>
+    );
+  };
+
+  // Centrifugal blower (grey round casing, dark curved swirl impeller, pedestal) — per reference image
+  const BlowerSVG = ({ spinning }: { spinning: boolean }) => (
+    <svg width="170" height="175" viewBox="0 0 170 175">
+      <defs>
+        <radialGradient id="blwCasing" cx="38%" cy="34%" r="72%">
+          <stop offset="0%" stopColor="#eef0f3" />
+          <stop offset="60%" stopColor="#cfd4da" />
+          <stop offset="100%" stopColor="#9aa2ad" />
+        </radialGradient>
+        <radialGradient id="blwInner" cx="45%" cy="42%" r="65%">
+          <stop offset="0%" stopColor="#f6f7f9" />
+          <stop offset="100%" stopColor="#d7dbe0" />
+        </radialGradient>
+      </defs>
+      {/* inlet duct + flange collar (top-left) */}
+      <rect x="24" y="0" width="42" height="10" rx="2" fill="#b6bcc6" stroke="#9aa2ad" />
+      <rect x="33" y="8" width="24" height="46" fill="#cfd4da" stroke="#9aa2ad" />
+      {/* base plate + feet */}
+      <rect x="34" y="148" width="18" height="12" fill="#b6bcc6" stroke="#9aa2ad" />
+      <rect x="118" y="148" width="18" height="12" fill="#b6bcc6" stroke="#9aa2ad" />
+      <rect x="22" y="158" width="140" height="11" rx="2" fill="#8d99a6" />
+      {/* scroll casing — volute body extends left, merges into round housing */}
+      <path
+        d="M 100 37 L 48 48 Q 30 52 30 68 L 30 126 Q 30 142 48 146 L 100 153 Z"
+        fill="url(#blwCasing)"
+        stroke="#9aa2ad"
+        strokeWidth="2"
+      />
+      <circle cx="100" cy="95" r="58" fill="url(#blwCasing)" stroke="#9aa2ad" strokeWidth="2.5" />
+      <circle cx="100" cy="95" r="44" fill="url(#blwInner)" stroke="#b6bcc6" strokeWidth="1.5" />
+      {/* impeller — dark curved swirl blades */}
+      <g
+        style={{
+          transformOrigin: "100px 95px",
+          animation: spinning
+            ? `acSpin ${spinDur(blowerPct > 0 ? blowerPct : 50)} linear infinite`
+            : "none",
+        }}
+      >
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+          <path
+            key={a}
+            d="M100 95 Q 111 74 99 58 Q 85 73 93 91 Z"
+            fill="#5b6470"
+            stroke="#454c56"
+            strokeWidth="0.8"
+            transform={`rotate(${a} 100 95)`}
+          />
+        ))}
+        <circle cx="100" cy="95" r="9" fill="#454c56" />
+        <circle cx="97" cy="92" r="2.5" fill="#b6bcc6" opacity="0.8" />
+      </g>
+    </svg>
+  );
+
+  // Duct heater coil (HTR machines) — black frame, yellow→red gradient,
+  // staggered grey element bars, per reference image
+  const HeaterCoilSVG = ({ w, h }: { w: number; h: number }) => {
+    const bars = 7;
+    const innerTop = 16;
+    const innerH = h - 32;
+    const step = innerH / bars;
+    return (
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
+        <defs>
+          <linearGradient id="htrGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#fde047" />
+            <stop offset="45%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#dc2626" />
+          </linearGradient>
+        </defs>
+        <rect
+          x="2"
+          y="10"
+          width={w - 4}
+          height={h - 20}
+          fill="url(#htrGrad)"
+          stroke="#111827"
+          strokeWidth="2.5"
+        />
+        {/* serpentine element — one snaking path, per reference image */}
+        <path
+          d={(() => {
+            const xl = 22;
+            const xr = w - 22;
+            const r = step / 2;
+            let d = `M ${xl} ${innerTop}`;
+            for (let i = 0; i < bars; i++) {
+              if (i % 2 === 0) {
+                d += ` H ${xr} A ${r} ${r} 0 0 1 ${xr} ${innerTop + (i + 1) * step}`;
+              } else {
+                d += ` H ${xl} A ${r} ${r} 0 0 0 ${xl} ${innerTop + (i + 1) * step}`;
+              }
+            }
+            d += bars % 2 === 0 ? ` H ${xr}` : ` H ${xl}`;
+            return d;
+          })()}
+          fill="none"
+          stroke="#6b7280"
+          strokeWidth="9"
+          strokeLinecap="round"
+          opacity="0.85"
+        />
+        <rect x={w / 2 - 4} y="0" width="8" height="11" fill="#374151" />
+        <rect x={w / 2 - 4} y={h - 11} width="8" height="11" fill="#374151" />
+      </svg>
+    );
+  };
+
+  // Corrugated flat-bottom grain silo with two right-side outlet ports
+  const SiloSVG = () => (
+    <svg width="180" height="270" viewBox="0 0 180 270">
+      <defs>
+        <linearGradient id="siloBodyRef" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#9aa5b1" />
+          <stop offset="30%" stopColor="#e8ecf0" />
+          <stop offset="55%" stopColor="#f4f6f8" />
+          <stop offset="100%" stopColor="#8d99a6" />
+        </linearGradient>
+      </defs>
+      {/* conical roof */}
+      <polygon points="90,6 12,58 168,58" fill="#6b7280" stroke="#4b5563" strokeWidth="1.5" />
+      {[-64, -50, -36, -22, -10, 10, 22, 36, 50, 64].map((dx) => (
+        <line key={dx} x1="90" y1="8" x2={90 + dx} y2="57" stroke="#9ca3af" strokeWidth="0.8" opacity="0.8" />
+      ))}
+      <rect x="85" y="0" width="10" height="8" rx="1.5" fill="#d1d5db" stroke="#6b7280" strokeWidth="0.8" />
+      {/* corrugated shell */}
+      <rect x="20" y="58" width="140" height="190" fill="url(#siloBodyRef)" stroke="#6b7280" strokeWidth="1.8" />
+      {Array.from({ length: 23 }).map((_, i) => (
+        <line key={i} x1="20" y1={64 + i * 8} x2="160" y2={64 + i * 8} stroke="#8d99a6" strokeWidth="1" opacity="0.7" />
+      ))}
+      {/* outlet ports (to piping) */}
+      <rect x="158" y="134" width="20" height="13" rx="1.5" fill="#9ca3af" stroke="#6b7280" strokeWidth="1" />
+      <rect x="158" y="172" width="20" height="13" rx="1.5" fill="#9ca3af" stroke="#6b7280" strokeWidth="1" />
+      {/* base */}
+      <rect x="14" y="246" width="152" height="6" rx="1" fill="#6b7280" />
+    </svg>
+  );
+
   return (
     <div
       ref={wrapRef}
-      className="w-full bg-gray-100 overflow-hidden"
+      className="w-full bg-white overflow-hidden"
       style={{ height: DESIGN_H * scale }}
     >
-      {/* Animation keyframes for rotating/pulsing machinery */}
       <style>{`
         @keyframes acSpin { to { transform: rotate(360deg); } }
         @keyframes acPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.06); } }
         @keyframes acWobble { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
+        @keyframes pipeFlow { to { stroke-dashoffset: -34; } }
       `}</style>
-      {/* Fixed 1200x800 canvas, scaled to fit width */}
+      {/* Fixed design canvas, scaled to container width */}
       <div
-        className="relative bg-gray-100"
+        className="relative bg-white"
         style={{
           width: DESIGN_W,
           height: DESIGN_H,
@@ -1286,890 +1754,293 @@ export default function AutoDiagram1({
           transformOrigin: "top left",
         }}
       >
-        {/* Status Indicators - Top Left */}
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 -translate-x-48 flex gap-4 items-center z-10">
-          <div className="flex flex-col items-center">
-            <div
-              className="w-8 h-8 rounded-full border-2 border-gray-400"
-              style={{ backgroundColor: lampColor(greenOn, "#10b981") }}
-            ></div>
-            <span className="text-xs mt-1">Green</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <div
-              className="w-8 h-8 rounded-full border-2 border-gray-600"
-              style={{ backgroundColor: lampColor(redOn, "#ef4444") }}
-            ></div>
-            <span className="text-xs mt-1">Red</span>
-          </div>
-          <div className="flex flex-col items-center">
-            <div
-              className="w-8 h-8 rounded-full border-2 border-gray-400"
-              style={{ backgroundColor: lampColor(yellowOn, "#eab308") }}
-            ></div>
-            <span className="text-xs mt-1">Yellow</span>
+        {/* ---------- Process piping (behind everything) ---------- */}
+        <svg
+          className="absolute inset-0"
+          width={DESIGN_W}
+          height={DESIGN_H}
+          viewBox={`0 0 ${DESIGN_W} ${DESIGN_H}`}
+          style={{ zIndex: 1 }}
+        >
+          {/* dashed salmon duct lines per reference image; dashes march when flow active */}
+          {PIPES.map((d, i) => (
+            <path
+              key={i}
+              d={d}
+              fill="none"
+              stroke="#F19E8B"
+              strokeWidth="3.5"
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              strokeDasharray="10 7"
+              style={{
+                animation: anyFlow ? "pipeFlow 1.2s linear infinite" : "none",
+              }}
+            />
+          ))}
+        </svg>
+
+        {/* ---------- Set points (top-left, per reference image) ---------- */}
+        <div className="absolute z-10" style={{ left: 340, top: 30 }}>
+          <div className="text-sm font-bold text-gray-800 mb-2">Set points</div>
+          <div className="flex flex-col gap-2">
+            <div className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm min-w-[120px]">
+              {setPoint1Label} = {fmtTemp(defTC1)} °C
+            </div>
+            <div className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm min-w-[120px]">
+              {setPoint2Label} = {fmtTemp(defTsTc1)} °C
+            </div>
           </div>
         </div>
 
-        {/* Temperature Display Boxes - Top Right */}
-        {/* <div className="absolute top-4 right-1/2 transform translate-x-1/2 translate-x-48 space-y-2 z-10">
-          {machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T1 ={" "}
-              {formatValue(
-                data?.T1_set_point ||
-                data?.T1_temp_mean ||
-                data?.COLD_AIR_TEMP_T1 ||
-                data?.T1_SET_POINT,
-                "°C"
-              )}
-            </div>
-          ) : isSpecialMachine ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T0 ={" "}
-              {isGrainChilling
-                ? formatValue(
-                  data?.T0_set_point ||
-                  data?.AIR_OUTLET_TEMP ||
-                  data?.T1_set_point_in_grain_chilling_mode || data?.T0_set_point_in_grain_chilling_mode,
-                  "°C"
-                )
-                : isPaddyChilling
-                  ? formatValue(
-                    data?.T0_set_point ||
-                    data?.AIR_OUTLET_TEMP ||
-                    data?.T1_set_point_in_paddy_aeging_mode || data?.T0_set_point_in_paddy_aeging_mode,
-                    "°C"
-                  )
-                  : formatValue(
-                    data?.T0_set_point ||
-                    data?.AIR_OUTLET_TEMP ||
-                    data?.T1_set_point_in_paddy_aeging_mode || data?.T0_temp_mean,
-                    "°C"
-                  )}
-            </div>
-          ) : (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T1 ={" "}
-              {formatValue(
-                data?.T1_set_point ||
-                data?.T1_temp_mean ||
-                data?.T1_SET_POINT ||
-                data?.Delta_T_set_point_paddy_aeging_mode,
-                "°C"
-              )}
-            </div>
-          )}
-
-          {isSpecialMachine ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T Delta ={" "}
-              {isGrainChilling
-                ? formatValue(
-                  data.Delta_T_set_point ||
-                  data?.Th_T1 ||
-                  data?.Delta_T_set_point_in_grain_chilling_mode,
-                  "°C"
-                )
-                : isPaddyChilling
-                  ? formatValue(
-                    data.Delta_T_set_point ||
-                    data?.Th_T1 ||
-                    data?.Delta_T_set_point_paddy_aeging_mode,
-                    "°C"
-                  )
-                  : formatValue(
-                    data.Delta_T_set_point ||
-                    data?.Th_T1 ||
-                    data?.Delta_T_set_point_in_grain_chilling_mode ||
-                    data?.Delta_T_set_point_paddy_aeging_mode,
-                    "°C"
-                  )}
-            </div>
-          ) : machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T0 - T1 ={" "}
-              {formatValue(
-                data?.T0_T1_set_point || data?.AIR_OUTLET_TEMP || data?.COLD_AIR_TEMP_T1 || data?.T1_temp_mean,
-                "°C"
-              )}
-            </div>
-          ) : (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              TH - T1 ={" "}
-              {formatValue(
-                data.AI_TH_Act || data?.Th_T1 || data?.TH_T1_set_point,
-                "°C"
-              )}
-            </div>
-          )}
-        </div> */}
-        <div className="absolute top-4 right-1/2 transform translate-x-1/2 translate-x-48 space-y-2 z-10">
-          {machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T1 ={" "}
-              {data?.T1_set_point ||
-                data?.T1_temp_mean ||
-                data?.COLD_AIR_TEMP_T1 ||
-                data?.T1_SET_POINT ||
-                "N/A"}
-              °C
-            </div>
-          ) : isSpecialMachine ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T0 ={" "}
-              {isGrainChilling
-                ? data?.T0_set_point ||
-                  data?.AIR_OUTLET_TEMP ||
-                  data?.T1_set_point_in_grain_chilling_mode ||
-                  data?.T0_set_point_in_grain_chilling_mode ||
-                  "N/A"
-                : isPaddyChilling
-                  ? data?.T0_set_point ||
-                    data?.AIR_OUTLET_TEMP ||
-                    data?.T1_set_point_in_paddy_aeging_mode ||
-                    data?.T0_set_point_in_paddy_aeging_mode ||
-                    "N/A"
-                  : data?.T0_set_point ||
-                    data?.AIR_OUTLET_TEMP ||
-                    data?.T1_set_point_in_paddy_aeging_mode ||
-                    data?.T0_temp_mean ||
-                    "N/A"}
-              °C
-            </div>
-          ) : (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T1 ={" "}
-              {data?.T1_set_point ||
-                data?.T1_temp_mean ||
-                data?.T1_SET_POINT ||
-                data?.Delta_T_set_point_paddy_aeging_mode ||
-                "N/A"}
-              °C
-            </div>
-          )}
-
-          {isSpecialMachine ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T Delta ={" "}
-              {isGrainChilling
-                ? data.Delta_T_set_point ||
-                  data?.Th_T1 ||
-                  data?.Delta_T_set_point_in_grain_chilling_mode ||
-                  "N/A"
-                : isPaddyChilling
-                  ? data.Delta_T_set_point ||
-                    data?.Th_T1 ||
-                    data?.Delta_T_set_point_paddy_aeging_mode ||
-                    "N/A"
-                  : data.Delta_T_set_point ||
-                    data?.Th_T1 ||
-                    data?.Delta_T_set_point_in_grain_chilling_mode ||
-                    data?.Delta_T_set_point_paddy_aeging_mode ||
-                    "N/A"}
-              °C
-            </div>
-          ) : machineName.includes("GTPL-061-gT-450T-S7-1200") ? (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              T0 - T1 ={" "}
-              {data?.T0_T1_set_point ||
-                data?.AIR_OUTLET_TEMP ||
-                data?.COLD_AIR_TEMP_T1 ||
-                data?.T1_temp_mean ||
-                "N/A"}
-              °C
-            </div>
-          ) : (
-            <div className="bg-orange-400 text-white px-4 py-2 rounded text-sm font-bold">
-              TH - T1 ={" "}
-              {data.AI_TH_Act || data?.Th_T1 || data?.TH_T1_set_point || "N/A"}
-              °C
-            </div>
-          )}
+        {/* ---------- Tower lamp status (top-center, per reference image) ---------- */}
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-4 py-2 text-sm font-bold text-gray-800"
+          style={{ left: 600, top: 30 }}
+        >
+          TOWER LAMP STATUS
         </div>
-        {/* Main Content Container - Centered */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-[1200px] h-[600px] bg-gray-100">
-            {/* SVG Container for Silo and Lines */}
-            <svg
-              className="absolute inset-0 w-full h-full"
-              style={{ zIndex: 1 }}
-              viewBox="0 0 1200 600"
-              preserveAspectRatio="none"
-            >
-              {/* Animated Flow Defs */}
-              <defs>
-                <style>
-                  {`
-                    @keyframes flowForward {
-                      from { stroke-dashoffset: 24; }
-                      to { stroke-dashoffset: 0; }
-                    }
-                    @keyframes flowReverse {
-                      from { stroke-dashoffset: 0; }
-                      to { stroke-dashoffset: 24; }
-                    }
-                    .flow-line {
-                      stroke: #ef4444;
-                      stroke-width: 3;
-                      fill: none;
-                      stroke-dasharray: 12, 12;
-                    }
-                    .flow-line.active {
-                      animation: flowForward 1s linear infinite;
-                    }
-                    .flow-line.active-reverse {
-                      animation: flowReverse 1s linear infinite;
-                    }
-                    .flow-line.inactive {
-                      stroke: #9ca3af;
-                      stroke-dasharray: none;
-                      stroke-width: 2;
-                    }
-                  `}
-                </style>
-                {/* Silo metallic (galvanised) gradient */}
-                <linearGradient id="siloGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#94a3b8" />
-                  <stop offset="30%" stopColor="#f1f5f9" />
-                  <stop offset="55%" stopColor="#cbd5e1" />
-                  <stop offset="100%" stopColor="#64748b" />
-                </linearGradient>
-                <linearGradient id="siloCap" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#64748b" />
-                  <stop offset="50%" stopColor="#e2e8f0" />
-                  <stop offset="100%" stopColor="#475569" />
-                </linearGradient>
-              </defs>
+        <div
+          className="absolute z-10 rounded-md p-2 flex flex-row gap-1.5"
+          style={{ left: 628, top: 76, backgroundColor: "#eceef1", border: "1px solid #d7dade" }}
+        >
+          <div className="w-10 h-10 rounded-sm" style={{ backgroundColor: redOn ? "#ef4444" : "#dcdfe4" }} />
+          <div className="w-10 h-10 rounded-sm" style={{ backgroundColor: yellowOn ? "#eab308" : "#dcdfe4" }} />
+          <div className="w-10 h-10 rounded-sm" style={{ backgroundColor: greenOn ? "#16a34a" : "#dcdfe4" }} />
+        </div>
 
-              {/* Silo — galvanised corrugated grain bin (conical roof + legs) */}
-              <g>
-                {/* conical roof */}
-                <polygon
-                  points="120,94 66,134 174,134"
-                  fill="url(#siloCap)"
-                  stroke="#475569"
-                  strokeWidth="2"
-                />
-                {/* roof ridge lines */}
-                <line x1="120" y1="94" x2="86" y2="134" stroke="#94a3b8" strokeWidth="1" />
-                <line x1="120" y1="94" x2="120" y2="134" stroke="#94a3b8" strokeWidth="1" />
-                <line x1="120" y1="94" x2="154" y2="134" stroke="#94a3b8" strokeWidth="1" />
-                {/* roof cap / vent */}
-                <rect x="113" y="86" width="14" height="9" rx="2" fill="#475569" />
-                {/* eave ring */}
-                <rect x="63" y="132" width="114" height="7" fill="#94a3b8" stroke="#475569" strokeWidth="1" />
-                {/* body */}
-                <rect x="66" y="139" width="108" height="129" fill="url(#siloGrad)" stroke="#475569" strokeWidth="2" />
-                {/* corrugation ribs */}
-                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((i) => (
-                  <line
-                    key={i}
-                    x1="66"
-                    y1={148 + i * 10}
-                    x2="174"
-                    y2={148 + i * 10}
-                    stroke="#64748b"
-                    strokeWidth="1"
-                    opacity="0.6"
-                  />
-                ))}
-                {/* vertical seams */}
-                <line x1="102" y1="139" x2="102" y2="268" stroke="#64748b" strokeWidth="0.6" opacity="0.5" />
-                <line x1="138" y1="139" x2="138" y2="268" stroke="#64748b" strokeWidth="0.6" opacity="0.5" />
-                {/* left gloss highlight */}
-                <rect x="78" y="141" width="5" height="125" fill="#ffffff" opacity="0.35" />
-                {/* ladder */}
-                <line x1="158" y1="139" x2="158" y2="266" stroke="#475569" strokeWidth="1" />
-                <line x1="164" y1="139" x2="164" y2="266" stroke="#475569" strokeWidth="1" />
-                {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                  <line key={`r${i}`} x1="158" y1={150 + i * 17} x2="164" y2={150 + i * 17} stroke="#475569" strokeWidth="1" />
-                ))}
-                {/* base skirt + legs */}
-                <rect x="62" y="266" width="116" height="8" fill="#475569" />
-                <line x1="74" y1="274" x2="70" y2="300" stroke="#334155" strokeWidth="4" />
-                <line x1="120" y1="274" x2="120" y2="300" stroke="#334155" strokeWidth="4" />
-                <line x1="166" y1="274" x2="170" y2="300" stroke="#334155" strokeWidth="4" />
-                {/* outlet stub to pipe (right) */}
-                <rect x="174" y="172" width="18" height="14" fill="#94a3b8" stroke="#475569" strokeWidth="1" rx="1" />
-                <text
-                  x="120"
-                  y="316"
-                  textAnchor="middle"
-                  className="text-sm font-bold fill-gray-800"
-                >
-                  SILO
-                </text>
-              </g>
+        {/* ---------- Condensing-unit dashed boundary ---------- */}
+        <div
+          className="absolute rounded-lg"
+          style={{
+            left: 760,
+            top: 145,
+            width: 640,
+            height: 480,
+            border: "1.5px dashed #cbd5e1",
+            backgroundColor: "#fbfcfd",
+            zIndex: 0,
+          }}
+        />
 
-              {/* Animated Connecting Lines - Top horizontal (Silo to Condenser) */}
-              <line
-                x1="200"
-                y1="120"
-                x2="800"
-                y2="120"
-                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
-              />
-              {/* Silo outlet to top line */}
-              <line
-                x1="170"
-                y1="180"
-                x2="200"
-                y2="120"
-                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
-              />
+        {/* ---------- Silo + controls ---------- */}
+        <div className="absolute z-10" style={{ left: 45, top: 330 }}>
+          <SiloSVG />
+        </div>
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-4 py-1 text-sm font-bold text-gray-800"
+          style={{ left: 100, top: 606 }}
+        >
+          SILO
+        </div>
 
-              {/* Vertical drops from main line to thermometers */}
-              {!isSpecialMachine &&
-                machineName !== "GTPL-061-gT-450T-S7-1200" && (
-                  <line
-                    x1="280"
-                    y1="120"
-                    x2="280"
-                    y2="150"
-                    className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
-                  />
+        {/* ---------- Coils row: heater (HTR machines only) + evaporator coils.
+             HTR / AHT / HGS % boxes sit under their own coil, per reference image ---------- */}
+        <div
+          className="absolute z-10 flex items-start"
+          style={{ left: hasHeater ? 285 : 335, top: 278, gap: hasHeater ? 14 : 40 }}
+        >
+          {hasHeater && (
+            <div className="flex items-center gap-2">
+              <div className="flex flex-col items-center">
+                <span className="text-base font-bold text-gray-800 mb-1">
+                  TH
+                </span>
+                <div className="bg-white border border-gray-400 rounded-sm px-3 py-1.5 text-base font-bold text-gray-900 min-w-[60px] text-center">
+                  {fmtTemp(thVal)}
+                </div>
+              </div>
+              <div className="flex flex-col items-center">
+                <HeaterCoilSVG w={60} h={285} />
+                {isHeaterCoilMachine && (
+                  <div className="bg-white border border-gray-400 rounded-sm px-3 py-1 text-base font-bold text-gray-900 flex items-center gap-2 mt-5">
+                    <span>HTR</span>
+                    <span>{fmt(htrPct)} %</span>
+                  </div>
                 )}
-              {/* T0 vertical drop - hidden for S7-200 machines and E-series 30/115-120 (no T0 sensor) */}
-              {!isS7200Machine && !isNoT0Machine && (
-                <line
-                  x1="380"
-                  y1="120"
-                  x2="380"
-                  y2="150"
-                  className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
-                />
-              )}
-              <line
-                x1="480"
-                y1="120"
-                x2="480"
-                y2="150"
-                className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
-              />
-
-              {/* Connection to blower - top */}
-              <line
-                x1="800"
-                y1="120"
-                x2="800"
-                y2="150"
-                className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
-              />
-              {/* Connection to blower - bottom */}
-              <line
-                x1="800"
-                y1="500"
-                x2="800"
-                y2="380"
-                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
-              />
-
-              {/* Lower horizontal line for HTR units */}
-              <line
-                x1="170"
-                y1="400"
-                x2="600"
-                y2="400"
-                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
-              />
-              {/* Left vertical line (silo bottom to lower horizontal) */}
-              <line
-                x1="170"
-                y1="240"
-                x2="170"
-                y2="400"
-                className={`flow-line ${isCompressorOn ? "active-reverse" : "inactive"}`}
-              />
-
-              {/* Line to compressor */}
-              <line
-                x1="600"
-                y1="400"
-                x2="750"
-                y2="500"
-                className={`flow-line ${isCompressorOn ? "active" : "inactive"}`}
-              />
-            </svg>
-
-            {/* TH Thermometer */}
-            {!isSpecialMachine &&
-              machineName !== "GTPL-061-gT-450T-S7-1200" && (
-                <div
-                  className="absolute"
-                  style={{ left: "255px", top: "150px" }}
-                >
-                  <Thermo
-                    label="TH"
-                    tint="#ef4444"
-                    display={(() => {
-                      if (data.AI_TH_Act !== undefined && data.AI_TH_Act !== null)
-                        return formatValue(data.AI_TH_Act, "°C");
-                      if (
-                        data?.AFTER_HEATER_TEMP_Th !== undefined &&
-                        data?.AFTER_HEATER_TEMP_Th !== null
-                      )
-                        return formatValue(data?.AFTER_HEATER_TEMP_Th, "°C");
-                      if (
-                        data?.TH_temp_mean !== undefined &&
-                        data?.TH_temp_mean !== null
-                      )
-                        return formatValue(data?.TH_temp_mean, "°C");
-                      return formatValue(undefined, "°C");
-                    })()}
-                  />
-                </div>
-              )}
-
-            {/* T0 Thermometer - hidden for S7-200 machines and E-series 30/115-120 (no T0 sensor) */}
-            {!isS7200Machine && !isNoT0Machine && (
-              <div className="absolute" style={{ left: "355px", top: "150px" }}>
-                <Thermo
-                  label="T0"
-                  tint="#2563eb"
-                  display={(() => {
-                    if (machineName.includes("GTPL-118-gT-60T-S7-200")) {
-                      if (
-                        data?.T0_set_point !== undefined &&
-                        data?.T0_set_point !== null
-                      )
-                        return formatValue(data?.T0_set_point, "°C");
-                      if (
-                        data?.T1_set_point !== undefined &&
-                        data?.T1_set_point !== null
-                      )
-                        return formatValue(data?.T1_set_point, "°C");
-                      if (
-                        data?.T0_temp_mean !== undefined &&
-                        data?.T0_temp_mean !== null
-                      )
-                        return formatValue(data?.T0_temp_mean, "°C");
-                      return formatValue(undefined, "°C");
-                    }
-                    if (
-                      data.AIR_OUTLET_TEMP !== undefined &&
-                      data.AIR_OUTLET_TEMP !== null
-                    )
-                      return formatValue(data.AIR_OUTLET_TEMP, "°C");
-                    if (
-                      data?.T0_temp_mean !== undefined &&
-                      data?.T0_temp_mean !== null
-                    )
-                      return formatValue(data?.T0_temp_mean, "°C");
-                    return formatValue(undefined, "°C");
-                  })()}
-                />
-              </div>
-            )}
-
-            {/* T1 Thermometer */}
-            <div className="absolute" style={{ left: "455px", top: "150px" }}>
-              <Thermo
-                label="T1"
-                tint="#0891b2"
-                display={(() => {
-                  if (
-                    data?.COLD_AIR_TEMP_T1 !== undefined &&
-                    data?.COLD_AIR_TEMP_T1 !== null
-                  )
-                    return formatValue(data?.COLD_AIR_TEMP_T1, "°C");
-                  if (
-                    data?.T1_temp_mean !== undefined &&
-                    data?.T1_temp_mean !== null
-                  )
-                    return formatValue(data?.T1_temp_mean, "°C");
-                  return formatValue(undefined, "°C");
-                })()}
-              />
-            </div>
-
-            {/* T2 Temperature Display */}
-            <div
-              className="absolute text-center"
-              style={{ left: "560px", top: "150px" }}
-            >
-              <Thermo
-                label="T2"
-                tint="#16a34a"
-                display={(() => {
-                  if (
-                    data?.T2_temp_mean !== undefined &&
-                    data?.T2_temp_mean !== null
-                  )
-                    return formatValue(data?.T2_temp_mean, "°C");
-                  if (
-                    data?.AMBIENT_AIR_TEMP_T2 !== undefined &&
-                    data?.AMBIENT_AIR_TEMP_T2 !== null
-                  )
-                    return formatValue(data?.AMBIENT_AIR_TEMP_T2, "°C");
-                  return formatValue(undefined, "°C");
-                })()}
-              />
-            </div>
-
-            {/* HTR Units */}
-            <div
-              className={`absolute flex items-start z-10 ${
-                isS7200Machine && isHTRMachine
-                  ? "left-[260px] gap-[150px]"
-                  : isHTRMachine
-                    ? "left-[350px] gap-14"
-                    : "left-[255px] gap-14"
-              }`}
-              style={{ top: "360px" }}
-            >
-              {!isHTRMachine && (
-                <ValveUnit
-                  label="HTR"
-                  display={(() => {
-                    if (
-                      data.Value_to_Display_HEATER !== undefined &&
-                      data.Value_to_Display_HEATER !== null
-                    )
-                      return formatValue(data.Value_to_Display_HEATER, "%");
-                    if (
-                      data?.Heater_speed !== undefined &&
-                      data?.Heater_speed !== null
-                    )
-                      return formatValue(data?.Heater_speed, "%");
-                    return formatValue(undefined, "%");
-                  })()}
-                />
-              )}
-              <ValveUnit
-                label="AHT"
-                display={(() => {
-                  if (
-                    data?.AHT_vale_speed !== undefined &&
-                    data?.AHT_vale_speed !== null
-                  )
-                    return formatValue(data?.AHT_vale_speed, "%");
-                  if (
-                    data.Value_to_Display_AHT_VALE_OPEN !== undefined &&
-                    data.Value_to_Display_AHT_VALE_OPEN !== null
-                  )
-                    return formatValue(data.Value_to_Display_AHT_VALE_OPEN, "%");
-                  if (
-                    data.AFTER_HEAT_VALVE_RPM !== undefined &&
-                    data.AFTER_HEAT_VALVE_RPM !== null
-                  )
-                    return formatValue(data.AFTER_HEAT_VALVE_RPM, "%");
-                  if (
-                    data?.AHT_valve_speed !== undefined &&
-                    data?.AHT_valve_speed !== null
-                  )
-                    return formatValue(data?.AHT_valve_speed, "%");
-                  return formatValue(undefined, "%");
-                })()}
-              />
-              <ValveUnit
-                label="HGS"
-                display={(() => {
-                  if (
-                    data.Value_to_Display_HOT_GAS_VALVE_OPEN !== undefined &&
-                    data.Value_to_Display_HOT_GAS_VALVE_OPEN !== null
-                  )
-                    return formatValue(data.Value_to_Display_HOT_GAS_VALVE_OPEN, "%");
-                  if (
-                    data?.HOT_GAS_VALVE_RPM !== undefined &&
-                    data?.HOT_GAS_VALVE_RPM !== null
-                  )
-                    return formatValue(data?.HOT_GAS_VALVE_RPM, "%");
-                  if (
-                    data?.Hot_valve_speed !== undefined &&
-                    data?.Hot_valve_speed !== null
-                  )
-                    return formatValue(data?.Hot_valve_speed, "%");
-                  return formatValue(undefined, "%");
-                })()}
-              />
-            </div>
-
-            {/* Blower Unit */}
-            <div className="absolute" style={{ left: "730px", top: "470px" }}>
-              <div className="text-black px-4 py-2 text-center rounded">
-                {/* Industrial centrifugal (scroll) blower — 3D shaded */}
-                <img
-                  src={isBlowerOn ? "/blower%20on.jpeg" : "/blower%20off.jpeg"}
-                  alt="Blower"
-                  className="mx-auto"
-                  style={{
-                    width: 78,
-                    height: 78,
-                    objectFit: "contain",
-                    mixBlendMode: "multiply",
-                    transformOrigin: "center",
-                    animation: isBlowerOn
-                      ? "acWobble 0.35s ease-in-out infinite"
-                      : "none",
-                    filter: isBlowerOn
-                      ? "drop-shadow(0 0 5px rgba(34,197,94,0.55))"
-                      : "none",
-                  }}
-                />
-                <div className="text-xs font-bold mt-1">BLOWER</div>
-                <div className="text-sm font-bold">
-                  {(() => {
-                    // Handle zero values correctly
-                    if (
-                      data?.Blower_speed !== undefined &&
-                      data?.Blower_speed !== null
-                    )
-                      return formatValue(data?.Blower_speed, "%");
-                    if (
-                      data?.BLOWER_RPM !== undefined &&
-                      data?.BLOWER_RPM !== null
-                    )
-                      return formatValue(data?.BLOWER_RPM, "%");
-                    if (
-                      data?.Value_to_Display_BLOWER !== undefined &&
-                      data?.Value_to_Display_BLOWER !== null
-                    )
-                      return formatValue(data?.Value_to_Display_BLOWER, "%");
-                    return formatValue(undefined, "%");
-                  })()}
-                </div>
               </div>
             </div>
-
-            {/* Condenser Fan */}
-            <div className="absolute" style={{ left: "780px", top: "150px" }}>
-              {/* Finned condenser coil + mounted fans (reference style) */}
-              <div className="relative flex items-start gap-2">
-                {/* run status LED */}
-                <div className="absolute -top-3 right-0 z-10">
-                  <div
-                    className={`w-3 h-3 rounded-full border border-slate-600 ${
-                      isCondenserFanOn ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  ></div>
-                </div>
-
-                {/* finned condenser coil (heat exchanger) */}
-                <svg width="42" height="150" viewBox="0 0 42 150">
-                  <defs>
-                    <linearGradient id="coilG" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#94a3b8" />
-                      <stop offset="45%" stopColor="#e2e8f0" />
-                      <stop offset="100%" stopColor="#64748b" />
-                    </linearGradient>
-                    <pattern
-                      id="coilHatch"
-                      width="9"
-                      height="9"
-                      patternUnits="userSpaceOnUse"
-                      patternTransform="rotate(45)"
-                    >
-                      <line x1="0" y1="0" x2="0" y2="9" stroke="#475569" strokeWidth="1" opacity="0.45" />
-                    </pattern>
-                  </defs>
-                  {/* coil body + fin hatch */}
-                  <rect x="4" y="8" width="34" height="134" rx="3" fill="url(#coilG)" stroke="#334155" strokeWidth="1.5" />
-                  <rect x="4" y="8" width="34" height="134" rx="3" fill="url(#coilHatch)" />
-                  {/* top / bottom manifolds */}
-                  <rect x="2" y="3" width="38" height="7" rx="2" fill="#475569" />
-                  <rect x="2" y="140" width="38" height="7" rx="2" fill="#475569" />
-                  {/* header pipes */}
-                  <rect x="18" y="0" width="6" height="4" fill="#334155" />
-                  <rect x="18" y="146" width="6" height="4" fill="#334155" />
-                </svg>
-
-                {/* Animated fans in recessed mounts (2/4/6/1) */}
-                <div
-                  className="grid gap-2"
-                  style={{
-                    gridTemplateColumns:
-                      fanCount >= 4 ? "repeat(2, 1fr)" : "repeat(1, 1fr)",
-                  }}
-                >
-                  {Array.from({ length: fanCount }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="rounded-full"
-                      style={{
-                        background:
-                          "radial-gradient(circle at 38% 32%, #475569, #0f172a)",
-                        padding: "3px",
-                        boxShadow: "inset 0 2px 6px rgba(0,0,0,0.75)",
-                      }}
-                    >
-                      <FanSVG
-                        size={fanCount >= 4 ? 44 : 58}
-                        spinning={condFanOn(i + 1)}
-                        duration={condPct > 0 ? spinDur(condPct) : "1.1s"}
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="absolute -bottom-12 left-20 transform -translate-x-1/2 text-center">
-                <div className="text-xs font-bold">Condensor</div>
-                <div className="text-xs">
-                  {(() => {
-                    // Handle zero values correctly
-                    if (
-                      data?.Cond_fan_speed !== undefined &&
-                      data?.Cond_fan_speed !== null
-                    )
-                      return formatValue(data?.Cond_fan_speed, "%");
-                    if (
-                      data?.Value_to_Display_COND_ACT_SPEED !== undefined &&
-                      data?.Value_to_Display_COND_ACT_SPEED !== null
-                    )
-                      return formatValue(
-                        data?.Value_to_Display_COND_ACT_SPEED,
-                        "%",
-                      );
-                    if (
-                      data?.CONDENSER_RPM !== undefined &&
-                      data?.CONDENSER_RPM !== null
-                    )
-                      return formatValue(data?.CONDENSER_RPM, "%");
-                    if (
-                      data?.Condenser_fan_speed !== undefined &&
-                      data?.Condenser_fan_speed !== null
-                    )
-                      return formatValue(data?.Condenser_fan_speed, "%");
-                    return formatValue(undefined, "%");
-                  })()}
-                </div>
-              </div>
-            </div>
-
-            {/* Compressor Unit */}
-            <div className="absolute" style={{ left: "840px", top: "470px" }}>
-              <div
-                className="w-24 h-16 rounded relative"
-                style={{
-                  transformOrigin: "center",
-                  animation: isCompressorOn
-                    ? "acWobble 0.25s ease-in-out infinite"
-                    : "none",
-                }}
-              >
-                {/* Industrial reciprocating compressor image */}
-                <img
-                  src="/compressor%20off.jpeg"
-                  alt="Compressor"
-                  style={{
-                    width: 100,
-                    objectFit: "contain",
-                    mixBlendMode: "multiply",
-                    filter: isCompressorOn
-                      ? "sepia(1) hue-rotate(65deg) saturate(3.2) brightness(1.05) drop-shadow(0 0 6px rgba(34,197,94,0.7))"
-                      : "grayscale(0.15)",
-                  }}
-                />
-              </div>
-              <div className="absolute -bottom-8 bg-red-600 text-white px-2 py-1 text-center rounded text-xs left-1/2 transform -translate-x-1/2 whitespace-nowrap">
-                <div className="font-bold">
-                  <span className="flex items-center gap-1">
-                    <span
-                      className={`h-2 w-2 rounded-full ${
-                        isCompressorOn ? "bg-green-500" : "bg-red-500"
-                      } shadow-sm`}
-                    />
-                    {isCompressorOn ? "ON" : "OFF"}
+          )}
+          {evapCoils.map((s, i) => (
+            <div key={s.key} className="flex items-center gap-2">
+              {s.label && (
+                <div className="flex flex-col items-center">
+                  <span className="text-base font-bold text-gray-800 mb-1">
+                    {s.label}
                   </span>
+                  <div className="bg-white border border-gray-400 rounded-sm px-3 py-1.5 text-base font-bold text-gray-900 min-w-[60px] text-center">
+                    {s.value}
+                  </div>
+                </div>
+              )}
+              <div className="flex flex-col items-center">
+                <CoilSVG w={hasHeater ? 56 : 64} h={285} uid={`evap${i}`} zig={s.zig} />
+                <div className="bg-white border border-gray-400 rounded-sm px-3 py-1 text-base font-bold text-gray-900 flex items-center gap-2 mt-5">
+                  <span>{s.box}</span>
+                  <span>{fmt(s.pct)} %</span>
                 </div>
               </div>
             </div>
+          ))}
+        </div>
 
-            {/* Pressure Readings */}
-            <div
-              className="absolute flex gap-2 z-10"
-              style={{ left: "965px", top: "500px" }}
-            >
-              <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
-                LP
-                <br />
-                {(() => {
-                  const isBarMachine =
-                    machineName === "GTPL-137-gT-450T-S7-1200" ||
-                    machineName === "GTPL-138-gT-450T-S7-1200";
+        {/* ---------- Legend (bottom, per reference image) ---------- */}
+        <div
+          className="absolute z-10 flex gap-10 text-sm font-bold text-gray-900"
+          style={{ left: 280, top: 645 }}
+        >
+          <div className="space-y-1">
+            <div>T2 = Ambient Air Temperature</div>
+            <div>T1 = Cold Air Temperature</div>
+            <div>T0 = Air Outlet Temperature</div>
+          </div>
+          <div className="space-y-1">
+            <div>AHT = Afterheat Valve</div>
+            <div>HGS = Hot Gas Valve</div>
+          </div>
+        </div>
 
-                  if (isBarMachine) {
-                    if (
-                      data.AI_SUC_PRESSURE !== undefined &&
-                      data.AI_SUC_PRESSURE !== null
-                    )
-                      return formatValue(data.AI_SUC_PRESSURE, " bar");
-                    if (data?.LP !== undefined && data?.LP !== null)
-                      return formatValue(data?.LP, " bar");
-                    if (data?.LP_value !== undefined && data?.LP_value !== null)
-                      return formatValue(data?.LP_value, " bar");
-                    return formatValue(undefined, " bar");
-                  }
+        {/* ---------- Blower ---------- */}
+        <div className="absolute z-10" style={{ left: 803, top: 382 }}>
+          <BlowerSVG spinning={isBlowerOn} />
+        </div>
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-3 py-1.5 text-gray-800 flex items-center justify-center gap-4"
+          style={{ left: 803, top: 578, width: 170 }}
+        >
+          <span className="text-base font-bold">Blower</span>
+          <span className="text-base font-bold">{fmt(blowerPct)} %</span>
+        </div>
 
-                  if (
-                    data.AI_SUC_PRESSURE !== undefined &&
-                    data.AI_SUC_PRESSURE !== null
-                  )
-                    return formatValue(data.AI_SUC_PRESSURE);
-                  if (data?.LP !== undefined && data?.LP !== null)
-                    return formatValue(data?.LP);
-                  if (data?.LP_value !== undefined && data?.LP_value !== null)
-                    return formatValue(data?.LP_value);
-                  return formatValue(undefined);
-                })()}
+        {/* T2 ambient badge (above blower→compressor pipe, from machine config) */}
+        <div className="absolute z-10" style={{ left: 975, top: 428 }}>
+          <SensorBadge
+            label="T2"
+            value={fmtTemp(
+              config?.temperatureSensors?.T2
+                ? data?.[config.temperatureSensors.T2.key]
+                : ta1Val,
+            )}
+            color="#c2410c"
+            bg="#fdece4"
+            border="#f5a274"
+          />
+        </div>
+
+        {/* ---------- Condenser coil + fan ---------- */}
+        <div className="absolute z-10" style={{ left: 1215, top: 148 }}>
+          <CoilSVG w={52} h={240} uid="cond" />
+        </div>
+        <div
+          className="absolute z-10 bg-white border border-gray-200 rounded-md px-2 py-2 text-center flex flex-col"
+          style={{ left: 1270, top: 148, width: 126, height: 240 }}
+        >
+          <div className="text-sm font-bold text-gray-800 leading-tight mb-1">
+            CONDENSER
+            <br />
+            FAN
+          </div>
+          <div
+            className="flex-1 grid justify-items-center items-center"
+            style={{
+              gridTemplateColumns: fanCount >= 4 ? "repeat(2, 1fr)" : "1fr",
+            }}
+          >
+            {Array.from({ length: fanCount }).map((_, i) => (
+              <FanSVG
+                key={i}
+                size={fanCount >= 4 ? 52 : fanCount === 2 ? 82 : 104}
+                spinning={condFanOn(i + 1)}
+                duration={condPct > 0 ? spinDur(condPct) : "1.1s"}
+              />
+            ))}
+          </div>
+        </div>
+        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 */}
+        {(isPaddy200Machine || isHeaterCoilMachine) && (
+          <div
+            className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-0.5 text-sm font-bold text-gray-900 text-center"
+            style={{ left: 1290, top: 393 }}
+          >
+            {fmt(condPct)} %
+          </div>
+        )}
+
+        {/* ---------- Compressor panel ---------- */}
+        <div
+          className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-sm p-3"
+          style={{ left: 1078, top: 422, width: 305 }}
+        >
+          <span
+            className={`absolute top-2 right-2 text-white text-xs font-bold px-2.5 py-0.5 rounded ${
+              isCompressorOn ? "bg-green-600" : "bg-red-500"
+            }`}
+          >
+            {isCompressorOn ? "ON" : "OFF"}
+          </span>
+          <div className="flex items-center gap-3 mt-1">
+            <div className="flex flex-col items-center">
+              <img
+                src="/compressor%20off.jpeg"
+                alt="Compressor"
+                style={{
+                  width: 140,
+                  objectFit: "contain",
+                  mixBlendMode: "multiply",
+                  filter: isCompressorOn
+                    ? "sepia(1) hue-rotate(65deg) saturate(3.2) brightness(1.05) drop-shadow(0 0 6px rgba(34,197,94,0.7))"
+                    : "grayscale(1) brightness(0.95)",
+                }}
+              />
+              <span className="text-sm font-bold text-gray-800 mt-1">
+                COMPRESSOR
+              </span>
+            </div>
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="border border-gray-200 rounded px-3 py-1.5 bg-white">
+                <div className="text-xs font-bold text-gray-700">HP</div>
+                <div className="text-sm font-bold text-gray-900">
+                  {fmt(hpVal)} {pressureUnit}
+                </div>
               </div>
-              <div className="bg-yellow-400 text-black px-2 py-1 rounded text-xs font-bold">
-                HP
-                <br />
-                {(() => {
-                  const isBarMachine =
-                    machineName === "GTPL-137-gT-450T-S7-1200" ||
-                    machineName === "GTPL-138-gT-450T-S7-1200";
-
-                  if (isBarMachine) {
-                    if (
-                      data.AI_COND_PRESSURE !== undefined &&
-                      data.AI_COND_PRESSURE !== null
-                    )
-                      return formatValue(data.AI_COND_PRESSURE, " bar");
-                    if (data?.HP !== undefined && data?.HP !== null)
-                      return formatValue(data?.HP, " bar");
-                    if (
-                      data?.COMPRESSOR_TIME !== undefined &&
-                      data?.COMPRESSOR_TIME !== null
-                    )
-                      return formatValue(data?.COMPRESSOR_TIME, " bar");
-                    if (data?.HP_value !== undefined && data?.HP_value !== null)
-                      return formatValue(data?.HP_value, " bar");
-                    if (
-                      data?.Compressor_timer !== undefined &&
-                      data?.Compressor_timer !== null
-                    )
-                      return formatValue(data?.Compressor_timer, " bar");
-                    return formatValue(undefined, " bar");
-                  }
-
-                  if (
-                    data.AI_COND_PRESSURE !== undefined &&
-                    data.AI_COND_PRESSURE !== null
-                  )
-                    return formatValue(data.AI_COND_PRESSURE);
-                  if (data?.HP !== undefined && data?.HP !== null)
-                    return formatValue(data?.HP);
-                  if (
-                    data?.COMPRESSOR_TIME !== undefined &&
-                    data?.COMPRESSOR_TIME !== null
-                  )
-                    return formatValue(data?.COMPRESSOR_TIME);
-                  if (data?.HP_value !== undefined && data?.HP_value !== null)
-                    return formatValue(data?.HP_value);
-                  if (
-                    data?.Compressor_timer !== undefined &&
-                    data?.Compressor_timer !== null
-                  )
-                    return formatValue(data?.Compressor_timer);
-                  return formatValue(undefined);
-                })()}
+              <div className="border border-gray-200 rounded px-3 py-1.5 bg-white">
+                <div className="text-xs font-bold text-gray-700">LP</div>
+                <div className="text-sm font-bold text-gray-900">
+                  {fmt(lpVal)} {pressureUnit}
+                </div>
               </div>
             </div>
           </div>
         </div>
+
+        {/* ---------- CR valve states (below compressor panel, per reference image) ---------- */}
+        {crValves.length > 0 && (
+          <div
+            className="absolute z-10 grid grid-cols-2 gap-2"
+            style={{ left: 1078, top: 604, width: 305 }}
+          >
+            {crValves.map((c) => (
+              <div
+                key={c.label}
+                className="flex items-center justify-between bg-white border border-gray-300 rounded px-2.5 py-1.5 shadow-sm"
+              >
+                <span className="text-sm font-bold text-gray-700 whitespace-nowrap">
+                  {c.label}
+                </span>
+                <span
+                  className={`text-xs font-bold px-2 py-0.5 rounded ${
+                    isTrueValue(c.val)
+                      ? "bg-green-600 text-white"
+                      : "bg-gray-100 text-gray-500"
+                  }`}
+                >
+                  {isTrueValue(c.val) ? "ON" : "OFF"}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+
       </div>
     </div>
   );

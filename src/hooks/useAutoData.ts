@@ -177,7 +177,7 @@ export const useAutoData = (autoType: string) => {
     if (isNaN(numericValue)) return `${value}${unit}`;
     if (numericValue === 0) {
       if (unit.includes("°")) {
-        return `0.00${unit}`;
+        return `0.0${unit}`;
       }
       if (unit.includes("bar")) {
         return `${numericValue.toFixed(1)}${unit}`;

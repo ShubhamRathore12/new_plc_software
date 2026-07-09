@@ -499,9 +499,31 @@ export default function TableWithDownload() {
     ? rawKeys
     : rawKeys.filter((k) => !k.toLowerCase().includes("heater"));
 
-  const sortedKeys = keys.sort((a: string, b: string) => {
+  // Column schema for the selected machine's DB table (for the "View Schema"
+  // dialog AND to drive the report table's column order + exact naming).
+  const schemaCols = getSchemaForTable(DEVICE_TO_TABLE_MAP[selectedDevice]);
+
+  // Map lowercased column name -> its exact position and casing in the DB table,
+  // so the report shows columns in the same order/name as they exist in the DB.
+  const schemaIndex: Record<string, number> = {};
+  const schemaName: Record<string, string> = {};
+  schemaCols?.forEach((c, i) => {
+    schemaIndex[c.name.toLowerCase()] = i;
+    schemaName[c.name.toLowerCase()] = c.name;
+  });
+
+  const sortedKeys = [...keys].sort((a: string, b: string) => {
     const aLower = a.toLowerCase();
     const bLower = b.toLowerCase();
+
+    // When a DB schema exists, order columns exactly as they appear in the
+    // table (schema position). Columns not present in the schema (e.g. id,
+    // created_on) fall through to the priority/alpha rules below.
+    if (schemaCols) {
+      const aIdx = schemaIndex[aLower] ?? Infinity;
+      const bIdx = schemaIndex[bLower] ?? Infinity;
+      if (aIdx !== bIdx) return aIdx - bIdx;
+    }
 
     // Define priority order for specific fields
     // Temperature columns must group right after created_on (incl. TH/supply-air
@@ -535,8 +557,8 @@ export default function TableWithDownload() {
     return aLower.localeCompare(bLower);
   });
 
-  // Column schema for the selected machine's DB table (for the "View Schema" dialog)
-  const schemaCols = getSchemaForTable(DEVICE_TO_TABLE_MAP[selectedDevice]);
+  // Display the exact DB column name (schema casing) when known.
+  const displayColName = (key: string) => schemaName[key.toLowerCase()] ?? key;
 
   const disabledDate = (current: Dayjs) => {
     const today = dayjs();
@@ -702,7 +724,7 @@ export default function TableWithDownload() {
                       key={key}
                       className="border border-gray-300 bg-gray-100 text-center font-semibold text-sm p-2 whitespace-nowrap"
                     >
-                      {key}
+                      {displayColName(key)}
                     </TableHead>
                   ))}
                 </TableRow>
