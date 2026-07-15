@@ -430,7 +430,42 @@ export function extractTagDataFromRecords(
     }
   }
 
-  return tagData;
+  return collapseRepeatsByWindow(tagData);
+}
+
+// Same fault logged every ~6s in DB. Collapse repeats of the same tag to one
+// entry per DEDUP_WINDOW_MS (2 min). Keeps the newest occurrence in each window.
+const DEDUP_WINDOW_MS = 2 * 60 * 1000;
+
+function collapseRepeatsByWindow(entries: TagData[]): TagData[] {
+  const parseTime = (v?: string) => {
+    const t = v ? new Date(v).getTime() : NaN;
+    return Number.isNaN(t) ? 0 : t;
+  };
+
+  // Sort each tag's entries newest-first, keep one per 2-min window.
+  const byTag = new Map<string, TagData[]>();
+  for (const e of entries) {
+    const list = byTag.get(e.tag);
+    if (list) list.push(e);
+    else byTag.set(e.tag, [e]);
+  }
+
+  const kept = new Set<TagData>();
+  for (const list of byTag.values()) {
+    list.sort((a, b) => parseTime(b.createdAt) - parseTime(a.createdAt));
+    let lastKept = Infinity;
+    for (const e of list) {
+      const t = parseTime(e.createdAt);
+      if (lastKept - t >= DEDUP_WINDOW_MS || lastKept === Infinity) {
+        kept.add(e);
+        lastKept = t;
+      }
+    }
+  }
+
+  // Preserve original ordering of the incoming records.
+  return entries.filter((e) => kept.has(e));
 }
 
 // Collapse a key to a comparable form: lowercase, alphanumerics only.

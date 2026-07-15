@@ -36,6 +36,7 @@ import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useDataStore } from "@/lib/store";
 import { toast } from "sonner";
 import { getSchemaForTable } from "@/lib/dbSchema";
+import { getKabuColumnOrder } from "@/lib/kabuColumnOrder";
 
 const { RangePicker } = DatePicker;
 
@@ -499,9 +500,13 @@ export default function TableWithDownload() {
     ? rawKeys
     : rawKeys.filter((k) => !k.toLowerCase().includes("heater"));
 
+  // Get KABU column order for this table (highest priority)
+  const tableName = DEVICE_TO_TABLE_MAP[selectedDevice];
+  const kabuColumnOrder = getKabuColumnOrder(tableName);
+
   // Column schema for the selected machine's DB table (for the "View Schema"
-  // dialog AND to drive the report table's column order + exact naming).
-  const schemaCols = getSchemaForTable(DEVICE_TO_TABLE_MAP[selectedDevice]);
+  // dialog AND fallback column ordering).
+  const schemaCols = getSchemaForTable(tableName);
 
   // Map lowercased column name -> its exact position and casing in the DB table,
   // so the report shows columns in the same order/name as they exist in the DB.
@@ -516,21 +521,32 @@ export default function TableWithDownload() {
     const aLower = a.toLowerCase();
     const bLower = b.toLowerCase();
 
-    // When a DB schema exists, order columns exactly as they appear in the
-    // table (schema position). Columns not present in the schema (e.g. id,
-    // created_on) fall through to the priority/alpha rules below.
+    // FIRST PRIORITY: Use KABU column order if available
+    if (kabuColumnOrder) {
+      const kabuIndexA = kabuColumnOrder.findIndex(col => col.toLowerCase() === aLower);
+      const kabuIndexB = kabuColumnOrder.findIndex(col => col.toLowerCase() === bLower);
+      const aIdx = kabuIndexA >= 0 ? kabuIndexA : Infinity;
+      const bIdx = kabuIndexB >= 0 ? kabuIndexB : Infinity;
+      if (aIdx !== bIdx) return aIdx - bIdx;
+      // If both not in KABU order, continue to next sort rule
+    }
+
+    // SECOND PRIORITY: When a DB schema exists, order columns exactly as they
+    // appear in the table (schema position). Columns not present in the schema
+    // (e.g. id, created_on) fall through to the priority/alpha rules below.
     if (schemaCols) {
       const aIdx = schemaIndex[aLower] ?? Infinity;
       const bIdx = schemaIndex[bLower] ?? Infinity;
       if (aIdx !== bIdx) return aIdx - bIdx;
     }
 
-    // Define priority order for specific fields
+    // THIRD PRIORITY: Define priority order for specific fields
     // Temperature columns must group right after created_on (incl. TH/supply-air
     // variants) so they never fall to the end of the table.
     const priorityOrder: Record<string, number> = {
       'id': 0,
       'created_on': 1,
+      'created_at': 1,
       'th_temp_mean': 2,
       'after_heater_temp_th': 2,
       't0_1_air_outlet_temp': 3,
@@ -553,7 +569,7 @@ export default function TableWithDownload() {
       if (aPriority !== bPriority) return aPriority - bPriority;
     }
 
-    // Rest in alphabetical order
+    // FALLBACK: Rest in alphabetical order
     return aLower.localeCompare(bLower);
   });
 
