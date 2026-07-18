@@ -550,9 +550,23 @@ export default function AutoGrainPage() {
     },
   };
 
-  const currentConfig =
+  const baseConfig =
     machineConfig[autoGrain as keyof typeof machineConfig] ||
     machineConfig["GTPL-132-300-AP-S7-1200"];
+
+  // AP machines (300AP / 450AP) always show condenser fan speed.
+  const currentConfig =
+    (autoGrain as string)?.includes("AP") &&
+    !(baseConfig.controls as any).COND &&
+    !(baseConfig.controls as any).CONDENSORFANSPEED
+      ? ({
+          ...baseConfig,
+          controls: {
+            ...baseConfig.controls,
+            CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan" },
+          },
+        } as typeof baseConfig)
+      : baseConfig;
 
   const handleBack = () => router.push(`/menu/${autoGrain}`);
 

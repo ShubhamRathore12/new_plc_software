@@ -795,6 +795,8 @@ export default function AutoDiagram1({
   config,
 }: any) {
   const normalizedMachineName = (machineName || "").toUpperCase();
+  // AP machines (300AP / 450AP) — show condenser fan speed
+  const isAPMachine = normalizedMachineName.includes("AP");
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
@@ -1956,8 +1958,8 @@ export default function AutoDiagram1({
             ))}
           </div>
         </div>
-        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 */}
-        {(isPaddy200Machine || isHeaterCoilMachine) && (
+        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 + AP machines */}
+        {(isPaddy200Machine || isHeaterCoilMachine || isAPMachine) && (
           <div
             className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-0.5 text-sm font-bold text-gray-900 text-center"
             style={{ left: 1290, top: 393 }}
