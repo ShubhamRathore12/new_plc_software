@@ -1046,6 +1046,7 @@ export default function AutoDiagram1({
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
+    "GTPL-044-GT-140E-S7-1200",
 
     "GTPL-030-gT-180E-S7-1200",
     "GTPL-118-gT-60T-S7-1200",
@@ -1059,6 +1060,7 @@ export default function AutoDiagram1({
     "GTPL-117-gT-320E-S7-1200",
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
+    "GTPL-044-GT-140E-S7-1200",
   ].some((name) => machineName.includes(name));
 
   // Number of condenser fans for this machine
@@ -1450,6 +1452,7 @@ export default function AutoDiagram1({
     "GTPL-117",
     "GTPL-119",
     "GTPL-120",
+    "GTPL-044",
   ].some((n) => String(machineName).includes(n));
   const hasHeater = isPaddy200Machine || isHeaterCoilMachine;
   const thVal = config?.temperatureSensors?.TH

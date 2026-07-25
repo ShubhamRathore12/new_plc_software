@@ -136,7 +136,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
-        HTR: { key: "Heater_speed", label: "Heater_speed" },
+        HTR: { key: "Heater_speed", label: "Heater" },
       },
       compressor: {
         time: "Compressor_timer",
