@@ -750,6 +750,13 @@ export default function DevicesPage() {
       chillerModel: "gT-140E",
     },
     {
+      name: "GTPL-044-GT-140E-S7-1200",
+      location: "Germany",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-140E",
+    },
+    {
       name: "GTPL-061-gT-450T-S7-1200",
       location: "Turkey",
       image: "/images/450.jpeg",
@@ -1067,6 +1074,7 @@ export default function DevicesPage() {
     "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
     "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
     "GTPL-30-gT-180E-S7-1200": "GTPL_114",
+    "GTPL-044-GT-140E-S7-1200": "GTPL_044",
     "GTPL-115-gT-180E-S7-1200": "GTPL_115",
     "GTPL-116-gT-240E-S7-1200": "GTPL_116",
     "GTPL-117-gT-320E-S7-1200": "GTPL_117",

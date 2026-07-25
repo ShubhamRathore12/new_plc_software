@@ -365,6 +365,7 @@ export default function AnalogPage() {
   > = {
     "GTPL-115-gT-180E-S7-1200": GTPL_30_config,
     "GTPL-30-gT-180E-S7-1200": GTPL_30_config,
+    "GTPL-044-GT-140E-S7-1200": GTPL_30_config,
     "GTPL-119-gT-180E-S7-1200": GTPL_30_config,
     "GTPL-120-gT-180E-S7-1200": GTPL_30_config,
     "GTPL-116-gT-240E-S7-1200": GTPL_30_config,

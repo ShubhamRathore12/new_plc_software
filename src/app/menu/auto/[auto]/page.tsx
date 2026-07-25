@@ -124,6 +124,26 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-044-GT-140E-S7-1200": {
+      serialNumber: "GTPL_044",
+      temperatureSensors: {
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
+        HTR: { key: "Heater_speed", label: "Heater" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "GTPL-115-gT-180E-S7-1200": {
       serialNumber: "GTPL_115",
       temperatureSensors: {

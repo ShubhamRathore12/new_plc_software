@@ -143,7 +143,7 @@ export default function OutputsPage() {
         { id: "14", description: "Condenser fan2 on", dataKey: "Condenser_fan2_on_Q2_3" },
       ];
     }
-    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === 'GTPL-30-gT-180E-S7-1200' || deviceType === "GTPL-119-gT-180E-S7-1200" || deviceType === "GTPL-120-gT-180E-S7-1200") {
+    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === 'GTPL-30-gT-180E-S7-1200' || deviceType === "GTPL-119-gT-180E-S7-1200" || deviceType === "GTPL-120-gT-180E-S7-1200" || deviceType === "GTPL-044-GT-140E-S7-1200") {
       return [
         { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
         { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },
