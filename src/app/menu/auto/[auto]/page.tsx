@@ -136,7 +136,7 @@ export default function AutoPage() {
         HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
         BLOWER: { key: "Blower_speed", label: "Blower" },
         CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
-        HTR: { key: "Heater_speed", label: "Heater" },
+        HTR: { key: "Heater_speed", label: "Heater_speed" },
       },
       compressor: {
         time: "Compressor_timer",
@@ -1044,7 +1044,7 @@ export default function AutoPage() {
                     })}
 
                     {/* Compressor values */}
-                    {['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200',].includes(auto as string) &&
+                    {['GTPL-120-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-115-gT-180E-S7-1200', 'GTPL-30-gT-180E-S7-1200', 'GTPL-116-gT-240E-S7-1200', 'GTPL-117-gT-320E-S7-1200', 'GTPL-119-gT-180E-S7-1200', 'GTPL-120-gT-180E-S7-1200', 'GTPL-044-GT-140E-S7-1200',].includes(auto as string) &&
                       <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
