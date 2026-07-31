@@ -736,7 +736,7 @@ export default function AutoPaddyPage() {
                     blower={Fan}
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-300-AP-S7-1200"
+                    machineName={autoPaddy}
                     config={currentConfig}
                   />
                 )}

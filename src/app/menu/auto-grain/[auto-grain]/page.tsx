@@ -689,7 +689,7 @@ export default function AutoGrainPage() {
                     blower={Fan}
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-300-AP-S7-1200"
+                    machineName={autoGrain}
                     config={currentConfig}
                   />
                 )}

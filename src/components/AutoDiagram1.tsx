@@ -1047,8 +1047,7 @@ export default function AutoDiagram1({
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
     "GTPL-044-GT-140E-S7-1200",
-
-    "GTPL-030-gT-180E-S7-1200",
+    "GTPL-30-gT-180E-S7-1200",
     "GTPL-118-gT-60T-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -1081,7 +1080,7 @@ export default function AutoDiagram1({
   // Fault / TOP / breaker input bits (_Ix_x) never spin a fan.
   const COND_FAN_ON_PREFIXES = (n: number) => [
     `cond_fan_${n}_on_q`, // 650T style
-    `condenser_fan${n}_on_q`, // 300AP / 450T style
+    `condenser_fan${n}_on_q`, // 300AP / 450AP / 450T style (e.g., Condenser_fan1_on_Q2_1)
     `condenser_fan_${n}_on_q`,
     `cond_fan${n}_on_q`,
   ];
@@ -1317,24 +1316,41 @@ export default function AutoDiagram1({
   };
 
   // TS1 = supply air temp (air into silo), TC1 = cold air temp, TA1 = ambient temp
+  // Fallback: calculate mean from individual sensors if mean column missing
+  const calcMean = (a: any, b: any) => {
+    const n1 = parseFloat(String(a));
+    const n2 = parseFloat(String(b));
+    if (!isNaN(n1) && !isNaN(n2)) return ((n1 + n2) / 2).toFixed(1);
+    if (!isNaN(n1)) return n1;
+    if (!isNaN(n2)) return n2;
+    return undefined;
+  };
+
+  // Use config temperature sensor keys if provided, fallback to hardcoded
   const ts1Val = pickVal(
+    config?.temperatureSensors?.T0 ? data?.[config.temperatureSensors.T0.key] : undefined,
     data?.TS1,
     data?.TS1_temp,
     data?.SPLY_AIR_TEMP,
     data?.AIR_OUTLET_TEMP,
     data?.T0_temp_mean,
+    calcMean(data?.T0_1_air_outlet_temp, data?.T0_2_air_outlet_temp),
   );
   const tc1Val = pickVal(
+    config?.temperatureSensors?.T1 ? data?.[config.temperatureSensors.T1.key] : undefined,
     data?.TC1,
     data?.TC1_temp,
     data?.COLD_AIR_TEMP_T1,
     data?.T1_temp_mean,
+    calcMean(data?.T1_1_cold_air_temp, data?.T1_2_cold_air_temp),
   );
   const ta1Val = pickVal(
+    config?.temperatureSensors?.T2 ? data?.[config.temperatureSensors.T2.key] : undefined,
     data?.TA1,
     data?.TA1_temp,
     data?.AMBIENT_AIR_TEMP_T2,
     data?.T2_temp_mean,
+    calcMean(data?.T2_1_ambient_temp, data?.T2_2_ambient_temp),
   );
 
   const htrPct = pickVal(
@@ -1376,17 +1392,25 @@ export default function AutoDiagram1({
       : "psi";
 
   // Set points — special machines run on T0 / Delta T, the rest on T1 / TH-T1
-  const defTC1 = pickVal(
-    data?.TC1_set_point,
-    data?.T1_set_point,
-    data?.T0_set_point,
-    data?.T1_SET_POINT,
-    isGrainChilling
-      ? data?.T1_set_point_in_grain_chilling_mode
-      : data?.T1_set_point_in_paddy_aeging_mode,
-    data?.T1_set_point_in_grain_chilling_mode,
-    data?.T1_set_point_in_paddy_aeging_mode,
-  );
+  const defTC1 = isSpecialMachine
+    ? pickVal(
+        data?.T0_set_point,
+        isGrainChilling
+          ? data?.T0_set_point_in_grain_chilling_mode
+          : data?.T0_set_point_in_paddy_aeging_mode,
+        data?.T0_set_point_in_grain_chilling_mode,
+        data?.T0_set_point_in_paddy_aeging_mode,
+      )
+    : pickVal(
+        data?.TC1_set_point,
+        data?.T1_set_point,
+        data?.T1_SET_POINT,
+        isGrainChilling
+          ? data?.T1_set_point_in_grain_chilling_mode
+          : data?.T1_set_point_in_paddy_aeging_mode,
+        data?.T1_set_point_in_grain_chilling_mode,
+        data?.T1_set_point_in_paddy_aeging_mode,
+      );
   const defTsTc1 = pickVal(
     data?.TS_TC1_set_point,
     data?.Delta_T_set_point,
@@ -1453,6 +1477,7 @@ export default function AutoDiagram1({
     "GTPL-119",
     "GTPL-120",
     "GTPL-044",
+    "GTPL-30"
   ].some((n) => String(machineName).includes(n));
   const hasHeater = isPaddy200Machine || isHeaterCoilMachine;
   const thVal = config?.temperatureSensors?.TH
