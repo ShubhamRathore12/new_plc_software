@@ -1327,31 +1327,17 @@ export default function AutoDiagram1({
   };
 
   // Use config temperature sensor keys if provided, fallback to hardcoded
-  const ts1Val = pickVal(
-    config?.temperatureSensors?.T0 ? data?.[config.temperatureSensors.T0.key] : undefined,
-    data?.TS1,
-    data?.TS1_temp,
-    data?.SPLY_AIR_TEMP,
-    data?.AIR_OUTLET_TEMP,
-    data?.T0_temp_mean,
-    calcMean(data?.T0_1_air_outlet_temp, data?.T0_2_air_outlet_temp),
-  );
-  const tc1Val = pickVal(
-    config?.temperatureSensors?.T1 ? data?.[config.temperatureSensors.T1.key] : undefined,
-    data?.TC1,
-    data?.TC1_temp,
-    data?.COLD_AIR_TEMP_T1,
-    data?.T1_temp_mean,
-    calcMean(data?.T1_1_cold_air_temp, data?.T1_2_cold_air_temp),
-  );
-  const ta1Val = pickVal(
-    config?.temperatureSensors?.T2 ? data?.[config.temperatureSensors.T2.key] : undefined,
-    data?.TA1,
-    data?.TA1_temp,
-    data?.AMBIENT_AIR_TEMP_T2,
-    data?.T2_temp_mean,
-    calcMean(data?.T2_1_ambient_temp, data?.T2_2_ambient_temp),
-  );
+  const ts1Val = config?.temperatureSensors?.T0
+    ? pickVal(data?.[config.temperatureSensors.T0.key], data?.TS1, data?.TS1_temp, data?.SPLY_AIR_TEMP, data?.AIR_OUTLET_TEMP, data?.T0_temp_mean, calcMean(data?.T0_1_air_outlet_temp, data?.T0_2_air_outlet_temp))
+    : pickVal(data?.TS1, data?.TS1_temp, data?.SPLY_AIR_TEMP, data?.AIR_OUTLET_TEMP, data?.T0_temp_mean, calcMean(data?.T0_1_air_outlet_temp, data?.T0_2_air_outlet_temp));
+
+  const tc1Val = config?.temperatureSensors?.T1
+    ? pickVal(data?.[config.temperatureSensors.T1.key], data?.TC1, data?.TC1_temp, data?.COLD_AIR_TEMP_T1, data?.T1_temp_mean, calcMean(data?.T1_1_cold_air_temp, data?.T1_2_cold_air_temp))
+    : pickVal(data?.TC1, data?.TC1_temp, data?.COLD_AIR_TEMP_T1, data?.T1_temp_mean, calcMean(data?.T1_1_cold_air_temp, data?.T1_2_cold_air_temp));
+
+  const ta1Val = config?.temperatureSensors?.T2
+    ? pickVal(data?.[config.temperatureSensors.T2.key], data?.TA1, data?.TA1_temp, data?.AMBIENT_AIR_TEMP_T2, data?.T2_temp_mean, calcMean(data?.T2_1_ambient_temp, data?.T2_2_ambient_temp))
+    : pickVal(data?.TA1, data?.TA1_temp, data?.AMBIENT_AIR_TEMP_T2, data?.T2_temp_mean, calcMean(data?.T2_1_ambient_temp, data?.T2_2_ambient_temp));
 
   const htrPct = pickVal(
     data?.Value_to_Display_HEATER,
@@ -1400,6 +1386,7 @@ export default function AutoDiagram1({
           : data?.T0_set_point_in_paddy_aeging_mode,
         data?.T0_set_point_in_grain_chilling_mode,
         data?.T0_set_point_in_paddy_aeging_mode,
+        ts1Val,
       )
     : pickVal(
         data?.TC1_set_point,
@@ -1506,7 +1493,7 @@ export default function AutoDiagram1({
         value: isPaddy200Machine
           ? undefined
           : t0
-            ? fmtTemp(data?.[t0.key])
+            ? fmtTemp(data?.[t0.key] || ts1Val)
             : config
               ? undefined
               : fmtTemp(ts1Val),
