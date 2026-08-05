@@ -297,6 +297,7 @@ export default function AutoPage() {
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        Grain_temp: { key: "Grain_temp", label: "Grain Temperature" },
       },
       controls: {
         BLOWER: { key: "Blower_speed", label: "Blower" },

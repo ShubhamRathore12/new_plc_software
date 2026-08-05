@@ -1339,6 +1339,10 @@ export default function AutoDiagram1({
     ? pickVal(data?.[config.temperatureSensors.T2.key], data?.TA1, data?.TA1_temp, data?.AMBIENT_AIR_TEMP_T2, data?.T2_temp_mean, calcMean(data?.T2_1_ambient_temp, data?.T2_2_ambient_temp))
     : pickVal(data?.TA1, data?.TA1_temp, data?.AMBIENT_AIR_TEMP_T2, data?.T2_temp_mean, calcMean(data?.T2_1_ambient_temp, data?.T2_2_ambient_temp));
 
+  const grainTempVal = config?.temperatureSensors?.Grain_temp
+    ? pickVal(data?.[config.temperatureSensors.Grain_temp.key])
+    : undefined;
+
   const htrPct = pickVal(
     data?.Value_to_Display_HEATER,
     data?.Heater_speed,
@@ -1850,6 +1854,17 @@ export default function AutoDiagram1({
         >
           SILO
         </div>
+        {grainTempVal && machineName?.includes("GTPL-118") && (
+          <div className="absolute z-10" style={{ left: 70, top: 520 }}>
+            <SensorBadge
+              label="Grain"
+              value={fmtTemp(grainTempVal)}
+              color="#1f2937"
+              bg="#fef3c7"
+              border="#fbbf24"
+            />
+          </div>
+        )}
 
         {/* ---------- Coils row: heater (HTR machines only) + evaporator coils.
              HTR / AHT / HGS % boxes sit under their own coil, per reference image ---------- */}
