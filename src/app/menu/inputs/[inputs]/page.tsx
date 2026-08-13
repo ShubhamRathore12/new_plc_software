@@ -18,7 +18,7 @@ export default function InputsPage() {
   const statsRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
-  const isGTPL118 = device === "GTPL-118-gT-60T-S7-200";
+  const isGTPL118 = device === "GTPL-118-gT-60T-S7-200" || device === "GTPL-149-gT-60T-S7-1200";
   const isGT80E = !isGTPL118 && ['108', '109', '110', '111', '112', '113'].some(code => device?.includes(code));
   const isGtpl122 = ['122', '121', '133', '154', '155', '131','068','104','081','105'].some(code => device?.includes(code))
   const isGtpl1200_02 = device === "Gtpl-S7-1200-02";

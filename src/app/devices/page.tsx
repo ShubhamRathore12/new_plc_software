@@ -862,6 +862,13 @@ export default function DevicesPage() {
       chillerModel: "gT-80E-P",
     },
     {
+      name: "GTPL-149-gT-60T-S7-1200",
+      location: "Telangana",
+      image: "/images/200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-60T",
+    },
+    {
       name: "GTPL-119-gT-180E-S7-1200",
       location: "Germany",
       image: "/images/1200.jpg",
@@ -1067,6 +1074,7 @@ export default function DevicesPage() {
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
     "GTPL-118-gT-60T-S7-200": "GTPL_118",
+    "GTPL-149-gT-60T-S7-1200": "GTPL_149",
     "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
     "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
     "GTPL-110-gT-40E-P-S7-200": "GTPL_110",

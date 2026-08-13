@@ -957,6 +957,7 @@ export default function AutoDiagram1({
     "GTPL-068-gT-650T-S7-1200",
     "GTPL-104-gT-650T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
+    "GTPL-149-gT-60T-S7-1200",
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -965,6 +966,7 @@ export default function AutoDiagram1({
     "GTPL-121-gT-1000T-S7-1200",
     "GTPL-124-gT-450T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
+    "GTPL-149-gT-60T-S7-1200",
     "GTPL-108-gT-40E-P-S7-200",
     "GTPL-109-gT-40E-P-S7-200",
     "GTPL-110-gT-40E-P-S7-200",
@@ -1854,7 +1856,7 @@ export default function AutoDiagram1({
         >
           SILO
         </div>
-        {grainTempVal && machineName?.includes("GTPL-118") && (
+        {grainTempVal && (machineName?.includes("GTPL-118") || machineName?.includes("GTPL-149")) && (
           <div className="absolute z-10" style={{ left: 70, top: 520 }}>
             <SensorBadge
               label="Grain"

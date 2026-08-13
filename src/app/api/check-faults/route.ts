@@ -121,6 +121,11 @@ const MACHINE_CONFIG = {
     tags: S7_200_TAGS,
     type: "S7-200"
   },
+  "GTPL-149-gT-60T-S7-1200": {
+    table: "GTPL_149_GT_60T_S7_1200",
+    tags: S7_200_TAGS,
+    type: "S7-200"
+  },
   "GTPL-108-gT-40E-P-S7-200": {
     table: "GTPL_108_gT_40E_P_S7_200_Germany",
     tags: S7_200_TAGS,

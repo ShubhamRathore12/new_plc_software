@@ -23,6 +23,7 @@ export const useAutoData = (autoType: string) => {
   const autoTypeToTableMap: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
     "GTPL-118-gT-60T-S7-200": "GTPL_118_GT_60T_S7_1200",
+    "GTPL-149-gT-60T-S7-1200": "GTPL_149_GT_60T_S7_1200",
     "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
     "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
     "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
@@ -67,6 +68,7 @@ export const useAutoData = (autoType: string) => {
   const deviceNameToStatusKey: Record<string, string> = {
     "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
     "GTPL-118-gT-60T-S7-200": "GTPL_118",
+    "GTPL-149-gT-60T-S7-1200": "GTPL_149",
     "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
     "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
     "GTPL-110-gT-40E-P-S7-200": "GTPL_110",

@@ -397,6 +397,7 @@ export default function AnalogPage() {
     "GTPL-123-gT-450AP":GTPL_132_config,
     "GTPL-143-gT-450AP-S7-1200":GTPL_132_config,
     "GTPL-118-gT-60T-S7-200": GTPL_60_config,
+    "GTPL-149-gT-60T-S7-1200": GTPL_60_config,
     "GTPL-108-gT-40E-P-S7-200": S7_200_config,
     "GTPL-109-gT-40E-P-S7-200": S7_200_config,
     "GTPL-110-gT-40E-P-S7-200": S7_200_config,
@@ -593,7 +594,7 @@ export default function AnalogPage() {
                           if ([ '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
                             return !item.description.includes("T0") && !item.description.includes("Air Outlet")
                           }
-                          if (device === "GTPL-118-gT-60T-S7-200") {
+                          if (device === "GTPL-118-gT-60T-S7-200" || device === "GTPL-149-gT-60T-S7-1200") {
                             if (item.description.startsWith("TH")) return false;
                             return !item.description.includes(".2 ")
                           }
@@ -693,7 +694,7 @@ export default function AnalogPage() {
                           device === 'GTPL-068-gT-650T-S7-1200' ||
                           device === 'GTPL-104-gT-650T-S7-1200' ||
                           device === "GTPL-061-gT-450T-S7-1200" ||
-                          (['118', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
+                          (['118', '149', '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id)))) {
                           if (item.description === "Heater") return false;
                         }
                         if (device === "GTPL-124-gT-450T-S7-1200" ||

@@ -53,6 +53,11 @@ const TABLE_CONFIG = {
     type: "S7-200",
     location: "Noida",
   },
+  GTPL_149_GT_60T_S7_1200: {
+    name: "GTPL-149 (S7-1200)",
+    type: "S7-1200",
+    location: "Telangana",
+  },
   GTPL_114_GT_140E_S7_1200: {
     name: "GTPL-114 (S7-1200)",
     type: "S7-1200",

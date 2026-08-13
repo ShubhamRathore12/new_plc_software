@@ -275,6 +275,7 @@ export default function RegistrationForm() {
     { value: "GTPL-144-gT-300AP-S7-1200", label: "GTPL-144-gT-300AP-S7-1200" },
     { value: "GTPL-145-gT-450T-S7-1200", label: "GTPL-145-gT-450T-S7-1200" },
     { value: "GTPL-148-gT-450T-S7-1200", label: "GTPL-148-gT-450T-S7-1200" },
+    { value: "GTPL-149-gT-60T-S7-1200", label: "GTPL-149-gT-60T-S7-1200" },
     { value: "GTPL-068-gT-650T-S7-1200", label: "GTPL-068-gT-650T-S7-1200" },
     { value: "GTPL-104-gT-650T-S7-1200", label: "GTPL-104-gT-650T-S7-1200" },
     

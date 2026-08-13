@@ -311,6 +311,26 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-149-gT-60T-S7-1200": {
+      serialNumber: "GTPL_149",
+      temperatureSensors: {
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        Grain_temp: { key: "Grain_temp", label: "Grain Temperature" },
+      },
+      controls: {
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Condenser_fan_speed", label: "Condenser Fan" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "GTPL-108-gT-40E-P-S7-200": {
       serialNumber: "GTPL_108",
       ...commonS7_200Config,
