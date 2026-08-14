@@ -1407,21 +1407,23 @@ export default function AutoDiagram1({
           data?.T1_set_point_in_grain_chilling_mode,
           data?.T1_set_point_in_paddy_aeging_mode,
         );
-  const defTsTc1 = pickVal(
-    data?.TS_TC1_set_point,
-    data?.Delta_T_set_point,
-    data?.TH_T1_set_point,
-    data?.Th_T1,
-    isGrainChilling
-      ? data?.Delta_T_set_point_in_grain_chilling_mode
-      : data?.Delta_T_set_point_paddy_aeging_mode,
-    data?.Delta_T_set_point_in_grain_chilling_mode,
-    data?.Delta_T_set_point_paddy_aeging_mode,
-    data?.AI_TH_Act,
-  );
+  const defTsTc1 = machineName.includes("GTPL-061-gT-450T-S7-1200")
+    ? pickVal(data?.T0_T1_set_point)
+    : pickVal(
+        data?.TS_TC1_set_point,
+        data?.Delta_T_set_point,
+        data?.TH_T1_set_point,
+        data?.Th_T1,
+        isGrainChilling
+          ? data?.Delta_T_set_point_in_grain_chilling_mode
+          : data?.Delta_T_set_point_paddy_aeging_mode,
+        data?.Delta_T_set_point_in_grain_chilling_mode,
+        data?.Delta_T_set_point_paddy_aeging_mode,
+        data?.AI_TH_Act,
+      );
   const isGTPL061 = machineName.includes("GTPL-061-gT-450T-S7-1200");
-  const setPoint1Label = isGTPL061 ? "T0-T1" : isSpecialMachine ? "T0" : "T1";
-  const setPoint2Label = isSpecialMachine ? "Delta T" : "TH-T1";
+  const setPoint1Label = isGTPL061 ? "T0" : isSpecialMachine ? "T0" : "T1";
+  const setPoint2Label = isGTPL061 ? "T1-T0" : isSpecialMachine ? "Delta T" : "TH-T1";
   const defHP = pickVal(data?.HP_set_point, data?.HP_set, data?.HP_default);
   const defLP = pickVal(data?.LP_set_point, data?.LP_set, data?.LP_default);
   const defBlower = pickVal(
