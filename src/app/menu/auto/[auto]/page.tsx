@@ -317,7 +317,6 @@ export default function AutoPage() {
         T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
         T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
         T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
-        Grain_temp: { key: "Grain_temp", label: "Grain Temperature" },
       },
       controls: {
         BLOWER: { key: "Blower_speed", label: "Blower" },
@@ -1031,17 +1030,21 @@ export default function AutoPage() {
                         return null;
                       }
 
-                      // Handle zero values correctly by checking for explicit undefined/null
+                      // Handle zero values correctly — only undefined/null/"" count as missing
+                      const hasVal = (v: any) =>
+                        v !== undefined && v !== null && v !== "";
                       let value;
-                      if (data?.[control.key] !== undefined && data?.[control.key] !== null) {
+                      if (hasVal(data?.[control.key])) {
                         value = data[control.key];
                       } else if (key === "COND" || key === "CONDENSORFANSPEED") {
-                        // Condenser field name varies by PLC — fall back across all variants
-                        value =
-                          data?.Cond_fan_speed ??
-                          data?.Condenser_fan_speed ??
-                          data?.Value_to_Display_COND_ACT_SPEED ??
-                          data?.CONDENSER_RPM;
+                        // Condenser field name varies by PLC — fall back across all variants.
+                        // GTPL-149 (60T) publishes Condenser_fan_speed.
+                        value = [
+                          data?.Condenser_fan_speed,
+                          data?.Cond_fan_speed,
+                          data?.Value_to_Display_COND_ACT_SPEED,
+                          data?.CONDENSER_RPM,
+                        ].find(hasVal);
                       }
 
                       const percentage = parseFloat(value) || 0;
