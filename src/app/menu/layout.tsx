@@ -9,6 +9,7 @@ import { MonitoringProvider } from "@/app/context/monitoring-context";
 import Sidebar from "@/components/layout/sidebar";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import Header from "@/components/layout/header";
+import MachineAccessGuard from "@/components/MachineAccessGuard";
 // Import the Header component
 
 export default function DashboardLayout({
@@ -83,7 +84,7 @@ export default function DashboardLayout({
               }px)`,
             }}
           >
-            {children}
+            <MachineAccessGuard>{children}</MachineAccessGuard>
             <footer className="mt-6 text-center text-sm text-muted-foreground">
               © 2026, powered by Grain Technik
             </footer>
