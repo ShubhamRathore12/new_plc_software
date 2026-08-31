@@ -45,6 +45,7 @@ export const KABU_COLUMN_ORDER: Record<string, string[]> = {
   'GTPL_112_gT_80E_P_S7_200_Germany': parseColumns(GTPL_Germany_cols),
   'GTPL_113_gT_80E_P_S7_200_Germany': parseColumns(GTPL_Germany_cols),
   'GTPL_114_GT_140E_S7_1200': parseColumns(GTPL_114_140E_cols),
+  'GTPL_044_GT_140E_S7_1200': parseColumns(GTPL_114_140E_cols),
   'GTPL_115_GT_180E_S7_1200': parseColumns(GTPL_114_140E_cols),
   'GTPL_118_GT_60T_S7_1200': parseColumns(GTPL_60T_cols),
   'GTPL_149_GT_60T_S7_1200': parseColumns(GTPL_60T_cols),

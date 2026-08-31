@@ -490,7 +490,7 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
   "GTPL-044-GT-140E-S7-1200": {
-    table: "GTPL_114_GT_140E_S7_1200",
+    table: "GTPL_044_GT_140E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
     faultCodeColumn: "FAULT_CODE",
