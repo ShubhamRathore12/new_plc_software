@@ -98,7 +98,7 @@ export const ALL_DEVICES: Device[] = [
     },
     {
       name: "GTPL-113-gT-80E-P-S7-200",
-      location: "Germany",
+      location: "France",
       image: "/images/200.jpg",
       plc: "S7-200",
       chillerModel: "gT-80E-P",
