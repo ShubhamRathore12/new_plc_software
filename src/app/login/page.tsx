@@ -15,6 +15,7 @@ import { MonitorIcon } from "lucide-react";
 import dynamic from "next/dynamic";
 import { loginUser } from "@/lib/auth";
 import { useAuthRedirect } from "@/hooks/useAuthRedirect";
+import { getLandingRoute } from "@/lib/machineAccess";
 
 const ThreeBackground = dynamic(() => import("@/components/ThreeBackground"), {
   ssr: false,
@@ -42,11 +43,7 @@ export default function LoginPage() {
       const data = await loginUser(username, password);
 
       setData(data);
-      if (data?.user.accountType === "customer") {
-        router.push("/devices");
-      } else {
-        router.push("/dashboard");
-      }
+      router.push(getLandingRoute(data?.user));
       setLoading(false);
     } catch (error) {
       console.error("Login error:", error);

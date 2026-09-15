@@ -802,6 +802,8 @@ export default function AutoDiagram1({
   const isSiloPressureMachine = ["GTPL-156", "GTPL-157"].some((n) =>
     normalizedMachineName.includes(n),
   );
+  // GTPL-149 (60T) — reports Condenser_fan_speed / T1_set_point / T0_T1_set_point / Static_pressure
+  const isGTPL149Machine = normalizedMachineName.includes("GTPL-149");
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
@@ -964,6 +966,7 @@ export default function AutoDiagram1({
     "GTPL-118-gT-60T-S7-200",
     "GTPL-156-gT-450T-S7-1200",
     "GTPL-157-gT-450T-S7-1200",
+    "GTPL-149-gT-60T-S7-1200",
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -972,6 +975,7 @@ export default function AutoDiagram1({
     "GTPL-121-gT-1000T-S7-1200",
     "GTPL-124-gT-450T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
+    "GTPL-149-gT-60T-S7-1200",
     "GTPL-108-gT-40E-P-S7-200",
     "GTPL-109-gT-40E-P-S7-200",
     "GTPL-110-gT-40E-P-S7-200",
@@ -1144,12 +1148,14 @@ export default function AutoDiagram1({
     data?.BLOWER_RPM,
     data?.Value_to_Display_BLOWER,
   );
-  const condPct = pickNum(
-    data?.Cond_fan_speed,
-    data?.Value_to_Display_COND_ACT_SPEED,
-    data?.CONDENSER_RPM,
-    data?.Condenser_fan_speed,
-  );
+  const condPct = isGTPL149Machine
+    ? pickNum(data?.Condenser_fan_speed, data?.Cond_fan_speed)
+    : pickNum(
+        data?.Cond_fan_speed,
+        data?.Value_to_Display_COND_ACT_SPEED,
+        data?.CONDENSER_RPM,
+        data?.Condenser_fan_speed,
+      );
   const isBlowerOn = blowerPct > 0;
 
   // Higher % => faster spin. Returns CSS animation-duration.
@@ -1371,12 +1377,6 @@ export default function AutoDiagram1({
     data?.Hot_valve_speed,
     0,
   );
-  const staticPressure = pickVal(
-    data?.Static_pressure,
-    data?.Static_Pressure,
-    data?.STATIC_PRESSURE,
-    0,
-  );
   const compPct = pickVal(
     data?.Compressor_speed,
     data?.COMP_SPEED,
@@ -1390,6 +1390,12 @@ export default function AutoDiagram1({
     data?.Compressor_timer,
   );
   const lpVal = pickVal(data?.AI_SUC_PRESSURE, data?.LP, data?.LP_value);
+  // Silo static pressure — GTPL-149 and the 156/157 silo chillers report it
+  const staticPressureVal = pickVal(
+    data?.Static_pressure,
+    data?.STATIC_PRESSURE,
+    data?.Static_Pressure,
+  );
   const pressureUnit =
     machineName === "GTPL-137-gT-450T-S7-1200" ||
     machineName === "GTPL-138-gT-450T-S7-1200"
@@ -1397,40 +1403,51 @@ export default function AutoDiagram1({
       : "psi";
 
   // Set points — special machines run on T0 / Delta T, the rest on T1 / TH-T1
-  const defTC1 = isSpecialMachine
-    ? pickVal(
-        data?.T0_set_point,
-        isGrainChilling
-          ? data?.T0_set_point_in_grain_chilling_mode
-          : data?.T0_set_point_in_paddy_aeging_mode,
-        data?.T0_set_point_in_grain_chilling_mode,
-        data?.T0_set_point_in_paddy_aeging_mode,
-        ts1Val,
-      )
+  // GTPL-061 uses T0_T1_set_point tag
+  // GTPL-149 reports T1_set_point + T0_T1_set_point (older rows carry Delta_T_set_point)
+  const defTC1 = isGTPL149Machine
+    ? pickVal(data?.T1_set_point)
+    : machineName.includes("GTPL-061-gT-450T-S7-1200")
+    ? pickVal(data?.T0_T1_set_point)
+    : isSpecialMachine
+      ? pickVal(
+          data?.T0_set_point,
+          isGrainChilling
+            ? data?.T0_set_point_in_grain_chilling_mode
+            : data?.T0_set_point_in_paddy_aeging_mode,
+          data?.T0_set_point_in_grain_chilling_mode,
+          data?.T0_set_point_in_paddy_aeging_mode,
+          ts1Val,
+        )
+      : pickVal(
+          data?.TC1_set_point,
+          data?.T1_set_point,
+          data?.T1_SET_POINT,
+          isGrainChilling
+            ? data?.T1_set_point_in_grain_chilling_mode
+            : data?.T1_set_point_in_paddy_aeging_mode,
+          data?.T1_set_point_in_grain_chilling_mode,
+          data?.T1_set_point_in_paddy_aeging_mode,
+        );
+  const defTsTc1 = isGTPL149Machine
+    ? pickVal(data?.T0_T1_set_point, data?.Delta_T_set_point)
+    : machineName.includes("GTPL-061-gT-450T-S7-1200")
+    ? pickVal(data?.T0_T1_set_point)
     : pickVal(
-        data?.TC1_set_point,
-        data?.T1_set_point,
-        data?.T1_SET_POINT,
+        data?.TS_TC1_set_point,
+        data?.Delta_T_set_point,
+        data?.TH_T1_set_point,
+        data?.Th_T1,
         isGrainChilling
-          ? data?.T1_set_point_in_grain_chilling_mode
-          : data?.T1_set_point_in_paddy_aeging_mode,
-        data?.T1_set_point_in_grain_chilling_mode,
-        data?.T1_set_point_in_paddy_aeging_mode,
+          ? data?.Delta_T_set_point_in_grain_chilling_mode
+          : data?.Delta_T_set_point_paddy_aeging_mode,
+        data?.Delta_T_set_point_in_grain_chilling_mode,
+        data?.Delta_T_set_point_paddy_aeging_mode,
+        data?.AI_TH_Act,
       );
-  const defTsTc1 = pickVal(
-    data?.TS_TC1_set_point,
-    data?.Delta_T_set_point,
-    data?.TH_T1_set_point,
-    data?.Th_T1,
-    isGrainChilling
-      ? data?.Delta_T_set_point_in_grain_chilling_mode
-      : data?.Delta_T_set_point_paddy_aeging_mode,
-    data?.Delta_T_set_point_in_grain_chilling_mode,
-    data?.Delta_T_set_point_paddy_aeging_mode,
-    data?.AI_TH_Act,
-  );
-  const setPoint1Label = isSpecialMachine ? "T0" : "T1";
-  const setPoint2Label = isSpecialMachine ? "Delta T" : "TH-T1";
+  const isGTPL061 = machineName.includes("GTPL-061-gT-450T-S7-1200");
+  const setPoint1Label = isGTPL149Machine ? "T1" : isGTPL061 ? "T0" : isSpecialMachine ? "T0" : "T1";
+  const setPoint2Label = isGTPL149Machine ? "T0-T1" : isGTPL061 ? "T1-T0" : isSpecialMachine ? "Delta T" : "TH-T1";
   const defHP = pickVal(data?.HP_set_point, data?.HP_set, data?.HP_default);
   const defLP = pickVal(data?.LP_set_point, data?.LP_set, data?.LP_default);
   const defBlower = pickVal(
@@ -1875,7 +1892,7 @@ export default function AutoDiagram1({
             className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-1 text-base font-bold text-gray-900 flex items-center gap-2"
             style={{ left: 60, top: 282 }}
           >
-            <span>{fmt(staticPressure)}</span>
+            <span>{fmt(staticPressureVal)}</span>
             <span>Pa</span>
           </div>
         )}
@@ -1887,6 +1904,18 @@ export default function AutoDiagram1({
               color="#1f2937"
               bg="#fef3c7"
               border="#fbbf24"
+            />
+          </div>
+        )}
+
+        {isGTPL149Machine && staticPressureVal !== undefined && (
+          <div className="absolute z-10" style={{ left: 70, top: 556 }}>
+            <SensorBadge
+              label="Static Pr."
+              value={`${fmt(staticPressureVal)} Pa`}
+              color="#1f2937"
+              bg="#e0f2fe"
+              border="#38bdf8"
             />
           </div>
         )}
@@ -2018,10 +2047,11 @@ export default function AutoDiagram1({
             ))}
           </div>
         </div>
-        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 + AP machines */}
+        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 + AP machines + GTPL-149 + silo 156/157 */}
         {(isPaddy200Machine ||
           isHeaterCoilMachine ||
           isAPMachine ||
+          isGTPL149Machine ||
           isSiloPressureMachine) && (
           <div
             className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-0.5 text-sm font-bold text-gray-900 text-center"

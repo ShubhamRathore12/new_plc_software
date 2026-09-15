@@ -170,6 +170,7 @@ class MachineRegistry:
             'GTPL_144_GT_300AP_S7_1200',
             'GTPL_145_GT_450T_S7_1200',
             'GTPL_148_GT_450T_S7_1200',
+            'GTPL_149_GT_60T_S7_1200',
             'GTPL_154_GT_650T_S7_1200',
             'GTPL_155_GT_650T_S7_1200',
         ]

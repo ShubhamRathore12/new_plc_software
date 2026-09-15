@@ -14,7 +14,7 @@ export default function Home({ data, formatValue, machineName }: any) {
   // Hide RH and Pa blocks for GTPL-118-gT-60T-S7-200
   const showTopBlocks =
     machineName !== "GTPL-118-gT-60T-S7-200" &&
-    machineName !== "GTPL-118-gT-60T-S7-200";
+    machineName !== "GTPL-149-gT-60T-S7-1200";
 
   console.log(machineName);
 

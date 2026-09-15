@@ -311,6 +311,25 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    "GTPL-149-gT-60T-S7-1200": {
+      serialNumber: "GTPL_149",
+      temperatureSensors: {
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+      },
+      controls: {
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Condenser_fan_speed", label: "Condenser Fan" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "GTPL-108-gT-40E-P-S7-200": {
       serialNumber: "GTPL_108",
       ...commonS7_200Config,
@@ -1050,17 +1069,21 @@ export default function AutoPage() {
                         return null;
                       }
 
-                      // Handle zero values correctly by checking for explicit undefined/null
+                      // Handle zero values correctly — only undefined/null/"" count as missing
+                      const hasVal = (v: any) =>
+                        v !== undefined && v !== null && v !== "";
                       let value;
-                      if (data?.[control.key] !== undefined && data?.[control.key] !== null) {
+                      if (hasVal(data?.[control.key])) {
                         value = data[control.key];
                       } else if (key === "COND" || key === "CONDENSORFANSPEED") {
-                        // Condenser field name varies by PLC — fall back across all variants
-                        value =
-                          data?.Cond_fan_speed ??
-                          data?.Condenser_fan_speed ??
-                          data?.Value_to_Display_COND_ACT_SPEED ??
-                          data?.CONDENSER_RPM;
+                        // Condenser field name varies by PLC — fall back across all variants.
+                        // GTPL-149 (60T) publishes Condenser_fan_speed.
+                        value = [
+                          data?.Condenser_fan_speed,
+                          data?.Cond_fan_speed,
+                          data?.Value_to_Display_COND_ACT_SPEED,
+                          data?.CONDENSER_RPM,
+                        ].find(hasVal);
                       }
 
                       const percentage = parseFloat(value) || 0;

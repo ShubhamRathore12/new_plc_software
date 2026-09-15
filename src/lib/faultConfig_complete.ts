@@ -2,6 +2,37 @@
 // This maps each table to their fault columns that appear AFTER the FAULT_CODE column
 
 export const MACHINE_FAULT_COLUMNS: Record<string, string[]> = {
+  // GTPL-149 (GT 60T) - fault columns after FAULT_CODE, verified against the live table.
+  // Includes the locked-pressure + transducer warning tags.
+  "GTPL_149_GT_60T_S7_1200": [
+    "Compressor_circuit_breaker_fault",
+    "Blower_drive_fault",
+    "Blower_circuit_breaker_fault",
+    "Three_phase_monitor_fault",
+    "High_pressure_fault",
+    "Ambient_temp_lower_than_set_temp",
+    "Ambient_temp_over_45C",
+    "Compressor_motor_overheat",
+    "Low_pressure_1_fault",
+    "Compressor_running_status_fault",
+    "Low_pressure_2_fault",
+    "Ambient_temp_over_43C",
+    "Condenser_fan_circuit_breaker_fault",
+    "Condenser_fan_TOP_fault",
+    "Condenser_fan_door_open",
+    "Ambient_air_sensor_T2_open",
+    "Ambient_air_sensor_T2_short_circuit",
+    "Cold_air_sensor_T1_open",
+    "Cold_air_sensor_T1_short_circuit",
+    "Air_outlet_sensor_T0_open",
+    "Air_outlet_sensor_T0_short_circuit",
+    "Discharge_pressure_high_clean_filter",
+    "Low_pressure_fault_Locked",
+    "High_pressure_fault_Locked_1",
+    "Warning_LP_transducer_failure",
+    "Warning_HP_transducer_failure",
+  ],
+
   // S7-1200 Models - GT 450T, GT 650T variants
   "GTPL_061_GT_450T_S7_1200": [
     "Compressor_circuit_breaker_fault",

@@ -8,6 +8,7 @@ import { useDataStore } from "@/lib/store";
 const allDevices = [
   { name: "GTPL-122-gT-1000T-S7-1200", location: "Noida---kanpur", image: "/images/1200.jpg", plc: "S7-1200", chillerModel: "gT-1000T" },
   { name: "GTPL-118-gT-60T-S7-200", location: "Noida", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-60T" },
+  { name: "GTPL-149-gT-60T-S7-1200", location: "Telangana", image: "/images/200.jpg", plc: "S7-1200", chillerModel: "gT-60T" },
   { name: "GTPL-108-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
   { name: "GTPL-109-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },
   { name: "GTPL-110-gT-40E-P-S7-200", location: "Germany", image: "/images/200.jpg", plc: "S7-200", chillerModel: "gT-40E-P" },

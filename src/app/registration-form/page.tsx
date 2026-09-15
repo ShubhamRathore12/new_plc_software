@@ -22,6 +22,7 @@ import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDataStore } from "@/lib/store";
+import { getDeviceLocations } from "@/lib/devices";
 
 // Zod Schema
 const formSchema = z
@@ -275,6 +276,7 @@ export default function RegistrationForm() {
     { value: "GTPL-144-gT-300AP-S7-1200", label: "GTPL-144-gT-300AP-S7-1200" },
     { value: "GTPL-145-gT-450T-S7-1200", label: "GTPL-145-gT-450T-S7-1200" },
     { value: "GTPL-148-gT-450T-S7-1200", label: "GTPL-148-gT-450T-S7-1200" },
+    { value: "GTPL-149-gT-60T-S7-1200", label: "GTPL-149-gT-60T-S7-1200" },
     { value: "GTPL-068-gT-650T-S7-1200", label: "GTPL-068-gT-650T-S7-1200" },
     { value: "GTPL-104-gT-650T-S7-1200", label: "GTPL-104-gT-650T-S7-1200" },
     
@@ -285,18 +287,10 @@ export default function RegistrationForm() {
     { value: t("Grain Technik"), label: t("Grain Technik") },
   ]);
 
-  const [locationOptions, setLocationOptions] = useState([
-    { value: t("Germany"), label: t("Germany") },
-    { value: t("Noida---kanpur"), label: t("Noida---kanpur") },
-    { value: t("Noida"), label: t("Noida") },
-    { value: t("Indonesia"), label: t("Indonesia") },
-    { value: t("Salem (Tamil Nadu)"), label: t("Salem (Tamil Nadu)") },
-    { value: t("Thailand"), label: t("Thailand") },
-    { value: t("Turkey"), label: t("Turkey") },
-    { value: t("Dharuhera"), label: t("Dharuhera") },
-    { value: t("Ganga Nagar"), label: t("Ganga Nagar") },
-    { value: t("Rajasthan"), label: t("Rajasthan") },
-  ]);
+  // Locations come from the machine list on the devices page, so both stay in sync.
+  const [locationOptions, setLocationOptions] = useState(
+    getDeviceLocations().map((loc) => ({ value: t(loc), label: t(loc) }))
+  );
 
   // Update monitor options based on selected company and locations
   const getMonitorOptions = () => {
