@@ -7,6 +7,11 @@ import { useAutoData } from "@/hooks/useAutoData";
 import { useLanguage } from "@/providers/language-provider";
 import { ArrowLeft, Activity, AlertCircle, CheckCircle2, Gauge, Zap, Settings, TrendingUp, Shield } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import {
+  GTPL_156_157_DIGITAL_INPUT_ROWS,
+  isGTPL156157,
+  pickTagValue,
+} from "@/lib/gtpl156157Config";
 
 export default function InputsPage() {
   const router = useRouter();
@@ -33,6 +38,7 @@ export default function InputsPage() {
   const isGTPL061 = device === "GTPL-061-gT-450T-S7-1200"
   const isGTPL139 = device === "GTPL-139-gT-300AP-S7-1200"
   const isGTPL144 = device === "GTPL-144-gT-300AP-S7-1200"
+  const isGTPL156_157 = isGTPL156157(device)
   const { data } = useAutoData(device as string);
 
   useEffect(() => {
@@ -139,6 +145,13 @@ export default function InputsPage() {
     { id: "I2.6", description: "Cond fan3 circuit breaker fault", status: data?.Cond_fan3_circuit_breaker_fault_I2_6 },
     { id: "I2.7", description: "Cond fan4 circuit breaker fault", status: data?.Cond_fan4_circuit_breaker_fault_I2_7 },
   ];
+
+  // GTPL-156 / 157 (Philippines silo) — digital inputs from the SILO I/O list
+  const gtpl_156_157_faultStatus = GTPL_156_157_DIGITAL_INPUT_ROWS.map((row) => ({
+    id: row.id,
+    description: row.description,
+    status: pickTagValue(data, row.keys),
+  }));
 
   const gtpl_137_faultStatus = [
     { id: "I0.0", description: "Compressor circuit breaker", status: data?.Compressor_circuit_breaker_I0_0 },
@@ -382,6 +395,7 @@ export default function InputsPage() {
                         isGTPL061 ? gtpl_061_faultStatus :
                           isGTPL139 ? gtpl_139_faultStatus :
                             isGTPL144 ? gtpl_144_faultStatus :
+                              isGTPL156_157 ? gtpl_156_157_faultStatus :
                             [];
 
     return selectedList.map((item, index) => {
@@ -476,6 +490,7 @@ export default function InputsPage() {
                       isGTPL061 ? gtpl_061_faultStatus :
                         isGTPL139 ? gtpl_139_faultStatus :
                           isGTPL144 ? gtpl_144_faultStatus :
+                            isGTPL156_157 ? gtpl_156_157_faultStatus :
                           [];
 
   const totalInputs = selectedList.length;

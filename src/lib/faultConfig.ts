@@ -399,6 +399,9 @@ interface MachineConfig {
 // Fault columns for each machine type (columns after FAULT_CODE in database)
 // Imported from faultConfig_complete.ts
 import { MACHINE_FAULT_COLUMNS as COMPLETE_FAULT_COLUMNS } from "./faultConfig_complete";
+import {
+  GTPL_156_157_FAULT_COLUMNS,
+} from "./gtpl156157Config";
 
 export const MACHINE_FAULT_COLUMNS = COMPLETE_FAULT_COLUMNS;
 export const MACHINE_CONFIG: Record<string, MachineConfig> = {
@@ -678,6 +681,21 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     faultCodeColumn: "FAULT_CODE",
     activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
+  // Philippines silo chillers — tags/faults come from the SILO I/O list
+  "GTPL-156-gT-450T-S7-1200": {
+    table: "GTPL_156_GT_450T_S7_1200",
+    tags: GTPL_156_157_FAULT_COLUMNS,
+    type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: GTPL_156_157_FAULT_COLUMNS,
+  },
+  "GTPL-157-gT-450T-S7-1200": {
+    table: "GTPL_157_GT_450T_S7_1200",
+    tags: GTPL_156_157_FAULT_COLUMNS,
+    type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: GTPL_156_157_FAULT_COLUMNS,
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
@@ -689,6 +707,8 @@ export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-142": "GTPL-142-gT-450AP-S7-1200",
   "GPL-143": "GTPL-143-gT-450AP-S7-1200",
   "GTPL-061": "GTPL-061-gT-450T-S7-1200",
+  "GTPL-156": "GTPL-156-gT-450T-S7-1200",
+  "GTPL-157": "GTPL-157-gT-450T-S7-1200",
 };
 
 // Fault code type

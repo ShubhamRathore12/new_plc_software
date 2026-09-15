@@ -597,6 +597,45 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+    // Philippines silo chillers — note the misspelled AHT_vale_speed column
+    "GTPL-156-gT-450T-S7-1200": {
+      serialNumber: "GTPL_156",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Supply Air(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Condenser_fan_speed", label: "Cond. Fan Speed" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+    "GTPL-157-gT-450T-S7-1200": {
+      serialNumber: "GTPL_157",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Supply Air(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        COND: { key: "Condenser_fan_speed", label: "Cond. Fan Speed" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
     "GTPL-148-gT-450T-S7-1200": {
       serialNumber: "GTPL_148",
       temperatureSensors: {

@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUserStore } from "@/lib/store";
+import { useDataStore, useUserStore } from "@/lib/store";
 import { Sun, Moon, User, LogOut, Globe } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLanguage } from "@/providers/language-provider";
@@ -20,6 +20,7 @@ import { useState } from "react";
 export default function Header() {
   const { theme, setTheme } = useTheme();
   const { user, clearUser } = useUserStore();
+  const { clearData } = useDataStore();
   const { language, setLanguage, t } = useLanguage();
   const router = useRouter();
   const [loggingOut, setLoggingOut] = useState(false);
@@ -34,8 +35,10 @@ export default function Header() {
 
       if (!res.ok) throw new Error("Logout failed");
 
-clearUser()
-      router.push("/login"); 
+      clearUser();
+      // Drops the logged-in user payload too, which stops the machine-status polling
+      clearData();
+      router.push("/login");
     } catch (error) {
       console.error("Logout error:", error);
     } finally {

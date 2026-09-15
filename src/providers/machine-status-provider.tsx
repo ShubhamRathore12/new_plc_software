@@ -9,6 +9,8 @@ import {
   useCallback,
   type ReactNode,
 } from "react";
+import Cookies from "js-cookie";
+import { useDataStore } from "@/lib/store";
 
 const BACKEND_URL =
   process.env.NEXT_PUBLIC_BACKEND_URL ||
@@ -69,6 +71,12 @@ export function MachineStatusProvider({ children }: { children: ReactNode }) {
   const [error, setError] = useState<string | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const hasFetchedOnce = useRef(false);
+
+  // Only poll while someone is logged in: no calls on /login, and polling stops
+  // as soon as logout clears the session.
+  const { data: storeData } = useDataStore() as { data: any };
+  const isAuthenticated =
+    !!storeData?.user || !!Cookies.get("auth_token");
 
   const fetchStatus = useCallback(async () => {
     try {
@@ -145,19 +153,32 @@ export function MachineStatusProvider({ children }: { children: ReactNode }) {
   }, [fetchStatus]);
 
   const refresh = useCallback(() => {
+    if (!isAuthenticated) return;
     fetchStatus();
-  }, [fetchStatus]);
+  }, [fetchStatus, isAuthenticated]);
 
-  // Initial fetch on mount
+  const stopPolling = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    hasFetchedOnce.current = false;
+  }, []);
+
+  // Fetch while logged in; tear everything down on logout
   useEffect(() => {
+    if (!isAuthenticated) {
+      stopPolling();
+      setStatus(defaultStatus);
+      setIsConnected(false);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     fetchStatus();
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-        intervalRef.current = null;
-      }
-    };
-  }, [fetchStatus]);
+    return stopPolling;
+  }, [isAuthenticated, fetchStatus, stopPolling]);
 
   return (
     <MachineStatusContext.Provider

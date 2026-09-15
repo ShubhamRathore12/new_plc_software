@@ -432,6 +432,111 @@ export const GTPL_134_135_OUTPUT_TAGS = [
   "CR_100_percent_ON_Q2_7",
 ];
 
+// GTPL-156 gT-450T Philippines - Fault tags (from SILO analog/digital I/O config)
+export const GTPL_156_TAGS = [
+  "Compressor_circuit_breaker_fault",
+  "Oil_pressure_low",
+  "Blower_drive_fault",
+  "Blower_circuit_breaker_fault",
+  "Ambient_air_sensor_1_open",
+  "COND_FAN_OVERLOAD",
+  "Three_phase_monitor_fault",
+  "High_pressure_fault",
+  "Ambient_temp_lower_than_set_temp",
+  "Ambient_temp_over_50C",
+  "COMP_MODULE_FEEDBACK_ERROR_Si_I1",
+  "Low_pressure_1_fault",
+  "COMP_FBK_ERROR",
+  "Low_pressure_2_fault",
+  "Ambient_temp_over_43C",
+  "Condenser_fan_2_TOP_fault",
+  "Condenser_fan_3_TOP_fault",
+  "Condenser_fan_4_TOP_fault",
+  "Condenser_fan_2_circuit_breaker_fault",
+  "Condenser_fan_3_circuit_breaker_fault",
+  "Condenser_fan_4_circuit_breaker_fault",
+  "Condenser_fan_1_circuit_breaker_fault",
+  "Condenser_fan_1_TOP_fault",
+  "Ambient_air_sensor_1_short_circuit",
+  "Ambient_air_sensor_2_open",
+  "Ambient_air_sensor_2_short_circuit",
+  "Cold_air_sensor_1_open",
+  "Cold_air_sensor_1_short_circuit",
+  "Cold_air_sensor_2_open",
+  "Cold_air_sensor_2_short_circuit",
+  "Air_outlet_sensor_1_open",
+  "Air_outlet_sensor_1_short_circuit",
+  "Air_outlet_sensor_2_open",
+  "Air_outlet_sensor_2_short_circuit",
+];
+
+// GTPL-157 gT-450T Philippines - Fault tags (same as GTPL-156)
+export const GTPL_157_TAGS = GTPL_156_TAGS;
+
+// GTPL-156 gT-450T Philippines - Analog Input/Output tags
+export const GTPL_156_157_ANALOG_INPUTS = [
+  "Suction_pressure_AIW72",
+  "Discharge_pressure_AIW74",
+  "Static_pressure_AIW64",
+  "T0_probe_afterheater_AIW112",
+  "T0_probe_afterheater_2_AIW114",
+  "T1_probe_cold_air_AIW116",
+  "T1_probe_cold_air_2_AIW118",
+  "T2_probe_ambient_air_AIW120",
+  "T2_probe_ambient_air_2_AIW122",
+];
+
+export const GTPL_156_157_ANALOG_OUTPUTS = [
+  "Blower_speed_AQW72",
+  "Hot_gas_valve_AQW80",
+  "Afterheat_valve_AQW82",
+];
+
+// GTPL-156 gT-450T Philippines - Digital Input/Output tags
+export const GTPL_156_157_DIGITAL_INPUTS = [
+  "Compressor_circuit_breaker_I0_0",
+  "Compressor_motor_overheat_I0_1",
+  "Compressor_in_operation_I0_2",
+  "Oil_pressure_low_I0_3",
+  "Blower_drive_fault_I0_4",
+  "Blower_drive_in_operation_I0_5",
+  "Blower_circuit_breaker_I0_6",
+  "Cond_fan_1_TOP_I0_7",
+  "Cond_fan_1_circuit_breaker_I1_0",
+  "Low_pressure_fault_I1_2",
+  "High_pressure_fault_I1_3",
+  "Spare_I1_1",
+  "Three_phase_monitor_fault_I2_0",
+  "Auto_start_enable_I1_4",
+  "Cond_fan_2_TOP_I2_2",
+  "Cond_fan_3_TOP_I2_3",
+  "Cond_fan_4_TOP_I2_4",
+  "Cond_fan_2_circuit_breaker_I2_5",
+  "Cond_fan_3_circuit_breaker_I2_6",
+  "Cond_fan_4_circuit_breaker_I2_7",
+];
+
+export const GTPL_156_157_DIGITAL_OUTPUTS = [
+  "Compressor_on_Q0_0",
+  "Compressor_motor_reset_Q0_1",
+  "CR_valve_25_percent_Q0_2",
+  "CR_valve_50_percent_Q0_3",
+  "Solenoid_valve_on_Q0_4",
+  "Hot_gas_valve_on_Q0_5",
+  "After_heat_valve_on_Q0_6",
+  "Blower_drive_on_Q0_7",
+  "Collective_trouble_signal_Q1_0",
+  "Chiller_healthy_on_Q1_1",
+  "Spare_Q1_2",
+  "Chiller_fault_Q2_3",
+  "Condenser_fan_1_on_Q2_1",
+  "CR_valve_75_percent_on_Q2_2",
+  "Condenser_fan_2_on_Q2_4",
+  "Condenser_fan_3_on_Q2_5",
+  "Condenser_fan_4_on_Q2_6",
+  "CR_valve_100_percent_on_Q2_7",
+];
+
 // Machine configuration mapping
 export const MACHINE_CONFIG = {
   // S7-200
@@ -627,6 +732,19 @@ export const MACHINE_CONFIG = {
     tags: GPL_115_TAGS,
     type: "S7-1200",
   },
+  // Philippines installations - gT-450T
+  "GTPL-156-gT-450T-S7-1200": {
+    table: "GTPL_156_GT_450T_S7_1200",
+    tags: GTPL_156_TAGS,
+    type: "S7-1200",
+    location: "Philippines",
+  },
+  "GTPL-157-gT-450T-S7-1200": {
+    table: "GTPL_157_GT_450T_S7_1200",
+    tags: GTPL_157_TAGS,
+    type: "S7-1200",
+    location: "Philippines",
+  },
 };
 
 // Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
@@ -634,5 +752,7 @@ export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
   "GTPL-061": "GTPL-061-gT-450T-S7-1200",
+  "GTPL-156": "GTPL-156-gT-450T-S7-1200",
+  "GTPL-157": "GTPL-157-gT-450T-S7-1200",
   // "GPL-132":'GTPL-132-300-AP-S7-1200'
 };

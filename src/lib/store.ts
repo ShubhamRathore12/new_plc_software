@@ -62,6 +62,7 @@ export const useUserStore = create<UserState>()(
 interface DataStore {
   data: any; // Store the fetched data
   setData: (data: any[]) => void; // Function to update the data
+  clearData: () => void; // Wipe the logged-in user payload (logout)
   loading: boolean; // Store the loading state
   setLoading: (loading: boolean) => void; // Function to update the loading state
 }
@@ -71,6 +72,7 @@ export const useDataStore = create<DataStore>()(
     (set) => ({
       data: [],
       setData: (data: any[]) => set({ data }),
+      clearData: () => set({ data: [] }),
       loading: true,
       setLoading: (loading: boolean) => set({ loading }),
     }),

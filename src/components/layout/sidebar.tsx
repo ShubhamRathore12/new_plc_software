@@ -28,7 +28,13 @@ const menuItems = [
   { icon: Users, label: "contacts", href: "/contacts" },
   { icon: LayoutDashboard, label: "registration", href: "/registration-form" },
   { icon: LayoutDashboard, label: "reports", href: "/reports" },
+  { icon: Users, label: "users", href: "/users" },
 ];
+
+// Items shown only to a specific account type, regardless of monitorAccess
+const accountTypeOnlyItems: Record<string, string> = {
+  users: "manufactura",
+};
 
 export default function Sidebar() {
   const router = useRouter();
@@ -116,6 +122,12 @@ export default function Sidebar() {
           {menuItems
             .filter(
               (item) => {
+                // Account-type gated items ignore monitorAccess entirely
+                const requiredAccountType = accountTypeOnlyItems[item.label];
+                if (requiredAccountType) {
+                  return data?.user?.accountType === requiredAccountType;
+                }
+
                 // If showAllItems is true (monitorAccess is "0" or empty), show all items
                 // Otherwise, hide items that are NOT in monitorAccess
                 const isHiddenByMonitorAccess = showAllItems 

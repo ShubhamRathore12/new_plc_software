@@ -9,6 +9,10 @@ import { useEffect, useRef } from "react"
 import { gsap } from "gsap"
 import { motion } from "framer-motion"
 import { Activity, Thermometer, Gauge } from "lucide-react"
+import {
+  GTPL_156_157_ANALOG_CONFIG,
+  isGTPL156157,
+} from "@/lib/gtpl156157Config"
 
 export default function AnalogPage() {
   const { seaction } = useParams()
@@ -16,6 +20,9 @@ export default function AnalogPage() {
   
   // Check if current device is GTPL-137 or GTPL-138 (bar machines)
   const isBarMachine = device === "GTPL-137-gT-450T-S7-1200" || device === "GTPL-138-gT-450T-S7-1200"
+
+  // GTPL-156 / 157 (Philippines silo) — extra silo static-pressure input, no TH probes
+  const isSiloMachine = isGTPL156157(device)
 
   const analogInputs = [
     {
@@ -45,6 +52,15 @@ export default function AnalogPage() {
               value: isBarMachine ? "16.5" : "240",
               unit: isBarMachine ? "bar" : "psi",
             },
+            ...(isSiloMachine
+              ? [
+                  {
+                    description: "Static Pressure",
+                    value: "0",
+                    unit: "Pa",
+                  },
+                ]
+              : []),
           ],
     },
     {
@@ -383,6 +399,8 @@ export default function AnalogPage() {
     "GTPL-104-gT-650T-S7-1200": shared650T_config,
     "GTPL-132-300-AP-S7-1200": GTPL_132_config,
 
+    "GTPL-156-gT-450T-S7-1200": GTPL_156_157_ANALOG_CONFIG,
+    "GTPL-157-gT-450T-S7-1200": GTPL_156_157_ANALOG_CONFIG,
     "GTPL-134-gT-450T-S7-1200": GTPL_134_135_config,
     "GTPL-135-gT-450T-S7-1200": GTPL_134_135_config,
     "GTPL-145-gT-450T-S7-1200": GTPL_134_135_config,
@@ -602,6 +620,9 @@ export default function AnalogPage() {
                             return !item.description.startsWith("TH")
                           }
                           if (device === "GTPL-137-gT-450T-S7-1200" || device === "GTPL-138-gT-450T-S7-1200") {
+                            return !item.description.startsWith("TH")
+                          }
+                          if (isSiloMachine) {
                             return !item.description.startsWith("TH")
                           }
                           return true

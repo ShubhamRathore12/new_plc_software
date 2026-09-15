@@ -8,6 +8,11 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
 import { Power, Settings, Activity, AlertTriangle, CheckCircle, XCircle, Zap } from "lucide-react";
+import {
+  GTPL_156_157_DIGITAL_OUTPUT_ROWS,
+  isGTPL156157,
+  pickTagValue,
+} from "@/lib/gtpl156157Config";
 
 export default function OutputsPage() {
   const router = useRouter();
@@ -223,6 +228,14 @@ export default function OutputsPage() {
         { id: "Q2.7", description: "CR valve 100% on", dataKey: "CR_valve_100_on_Q2_7" },
       ];
     }
+    // GTPL-156 / 157 (Philippines silo) — digital outputs from the SILO I/O list
+    else if (isGTPL156157(deviceType)) {
+      return GTPL_156_157_DIGITAL_OUTPUT_ROWS.map((row) => ({
+        id: row.id,
+        description: row.description,
+        dataKey: row.tag,
+      }));
+    }
     else if (deviceType === "GTPL-134-gT-450T-S7-1200" || deviceType === "GTPL-135-gT-450T-S7-1200" || deviceType === "GTPL-145-gT-450T-S7-1200" || deviceType === "GTPL-148-gT-450T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor on", dataKey: "Compressor_on_Q0_0" },
@@ -361,6 +374,11 @@ export default function OutputsPage() {
         if (data[alt] !== undefined) return data[alt];
       }
     }
+
+    // SILO (156/157) PLC tag name -> logged column name
+    const siloRow = GTPL_156_157_DIGITAL_OUTPUT_ROWS.find((r) => r.tag === dataKey);
+    if (siloRow) return pickTagValue(data, siloRow.keys);
+
     return undefined;
   };
 

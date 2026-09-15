@@ -1015,6 +1015,20 @@ export default function DevicesPage() {
       plc: "S7-1200",
       chillerModel: "gT-450T",
     },
+    {
+      name: "GTPL-156-gT-450T-S7-1200",
+      location: "Philippines",
+      image: "/images/450.jpeg",
+      plc: "S7-1200",
+      chillerModel: "gT-450T",
+    },
+    {
+      name: "GTPL-157-gT-450T-S7-1200",
+      location: "Philippines",
+      image: "/images/450.jpeg",
+      plc: "S7-1200",
+      chillerModel: "gT-450T",
+    },
   ].sort((a, b) => {
     const numA = parseInt(a.name.match(/\d+/)?.[0] || "0");
     const numB = parseInt(b.name.match(/\d+/)?.[0] || "0");
@@ -1104,6 +1118,8 @@ export default function DevicesPage() {
     "GTPL-142-gT-450AP-S7-1200": "GTPL_142",
     "GTPL-123-gT-450AP": "GTPL_123",
     "GTPL-143-gT-450AP-S7-1200": "GTPL_143",
+    "GTPL-156-gT-450T-S7-1200": "GTPL_156",
+    "GTPL-157-gT-450T-S7-1200": "GTPL_157",
   };
 
   const handleViewMore = (deviceName: string) => {

@@ -80,7 +80,9 @@ const allDevices = [
   "GTPL-143-gT-450AP-S7-1200",
   "GTPL-068-gT-650T-S7-1200",
   "GTPL-104-gT-650T-S7-1200",
-  "GTPL-044-GT-140E-S7-1200"
+  "GTPL-044-GT-140E-S7-1200",
+  "GTPL-156-gT-450T-S7-1200",
+  "GTPL-157-gT-450T-S7-1200"
 ];
 
 // Create a mapping from device name to table name
@@ -126,6 +128,9 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-123-gT-450AP": "GTPL_123_GT_450AP_S7_1200",
   "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200",
   "GTPL-044-GT-140E-S7-1200": "GTPL_114_GT_140E_S7_1200",
+  // Philippines silo chillers
+  "GTPL-156-gT-450T-S7-1200": "GTPL_156_GT_450T_S7_1200",
+  "GTPL-157-gT-450T-S7-1200": "GTPL_157_GT_450T_S7_1200",
 };
 
 
@@ -170,7 +175,9 @@ const ALLOWED_TABLES = [
   "GTPL_123_GT_450AP_S7_1200",
   "GTPL_143_GT_450AP_S7_1200",
   "GTPL_068_GT_650T_S7_1200",
-  "GTPL_104_GT_650T_S7_1200"
+  "GTPL_104_GT_650T_S7_1200",
+  "GTPL_156_GT_450T_S7_1200",
+  "GTPL_157_GT_450T_S7_1200"
 ] as const;
 
 export default function TableWithDownload() {

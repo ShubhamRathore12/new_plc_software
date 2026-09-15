@@ -60,7 +60,9 @@ export const useAutoData = (autoType: string) => {
    "GTPL-144-gT-300AP-S7-1200": "GTPL_144_GT_300AP_S7_1200",
    "GTPL-142-gT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
    "GTPL-123-gT-450AP": "GTPL_123_GT_450AP_S7_1200",
-   "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200"
+   "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200",
+   "GTPL-156-gT-450T-S7-1200": "GTPL_156_GT_450T_S7_1200",
+   "GTPL-157-gT-450T-S7-1200": "GTPL_157_GT_450T_S7_1200"
 
   };
 
@@ -104,7 +106,9 @@ export const useAutoData = (autoType: string) => {
     "GTPL-144-gT-300AP-S7-1200":"GTPL_144",
     "GTPL-142-gT-450AP-S7-1200":"GTPL_142",
     "GTPL-123-gT-450AP":"GTPL_123",
-    "GTPL-143-gT-450AP-S7-1200":"GTPL_143"
+    "GTPL-143-gT-450AP-S7-1200":"GTPL_143",
+    "GTPL-156-gT-450T-S7-1200":"GTPL_156",
+    "GTPL-157-gT-450T-S7-1200":"GTPL_157"
   };
 
   const fetchData = async () => {

@@ -797,6 +797,11 @@ export default function AutoDiagram1({
   const normalizedMachineName = (machineName || "").toUpperCase();
   // AP machines (300AP / 450AP) — show condenser fan speed
   const isAPMachine = normalizedMachineName.includes("AP");
+  // Philippines silo chillers (GTPL-156 / 157) — HMI shows silo static pressure
+  // in Pa, a condenser fan speed %, and labels T0 as supply air temperature.
+  const isSiloPressureMachine = ["GTPL-156", "GTPL-157"].some((n) =>
+    normalizedMachineName.includes(n),
+  );
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
@@ -957,6 +962,8 @@ export default function AutoDiagram1({
     "GTPL-068-gT-650T-S7-1200",
     "GTPL-104-gT-650T-S7-1200",
     "GTPL-118-gT-60T-S7-200",
+    "GTPL-156-gT-450T-S7-1200",
+    "GTPL-157-gT-450T-S7-1200",
     // "GTPL-061-gT-450T-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -1016,6 +1023,8 @@ export default function AutoDiagram1({
     "GTPL-124-gT-450T-S7-1200",
     "GTPL-137-gT-450T-S7-1200",
     "GTPL-138-gT-450T-S7-1200",
+    "GTPL-156-gT-450T-S7-1200",
+    "GTPL-157-gT-450T-S7-1200",
   ].some((name) => normalizedMachineName.includes(name.toUpperCase())) ||
     normalizedMachineName.includes("GTPL-123") ||
     normalizedMachineName.includes("450AT") ||
@@ -1360,6 +1369,12 @@ export default function AutoDiagram1({
     data?.Value_to_Display_HOT_GAS_VALVE_OPEN,
     data?.HOT_GAS_VALVE_RPM,
     data?.Hot_valve_speed,
+    0,
+  );
+  const staticPressure = pickVal(
+    data?.Static_pressure,
+    data?.Static_Pressure,
+    data?.STATIC_PRESSURE,
     0,
   );
   const compPct = pickVal(
@@ -1854,6 +1869,16 @@ export default function AutoDiagram1({
         >
           SILO
         </div>
+        {/* Silo static pressure (GTPL-156/157 HMI shows this above the silo) */}
+        {isSiloPressureMachine && (
+          <div
+            className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-1 text-base font-bold text-gray-900 flex items-center gap-2"
+            style={{ left: 60, top: 282 }}
+          >
+            <span>{fmt(staticPressure)}</span>
+            <span>Pa</span>
+          </div>
+        )}
         {grainTempVal && machineName?.includes("GTPL-118") && (
           <div className="absolute z-10" style={{ left: 70, top: 520 }}>
             <SensorBadge
@@ -1924,7 +1949,12 @@ export default function AutoDiagram1({
           <div className="space-y-1">
             <div>T2 = Ambient Air Temperature</div>
             <div>T1 = Cold Air Temperature</div>
-            <div>T0 = Air Outlet Temperature</div>
+            <div>
+              T0 ={" "}
+              {isSiloPressureMachine
+                ? "Supply Air Temperature"
+                : "Air Outlet Temperature"}
+            </div>
           </div>
           <div className="space-y-1">
             <div>AHT = Afterheat Valve</div>
@@ -1989,7 +2019,10 @@ export default function AutoDiagram1({
           </div>
         </div>
         {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 + AP machines */}
-        {(isPaddy200Machine || isHeaterCoilMachine || isAPMachine) && (
+        {(isPaddy200Machine ||
+          isHeaterCoilMachine ||
+          isAPMachine ||
+          isSiloPressureMachine) && (
           <div
             className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-0.5 text-sm font-bold text-gray-900 text-center"
             style={{ left: 1290, top: 393 }}
