@@ -1818,23 +1818,13 @@ export default function AutoDiagram1({
           width={DESIGN_W}
           height={DESIGN_H}
           viewBox={`0 0 ${DESIGN_W} ${DESIGN_H}`}
+          overflow="hidden"
           style={{ zIndex: 1 }}
         >
           {/* Static arrowheads state the airflow direction independently of
               the animation: they stay correct when the dashes are stopped by
               reduced-motion, and they cannot read backwards (F-20). */}
           <defs>
-            <marker
-              id="flow-arrow"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="7"
-              markerHeight="7"
-              orient="auto-start-reverse"
-            >
-              <path d="M 0 0 L 10 5 L 0 10 z" fill="#E8785F" />
-            </marker>
           </defs>
 
           {/* dashed salmon duct lines per reference image; dashes march when flow active */}
@@ -1849,8 +1839,6 @@ export default function AutoDiagram1({
               strokeLinejoin="round"
               strokeLinecap="round"
               strokeDasharray="10 7"
-              markerMid="url(#flow-arrow)"
-              markerEnd="url(#flow-arrow)"
               style={{
                 animation: anyFlow ? "pipeFlow 1.2s linear infinite" : "none",
               }}

@@ -906,7 +906,7 @@ export default function DevicesPage() {
           d.chillerModel.toLowerCase().includes(term) ||
           d.plc.toLowerCase().includes(term)
       )
-      .sort((a, b) => Number(b.running) - Number(a.running));
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
   }, [decorated, query, statusFilter]);
 
   const fleet = useMemo(
