@@ -6,13 +6,16 @@ import { ThemeProvider } from "./theme-provider";
 import { LanguageProvider } from "./language-provider";
 import { AppPerformanceProvider } from "./performance-provider";
 import { MachineStatusProvider } from "./machine-status-provider";
+import { SessionProvider } from "./session-provider";
+import SessionGate from "@/components/auth/SessionGate";
+import { MotionConfig } from "framer-motion";
 import dynamic from "next/dynamic";
 import { Toaster } from "@/components/ui/sonner";
 
 // Dynamically import RoutePrefetcher to avoid SSR issues
 const RoutePrefetcher = dynamic(
   () => import("@/components/layout/RoutePrefetcher"),
-  { ssr: false }
+  { ssr: false },
 );
 
 interface ProvidersProps {
@@ -22,17 +25,23 @@ interface ProvidersProps {
 export default function Providers({ children }: ProvidersProps) {
   return (
     <QueryProvider>
-      <LanguageProvider>
-        <AppPerformanceProvider>
-          <ThemeProvider>
-            <MachineStatusProvider>
-              {children}
-              <RoutePrefetcher />
-              <Toaster richColors />
-            </MachineStatusProvider>
-          </ThemeProvider>
-        </AppPerformanceProvider>
-      </LanguageProvider>
+      {/* JS-driven animations follow the OS reduced-motion setting too; the CSS
+          media query alone cannot reach framer-motion (F-03). */}
+      <MotionConfig reducedMotion="user">
+        <LanguageProvider>
+          <AppPerformanceProvider>
+            <ThemeProvider>
+              <SessionProvider>
+                <MachineStatusProvider>
+                  <SessionGate>{children}</SessionGate>
+                  <RoutePrefetcher />
+                  <Toaster richColors />
+                </MachineStatusProvider>
+              </SessionProvider>
+            </ThemeProvider>
+          </AppPerformanceProvider>
+        </LanguageProvider>
+      </MotionConfig>
     </QueryProvider>
   );
 }

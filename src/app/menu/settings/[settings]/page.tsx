@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { Settings2, Clock, Timer, Database } from "lucide-react";
 import { motion } from "framer-motion";
@@ -9,6 +11,8 @@ import {
 } from "@/components/ui/animated-container";
 import { useParams, useRouter } from "next/navigation";
 import { useLanguage } from "@/providers/language-provider";
+import ScreenHeader from "@/components/ScreenHeader";
+import { SlidersHorizontal } from "lucide-react";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -48,47 +52,49 @@ export default function SettingsPage() {
     <PageTransition>
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
-          <AnimatedContainer className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
-              {t("SETTINGS")}
-            </h1>
-            <p className="text-muted-foreground">
-              {t("CONFIGURE_SYSTEM_SETTINGS")}
-            </p>
+          <AnimatedContainer className="mb-8">
+            <ScreenHeader
+              icon={SlidersHorizontal}
+              eyebrow={t("CONFIGURE_SYSTEM_SETTINGS")}
+              title={t("SETTINGS")}
+              machine={device as string}
+              onBack={() => router.push(`/menu/${device}`)}
+            />
           </AnimatedContainer>
 
-          <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-4xl mx-auto"
-            variants={container}
-            initial="hidden"
-            animate="show"
-          >
+          <div className="stagger mx-auto grid max-w-4xl grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
             {settingsItems.map((item) => (
-              <motion.div
-                key={item.title}
-                className="cursor-pointer"
-                onClick={() => handleNavigate(item.path)}
-              >
-                <Card className="transition-all hover:shadow-md hover:border-primary/50 h-full">
-                  <CardContent className="p-6 flex flex-col items-center text-center">
-                    <motion.div
-                      whileHover={{ scale: 1.05 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 10,
+              <div key={item.title} className="tilt">
+                <Link
+                  href={`/menu/settings/${item.path}/${device}`}
+                  className="group tilt-face sheen glow-edge surface focus-visible:ring-ring/50 relative flex h-full w-full flex-col items-center gap-4 overflow-hidden p-6 text-center outline-none focus-visible:ring-2"
+                >
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 top-0 h-28 opacity-70 transition-opacity duration-[var(--motion-medium)] group-hover:opacity-100"
+                    style={{
+                      background:
+                        "radial-gradient(12rem 7rem at 50% -10%, color-mix(in oklch, var(--primary) 18%, transparent), transparent 70%)",
+                    }}
+                  />
+                  <span className="tilt-layer plate relative flex h-16 w-16 items-center justify-center rounded-2xl">
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-[var(--motion-medium)] group-hover:opacity-100"
+                      style={{
+                        background:
+                          "linear-gradient(145deg, color-mix(in oklch, var(--primary) 85%, transparent), color-mix(in oklch, var(--chart-2) 70%, transparent))",
                       }}
-                    >
-                      <item.icon className="h-12 w-12 mb-4 text-primary" />
-                    </motion.div>
-                    <h2 className="text-xl font-semibold">
-                      {t(item.title)}
-                    </h2>
-                  </CardContent>
-                </Card>
-              </motion.div>
+                    />
+                    <item.icon className="text-primary relative h-7 w-7 transition-colors duration-[var(--motion-medium)] group-hover:text-white" />
+                  </span>
+                  <h2 className="tilt-layer text-base font-semibold tracking-tight">
+                    {t(item.title)}
+                  </h2>
+                </Link>
+              </div>
             ))}
-          </motion.div>
+          </div>
         </main>
       </div>
     </PageTransition>

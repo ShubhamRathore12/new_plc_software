@@ -78,7 +78,17 @@ export const useDataStore = create<DataStore>()(
     }),
     {
       name: "data-storage", // 📝 key in localStorage
-      partialize: (state) => ({ data: state.data }), // optionally persist only `data`, not `loading`
+      // Persist the login payload WITHOUT the bearer token: the session lives
+      // in the HttpOnly cookie, and a token in localStorage is readable by any
+      // XSS on the page (§1.1).
+      partialize: (state) => {
+        const data: any = state.data;
+        if (data && typeof data === "object" && !Array.isArray(data)) {
+          const { token, accessToken, refreshToken, ...rest } = data;
+          return { data: rest };
+        }
+        return { data };
+      },
     }
   )
 );

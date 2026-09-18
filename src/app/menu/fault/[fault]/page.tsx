@@ -19,10 +19,15 @@ import {
   getActiveFaultColumns,
 } from "@/lib/faultConfig";
 import { useLanguage } from "@/providers/language-provider";
+import ScreenHeader, { StatStrip } from "@/components/ScreenHeader";
+import { AlertTriangle, ListFilter, ShieldAlert } from "lucide-react";
 
 interface FaultCode {
   code: number;
   description: string;
+  /** Authoritative time of the last occurrence, when the API supplies one.
+   *  Absent today — never substitute the current time for it. */
+  lastOccurrenceAt?: string | null;
 }
 
 export default function FaultPage() {
@@ -87,8 +92,15 @@ export default function FaultPage() {
                   <p>
                     <strong>Machine Name:</strong> {machineName}
                   </p>
+                  {/* The API does not yet return an authoritative event time
+                      (lastOccurrenceAt is open backend work). Rendering
+                      Date.now() here invented a fault time on a safety screen,
+                      so the field states that nothing is recorded instead. */}
                   <p>
-                    <strong>Timestamp:</strong> {new Date().toLocaleString()}
+                    <strong>{t("last_occurrence")}:</strong>{" "}
+                    {selectedFault.lastOccurrenceAt
+                      ? new Date(selectedFault.lastOccurrenceAt).toLocaleString()
+                      : t("no_occurrence_recorded")}
                   </p>
                 </div>
               </div>
@@ -208,17 +220,35 @@ export default function FaultPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 container py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
-            {t("Fault Codes")}
-          </h1>
+        <div className="animate-fade-in-up mb-8">
+          <ScreenHeader
+            icon={ShieldAlert}
+            eyebrow="Diagnostics"
+            title={t("Fault Codes")}
+            machine={machineName}
+            onBack={handleBackToMenu}
+          />
+
+          <div className="mt-5">
+            <StatStrip
+              stats={[
+                { label: t("total"), value: faultCodes.length, icon: ListFilter },
+                {
+                  label: "Machine type",
+                  value: machineType ?? "-",
+                  icon: AlertTriangle,
+                  tone: "warning",
+                },
+              ]}
+            />
+          </div>
         </div>
 
-        <Card>
+        <Card className="surface glow-edge">
           <CardContent className="p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-semibold">
-                {t("Fault Codes")} ({faultCodes.length} {t("total")})
+              <h3 className="text-base font-semibold tracking-tight">
+                {t("Fault Codes")}
               </h3>
               <Button
                 variant="secondary"

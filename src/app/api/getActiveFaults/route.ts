@@ -8,9 +8,6 @@ export async function GET(req: Request) {
   const rawMachineName = searchParams.get("machineName")?.trim() || "";
   const machineName = MACHINE_NAME_ALIASES[rawMachineName] || rawMachineName;
 
-  // Optional: override table via query
-  const overrideTable = searchParams.get("tableName")?.trim();
-
   // Pagination params - ensure proper parsing
   const pageParam = searchParams.get("page");
   const limitParam = searchParams.get("limit");
@@ -38,17 +35,18 @@ export async function GET(req: Request) {
     MACHINE_CONFIG[machineName as keyof typeof MACHINE_CONFIG];
 
   if (!machineConfig) {
+    // Do not disclose the list of valid machines/tables (S-07). Unknown and
+    // unauthorized identifiers must be indistinguishable to the caller.
     return new Response(
-      JSON.stringify({
-        error: `No configuration found for machine: ${machineName}`,
-        availableMachines: Object.keys(MACHINE_CONFIG),
-      }),
-      { status: 400, headers: { "Content-Type": "application/json" } }
+      JSON.stringify({ error: "Unknown machine identifier" }),
+      { status: 404, headers: { "Content-Type": "application/json" } }
     );
   }
 
   try {
-    const table = overrideTable || machineConfig.table;
+    // The table is resolved exclusively from server-side config keyed by the
+    // validated machine. A caller-supplied table name is never trusted (S-06).
+    const table = machineConfig.table;
 
     console.log(
       `Fetching data for machine: ${machineName}, table: ${table}, page: ${page}, limit: ${limit}, offset: ${offset}`

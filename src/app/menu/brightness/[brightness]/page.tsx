@@ -26,7 +26,7 @@ export default function BrightnessPage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">
+            <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">
               SCREEN BRIGHTNESS
             </h1>
             <p className="text-muted-foreground">Adjust display brightness</p>

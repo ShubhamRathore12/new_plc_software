@@ -13,6 +13,8 @@ import {
   GTPL_156_157_ANALOG_CONFIG,
   isGTPL156157,
 } from "@/lib/gtpl156157Config"
+import ScreenHeader from "@/components/ScreenHeader";
+import { AnalogRow } from "@/components/SignalRow";
 
 export default function AnalogPage() {
   const { seaction } = useParams()
@@ -512,57 +514,59 @@ export default function AnalogPage() {
     return <Activity className="w-4 h-4 text-gray-500" />
   }
 
-  const getValueColor = (value: string | number, unit: string) => {
-    const numValue = typeof value === 'string' ? parseFloat(value) : value
-    if (unit === '°C') {
-      if (numValue > 40) return 'text-red-500'
-      if (numValue < 10) return 'text-blue-500'
-      return 'text-green-500'
-    }
-    if (unit === 'psi' || unit === 'bar') {
-      // For bar units, adjust thresholds (1 bar ≈ 14.5 psi)
-      const threshold = unit === 'bar' ? 13.8 : 200  // 13.8 bar ≈ 200 psi
-      if (numValue > threshold) return 'text-orange-500'
-      return 'text-blue-500'
-    }
-    if (unit === '%') {
-      if (numValue > 80) return 'text-red-500'
-      if (numValue > 50) return 'text-yellow-500'
-      return 'text-green-500'
-    }
-    return 'text-foreground'
-  }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <main className="flex-1 container py-8" ref={containerRef}>
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-gradient-to-r from-blue-500 to-purple-600">
-              <Activity className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                ANALOG MONITORING
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Real-time analog inputs and outputs • {currentMachineConfig.displayName}
-                {!isConnected && (
-                  <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-700 rounded-full dark:bg-red-900 dark:text-red-300">
-                    Disconnected
-                  </span>
-                )}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
+      {/* Ambient ground - static, so it costs one paint and never repaints */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute top-0 left-1/4 h-96 w-96 rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, color-mix(in oklch, var(--primary) 14%, transparent), transparent)",
+          }}
+        />
+        <div
+          className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, color-mix(in oklch, var(--chart-2) 13%, transparent), transparent)",
+          }}
+        />
+      </div>
 
-        <Card className="backdrop-blur-sm bg-white/80 dark:bg-slate-900/80 border-0 shadow-2xl">
+      <main
+        className="relative z-10 mx-auto w-full max-w-7xl flex-1 space-y-6 px-4 py-8"
+        ref={containerRef}
+      >
+        <div className="animate-fade-in-up">
+          <ScreenHeader
+            icon={Activity}
+            eyebrow="Analog monitoring"
+            title="Analog Signals"
+            machine={device as string}
+            connected={isConnected}
+            onBack={() => router.push(`/menu/${device}`)}
+          />
+        </div>
+
+        {/* Legend: the green dot had no explanation anywhere on the page (F-17). */}
+        <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-xs">
+          <span className="flex items-center gap-1.5">
+            <span className="bg-success h-1.5 w-1.5 rounded-full" aria-hidden="true" />
+            Live value read from the machine
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span
+              className="h-1.5 w-1.5 rounded-full"
+              style={{ background: "var(--border)" }}
+              aria-hidden="true"
+            />
+            Configured default — no live reading for this signal
+          </span>
+        </div>
+
+        <Card className="surface glow-edge">
           <CardContent className="p-8">
             <ScrollArea className="h-[600px] pr-4">
               <div className="space-y-8">
@@ -575,9 +579,12 @@ export default function AnalogPage() {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6, delay: sectionIndex * 0.1 }}
                   >
-                    <div className="flex items-center gap-3 pb-3 border-b border-gradient-to-r from-blue-200 to-purple-200 dark:from-blue-800 dark:to-purple-800">
-                      <div className="w-2 h-6 bg-gradient-to-b from-blue-500 to-purple-600 rounded-full"></div>
-                      <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">{section.section}</h2>
+                    <div className="flex items-center gap-2.5">
+                      <span className="bg-primary h-3.5 w-[3px] rounded-full" />
+                      <span className="text-[10px] font-bold tracking-[0.22em] uppercase">
+                        {section.section}
+                      </span>
+                      <span className="bg-border/70 h-px flex-1" />
                     </div>
                     <div className="grid gap-3">
                       {section.items
@@ -607,7 +614,7 @@ export default function AnalogPage() {
                           }
                           return true
                         })
-                        .map((item, itemIndex) => {
+                        .map((item) => {
                           const liveKey = analogInputValueMap[item.description]
                           const liveValue = liveKey ? data?.[liveKey] : undefined
                           const convertedValue = convertToBarIfNecessary(liveValue, item.unit)
@@ -615,32 +622,14 @@ export default function AnalogPage() {
                           const displayValue = formatValue(convertedValue, displayUnit) ?? formatValue(item.value, displayUnit)
 
                           return (
-                            <div
+                            <AnalogRow
                               key={item.description}
-                              ref={addToRefs}
-                              className="group flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-700 border border-slate-200 dark:border-slate-600 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer"
-                            >
-                              <div className="flex items-center gap-3">
-                                {getIcon(item.description)}
-                                <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
-                                  {item.description}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <span className={`text-2xl font-bold ${getValueColor(displayValue, item.unit)} transition-colors`}>
-                                  {displayValue}
-                                </span>
-                                {/* Only show unit separately if formatValue didn't include it */}
-                                {displayValue && !displayValue.toString().includes(item.unit) && (
-                                  <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                                    {item.unit}
-                                  </span>
-                                )}
-                                {liveValue && (
-                                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
-                                )}
-                              </div>
-                            </div>
+                              description={item.description}
+                              value={displayValue}
+                              unit={displayUnit}
+                              live={Boolean(liveValue)}
+                              icon={getIcon(item.description)}
+                            />
                           )
                         })}
                     </div>
@@ -654,9 +643,12 @@ export default function AnalogPage() {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.6, delay: 0.3 }}
                 >
-                  <div className="flex items-center gap-3 pb-3 border-b border-gradient-to-r from-green-200 to-blue-200 dark:from-green-800 dark:to-blue-800">
-                    <div className="w-2 h-6 bg-gradient-to-b from-green-500 to-blue-600 rounded-full"></div>
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-slate-200">ANALOG OUTPUTS</h2>
+                  <div className="flex items-center gap-2.5">
+                    <span className="bg-success h-3.5 w-[3px] rounded-full" />
+                    <span className="text-[10px] font-bold tracking-[0.22em] uppercase">
+                      Analog outputs
+                    </span>
+                    <span className="bg-border/70 h-px flex-1" />
                   </div>
                   <div className="grid gap-3">
                     {analogOutputsTemplate
@@ -730,32 +722,14 @@ export default function AnalogPage() {
                         const displayValue = formatValue(liveValue, item.unit);
 
                         return (
-                          <div
+                          <AnalogRow
                             key={item.description}
-                            ref={addToRefs}
-                            className="group flex items-center justify-between p-4 rounded-xl bg-gradient-to-r from-white to-slate-50 dark:from-slate-800 dark:to-slate-700 border border-slate-200 dark:border-slate-600 hover:shadow-lg hover:scale-[1.02] transition-all duration-300 cursor-pointer"
-                          >
-                            <div className="flex items-center gap-3">
-                              {getIcon(item.description)}
-                              <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
-                                {item.description}
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <span className={`text-2xl font-bold ${getValueColor(displayValue, item.unit)} transition-colors`}>
-                                {displayValue}
-                              </span>
-                              {/* Only show unit separately if formatValue didn't include it */}
-                              {displayValue && !displayValue.toString().includes(item.unit) && (
-                                <span className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-                                  {item.unit}
-                                </span>
-                              )}
-                              {liveValue !== undefined && liveValue !== null && (
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse ml-2"></div>
-                              )}
-                            </div>
-                          </div>
+                            description={item.description}
+                            value={displayValue}
+                            unit={item.unit}
+                            live={liveValue !== undefined && liveValue !== null}
+                            icon={getIcon(item.description)}
+                          />
                         );
                       })}
                   </div>
@@ -763,35 +737,29 @@ export default function AnalogPage() {
               </div>
             </ScrollArea>
 
-            {/* Navigation Buttons */}
-            <motion.div
-              className="flex gap-4 mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
+            <div className="border-border/70 mt-6 grid gap-3 border-t pt-5 md:grid-cols-2">
               <Button
                 variant="outline"
-                className="flex-1 h-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-700 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-800/30 dark:hover:to-purple-800/30 transition-all duration-300"
+                className="depth-lift h-12 text-sm font-semibold"
                 onClick={() => router.push(`/menu/inputs/${device || ""}`)}
               >
-                <Activity className="w-4 h-4 mr-2" />
+                <Activity className="h-4 w-4" />
                 INPUTS
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 h-12 bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 border-green-200 dark:border-green-700 hover:from-green-100 hover:to-blue-100 dark:hover:from-green-800/30 dark:hover:to-blue-800/30 transition-all duration-300"
+                className="depth-lift h-12 text-sm font-semibold"
                 onClick={() => router.push(`/menu/outputs/${device || ""}`)}
               >
-                <Gauge className="w-4 h-4 mr-2" />
+                <Gauge className="h-4 w-4" />
                 OUTPUTS
               </Button>
-            </motion.div>
+            </div>
           </CardContent>
           <div className="p-6 pt-0">
             <Button
               variant="outline"
-              className="w-full h-12 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 hover:from-slate-100 hover:to-slate-200 dark:hover:from-slate-700 dark:hover:to-slate-600 transition-all duration-300"
+              className="depth-lift h-12 w-full"
               onClick={() => router.push(`/menu/${device}`)}
             >
               ← BACK TO MENU

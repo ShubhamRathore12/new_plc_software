@@ -2,12 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Switch } from "@/components/ui/switch";
-import { Badge } from "@/components/ui/badge";
 import {
   PageTransition,
   AnimatedContainer,
@@ -15,18 +10,26 @@ import {
 import { ConnectionStatus } from "@/components/ui/connection-status";
 import Home from "@/components/diagram-controls";
 import { useAutoData } from "@/hooks/useAutoData";
-import AutoDiagram from "@/components/AutoDiagram";
-import HVACDashboard from "../../../../components/AutoDiagram";
 import Fan from "../../../../../public/images/fan.png";
 import useIsMobile from "@/hooks/useIsMobile";
-import MobileAutoDiagram from "@/components/MobileAutoDiagram";
 import AutoDiagram1 from "@/components/AutoDiagram1";
 import { useLanguage } from "@/providers/language-provider";
+import AutoTelemetryPanel from "@/components/AutoTelemetryPanel";
+import DiagramFrame from "@/components/DiagramFrame";
+import { ArrowLeft, Hash, Snowflake } from "lucide-react";
 
 export default function AutoGrainPage() {
   const router = useRouter();
   const { "auto-grain": autoGrain } = useParams();
-  const { data, isConnected, error, formatValue } = useAutoData(
+  const {
+    data,
+    isConnected,
+    telemetryState,
+    lastUpdatedAt,
+    isShowingStaleData,
+    error,
+    formatValue,
+  } = useAutoData(
     autoGrain as string
   );
   const { t } = useLanguage();
@@ -618,90 +621,166 @@ export default function AutoGrainPage() {
 
   const isMobile = useIsMobile();
 
+  const CR_VALVE_MACHINES = [
+    "GTPL-132-300-AP-S7-1200",
+    "GTPL-136-gT-450AP",
+    "GTPL-139-gT-300AP-S7-1200",
+    "GTPL-144-gT-300AP-S7-1200",
+    "GTPL-143-gT-450AP-S7-1200",
+    "GTPL-142-gT-450AP-S7-1200",
+    "GTPL-123-gT-450AP",
+  ];
+
+  const isOn = (v: string | undefined) => v?.toLowerCase() === "true";
+  const hasVal = (v: any) => v !== undefined && v !== null && v !== "";
+
+  // ── panel data ──────────────────────────────────────────────────────────
+  const temperatureRows = Object.entries(currentConfig.temperatureSensors).map(
+    ([key, sensor]: [string, any]) => ({
+      key,
+      label: t(sensor.label),
+      value: formatValue(data?.[sensor.key], "\u00b0C"),
+    })
+  );
+
+  const meterRows = Object.entries(currentConfig.controls).map(
+    ([key, control]: [string, any]) => {
+      let value;
+      if (hasVal(data?.[control.key])) {
+        value = data[control.key];
+      } else if (key === "COND" || key === "CONDENSORFANSPEED") {
+        // Condenser field name varies by PLC - fall back across all variants.
+        value = [
+          data?.Condenser_fan_speed,
+          data?.Cond_fan_speed,
+          data?.Value_to_Display_COND_ACT_SPEED,
+          data?.CONDENSER_RPM,
+        ].find(hasVal);
+      }
+      return {
+        key,
+        label: t(control.label),
+        value: formatValue(value, "%"),
+        percent: parseFloat(value) || 0,
+      };
+    }
+  );
+
+  const pressureUnit = isBarMachine ? " bar" : "psi";
+  const readPressure = (tagKey: string) => {
+    const raw = data?.[tagKey];
+    const converted = isBarMachine ? convertPressureToBar(raw) : raw;
+    return formatValue(hasVal(converted) ? converted : undefined, pressureUnit);
+  };
+
+  const valveRows = CR_VALVE_MACHINES.includes(autoGrain as string)
+    ? [
+        { key: "cr25", label: "25%", on: isOn(cr25) },
+        { key: "cr50", label: "50%", on: isOn(cr50) },
+        { key: "cr75", label: "75%", on: isOn(cr75) },
+        { key: "cr100", label: "100%", on: isOn(cr100) },
+      ]
+    : undefined;
+
   return (
     <PageTransition>
-      <div className="flex flex-col min-h-screen">
-        <ConnectionStatus isConnected={isConnected} error={error} />
-        <main className="flex-1 w-full px-4 md:px-8 py-8">
+      <div className="relative flex min-h-screen flex-col overflow-hidden">
+        {/* Ambient ground - static, so it costs one paint and never repaints */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div
+            className="absolute top-0 left-1/4 h-96 w-96 rounded-full"
+            style={{
+              background:
+                "radial-gradient(closest-side, color-mix(in oklch, var(--primary) 14%, transparent), transparent)",
+            }}
+          />
+          <div
+            className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full"
+            style={{
+              background:
+                "radial-gradient(closest-side, color-mix(in oklch, var(--chart-2) 13%, transparent), transparent)",
+            }}
+          />
+        </div>
+
+        <ConnectionStatus
+          state={telemetryState}
+          lastUpdatedAt={lastUpdatedAt}
+          isStale={isShowingStaleData}
+          error={error}
+        />
+
+        <main className="relative z-10 w-full flex-1 px-4 py-8 md:px-8">
           <AnimatedContainer className="mb-8">
-            <motion.h1 
-              className="text-3xl font-bold tracking-tight mb-2 flex items-center gap-3"
-              animate={isGrainChillingMode ? {
-                scale: [1, 1.05, 1],
-                textShadow: [
-                  '0 0 0px rgba(59, 130, 246, 0)',
-                  '0 0 20px rgba(59, 130, 246, 0.8)',
-                  '0 0 0px rgba(59, 130, 246, 0)'
-                ]
-              } : {
-                scale: 1,
-                textShadow: '0 0 0px rgba(156, 163, 175, 0)'
-              }}
-              transition={{
-                duration: 2,
-                repeat: isGrainChillingMode ? Infinity : 0,
-                repeatType: "reverse"
-              }}
-            >
-              {t("GRAIN CHILLING MODE")} - {t("AUTO")}
-              <motion.div
-                animate={isGrainChillingMode ? {
-                  rotate: 360,
-                  scale: [1, 1.2, 1]
-                } : {
-                  rotate: 0,
-                  scale: 1
-                }}
-                transition={{
-                  duration: isGrainChillingMode ? 3 : 0.5,
-                  repeat: isGrainChillingMode ? Infinity : 0,
-                  ease: "linear"
-                }}
-                className={`w-6 h-6 rounded-full flex items-center justify-center ${
-                  isGrainChillingMode 
-                    ? 'bg-gradient-to-r from-blue-500 to-purple-600' 
-                    : 'bg-gradient-to-r from-gray-400 to-gray-500'
-                }`}
-              >
-                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </motion.div>
-            </motion.h1>
-            <p className="text-muted-foreground">SR. NO. {autoGrain}</p>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ 
-                opacity: data?.Grain_chilling_mode !== undefined ? 1 : 0, 
-                y: data?.Grain_chilling_mode !== undefined ? 0 : 10 
-              }}
-              className="mt-2 flex items-center gap-2 text-sm"
-            >
-              <motion.div
-                animate={{ 
-                  scale: isGrainChillingMode ? [1, 1.2, 1] : 1,
-                  backgroundColor: isGrainChillingMode ? '#10b981' : '#ef4444'
-                }}
-                transition={{ 
-                  duration: isGrainChillingMode ? 1 : 0.3, 
-                  repeat: isGrainChillingMode ? Infinity : 0 
-                }}
-                className="w-2 h-2 rounded-full"
-              />
-              <span className={isGrainChillingMode ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}>
-                {isGrainChillingMode ? 'Grain Chilling Mode Active' : 'Grain Chilling Mode Inactive'}
-              </span>
-            </motion.div>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <span className="plate text-primary flex h-12 w-12 items-center justify-center rounded-2xl">
+                  <Snowflake className="h-6 w-6" />
+                </span>
+                <div>
+                  <span className="text-muted-foreground text-[11px] font-semibold tracking-[0.18em] uppercase">
+                    Auto mode
+                  </span>
+                  <h1 className="gradient-text text-3xl leading-tight font-semibold tracking-tight">
+                    {t("GRAIN CHILLING")}
+                  </h1>
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="plate inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-semibold">
+                  <Hash className="text-muted-foreground h-3.5 w-3.5" />
+                  <span className="text-muted-foreground tracking-[0.18em]">SR</span>
+                  <span className="font-mono tracking-wider">{autoGrain}</span>
+                </span>
+                <span
+                  className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold ${
+                    isConnected
+                      ? "border-success/35 bg-success/10 text-success"
+                      : "border-destructive/35 bg-destructive/10 text-destructive"
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      isConnected ? "pulse-dot bg-success" : "bg-destructive"
+                    }`}
+                  />
+                  <span className="font-mono tracking-[0.18em]">
+                    {isConnected ? "LIVE" : "OFFLINE"}
+                  </span>
+                </span>
+                {}
+                <span
+                  className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold ${
+                    isGrainChillingMode
+                      ? "border-success/35 bg-success/10 text-success"
+                      : "text-muted-foreground bg-muted/50"
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${
+                      isGrainChillingMode ? "pulse-dot bg-success" : "bg-muted-foreground/50"
+                    }`}
+                  />
+                  {isGrainChillingMode ? "ACTIVE" : "INACTIVE"} {"CHILLING"}
+                </span>
+              </div>
+            </div>
           </AnimatedContainer>
 
-          <div className="grid grid-cols-1 gap-8">
+          {/* Diagram scrolls in its own viewport; telemetry reads underneath it */}
+          <div className="space-y-6">
             <AnimatedContainer delay={1}>
-              <div className="relative w-full h-full">
+              <DiagramFrame
+                label="Process Diagram"
+                machine={autoGrain as string}
+                live={isConnected}
+              >
                 {isMobile ? (
                   <Home
                     data={data}
                     formatValue={formatValue}
-                    machineName="GTPL-132-300-AP-S7-1200"
+                    machineName={autoGrain}
                   />
                 ) : (
                   <AutoDiagram1
@@ -712,254 +791,32 @@ export default function AutoGrainPage() {
                     config={currentConfig}
                   />
                 )}
-              </div>
+              </DiagramFrame>
             </AnimatedContainer>
 
-            <AnimatedContainer className="space-y-6" delay={2}>
-              <Card>
-                <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">
-                    {t("Temperature")} - {t("Grain Chilling")}
-                  </h2>
+            <AnimatedContainer className="space-y-5" delay={2}>
+              <AutoTelemetryPanel
+                title={t("Temperature")}
+                temperatures={temperatureRows}
+                meters={meterRows}
+                pressures={{
+                  lpLabel: t("LP"),
+                  lp: readPressure(currentConfig.compressor.lp),
+                  hpLabel: t("HP"),
+                  hp: readPressure(currentConfig.compressor.hp),
+                }}
+                valves={valveRows}
+                t={t}
+              />
 
-                  <div className="space-y-3">
-                    {Object.entries(currentConfig.temperatureSensors).map(
-                      ([key, sensor], index) => {
-                        const value = data?.[sensor.key];
-                        return (
-                          <motion.div
-                            key={key}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ duration: 0.4, delay: index * 0.05 }}
-                            className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-700/50 dark:to-gray-800/50 hover:from-blue-50 hover:to-purple-50 dark:hover:from-blue-900/20 dark:hover:to-purple-900/20 transition-all duration-300 border border-gray-200/50 dark:border-gray-600/50 hover:border-blue-300 dark:hover:border-blue-600 hover:shadow-lg"
-                          >
-                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors flex items-center gap-2">
-                              <span className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-500 to-red-500 animate-pulse" />
-                              {t(sensor.label)}
-                            </span>
-                            <span className="font-bold text-lg bg-gradient-to-r from-orange-600 to-red-600 bg-clip-text text-transparent">
-                              {formatValue(value, "°C")}
-                            </span>
-                          </motion.div>
-                        );
-                      }
-                    )}
-
-                    {Object.entries(currentConfig.controls).map(
-                      ([key, control], index) => {
-                        let value;
-                        if (
-                          data?.[control.key] !== undefined &&
-                          data?.[control.key] !== null
-                        ) {
-                          value = data[control.key];
-                        }
-
-                        const percentage = parseFloat(value) || 0;
-
-                        return (
-                          <motion.div
-                            key={key}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{
-                              duration: 0.4,
-                              delay:
-                                (Object.keys(currentConfig.temperatureSensors)
-                                  .length +
-                                  index) *
-                                0.05,
-                            }}
-                            className="group"
-                          >
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors flex items-center gap-2">
-                                <svg
-                                  className="w-4 h-4 text-purple-500"
-                                  fill="none"
-                                  stroke="currentColor"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    strokeWidth={2}
-                                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                                  />
-                                </svg>
-                                {t(control.label)}
-                              </span>
-                              <span className="font-bold text-lg bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                                {formatValue(value, "%")}
-                              </span>
-                            </div>
-                            <div className="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                              <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${percentage}%` }}
-                                transition={{
-                                  duration: 1,
-                                  delay:
-                                    (Object.keys(
-                                      currentConfig.temperatureSensors
-                                    ).length +
-                                      index) *
-                                      0.05 +
-                                    0.3,
-                                }}
-                                className="absolute inset-y-0 left-0 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-600 rounded-full shadow-lg"
-                                style={{
-                                  boxShadow:
-                                    "0 0 10px rgba(168, 85, 247, 0.5)",
-                                }}
-                              />
-                            </div>
-                          </motion.div>
-                        );
-                      }
-                    )}
-
-                    {/* Improved HP/LP Display with Pressure Conversion */}
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.6 }}
-                      className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border border-cyan-200 dark:border-cyan-700 hover:shadow-lg transition-all duration-300"
-                    >
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                        <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                        </svg>
-                        {t("LP")}
-                      </span>
-                      <span className="font-bold text-lg bg-gradient-to-r from-cyan-600 to-blue-600 bg-clip-text text-transparent">
-                        {(() => {
-                          const lpValue = data?.[currentConfig.compressor.lp];
-                          const convertedValue = convertPressureToBar(lpValue);
-                          return formatValue(
-                            convertedValue !== undefined && convertedValue !== null ? convertedValue : undefined,
-                            isBarMachine ? " bar" : "psi"
-                          );
-                        })()}
-                      </span>
-                    </motion.div>
-
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.5, delay: 0.7 }}
-                      className="flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-red-50 to-orange-50 dark:from-red-900/20 dark:to-orange-900/20 border border-red-200 dark:border-red-700 hover:shadow-lg transition-all duration-300"
-                    >
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300 flex items-center gap-2">
-                        <svg className="w-4 h-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                        </svg>
-                        {t("HP")}
-                      </span>
-                      <span className="font-bold text-lg bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                        {(() => {
-                          const hpValue = data?.[currentConfig.compressor.hp];
-                          const convertedValue = convertPressureToBar(hpValue);
-                          return formatValue(
-                            convertedValue !== undefined && convertedValue !== null ? convertedValue : undefined,
-                            isBarMachine ? " bar" : "psi"
-                          );
-                        })()}
-                      </span>
-                    </motion.div>
-
-                    {/* CR Valve Status for specific machines */}
-                    {[
-                      "GTPL-132-300-AP-S7-1200",
-                      "GTPL-136-gT-450AP",
-                      "GTPL-139-gT-300AP-S7-1200",
-                      "GTPL-144-gT-300AP-S7-1200",
-                      'GTPL-143-gT-450AP-S7-1200',
-                      'GTPL-142-gT-450AP-S7-1200',
-                      'GTPL-123-gT-450AP'
-                    ].includes(autoGrain as string) && (
-                      <>
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 0.8 }}
-                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
-                        >
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
-                            CR Valve 25%
-                          </span>
-                          <span className={`font-bold text-lg ${cr25?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
-                            {cr25?.toLowerCase() === "true" ? "ON" : "OFF"}
-                          </span>
-                        </motion.div>
-
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 0.85 }}
-                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
-                        >
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
-                            CR Valve 50%
-                          </span>
-                          <span className={`font-bold text-lg ${cr50?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
-                            {cr50?.toLowerCase() === "true" ? "ON" : "OFF"}
-                          </span>
-                        </motion.div>
-
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 0.9 }}
-                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
-                        >
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
-                            CR Valve 75%
-                          </span>
-                          <span className={`font-bold text-lg ${cr75?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
-                            {cr75?.toLowerCase() === "true" ? "ON" : "OFF"}
-                          </span>
-                        </motion.div>
-
-                        <motion.div
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.4, delay: 0.95 }}
-                          className="group flex justify-between items-center p-3 rounded-xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border border-indigo-200 dark:border-indigo-700 hover:shadow-lg transition-all duration-300"
-                        >
-                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex items-center gap-2">
-                            <span className="w-2 h-2 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500" />
-                            CR Valve 100%
-                          </span>
-                          <span className={`font-bold text-lg ${cr100?.toLowerCase() === "true" ? "text-green-600" : "text-red-600"}`}>
-                            {cr100?.toLowerCase() === "true" ? "ON" : "OFF"}
-                          </span>
-                        </motion.div>
-                      </>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Grain-specific controls */}
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 2.7 }}
+              <Button
+                variant="outline"
+                className="group depth-lift h-12 w-full text-sm font-semibold"
+                onClick={handleBack}
               >
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  onClick={handleBack}
-                >
-                  {t("BACK")}
-                </Button>
-              </motion.div>
+                <ArrowLeft className="h-4 w-4 transition-transform duration-[var(--motion-fast)] group-hover:-translate-x-0.5" />
+                {t("BACK")}
+              </Button>
             </AnimatedContainer>
           </div>
         </main>
