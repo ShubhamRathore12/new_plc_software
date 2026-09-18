@@ -1500,7 +1500,7 @@ export default function AutoDiagram1({
     "GTPL-119",
     "GTPL-120",
     "GTPL-044",
-    "GTPL-30"
+    "GTPL-030"
   ].some((n) => String(machineName).includes(n));
   const hasHeater = isPaddy200Machine || isHeaterCoilMachine;
   const thVal = config?.temperatureSensors?.TH
