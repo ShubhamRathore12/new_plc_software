@@ -53,7 +53,10 @@ export const useMachineStatusFeed = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/machine/status-public`);
+      const token = document.cookie.split("; ").find(r => r.startsWith("auth_token="))?.split("=")[1];
+      const res = await fetch(`${BACKEND_URL}/api/machine/status-public`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       const result = await res.json();
 
       if (result.success && Array.isArray(result.data)) {

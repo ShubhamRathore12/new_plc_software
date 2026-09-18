@@ -80,7 +80,10 @@ export function MachineStatusProvider({ children }: { children: ReactNode }) {
 
   const fetchStatus = useCallback(async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/machine/status-public`);
+      const token = Cookies.get("auth_token");
+      const res = await fetch(`${BACKEND_URL}/api/machine/status-public`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const result = await res.json();
 
