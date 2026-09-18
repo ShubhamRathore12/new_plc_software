@@ -12,6 +12,7 @@ import {
   Loader2,
   Mail,
   MessageSquare,
+  Phone,
   Send,
 } from "lucide-react";
 
@@ -183,13 +184,17 @@ export default function ContactPage() {
 
               <div className="surface animate-fade-in-up space-y-3 p-5">
                 {[
+                  { icon: Building2, label: "Application", value: "Grain Technik" },
+                  {
+                    icon: Phone,
+                    label: "Phone",
+                    value: "+91-9217845040",
+                  },
                   {
                     icon: Mail,
-                    label: "Email",
-                    value: "support@kabuprojects.com",
+                    label: "Mail",
+                    value: "service@graintechnik.com",
                   },
-                  { icon: Building2, label: "Company", value: "Grain Technik" },
-                  { icon: Clock, label: "Response", value: "Within 1 business day" },
                 ].map(({ icon: Icon, label, value }) => (
                   <div key={label} className="flex items-center gap-3">
                     <span className="bg-accent text-accent-foreground flex h-9 w-9 shrink-0 items-center justify-center rounded-lg">
