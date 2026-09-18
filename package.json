@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack ",
-    "build": "next build",
+    "build": "node scripts/check-translations.mjs && next build",
     "start": "next start",
     "lint": "next lint",
-    "sync:devices": "node scripts/config-sync/sync.mjs"
+    "sync:devices": "node scripts/config-sync/sync.mjs",
+    "check:i18n": "node scripts/check-translations.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^7.2.0",

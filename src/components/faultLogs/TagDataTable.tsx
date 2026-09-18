@@ -69,7 +69,7 @@ export default function TagDataTable({ tagData }: { tagData: TagData[] }) {
                 <TableCell className="text-right text-sm text-muted-foreground">
                   {row.createdAt
                     ? new Date(row.createdAt).toLocaleString()
-                    : "N/A"}
+                    : "No time recorded"}
                 </TableCell>
               </TableRow>
             ))

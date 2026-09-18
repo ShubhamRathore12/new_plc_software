@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "https://www.primeosys.com/backend";
+import { api, SessionExpiredError } from "@/lib/apiClient";
 
 type MessageLog = {
   message: string;
@@ -53,7 +52,10 @@ export const useMachineStatusFeed = () => {
 
   const fetchData = useCallback(async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/machine/status-public`);
+      const res = await api("/api/machine/status-public", {
+        method: "GET",
+        cache: "no-store",
+      });
       const result = await res.json();
 
       if (result.success && Array.isArray(result.data)) {
@@ -104,6 +106,8 @@ export const useMachineStatusFeed = () => {
         setIsConnected(false);
       }
     } catch (error) {
+      // A 401 has already routed to login — do not log it as a feed fault.
+      if (error instanceof SessionExpiredError) return;
       addMessage("Error fetching machine data", "error");
       setIsConnected(false);
     }
@@ -112,7 +116,7 @@ export const useMachineStatusFeed = () => {
   const startPolling = useCallback(() => {
     fetchData();
     intervalRef.current = setInterval(fetchData, 18 * 1000);
-    addMessage("Polling started (6 second interval)", "info");
+    addMessage("Polling started (18 second interval)", "info");
   }, [fetchData, addMessage]);
 
   const stopPolling = useCallback(() => {

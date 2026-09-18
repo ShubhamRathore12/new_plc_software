@@ -246,11 +246,16 @@ export default function OperatingHoursPage() {
 
   const {t} = useLanguage()
 
+  // Resetting a counter that reads 466:56 is not undoable, so it takes a typed
+  // confirmation rather than a single click (F-13).
+  const [resetConfirmation, setResetConfirmation] = useState("");
+  const resetConfirmed = resetConfirmation.trim().toUpperCase() === "RESET";
+
    return (
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 container py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
+          <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">
             {t("OPERATING_HOURS")}
           </h1>
           <p className="text-muted-foreground">
@@ -293,14 +298,18 @@ export default function OperatingHoursPage() {
 
               {/* Buttons */}
               <div className="flex justify-between pt-4">
+                {/* Back returns to Settings, the parent of this screen —
+                    it used to jump to the device menu, skipping a level. */}
                 <Button
                   variant="outline"
-                  onClick={() => router.push(`/menu/${defaults}`)}
+                  onClick={() => router.push(`/menu/settings/${defaults}`)}
                 >
-                  {t("BACK")}
+                  {t("back_to_settings")}
                 </Button>
 
-                <AlertDialog>
+                <AlertDialog
+                  onOpenChange={(open) => !open && setResetConfirmation("")}
+                >
                   <AlertDialogTrigger asChild>
                     <Button variant="destructive">{t("RESET")}</Button>
                   </AlertDialogTrigger>
@@ -308,17 +317,25 @@ export default function OperatingHoursPage() {
                     <AlertDialogHeader>
                       <AlertDialogTitle>{t("RESET_OPERATING_HOURS")}</AlertDialogTitle>
                       <AlertDialogDescription>
-                        {t("RESET_WARNING")}
+                        {t("reset_operating_hours_warning")}
                       </AlertDialogDescription>
                     </AlertDialogHeader>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="reset-confirm">
+                        {t("reset_operating_hours_confirm")}
+                      </Label>
+                      <Input
+                        id="reset-confirm"
+                        value={resetConfirmation}
+                        onChange={(e) => setResetConfirmation(e.target.value)}
+                        autoComplete="off"
+                      />
+                    </div>
+
                     <AlertDialogFooter>
                       <AlertDialogCancel>{t("CANCEL")}</AlertDialogCancel>
-                      <AlertDialogAction
-                        // onClick={() => {
-                        //   setHours(0);
-                        //   setMinutes(0);
-                        // }}
-                      >
+                      <AlertDialogAction disabled={!resetConfirmed}>
                         {t("RESET")}
                       </AlertDialogAction>
                     </AlertDialogFooter>

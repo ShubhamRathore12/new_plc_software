@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { Wind, Thermometer } from "lucide-react";
@@ -33,68 +35,65 @@ export default function AerationPage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8 text-center">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">{t("AERATION")}</h1>
+            <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">{t("AERATION")}</h1>
             <p className="text-muted-foreground">{t("Select an aeration mode")}</p>
           </AnimatedContainer>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto">
-            <AnimatedContainer delay={1}>
-              <Card
-                className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer h-full"
-                onClick={() =>
-                  router.push(`/menu/aerations/without-heating/${device}`)
-                }
-              >
-                <CardContent className="p-8 flex flex-col items-center text-center h-full">
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 10,
+          <div className="stagger mx-auto grid max-w-3xl grid-cols-1 gap-6 md:grid-cols-2">
+            {[
+              {
+                key: "without",
+                title: t("AERATION W/O HEATING"),
+                desc: t("Standard aeration process without additional heating"),
+                href: `/menu/aerations/without-heating/${device}`,
+                heated: false,
+              },
+              {
+                key: "with",
+                title: t("AERATION WITH HEATING"),
+                desc: t("Aeration process with additional heating"),
+                href: `/menu/aerations/with-heating/${device}`,
+                heated: true,
+              },
+            ].map((mode) => (
+              <div key={mode.key} className="tilt">
+                <Link
+                  href={mode.href}
+                  className="group tilt-face sheen glow-edge surface focus-visible:ring-ring/50 relative flex h-full w-full flex-col items-center gap-4 overflow-hidden p-8 text-center outline-none focus-visible:ring-2"
+                >
+                  <span
+                    aria-hidden
+                    className="pointer-events-none absolute inset-x-0 top-0 h-32 opacity-70 transition-opacity duration-[var(--motion-medium)] group-hover:opacity-100"
+                    style={{
+                      background:
+                        "radial-gradient(14rem 8rem at 50% -10%, color-mix(in oklch, var(--primary) 18%, transparent), transparent 70%)",
                     }}
-                  >
-                    <Wind className="h-16 w-16 mb-6 text-primary" />
-                  </motion.div>
-                  <h2 className="text-2xl font-semibold mb-4">
-                    {t("AERATION W/O HEATING")}
-                  </h2>
-                  <p className="text-muted-foreground">
-                    {t("Standard aeration process without additional heating")}
-                  </p>
-                </CardContent>
-              </Card>
-            </AnimatedContainer>
+                  />
 
-            <AnimatedContainer delay={2}>
-              <Card
-                className="transition-all hover:shadow-md hover:border-primary/50 cursor-pointer h-full"
-                onClick={() =>
-                  router.push(`/menu/aerations/with-heating/${device}`)
-                }
-              >
-                <CardContent className="p-8 flex flex-col items-center text-center h-full">
-                  <motion.div
-                    className="relative mb-6"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 400,
-                      damping: 10,
-                    }}
-                  >
-                    <Wind className="h-16 w-16 text-primary" />
-                    <Thermometer className="h-8 w-8 text-red-500 absolute -bottom-2 -right-2" />
-                  </motion.div>
-                  <h2 className="text-2xl font-semibold mb-4">
-                    {t("AERATION WITH HEATING")}
+                  <span className="tilt-layer plate relative flex h-20 w-20 items-center justify-center rounded-2xl">
+                    <span
+                      aria-hidden
+                      className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-[var(--motion-medium)] group-hover:opacity-100"
+                      style={{
+                        background:
+                          "linear-gradient(145deg, color-mix(in oklch, var(--primary) 85%, transparent), color-mix(in oklch, var(--chart-2) 70%, transparent))",
+                      }}
+                    />
+                    <Wind className="text-primary relative h-9 w-9 transition-colors duration-[var(--motion-medium)] group-hover:text-white" />
+                    {mode.heated && (
+                      <Thermometer className="text-destructive absolute -right-1.5 -bottom-1.5 h-6 w-6 drop-shadow" />
+                    )}
+                  </span>
+
+                  <h2 className="tilt-layer text-lg font-semibold tracking-tight">
+                    {mode.title}
                   </h2>
-                  <p className="text-muted-foreground">
-                    {t("Enhanced aeration process with temperature control")}
+                  <p className="tilt-layer text-muted-foreground text-sm">
+                    {mode.desc}
                   </p>
-                </CardContent>
-              </Card>
-            </AnimatedContainer>
+                </Link>
+              </div>
+            ))}
           </div>
         </main>
       </div>

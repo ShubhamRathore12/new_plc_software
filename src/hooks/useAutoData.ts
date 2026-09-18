@@ -1,14 +1,115 @@
 import { useState, useEffect, useRef } from "react";
 import { format } from "@/lib/utils";
 import { useMachineStatus } from "@/providers/machine-status-provider";
+import { api, SessionExpiredError } from "@/lib/apiClient";
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  "https://www.primeosys.com/backend";
+/** Telemetry older than this is shown as stale rather than as a live reading. */
+export const TELEMETRY_STALE_AFTER_MS = 60 * 1000;
+
+/** Connection lifecycle — "connecting" must not look like "disconnected". */
+export type TelemetryState =
+  | "connecting"
+  | "live"
+  | "reconnecting"
+  | "machine-off";
 
 interface AutoData {
   [key: string]: any;
 }
+
+// AutoType → Table Name mapping
+const autoTypeToTableMap: Record<string, string> = {
+  "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
+  "GTPL-118-gT-60T-S7-200": "GTPL_118_GT_60T_S7_1200",
+  "GTPL-149-gT-60T-S7-1200": "GTPL_149_GT_60T_S7_1200",
+  "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
+  "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
+  "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
+  "GTPL-111-gT-80E-P-S7-200": "GTPL_111_gT_80E_P_S7_200_Germany",
+  "GTPL-112-gT-80E-P-S7-200": "GTPL_112_gT_80E_P_S7_200_Germany",
+  "GTPL-113-gT-80E-P-S7-200": "GTPL_113_gT_80E_P_S7_200_Germany",
+  "Gtpl-S7-1200-02": "gtpl_122_s7_1200_01",
+  "GTPL-115-gT-180E-S7-1200" :  "GTPL_115_GT_180E_S7_1200",
+ "GTPL-117-gT-320E-S7-1200" :"GTPL_117_GT_320E_S7_1200",
+ "GTPL-116-gT-240E-S7-1200" :"GTPL_116_GT_240E_S7_1200",
+ "GTPL-30-gT-180E-S7-1200":"GTPL_114_GT_140E_S7_1200",
+ "GTPL-044-GT-140E-S7-1200":"GTPL_044_GT_140E_S7_1200",
+ "GTPL-121-gT-1000T-S7-1200":"GTPL_121_GT1000T",
+ "GTPL-119-gT-180E-S7-1200":"GTPL_119_GT_180E_S7_1200",
+ "GTPL-120-gT-180E-S7-1200":'GTPL_120_GT_180E_S7_1200',
+ "GTPL-124-gT-450T-S7-1200":"GTPL_124_GT_450T_S7_1200",
+ "GTPL-081-gT-650T-S7-1200": "GTPL_081_GT_650T_S7_1200",
+ "GTPL-105-gT-650T-S7-1200": "GTPL_105_GT_650T_S7_1200",
+ "GTPL-068-gT-650T-S7-1200": "GTPL_068_GT_650T_S7_1200",
+ "GTPL-104-gT-650T-S7-1200": "GTPL_104_GT_650T_S7_1200",
+ "GTPL-133-gT-650T-S7-1200": "GTPL_133_GT_650T_S7_1200",
+ "GTPL-154-gT-650T-S7-1200": "GTPL_154_GT_650T_S7_1200",
+ "GTPL-155-gT-650T-S7-1200": "GTPL_155_GT_650T_S7_1200",
+ "GTPL-131-gT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
+  "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
+  "GTPL-137-gT-450T-S7-1200":"GTPL_137_GT_450T_S7_1200",
+ "GTPL-138-gT-450T-S7-1200" :"GTPL_138_GT_450T_S7_1200",
+ "GTPL-136-gT-450AP"  :"GTPL_136_GT_450AP_S7_1200",
+ "GTPL-134-gT-450T-S7-1200":"GTPL_134_GT_450T_S7_1200",
+ "GTPL-135-gT-450T-S7-1200":"GTPL_135_GT_450T_S7_1200",
+ "GTPL-145-gT-450T-S7-1200":"GTPL_145_GT_450T_S7_1200",
+ "GTPL-148-gT-450T-S7-1200":"GTPL_148_GT_450T_S7_1200",
+ "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
+ "GTPL-139-gT-300AP-S7-1200": "GTPL_139_GT300AP",
+ "GTPL-144-gT-300AP-S7-1200": "GTPL_144_GT_300AP_S7_1200",
+ "GTPL-142-gT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
+ "GTPL-123-gT-450AP": "GTPL_123_GT_450AP_S7_1200",
+ "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200",
+ "GTPL-156-gT-450T-S7-1200": "GTPL_156_GT_450T_S7_1200",
+ "GTPL-157-gT-450T-S7-1200": "GTPL_157_GT_450T_S7_1200"
+
+};
+
+const deviceNameToStatusKey: Record<string, string> = {
+  "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
+  "GTPL-118-gT-60T-S7-200": "GTPL_118",
+  "GTPL-149-gT-60T-S7-1200": "GTPL_149",
+  "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
+  "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
+  "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
+  "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
+  "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
+  "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
+  "Gtpl-S7-1200-02": "gtpl_1200_02",
+  "GTPL-30-gT-180E-S7-1200": "GTPL_114",
+  "GTPL-044-GT-140E-S7-1200": "GTPL_044",
+  "GTPL-115-gT-180E-S7-1200": "GTPL_115",
+  "GTPL-116-gT-240E-S7-1200": "GTPL_116",
+  "GTPL-117-gT-320E-S7-1200": "GTPL_117",
+  "GTPL-119-gT-180E-S7-1200": "GTPL_119",
+  "GTPL-120-gT-180E-S7-1200": "GTPL_120",
+  "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
+  'GTPL-124-gT-450T-S7-1200':"GTPL_124",
+  "GTPL-081-gT-650T-S7-1200":"GTPL_081",
+  "GTPL-105-gT-650T-S7-1200":"GTPL_105",
+  "GTPL-068-gT-650T-S7-1200":"GTPL_068",
+  "GTPL-104-gT-650T-S7-1200":"GTPL_104",
+  "GTPL-133-gT-650T-S7-1200":"GTPL_133",
+  "GTPL-154-gT-650T-S7-1200":"GTPL_154",
+  "GTPL-155-gT-650T-S7-1200":"GTPL_155",
+  "GTPL-131-gT-650T-S7-1200":"GTPL_131",
+  "GTPL-132-300-AP-S7-1200":"GTPL_132",
+  "GTPL-137-gT-450T-S7-1200":"GTPL_137",
+  "GTPL-138-gT-450T-S7-1200":"GTPL_138",
+  "GTPL-136-gT-450AP" :'GTPL_136',
+  "GTPL-134-gT-450T-S7-1200":"GTPL_134",
+  "GTPL-135-gT-450T-S7-1200":"GTPL_135",
+  "GTPL-145-gT-450T-S7-1200":"GTPL_145",
+  "GTPL-148-gT-450T-S7-1200":"GTPL_148",
+  "GTPL-061-gT-450T-S7-1200":"GTPL_061",
+  "GTPL-139-gT-300AP-S7-1200":"GTPL_139",
+  "GTPL-144-gT-300AP-S7-1200":"GTPL_144",
+  "GTPL-142-gT-450AP-S7-1200":"GTPL_142",
+  "GTPL-123-gT-450AP":"GTPL_123",
+  "GTPL-143-gT-450AP-S7-1200":"GTPL_143",
+  "GTPL-156-gT-450T-S7-1200":"GTPL_156",
+  "GTPL-157-gT-450T-S7-1200":"GTPL_157"
+};
 
 export const useAutoData = (autoType: string) => {
   const { status } = useMachineStatus();
@@ -17,117 +118,38 @@ export const useAutoData = (autoType: string) => {
   const [isConnected, setIsConnected] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [telemetryState, setTelemetryState] =
+    useState<TelemetryState>("connecting");
+  const [lastUpdatedAt, setLastUpdatedAt] = useState<Date | null>(null);
+  const [now, setNow] = useState(() => Date.now());
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const machinesRef = useRef(status.machines);
+  machinesRef.current = status.machines;
 
-  // AutoType → Table Name mapping
-  const autoTypeToTableMap: Record<string, string> = {
-    "GTPL-122-gT-1000T-S7-1200": "gtpl_122_s7_1200_01",
-    "GTPL-118-gT-60T-S7-200": "GTPL_118_GT_60T_S7_1200",
-    "GTPL-149-gT-60T-S7-1200": "GTPL_149_GT_60T_S7_1200",
-    "GTPL-108-gT-40E-P-S7-200": "GTPL_108_gT_40E_P_S7_200_Germany",
-    "GTPL-109-gT-40E-P-S7-200": "GTPL_109_gT_40E_P_S7_200_Germany",
-    "GTPL-110-gT-40E-P-S7-200": "GTPL_110_gT_40E_P_S7_200_Germany",
-    "GTPL-111-gT-80E-P-S7-200": "GTPL_111_gT_80E_P_S7_200_Germany",
-    "GTPL-112-gT-80E-P-S7-200": "GTPL_112_gT_80E_P_S7_200_Germany",
-    "GTPL-113-gT-80E-P-S7-200": "GTPL_113_gT_80E_P_S7_200_Germany",
-    "Gtpl-S7-1200-02": "gtpl_122_s7_1200_01",
-    "GTPL-115-gT-180E-S7-1200" :  "GTPL_115_GT_180E_S7_1200",
-   "GTPL-117-gT-320E-S7-1200" :"GTPL_117_GT_320E_S7_1200",
-   "GTPL-116-gT-240E-S7-1200" :"GTPL_116_GT_240E_S7_1200",
-   "GTPL-30-gT-180E-S7-1200":"GTPL_114_GT_140E_S7_1200",
-   "GTPL-044-GT-140E-S7-1200":"GTPL_044_GT_140E_S7_1200",
-   "GTPL-121-gT-1000T-S7-1200":"GTPL_121_GT1000T",
-   "GTPL-119-gT-180E-S7-1200":"GTPL_119_GT_180E_S7_1200",
-   "GTPL-120-gT-180E-S7-1200":'GTPL_120_GT_180E_S7_1200',
-   "GTPL-124-gT-450T-S7-1200":"GTPL_124_GT_450T_S7_1200",
-   "GTPL-081-gT-650T-S7-1200": "GTPL_081_GT_650T_S7_1200",
-   "GTPL-105-gT-650T-S7-1200": "GTPL_105_GT_650T_S7_1200",
-   "GTPL-068-gT-650T-S7-1200": "GTPL_068_GT_650T_S7_1200",
-   "GTPL-104-gT-650T-S7-1200": "GTPL_104_GT_650T_S7_1200",
-   "GTPL-133-gT-650T-S7-1200": "GTPL_133_GT_650T_S7_1200",
-   "GTPL-154-gT-650T-S7-1200": "GTPL_154_GT_650T_S7_1200",
-   "GTPL-155-gT-650T-S7-1200": "GTPL_155_GT_650T_S7_1200",
-   "GTPL-131-gT-650T-S7-1200": "GTPL_131_GT_650T_S7_1200",
-    "GTPL-132-300-AP-S7-1200": "GTPL_132_GT300AP",
-    "GTPL-137-gT-450T-S7-1200":"GTPL_137_GT_450T_S7_1200",
-   "GTPL-138-gT-450T-S7-1200" :"GTPL_138_GT_450T_S7_1200",
-   "GTPL-136-gT-450AP"  :"GTPL_136_GT_450AP_S7_1200",
-   "GTPL-134-gT-450T-S7-1200":"GTPL_134_GT_450T_S7_1200",
-   "GTPL-135-gT-450T-S7-1200":"GTPL_135_GT_450T_S7_1200",
-   "GTPL-145-gT-450T-S7-1200":"GTPL_145_GT_450T_S7_1200",
-   "GTPL-148-gT-450T-S7-1200":"GTPL_148_GT_450T_S7_1200",
-   "GTPL-061-gT-450T-S7-1200": "GTPL_061_GT_450T_S7_1200",
-   "GTPL-139-gT-300AP-S7-1200": "GTPL_139_GT300AP",
-   "GTPL-144-gT-300AP-S7-1200": "GTPL_144_GT_300AP_S7_1200",
-   "GTPL-142-gT-450AP-S7-1200": "GTPL_142_GT_450AP_S7_1200",
-   "GTPL-123-gT-450AP": "GTPL_123_GT_450AP_S7_1200",
-   "GTPL-143-gT-450AP-S7-1200": "GTPL_143_GT_450AP_S7_1200",
-   "GTPL-156-gT-450T-S7-1200": "GTPL_156_GT_450T_S7_1200",
-   "GTPL-157-gT-450T-S7-1200": "GTPL_157_GT_450T_S7_1200"
-
-  };
-
-  const deviceNameToStatusKey: Record<string, string> = {
-    "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
-    "GTPL-118-gT-60T-S7-200": "GTPL_118",
-    "GTPL-149-gT-60T-S7-1200": "GTPL_149",
-    "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
-    "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
-    "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
-    "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
-    "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
-    "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
-    "Gtpl-S7-1200-02": "gtpl_1200_02",
-    "GTPL-30-gT-180E-S7-1200": "GTPL_114",
-    "GTPL-044-GT-140E-S7-1200": "GTPL_044",
-    "GTPL-115-gT-180E-S7-1200": "GTPL_115",
-    "GTPL-116-gT-240E-S7-1200": "GTPL_116",
-    "GTPL-117-gT-320E-S7-1200": "GTPL_117",
-    "GTPL-119-gT-180E-S7-1200": "GTPL_119",
-    "GTPL-120-gT-180E-S7-1200": "GTPL_120",
-    "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
-    'GTPL-124-gT-450T-S7-1200':"GTPL_124",
-    "GTPL-081-gT-650T-S7-1200":"GTPL_081",
-    "GTPL-105-gT-650T-S7-1200":"GTPL_105",
-    "GTPL-068-gT-650T-S7-1200":"GTPL_068",
-    "GTPL-104-gT-650T-S7-1200":"GTPL_104",
-    "GTPL-133-gT-650T-S7-1200":"GTPL_133",
-    "GTPL-154-gT-650T-S7-1200":"GTPL_154",
-    "GTPL-155-gT-650T-S7-1200":"GTPL_155",
-    "GTPL-131-gT-650T-S7-1200":"GTPL_131",
-    "GTPL-132-300-AP-S7-1200":"GTPL_132",
-    "GTPL-137-gT-450T-S7-1200":"GTPL_137",
-    "GTPL-138-gT-450T-S7-1200":"GTPL_138",
-    "GTPL-136-gT-450AP" :'GTPL_136',
-    "GTPL-134-gT-450T-S7-1200":"GTPL_134",
-    "GTPL-135-gT-450T-S7-1200":"GTPL_135",
-    "GTPL-145-gT-450T-S7-1200":"GTPL_145",
-    "GTPL-148-gT-450T-S7-1200":"GTPL_148",
-    "GTPL-061-gT-450T-S7-1200":"GTPL_061",
-    "GTPL-139-gT-300AP-S7-1200":"GTPL_139",
-    "GTPL-144-gT-300AP-S7-1200":"GTPL_144",
-    "GTPL-142-gT-450AP-S7-1200":"GTPL_142",
-    "GTPL-123-gT-450AP":"GTPL_123",
-    "GTPL-143-gT-450AP-S7-1200":"GTPL_143",
-    "GTPL-156-gT-450T-S7-1200":"GTPL_156",
-    "GTPL-157-gT-450T-S7-1200":"GTPL_157"
-  };
+  // Only this machine's own running flag should retrigger a fetch — not every
+  // field of every other machine in the status payload.
+  const statusKeyForDevice = deviceNameToStatusKey[autoType];
+  const isThisMachineRunning =
+    status.machines.find((m) => m.machineName === statusKeyForDevice)
+      ?.machineStatus ?? false;
 
   const fetchData = async () => {
     const table = autoTypeToTableMap[autoType];
     const statusKey = deviceNameToStatusKey[autoType];
 
-    // Find the device status in the machines array
-    const deviceStatus = status.machines.find(
+    // Read the machine list from a ref: the poll interval must not be torn down
+    // and rebuilt every time the status provider refreshes (every 18s).
+    const deviceStatus = machinesRef.current.find(
       (m) => m.machineName === statusKey
     );
-    
+
     const isMachineRunning = deviceStatus?.machineStatus ?? false;
 
-    // Only fetch data if machine is running, otherwise set data to empty
+    // Machine stopped: stop polling it, but keep the last readings on screen.
+    // Blanking them to zeros would be indistinguishable from a real 0 °C (F-16).
     if (!isMachineRunning) {
-      setData([]);
       setIsConnected(false);
+      setTelemetryState("machine-off");
       setError(null);
       setRetryCount(0);
       return;
@@ -140,44 +162,58 @@ export const useAutoData = (autoType: string) => {
     }
 
     try {
-      const res = await fetch(
-        `${BACKEND_URL}/api/table?table=${encodeURIComponent(table)}`
+      const res = await api(
+        `/api/table?table=${encodeURIComponent(table)}`,
+        { method: "GET", cache: "no-store" }
       );
       const result = await res.json();
 
-      if (result?.success && result?.data) {
+      if (result?.data) {
         setData([result.data]);
         setIsConnected(true);
-        setError(null);
-        setRetryCount(0);
-      } else if (result?.data) {
-        setData([result.data]);
-        setIsConnected(true);
+        setTelemetryState("live");
+        setLastUpdatedAt(new Date());
         setError(null);
         setRetryCount(0);
       } else {
         throw new Error("Invalid response structure - no data property");
       }
     } catch (err: any) {
+      // A 401 has already routed to login — not a telemetry fault.
+      if (err instanceof SessionExpiredError) return;
       console.error("❌ Polling error:", err.message || err);
       setIsConnected(false);
+      // Last known values stay on screen behind a stale marker.
+      setTelemetryState("reconnecting");
       setError(`Failed to fetch data: ${err.message}`);
       setRetryCount((prev) => prev + 1);
     }
   };
 
-  useEffect(() => {
-    if (autoType) {
-      fetchData();
-      intervalRef.current = setInterval(fetchData, 10000);
+  // Keep the newest fetchData in a ref so the interval below closes over a
+  // stable function and never has to be recreated.
+  const fetchRef = useRef(fetchData);
+  fetchRef.current = fetchData;
 
-      return () => {
-        if (intervalRef.current) {
-          clearInterval(intervalRef.current);
-        }
-      };
-    }
-  }, [autoType, status]);
+  useEffect(() => {
+    if (!autoType) return;
+
+    fetchRef.current();
+    intervalRef.current = setInterval(() => fetchRef.current(), 10000);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [autoType, isThisMachineRunning]);
+
+  // Drives the "last update" label and the stale threshold.
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 10 * 1000);
+    return () => clearInterval(id);
+  }, []);
 
   const formatValue = (value: any, unit: string = "") => {
     if (value === undefined || value === null) return "--";
@@ -208,9 +244,21 @@ export const useAutoData = (autoType: string) => {
     return `${roundedValue}${unit}`;
   };
 
+  const isStale =
+    lastUpdatedAt !== null &&
+    now - lastUpdatedAt.getTime() > TELEMETRY_STALE_AFTER_MS;
+
   return {
     data: data[0] || {},
     isConnected,
+    telemetryState,
+    /** When the values on screen were read; null before the first response. */
+    lastUpdatedAt,
+    isStale,
+    /** True while values are shown but no longer known to be current. */
+    isShowingStaleData:
+      lastUpdatedAt !== null &&
+      (isStale || telemetryState === "reconnecting"),
     error,
     retryCount,
     formatValue,

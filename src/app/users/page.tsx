@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import Cookies from "js-cookie";
 import CreatableSelect from "react-select/creatable";
 import { Loader2, Pencil, Search, Trash2, Users as UsersIcon } from "lucide-react";
 
@@ -46,14 +45,12 @@ import {
 } from "@/components/ui/select";
 import useDebounce from "@/hooks/useDebounce";
 import { useDataStore } from "@/lib/store";
+import { api } from "@/lib/apiClient";
 import { MONITOR_ACCESS_OPTIONS } from "@/lib/monitorOptions";
 
 const PAGE_SIZE = 50;
 
 // Same Go backend the rest of the app talks to — no Next.js proxy route.
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL || "https://www.primeosys.com/backend";
-
 interface ApiUser {
   id: number;
   accountType: string;
@@ -91,12 +88,6 @@ function toAccessList(value: ApiUser["monitorAccess"]): string[] {
   return [];
 }
 
-/** Bearer header built from the login token (cookie, or the login response in the store). */
-function authHeaders(storeToken?: string): Record<string, string> {
-  const token = Cookies.get("auth_token") || storeToken;
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
-
 function formatDate(value: string) {
   if (!value) return "-";
   const d = new Date(value);
@@ -105,10 +96,9 @@ function formatDate(value: string) {
 
 export default function UsersPage() {
   const { data } = useDataStore() as {
-    data: { user?: { id?: number; accountType?: string }; token?: string };
+    data: { user?: { id?: number; accountType?: string } };
   };
   const currentUser = data?.user;
-  const storeToken = data?.token;
   const isManufactura = currentUser?.accountType === "manufactura";
 
   const [users, setUsers] = useState<ApiUser[]>([]);
@@ -133,10 +123,8 @@ export default function UsersPage() {
       });
       if (debouncedSearch.trim()) params.set("search", debouncedSearch.trim());
 
-      const res = await fetch(`${BACKEND_URL}/api/users?${params.toString()}`, {
+      const res = await api(`/api/users?${params.toString()}`, {
         method: "GET",
-        headers: authHeaders(storeToken),
-        credentials: "include",
         cache: "no-store",
       });
       const json = await res.json();
@@ -159,7 +147,7 @@ export default function UsersPage() {
     } finally {
       setLoading(false);
     }
-  }, [debouncedSearch, page, storeToken]);
+  }, [debouncedSearch, page]);
 
   useEffect(() => {
     if (isManufactura) fetchUsers();
@@ -224,10 +212,9 @@ export default function UsersPage() {
         return;
       }
 
-      const res = await fetch(`${BACKEND_URL}/api/users/${editing.id}`, {
+      const res = await api(`/api/users/${editing.id}`, {
         method: "PUT",
-        headers: { "Content-Type": "application/json", ...authHeaders(storeToken) },
-        credentials: "include",
+
         body: JSON.stringify(payload),
       });
       const json = await res.json();
@@ -256,10 +243,9 @@ export default function UsersPage() {
     if (!deleting) return;
     setDeletingBusy(true);
     try {
-      const res = await fetch(`${BACKEND_URL}/api/users/${deleting.id}`, {
+      const res = await api(`/api/users/${deleting.id}`, {
         method: "DELETE",
-        headers: authHeaders(storeToken),
-        credentials: "include",
+
       });
       const json = await res.json();
 
@@ -291,8 +277,8 @@ export default function UsersPage() {
   if (!isManufactura) {
     return (
       <DashboardLayout>
-        <div className="flex h-[60vh] flex-col items-center justify-center gap-2 text-center">
-          <UsersIcon className="h-10 w-10 text-muted-foreground" />
+        <div className="surface mx-auto mt-10 flex max-w-md flex-col items-center justify-center gap-2 p-10 text-center">
+          <UsersIcon className="text-muted-foreground h-10 w-10" />
           <h2 className="text-lg font-semibold">User management unavailable</h2>
           <p className="text-sm text-muted-foreground">
             This section is only available to manufactura accounts.
@@ -304,26 +290,51 @@ export default function UsersPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-4 p-2 md:p-4">
-        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-xl font-semibold">User Management</h1>
-            <p className="text-sm text-muted-foreground">
-              Edit or remove accounts. {count} user{count === 1 ? "" : "s"} shown.
-            </p>
-          </div>
-          <div className="relative w-full md:w-80">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search name, username, email, company"
-              className="pl-9"
-            />
-          </div>
-        </div>
+      <div className="relative">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-56"
+          style={{
+            background:
+              "radial-gradient(38rem 16rem at 12% 0%, color-mix(in oklch, var(--primary) 13%, transparent), transparent 70%), radial-gradient(30rem 14rem at 90% 4%, color-mix(in oklch, var(--chart-5) 10%, transparent), transparent 70%)",
+          }}
+        />
 
-        <div className="rounded-lg border overflow-x-auto">
+        <div className="relative mx-auto max-w-[1500px] space-y-5 pt-4 pb-10">
+          <header className="animate-fade-in-up flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-primary flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase">
+                <UsersIcon className="h-3.5 w-3.5" />
+                Access control
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+                User Management
+              </h1>
+              <p className="text-muted-foreground mt-1.5 text-sm">
+                Edit or remove accounts across the fleet.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <div className="surface min-w-[6rem] px-3.5 py-2.5">
+                <p className="text-muted-foreground text-[11px] font-medium">
+                  Users shown
+                </p>
+                <p className="tabular text-xl font-semibold">{count}</p>
+              </div>
+              <div className="relative w-full sm:w-72">
+                <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2" />
+                <Input
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search name, username, email, company"
+                  className="h-10 pl-9"
+                />
+              </div>
+            </div>
+          </header>
+
+        <div className="surface animate-fade-in overflow-x-auto p-0">
           <Table>
             <TableHeader>
               <TableRow>
@@ -423,23 +434,26 @@ export default function UsersPage() {
         </div>
 
         <div className="flex items-center justify-end gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={page === 0 || loading}
-            onClick={() => setPage((p) => Math.max(p - 1, 0))}
-          >
-            Previous
-          </Button>
-          <span className="text-sm text-muted-foreground">Page {page + 1}</span>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={loading || users.length < PAGE_SIZE}
-            onClick={() => setPage((p) => p + 1)}
-          >
-            Next
-          </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={page === 0 || loading}
+              onClick={() => setPage((p) => Math.max(p - 1, 0))}
+            >
+              Previous
+            </Button>
+            <span className="text-muted-foreground tabular text-sm">
+              Page {page + 1}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={loading || users.length < PAGE_SIZE}
+              onClick={() => setPage((p) => p + 1)}
+            >
+              Next
+            </Button>
+          </div>
         </div>
       </div>
 

@@ -96,13 +96,12 @@ export default function TestPage() {
       transition={{ duration: 0.6, delay: delay * 0.1 }}
       className="group"
     >
-      <Card className="relative overflow-hidden border-2 border-gray-200 dark:border-gray-700 bg-white/90 dark:bg-gray-800/90 backdrop-blur-md hover:shadow-2xl transition-all duration-500 hover:scale-[1.02] hover:border-blue-400 dark:hover:border-blue-500">
+      <Card className="surface glow-edge depth-lift relative overflow-hidden">
         {/* Animated gradient background */}
         <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
 
         {/* Glowing border effect */}
-        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-r from-blue-400/20 via-purple-400/20 to-pink-400/20 blur-xl" />
-
+        
         <CardContent className="p-6 relative">
           {/* Header with icon */}
           <div className="flex items-center justify-between mb-6">
@@ -161,11 +160,11 @@ export default function TestPage() {
       `}</style>
 
       <PageTransition>
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50/30 to-purple-50/30 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 relative overflow-hidden">
+        <div className="relative min-h-screen overflow-hidden">
           {/* Animated background elements */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse" />
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+            <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklch, var(--primary) 14%, transparent), transparent)" }} />
+            <div className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full" style={{ background: "radial-gradient(closest-side, color-mix(in oklch, var(--chart-2) 13%, transparent), transparent)" }} />
           </div>
 
           <main className="container mx-auto px-4 py-8 max-w-7xl relative z-10">
@@ -180,13 +179,14 @@ export default function TestPage() {
                 <Button
                   variant="outline"
                   size="icon"
+                  aria-label="Back to the device menu"
                   onClick={() => router.push(`/menu/${test}`)}
                   className="h-14 w-14 rounded-2xl border-2 hover:border-blue-500 dark:hover:border-blue-400 transition-all duration-300 hover:scale-110 hover:rotate-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg"
                 >
                   <ArrowLeft className="h-6 w-6" />
                 </Button>
                 <div className="flex-1">
-                  <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text mb-2 animate-shimmer">
+                  <h1 className="gradient-text mb-2 text-4xl font-semibold tracking-tight">
                     Component Testing
                   </h1>
                   <p className="text-gray-600 dark:text-gray-400 text-lg flex items-center gap-2">
@@ -196,6 +196,23 @@ export default function TestPage() {
                 </div>
               </div>
             </motion.div>
+
+            {/* The manual controls are read-only from the dashboard. Saying
+                so once, up front, is the difference between "broken" and "not
+                available here" (F-18). */}
+            <div
+              role="note"
+              className="border-destructive/30 bg-destructive/5 mb-6 rounded-lg border p-4 text-sm"
+            >
+              <p className="font-medium">Manual control is disabled here</p>
+              <p className="text-muted-foreground mt-1">
+                These controls mirror the machine test mode. Test mode is
+                enabled at the machine panel by a service technician; until then
+                this screen shows the current values and cannot move any
+                component. Starting a component moves real hardware — never run
+                a test while people are working on the machine.
+              </p>
+            </div>
 
             {/* Main Grid - First Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -219,6 +236,7 @@ export default function TestPage() {
                       </div>
                     </div>
                     <Slider
+                      aria-label="Blower speed, percent"
                       value={[blowerSpeed || data?.Blower_speed_set_in_manual]}
                       onValueChange={(v) => setBlowerSpeed(v[0])}
                       max={100}
@@ -268,6 +286,7 @@ export default function TestPage() {
                       </div>
                     </div>
                     <Slider
+                      aria-label="Condenser fan speed, percent"
                       value={[condFanSpeed || data?.CONDN_FAN_SET_POINT_MANUAL || data?.Cond_fan_speed_set_in_manual]}
                       onValueChange={(v) => setCondFanSpeed(v[0])}
                       max={100}
@@ -404,6 +423,7 @@ export default function TestPage() {
                       </div>
                     </div>
                     <Slider
+                      aria-label="Hot gas valve opening, percent"
                       value={[hotGasValve || data?.Hot_gas_valve_set_in_manual]}
                       onValueChange={(v) => setHotGasValve(v[0])}
                       max={100}
@@ -453,6 +473,7 @@ export default function TestPage() {
                       </div>
                     </div>
                     <Slider
+                      aria-label="After-heat valve opening, percent"
                       value={[afterHeatValve || data?.AHT_valve_set_in_manual]}
                       onValueChange={(v) => setAfterHeatValve(v[0])}
                       max={100}
@@ -495,15 +516,19 @@ export default function TestPage() {
                     {test?.toString().endsWith('1200') && (
                       <div className="flex items-center gap-4 p-3 rounded-lg bg-gray-100 dark:bg-gray-900/50">
                         <Gauge className="h-5 w-5 text-yellow-600 dark:text-yellow-400" />
+                        <Label htmlFor="heater-output" className="font-medium">
+                          Heater output
+                        </Label>
                         <Input
+                          id="heater-output"
                           type="number"
+                          min={0}
+                          max={100}
                           value={heaterOutput || data?.Heater_set_in_manual}
                           onChange={(e) =>
                             setHeaterOutput(Number(e.target.value) || 0)
                           }
                           className="w-20 h-10 text-center font-bold"
-                          min={0}
-                          max={100}
                         />
                         {!String(test).includes('200') && (
                           <span className="text-sm font-medium text-gray-600 dark:text-gray-400">% Output</span>
@@ -552,8 +577,11 @@ export default function TestPage() {
                 onClick={() => router.push(`/menu/auto/${test}`)}
                 className="h-14 px-8 text-lg font-semibold transition-all duration-300 hover:scale-105 group bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
               >
-                NEXT
-                <ArrowRight className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                Go to Automatic mode
+                <ArrowRight
+                  className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                  aria-hidden="true"
+                />
               </Button>
             </motion.div>
           </main>

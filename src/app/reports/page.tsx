@@ -5,10 +5,6 @@ import * as XLSX from "xlsx";
 import { DatePicker, Spin, message } from "antd";
 import dayjs, { Dayjs } from "dayjs";
 
-const BACKEND_URL =
-  process.env.NEXT_PUBLIC_BACKEND_URL ||
-  "https://www.primeosys.com/backend";
-
 import {
   Table,
   TableBody,
@@ -34,9 +30,20 @@ import {
 } from "@/components/ui/dialog";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { useDataStore } from "@/lib/store";
+import { useSession } from "@/providers/session-provider";
+import { api } from "@/lib/apiClient";
+import { normalizeMachineId } from "@/lib/session";
 import { toast } from "sonner";
 import { getSchemaForTable } from "@/lib/dbSchema";
 import { getKabuColumnOrder } from "@/lib/kabuColumnOrder";
+import {
+  BarChart3,
+  CalendarRange,
+  Columns3,
+  Download,
+  FileSpreadsheet,
+  Loader2,
+} from "lucide-react";
 
 const { RangePicker } = DatePicker;
 
@@ -198,28 +205,46 @@ export default function TableWithDownload() {
   const [schemaOpen, setSchemaOpen] = useState(false);
   const { data: storeData } = useDataStore() as { data: any };
 
-  // UPDATED: Get access array and handle empty/null cases
+  // The session is the authoritative machine list — the server already scopes
+  // it to this account, so nothing is filtered client-side here. The
+  // monitorAccess grant below is only the fallback for backends that do not
+  // serve /api/auth/session yet.
+  const { session, machines: sessionMachines } = useSession();
+  const serverScoped = session?.source === "server";
+
   const accessArray = (storeData?.user?.monitorAccess?.split(",") || [])
     .map((name: string) => name.trim().toLowerCase())
-    .filter((name: string) => name.length > 0); // Remove empty strings
+    .filter((name: string) => name.length > 0);
 
-  // UPDATED: Get filtered devices with fallback to show all devices
   const getFilteredDevices = () => {
-    // If accessArray is empty, show all devices
+    if (serverScoped) {
+      // Map each assigned machine onto its catalogue name where one exists so
+      // the table/schema lookups keep working; otherwise use the name as sent.
+      return sessionMachines.map((m) => {
+        const wanted = normalizeMachineId(m.machineName);
+        return (
+          allDevices.find(
+            (deviceName) =>
+              normalizeMachineId(deviceName) === wanted ||
+              normalizeMachineId(DEVICE_TO_TABLE_MAP[deviceName] || "") ===
+                normalizeMachineId(m.table)
+          ) || m.machineName
+        );
+      });
+    }
+
+    // Legacy: monitorAccess lists machines to HIDE.
     if (accessArray.length === 0) {
       return allDevices;
     }
 
-    // Filter devices based on access permissions
     const filtered = allDevices.filter((deviceName) => {
-      // Hide devices that match any value in accessArray (case-insensitive)
       return !accessArray.some((access: string) =>
         deviceName.toLowerCase().includes(access) ||
         (DEVICE_TO_TABLE_MAP[deviceName] || "").toLowerCase().includes(access)
       );
     });
 
-    // FALLBACK: If filtering results in no devices, show all devices
     return filtered.length > 0 ? filtered : allDevices;
   };
 
@@ -284,7 +309,7 @@ export default function TableWithDownload() {
         params.set("toDate", range[1].format("YYYY-MM-DD"));
       }
 
-      const res = await fetch(`${BACKEND_URL}/api/reports?${params.toString()}`);
+      const res = await api(`/api/reports?${params.toString()}`);
       const json: any = await res.json();
 
       setData(json?.data || []);
@@ -324,9 +349,7 @@ export default function TableWithDownload() {
         limit: "50000",
       });
 
-      const response = await fetch(
-        `${BACKEND_URL}/api/export/excel?${params.toString()}`
-      );
+      const response = await api(`/api/export/excel?${params.toString()}`);
 
       if (!response.ok) {
         throw new Error(`Download failed (HTTP ${response.status})`);
@@ -402,9 +425,7 @@ export default function TableWithDownload() {
         toDate: endDate.format("YYYY-MM-DD"),
       });
 
-      const response = await fetch(
-        `${BACKEND_URL}/api/export?${params.toString()}`
-      );
+      const response = await api(`/api/export?${params.toString()}`);
 
       if (!response.ok) {
         throw new Error(`CSV download failed (HTTP ${response.status})`);
@@ -599,12 +620,59 @@ export default function TableWithDownload() {
 
   return (
     <DashboardLayout>
-      <div className="p-4">
-        {/* Filters and Controls */}
-        <div className="flex flex-col md:flex-row gap-4 mb-4 items-start md:items-center">
-          <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-            <Select value={selectedDevice} onValueChange={(deviceName: string) => setSelectedDevice(deviceName)}>
-              <SelectTrigger className="w-[300px]">
+      <div className="relative">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-56"
+          style={{
+            background:
+              "radial-gradient(40rem 16rem at 14% 0%, color-mix(in oklch, var(--primary) 13%, transparent), transparent 70%), radial-gradient(32rem 14rem at 88% 4%, color-mix(in oklch, var(--chart-2) 11%, transparent), transparent 70%)",
+          }}
+        />
+
+        <div className="relative mx-auto max-w-[1800px] space-y-5 pt-4 pb-10">
+          {/* ── Header ───────────────────────────────────────────────── */}
+          <header className="animate-fade-in-up flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="text-primary flex items-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase">
+                <BarChart3 className="h-3.5 w-3.5" />
+                Reports
+              </p>
+              <h1 className="mt-2 text-3xl font-semibold tracking-tight">
+                Machine data explorer
+              </h1>
+              <p className="text-muted-foreground mt-1.5 text-sm">
+                Query logged telemetry and export it as Excel or CSV.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2.5">
+              <div className="surface min-w-[6.5rem] px-3.5 py-2.5">
+                <p className="text-muted-foreground text-[11px] font-medium">
+                  Records
+                </p>
+                <p className="tabular text-xl font-semibold">
+                  {pagination.total?.toLocaleString?.() ?? 0}
+                </p>
+              </div>
+              <div className="surface min-w-[6.5rem] px-3.5 py-2.5">
+                <p className="text-muted-foreground text-[11px] font-medium">
+                  Columns
+                </p>
+                <p className="tabular text-xl font-semibold">
+                  {sortedKeys.length}
+                </p>
+              </div>
+            </div>
+          </header>
+
+          {/* ── Toolbar ──────────────────────────────────────────────── */}
+          <div className="surface animate-fade-in-up relative z-30 flex flex-wrap items-center gap-3 p-3">
+            <Select
+              value={selectedDevice}
+              onValueChange={(deviceName: string) => setSelectedDevice(deviceName)}
+            >
+              <SelectTrigger className="h-10 w-full sm:w-[300px]">
                 <SelectValue placeholder="Select a device" />
               </SelectTrigger>
               <SelectContent>
@@ -619,44 +687,62 @@ export default function TableWithDownload() {
             <RangePicker
               disabledDate={disabledDate}
               onChange={handleDateChange}
-              className="w-[300px]"
+              className="gt-range h-10 w-full sm:w-[290px]"
               format="YYYY-MM-DD"
-              placeholder={['Start Date', 'End Date']}
+              placeholder={["Start Date", "End Date"]}
             />
-          </div>
 
-          <div className="flex gap-2 ml-auto">
-            <Button
-              onClick={downloadExcel}
-              disabled={!data.length || loading || storeData?.user?.firstName === "Prosafe"}
-            >
-              {loading && <Spin size="small" className="mr-2" />}
-              Download Excel
-            </Button>
-            <Button
-              onClick={downloadAllData}
-              disabled={!dateRange || isDownloading || storeData?.user?.firstName === "Prosafe"}
-            >
-              {isDownloading && <Spin size="small" className="mr-2" />}
-              Download All (Date Range)
-            </Button>
-            <Button
-              onClick={downloadAllDataCSV}
-              disabled={!dateRange || isDownloading || storeData?.user?.firstName === "Prosafe"}
-              variant="outline"
-            >
-              {isDownloading && <Spin size="small" className="mr-2" />}
-              Download CSV
-            </Button>
-            <Button
-              onClick={() => setSchemaOpen(true)}
-              disabled={!schemaCols}
-              variant="outline"
-            >
-              View Schema
-            </Button>
+            <div className="ml-auto flex flex-wrap gap-2">
+              <Button
+                onClick={downloadExcel}
+                disabled={
+                  !data.length || loading || storeData?.user?.firstName === "Prosafe"
+                }
+              >
+                {loading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <FileSpreadsheet className="h-4 w-4" />
+                )}
+                Excel
+              </Button>
+              <Button
+                onClick={downloadAllData}
+                disabled={
+                  !dateRange || isDownloading || storeData?.user?.firstName === "Prosafe"
+                }
+              >
+                {isDownloading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+                Full range
+              </Button>
+              <Button
+                onClick={downloadAllDataCSV}
+                disabled={
+                  !dateRange || isDownloading || storeData?.user?.firstName === "Prosafe"
+                }
+                variant="outline"
+              >
+                {isDownloading ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="h-4 w-4" />
+                )}
+                CSV
+              </Button>
+              <Button
+                onClick={() => setSchemaOpen(true)}
+                disabled={!schemaCols}
+                variant="outline"
+              >
+                <Columns3 className="h-4 w-4" />
+                Schema
+              </Button>
+            </div>
           </div>
-        </div>
 
         {/* Schema / Column View Dialog */}
         <Dialog open={schemaOpen} onOpenChange={setSchemaOpen}>
@@ -707,17 +793,21 @@ export default function TableWithDownload() {
         </Dialog>
 
         {/* Date Range Info */}
-        {dateRange && (
-          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-            <p className="text-sm text-blue-700">
-              <strong>Selected Date Range:</strong> {dateRange[0].format("YYYY-MM-DD")} to {dateRange[1].format("YYYY-MM-DD")}
-              ({dateRange[1].diff(dateRange[0], 'day') + 1} day{dateRange[1].diff(dateRange[0], 'day') !== 0 ? 's' : ''})
-            </p>
-            <p className="text-xs text-blue-600 mt-1">
-              Maximum allowed range is 3 days to manage data volume effectively.
-            </p>
-          </div>
-        )}
+          {dateRange && (
+            <div className="border-primary/25 bg-primary/8 animate-fade-in flex flex-wrap items-center gap-x-3 gap-y-1 rounded-xl border px-4 py-3">
+              <CalendarRange className="text-primary h-4 w-4 shrink-0" />
+              <p className="text-sm font-medium">
+                {dateRange[0].format("YYYY-MM-DD")} → {dateRange[1].format("YYYY-MM-DD")}
+                <span className="text-muted-foreground ml-2 font-normal">
+                  {dateRange[1].diff(dateRange[0], "day") + 1} day
+                  {dateRange[1].diff(dateRange[0], "day") !== 0 ? "s" : ""}
+                </span>
+              </p>
+              <p className="text-muted-foreground ml-auto text-xs">
+                Maximum range is 3 days to keep exports manageable.
+              </p>
+            </div>
+          )}
 
         {/* Download Progress Dialog */}
         <Dialog open={isDownloading} onOpenChange={setIsDownloading}>
@@ -739,56 +829,63 @@ export default function TableWithDownload() {
         </Dialog>
 
         {/* Table */}
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Spin size="large" />
-          </div>
-        ) : (
-          <div id="table-container" className="border rounded-md overflow-x-auto">
-            <Table className="min-w-full border border-gray-300">
-              <TableHeader>
-                <TableRow className="border-b border-gray-300">
-                  {sortedKeys.map((key) => (
-                    <TableHead
-                      key={key}
-                      className="border border-gray-300 bg-gray-100 text-center font-semibold text-sm p-2 whitespace-nowrap"
-                    >
-                      {displayColName(key)}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {data.length === 0 ? (
+          {loading ? (
+            <div className="surface flex h-64 items-center justify-center">
+              <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+            </div>
+          ) : (
+            <div
+              id="table-container"
+              className="surface relative z-0 max-h-[70vh] overflow-auto p-0"
+            >
+              <Table className="min-w-full">
+                <TableHeader>
                   <TableRow>
-                    <TableCell colSpan={sortedKeys.length || 1} className="text-center py-10 text-gray-500 text-sm">
-                      No records found
-                    </TableCell>
+                    {sortedKeys.map((key) => (
+                      <TableHead key={key} className="text-center">
+                        {displayColName(key)}
+                      </TableHead>
+                    ))}
                   </TableRow>
-                ) : (
-                  data.map((row, rowIndex) => (
-                    <TableRow key={rowIndex} className="border-b border-gray-200 hover:bg-gray-50">
-                      {sortedKeys.map((key) => (
-                        <TableCell
-                          key={key}
-                          className="border border-gray-300 text-center text-sm p-2 whitespace-nowrap overflow-hidden text-ellipsis"
-                          title={String(row[key])}
-                        >
-                          {typeof row[key] === "boolean" ? (row[key] ? "True" : "False") : String(row[key])}
-                        </TableCell>
-                      ))}
+                </TableHeader>
+                <TableBody>
+                  {data.length === 0 ? (
+                    <TableRow>
+                      <TableCell
+                        colSpan={sortedKeys.length || 1}
+                        className="text-muted-foreground py-14 text-center text-sm"
+                      >
+                        No records found
+                      </TableCell>
                     </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        )}
+                  ) : (
+                    data.map((row, rowIndex) => (
+                      <TableRow key={rowIndex}>
+                        {sortedKeys.map((key) => (
+                          <TableCell
+                            key={key}
+                            className="tabular text-center text-xs"
+                            title={String(row[key])}
+                          >
+                            {typeof row[key] === "boolean"
+                              ? row[key]
+                                ? "True"
+                                : "False"
+                              : String(row[key])}
+                          </TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          )}
 
         {/* Pagination */}
-        {pagination.total > 0 && (
-          <div className="flex justify-between items-center mt-4">
-            <span className="text-sm text-gray-600">
+          {pagination.total > 0 && (
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <span className="text-muted-foreground text-sm">
               Showing {(pagination.page - 1) * pagination.limit + 1} to{" "}
               {Math.min(pagination.page * pagination.limit, pagination.total)} of {pagination.total} records
             </span>
@@ -818,6 +915,7 @@ export default function TableWithDownload() {
             </div>
           </div>
         )}
+        </div>
       </div>
     </DashboardLayout>
   );

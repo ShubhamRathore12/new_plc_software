@@ -15,6 +15,34 @@ import {
 import { useAutoData } from "../../../../../hooks/useAutoData";
 import { useLanguage } from "@/providers/language-provider";
 
+/**
+ * Valid ranges for the machine set-points, shown next to each field.
+ *
+ * These are the UI usability layer only - server-side bounds are still open
+ * backend work, so the PLC remains the authority on what it accepts.
+ */
+const SETTING_LIMITS = {
+  t1: { min: -20, max: 40, step: 0.5, unit: "C" },
+  thT1: { min: 0, max: 40, step: 0.5, unit: "C" },
+  delta: { min: 0, max: 30, step: 0.5, unit: "C" },
+  hp: { min: 0, max: 500, step: 1, unit: "psi" },
+  lp: { min: 0, max: 200, step: 1, unit: "psi" },
+} as const;
+
+function LimitHint({
+  id,
+  limit,
+}: {
+  id: string;
+  limit: { readonly min: number; readonly max: number; readonly unit: string };
+}) {
+  return (
+    <p id={id} className="text-muted-foreground col-span-3 text-xs">
+      {`Valid range ${limit.min} to ${limit.max} ${limit.unit}`}
+    </p>
+  );
+}
+
 export default function DefaultsPage() {
   const router = useRouter();
   const { defaults } = useParams();
@@ -253,7 +281,7 @@ export default function DefaultsPage() {
       <div className="flex flex-col min-h-screen">
         <main className="flex-1 container py-8">
           <AnimatedContainer className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">     {t("DEFAULTS")}</h1>
+            <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">     {t("DEFAULTS")}</h1>
             <p className="text-muted-foreground">{t("SYSTEM_DEFAULT_PARAMETERS")}</p>
           </AnimatedContainer>
 
@@ -267,7 +295,7 @@ export default function DefaultsPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2 }}
                   >
-                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-gT-450T-S7-1200" || defaults === 
+                    {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-gT-450T-S7-1200" || defaults ===
                     'GTPL-121-gT-1000T-S7-1200' ? (
                       <Label htmlFor="t1" className="text-right font-medium">
                         T0
@@ -280,16 +308,21 @@ export default function DefaultsPage() {
 
                     <Input
                       id="t1"
+                      readOnly
+                      aria-describedby="t1-hint"
+                      min={SETTING_LIMITS.t1.min}
+                      max={SETTING_LIMITS.t1.max}
+                      step={SETTING_LIMITS.t1.step}
                       type="number"
                       value={data?.T0_set_point ||
                         SETTINGS_T1_REF_FR_T0 ||
-                        data?.T1_SET_POINT 
-                        
+                        data?.T1_SET_POINT
                         ||data?.T1_set_point
                       }
                       className="col-span-1"
                     />
                     <div>°C</div>
+                    <LimitHint id="t1-hint" limit={SETTING_LIMITS.t1} />
                   </motion.div>
                   {defaults === "GTPL-122-gT-1000T-S7-1200" || defaults === "GTPL-124-gT-450T-S7-1200" || defaults === 'GTPL-121-gT-1000T-S7-1200' ? null : (
                     <motion.div
@@ -303,6 +336,11 @@ export default function DefaultsPage() {
                       </Label>
                       <Input
                         id="th-t1"
+                        readOnly
+                        aria-describedby="th-t1-hint"
+                        min={SETTING_LIMITS.thT1.min}
+                        max={SETTING_LIMITS.thT1.max}
+                        step={SETTING_LIMITS.thT1.step}
                         type="number"
                         value={SETTINGS_Delta_T || data?.Th_T1 ||data?.Th_T1_set_point ||data?.TH_T1_set_point}
                         // onChange={(e) =>
@@ -311,6 +349,7 @@ export default function DefaultsPage() {
                         className="col-span-1"
                       />
                       <div>°C</div>
+                      <LimitHint id="th-t1-hint" limit={SETTING_LIMITS.thT1} />
                     </motion.div>
                   )}
 {hideDeltaA.includes(String(defaults)) ? null : (
@@ -325,6 +364,11 @@ export default function DefaultsPage() {
     </Label>
     <Input
       id="delta-a"
+      readOnly
+      aria-describedby="delta-hint"
+      min={SETTING_LIMITS.delta.min}
+      max={SETTING_LIMITS.delta.max}
+      step={SETTING_LIMITS.delta.step}
       type="number"
       value={
         HEATING_MODE_SET_TH_FOR_HEATING_MODE ||
@@ -334,9 +378,10 @@ export default function DefaultsPage() {
       className="col-span-1"
     />
     <div>°C</div>
+    <LimitHint id="delta-hint" limit={SETTING_LIMITS.delta} />
   </motion.div>
 )}
-                  
+
 
                   <motion.div
                     className="grid grid-cols-3 items-center gap-4"
@@ -349,6 +394,11 @@ export default function DefaultsPage() {
                     </Label>
                     <Input
                       id="hp"
+                      readOnly
+                      aria-describedby="hp-hint"
+                      min={SETTING_LIMITS.hp.min}
+                      max={SETTING_LIMITS.hp.max}
+                      step={SETTING_LIMITS.hp.step}
                       type="number"
                       value={
                         PID_SETTINGS_HP_SET_FROM_HMI ||
@@ -361,6 +411,7 @@ export default function DefaultsPage() {
                       className="col-span-1"
                     />
                     <div>psi</div>
+                    <LimitHint id="hp-hint" limit={SETTING_LIMITS.hp} />
                   </motion.div>
 
                   <motion.div
@@ -374,6 +425,11 @@ export default function DefaultsPage() {
                     </Label>
                     <Input
                       id="lp"
+                      readOnly
+                      aria-describedby="lp-hint"
+                      min={SETTING_LIMITS.lp.min}
+                      max={SETTING_LIMITS.lp.max}
+                      step={SETTING_LIMITS.lp.step}
                       type="number"
                       value={
                         PID_SETTINGS_LP_SET_FROM_HMI || data?.LP_set_point
@@ -381,6 +437,7 @@ export default function DefaultsPage() {
                       className="col-span-1"
                     />
                     <div>psi</div>
+                    <LimitHint id="lp-hint" limit={SETTING_LIMITS.lp} />
                   </motion.div>
 
                   <motion.div
@@ -391,12 +448,19 @@ export default function DefaultsPage() {
                   >
                     <Button
                       variant="outline"
-                      onClick={() => router.push(`/menu/${defaults}`)}
+                      onClick={() => router.push(`/menu/settings/${defaults}`)}
                     >
-                      BACK
+                      {t("back_to_settings")}
                     </Button>
-                    <Button>SAVE</Button>
+                    <Button disabled aria-describedby="save-hint">
+                      SAVE
+                    </Button>
                   </motion.div>
+
+                  <p id="save-hint" className="text-muted-foreground text-xs">
+                    These values are read from the PLC. Writing set-points from
+                    the dashboard is not enabled - change them at the machine.
+                  </p>
                 </div>
               </CardContent>
             </Card>

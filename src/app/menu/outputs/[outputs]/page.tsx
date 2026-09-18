@@ -6,13 +6,14 @@ import { useParams, useRouter } from "next/navigation";
 import { useAutoData } from "@/hooks/useAutoData";
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
-import { motion } from "framer-motion";
-import { Power, Settings, Activity, AlertTriangle, CheckCircle, XCircle, Zap } from "lucide-react";
+import { Power, Settings, Activity, AlertTriangle, CheckCircle, CircleDot, XCircle, Zap } from "lucide-react";
 import {
   GTPL_156_157_DIGITAL_OUTPUT_ROWS,
   isGTPL156157,
   pickTagValue,
 } from "@/lib/gtpl156157Config";
+import ScreenHeader, { StatStrip } from "@/components/ScreenHeader";
+import SignalRow from "@/components/SignalRow";
 
 export default function OutputsPage() {
   const router = useRouter();
@@ -360,6 +361,7 @@ export default function OutputsPage() {
     return undefined;
   };
 
+  const totalOutputs = outputsData?.length ?? 0;
   const getStatus = (dataKey: string) => {
     if (!data) return false;
     const value = resolveDataKey(dataKey);
@@ -390,47 +392,19 @@ export default function OutputsPage() {
     return value === true || value === 1 || value === "1" || value === "tr" || value === "True" || value === "true";
   };
 
-  const getStatusIcon = (key: string, status: boolean) => {
-    if (key.includes("healthy") || key.includes("Healthy")) {
-      return status ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />;
-    }
-    if (key.includes("fault") || key.includes("Fault")) {
-      return status ? <XCircle className="w-4 h-4 text-red-500" /> : <CheckCircle className="w-4 h-4 text-green-500" />;
-    }
-    if (key.includes("warning") || key.includes("Warning")) {
-      return status ? <AlertTriangle className="w-4 h-4 text-yellow-500" /> : <CheckCircle className="w-4 h-4 text-green-500" />;
-    }
-    return status ? <Power className="w-4 h-4 text-green-500" /> : <Power className="w-4 h-4 text-gray-400" />;
-  };
 
-  const getStatusColor = (key: string, status: boolean) => {
-    if (key.includes("healthy") || key.includes("Healthy")) {
-      return status ? "border-green-500 bg-green-50 dark:bg-green-900/20" : "border-red-500 bg-red-50 dark:bg-red-900/20";
-    }
-    if (key.includes("fault") || key.includes("Fault")) {
-      return status ? "border-red-500 bg-red-50 dark:bg-red-900/20" : "border-green-500 bg-green-50 dark:bg-green-900/20";
-    }
-    if (key.includes("warning") || key.includes("Warning")) {
-      return status ? "border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20" : "border-green-500 bg-green-50 dark:bg-green-900/20";
-    }
-    return status ? "border-green-500 bg-green-50 dark:bg-green-900/20" : "border-gray-300 bg-gray-50 dark:bg-gray-800/20";
-  };
 
-  const getOutputIcon = (description: string) => {
-    if (description.toLowerCase().includes('compressor')) return <Zap className="w-4 h-4 text-blue-500" />;
-    if (description.toLowerCase().includes('fan')) return <Activity className="w-4 h-4 text-cyan-500" />;
-    if (description.toLowerCase().includes('valve')) return <Settings className="w-4 h-4 text-purple-500" />;
-    if (description.toLowerCase().includes('blower')) return <Activity className="w-4 h-4 text-green-500" />;
-    if (description.toLowerCase().includes('heater')) return <Zap className="w-4 h-4 text-orange-500" />;
-    return <Power className="w-4 h-4 text-gray-500" />;
-  };
+  const activeOutputs =
+    outputsData?.filter((o) => getStatus(o.dataKey)).length ?? 0;
+  const idleOutputs = totalOutputs - activeOutputs;
+
 
   if (!outputsData || outputsData.length === 0) {
     return (
-      <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
+      <div className="bg-background flex min-h-screen flex-col">
         <main className="flex-1 container py-8">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight mb-2">OUTPUTS</h1>
+            <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">OUTPUTS</h1>
             <p className="text-yellow-600">No outputs configuration found for device: {device}</p>
           </div>
           <Card>
@@ -446,129 +420,109 @@ export default function OutputsPage() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
-      <main className="flex-1 container py-8" ref={containerRef}>
-        <motion.div
-          className="mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-2 rounded-lg bg-gradient-to-r from-green-500 to-blue-600">
-              <Power className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-4xl font-bold tracking-tight bg-gradient-to-r from-green-600 to-blue-600 bg-clip-text text-transparent">
-                OUTPUT CONTROL
-              </h1>
-              <p className="text-muted-foreground mt-1">
-                Real-time system outputs and control signals • {device}
-                {!isConnected && (
-                  <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-700 rounded-full dark:bg-red-900 dark:text-red-300">
-                    Disconnected
-                  </span>
-                )}
-                {error && (
-                  <span className="ml-2 px-2 py-1 text-xs bg-red-100 text-red-700 rounded-full dark:bg-red-900 dark:text-red-300">
-                    Error: {error}
-                  </span>
-                )}
-              </p>
-            </div>
-          </div>
-        </motion.div>
+    <div className="relative flex min-h-screen flex-col overflow-hidden">
+      {/* Ambient ground - static, so it costs one paint and never repaints */}
+      <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div
+          className="absolute top-0 left-1/4 h-96 w-96 rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, color-mix(in oklch, var(--primary) 14%, transparent), transparent)",
+          }}
+        />
+        <div
+          className="absolute right-1/4 bottom-0 h-96 w-96 rounded-full"
+          style={{
+            background:
+              "radial-gradient(closest-side, color-mix(in oklch, var(--chart-2) 13%, transparent), transparent)",
+          }}
+        />
+      </div>
 
-        <Card className="backdrop-blur-sm bg-white/80 dark:bg-slate-900/80 border-0 shadow-2xl">
-          <CardContent className="p-8">
+      <main
+        className="relative z-10 mx-auto w-full max-w-7xl flex-1 space-y-6 px-4 py-8"
+        ref={containerRef}
+      >
+        <div className="animate-fade-in-up">
+          <ScreenHeader
+            icon={Power}
+            eyebrow="Digital outputs"
+            title="Output Control"
+            machine={device as string}
+            connected={isConnected}
+            onBack={() => router.push(`/menu/${device}`)}
+          />
+          {error && (
+            <div className="border-destructive/30 bg-destructive/10 text-destructive mt-4 rounded-lg border px-3 py-2 text-sm">
+              {error}
+            </div>
+          )}
+        </div>
+
+        <StatStrip
+          stats={[
+            { label: "Total outputs", value: totalOutputs, icon: Power },
+            { label: "Energised", value: activeOutputs, icon: Zap, tone: "success" },
+            { label: "Idle", value: idleOutputs, icon: CircleDot },
+          ]}
+        />
+
+        <div className="surface glow-edge relative overflow-hidden">
+          <span
+            aria-hidden
+            className="absolute inset-x-0 top-0 h-px"
+            style={{
+              background:
+                "linear-gradient(90deg, transparent, var(--primary), color-mix(in oklch, var(--chart-2) 80%, transparent), transparent)",
+            }}
+          />
+
+          <div className="relative p-5">
+            <div className="mb-4 flex items-center gap-2.5">
+              <Power className="text-primary h-3.5 w-3.5" />
+              <span className="text-[10px] font-bold tracking-[0.22em] uppercase">
+                Output status overview
+              </span>
+              <span className="bg-border/70 h-px flex-1" />
+            </div>
+
             <ScrollArea className="h-[600px] pr-4">
-              <div className="grid gap-4">
-                {outputsData?.map((output, index) => {
-                  const status = getStatus(output.dataKey);
-
-                  return (
-                    <motion.div
-                      key={output.id}
-                      ref={addToRefs}
-                      className={`group flex items-center justify-between p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer hover:shadow-lg hover:scale-[1.02] ${getStatusColor(output.dataKey, status)}`}
-                      initial={{ opacity: 0, x: -30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.6, delay: index * 0.05 }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="flex items-center gap-2">
-                          <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center">
-                            <span className="font-mono text-xs font-bold text-slate-600 dark:text-slate-300">
-                              {output.id}
-                            </span>
-                          </div>
-                          {getOutputIcon(output.description)}
-                        </div>
-                        <div>
-                          <span className="font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
-                            {output.description}
-                          </span>
-                          <div className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-                            {output.dataKey}
-                          </div>
-                        </div>
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2">
-                          {getStatusIcon(output.dataKey, status)}
-                          <span className={`text-sm font-bold ${status ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'
-                            }`}>
-                            {status ? 'ON' : 'OFF'}
-                          </span>
-                        </div>
-                        {status && (
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                        )}
-                      </div>
-                    </motion.div>
-                  );
-                })}
+              <div className="space-y-2.5">
+                {outputsData?.map((output, index) => (
+                  <SignalRow
+                    key={output.id}
+                    id={output.id}
+                    description={output.description}
+                    active={getStatus(output.dataKey)}
+                    index={index}
+                    tone="energised"
+                    activeLabel={output.dataKey}
+                    idleLabel={output.dataKey}
+                  />
+                ))}
               </div>
             </ScrollArea>
 
-            <motion.div
-              className="flex gap-4 mt-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
+            <div className="border-border/70 mt-6 grid gap-3 border-t pt-5 md:grid-cols-2">
               <Button
                 variant="outline"
-                className="flex-1 h-12 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 border-blue-200 dark:border-blue-700 hover:from-blue-100 hover:to-purple-100 dark:hover:from-blue-800/30 dark:hover:to-purple-800/30 transition-all duration-300"
+                className="depth-lift h-12 text-sm font-semibold"
                 onClick={() => router.push(`/menu/inputs/${device}`)}
               >
-                <Activity className="w-4 h-4 mr-2" />
+                <Activity className="h-4 w-4" />
                 INPUTS
               </Button>
               <Button
                 variant="outline"
-                className="flex-1 h-12 bg-gradient-to-r from-orange-50 to-red-50 dark:from-orange-900/20 dark:to-red-900/20 border-orange-200 dark:border-orange-700 hover:from-orange-100 hover:to-red-100 dark:hover:from-orange-800/30 dark:hover:to-red-800/30 transition-all duration-300"
+                className="depth-lift h-12 text-sm font-semibold"
                 onClick={() => router.push(`/menu/inputs/analog/${device}`)}
               >
-                <Settings className="w-4 h-4 mr-2" />
+                <Settings className="h-4 w-4" />
                 ANALOG
               </Button>
-            </motion.div>
-          </CardContent>
-
-          <div className="p-6 pt-0">
-            <Button
-              variant="outline"
-              className="w-full h-12 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 hover:from-slate-100 hover:to-slate-200 dark:hover:from-slate-700 dark:hover:to-slate-600 transition-all duration-300"
-              onClick={() => router.push(`/menu/${device}`)}
-            >
-              ← BACK TO MENU
-            </Button>
+            </div>
           </div>
-        </Card>
+        </div>
       </main>
     </div>
   );

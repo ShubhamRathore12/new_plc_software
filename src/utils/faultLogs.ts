@@ -7,7 +7,9 @@ export const PAGE_SIZE = 200;
 export interface TagData {
   tag: string;
   value: boolean | string | number | null | undefined;
-  createdAt: string;
+  /** Time the record carries. Null when the record has none — the current
+   *  time is never substituted, an invented alarm time is a safety problem. */
+  createdAt: string | null;
   created_at?: string;
 }
 
@@ -412,7 +414,7 @@ export function extractTagDataFromRecords(
       record.created_on ||
       record.timestamp ||
       record.updated_at ||
-      new Date().toISOString();
+      null;
 
     // Normalized index of this record's real keys -> lets us match tags
     // regardless of case, punctuation, degree symbols, etc.
@@ -439,7 +441,7 @@ export function extractTagDataFromRecords(
 const DEDUP_WINDOW_MS = 2 * 60 * 1000;
 
 function collapseRepeatsByWindow(entries: TagData[]): TagData[] {
-  const parseTime = (v?: string) => {
+  const parseTime = (v?: string | null) => {
     const t = v ? new Date(v).getTime() : NaN;
     return Number.isNaN(t) ? 0 : t;
   };
@@ -454,6 +456,7 @@ function collapseRepeatsByWindow(entries: TagData[]): TagData[] {
 
   const kept = new Set<TagData>();
   for (const list of byTag.values()) {
+    // Records without a time sort last rather than being treated as "now".
     list.sort((a, b) => parseTime(b.createdAt) - parseTime(a.createdAt));
     let lastKept = Infinity;
     for (const e of list) {

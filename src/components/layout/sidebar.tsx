@@ -91,8 +91,8 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="w-64 bg-[#1e293b] text-white min-h-screen dark:bg-gray-800 dark:text-white relative">
-      <div className="p-4 border-b border-gray-700">
+    <div className="bg-sidebar text-sidebar-foreground border-sidebar-border relative flex h-full min-h-screen w-64 flex-col border-r">
+      <div className="border-sidebar-border/70 border-b px-5 py-4">
         <div className="flex items-center space-x-2">
           <Image 
             src={data?.user?.firstName === "Prosafe" 
@@ -110,15 +110,22 @@ export default function Sidebar() {
         </div>
       </div>
 
-      <div className="p-4">
-        <div className="flex items-center space-x-2 mb-6">
-          <div className="h-8 w-8 rounded-full bg-gray-400 text-white flex items-center justify-center font-medium text-sm">
+      <div className="flex-1 px-4 py-5">
+        <div className="bg-sidebar-accent/60 mb-6 flex items-center gap-3 rounded-xl px-3 py-2.5">
+          <div className="bg-sidebar-primary text-sidebar-primary-foreground flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold">
             {data?.user?.firstName?.charAt(0).toUpperCase() ?? "?"}
           </div>
-          <span className="text-sm">{data?.user?.firstName}</span>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">
+              {data?.user?.firstName ?? "—"}
+            </p>
+            <p className="text-sidebar-foreground/55 truncate text-xs capitalize">
+              {data?.user?.accountType ?? ""}
+            </p>
+          </div>
         </div>
 
-        <nav className="space-y-1" key={language}>
+        <nav className="space-y-1.5" key={language}>
           {menuItems
             .filter(
               (item) => {
@@ -151,24 +158,36 @@ export default function Sidebar() {
                   onClick={() => handleNavigation(item.href)}
                   disabled={isNavigating}
                   className={cn(
-                    "flex items-center space-x-2 px-3 py-2 rounded text-sm w-full text-left transition-colors",
-                    active ? "bg-blue-600" : "hover:bg-gray-700",
+                    "group relative flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-sm font-medium",
+                    "transition-[background-color,color] duration-[var(--motion-fast)] ease-[var(--ease-out)]",
+                    "focus-visible:ring-sidebar-ring/60 outline-none focus-visible:ring-2",
+                    active
+                      ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+                      : "text-sidebar-foreground/75 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
                     isNavigating && "opacity-70"
                   )}
                 >
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "bg-sidebar-primary absolute top-1/2 left-0 h-5 w-[3px] -translate-y-1/2 rounded-r-full",
+                      "transition-opacity duration-[var(--motion-fast)]",
+                      active ? "opacity-0" : "opacity-0 group-hover:opacity-60"
+                    )}
+                  />
                   {isNavigating ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
                   ) : (
-                    <item.icon className="h-4 w-4" />
+                    <item.icon className="h-4 w-4 shrink-0" />
                   )}
-                  <span>{t(item.label)}</span>
+                  <span className="truncate capitalize">{t(item.label)}</span>
                 </button>
               );
             })}
         </nav>
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 p-4">
+      <div className="border-sidebar-border/70 mt-auto border-t px-5 py-4">
         {data?.user?.firstName === "Prosafe" 
               ?     <Image 
           src="https://tse4.mm.bing.net/th/id/OIP.ce32nMlZhhVQW72b6lMcawAAAA?rs=1&pid=ImgDetMain&o=7&rm=3" 

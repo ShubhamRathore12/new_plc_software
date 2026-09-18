@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
+import { siteApi } from "@/lib/apiClient";
 
 import LanguageSelector from "@/components/faultLogs/LanguageSelector";
 import SearchBar from "@/components/faultLogs/SearchBar";
@@ -8,6 +9,13 @@ import TagDataTable from "@/components/faultLogs/TagDataTable";
 import PaginationControls from "@/components/faultLogs/PaginationControls";
 import LoadingIndicator from "@/components/faultLogs/LoadingIndicator";
 import DebugDataDisplay from "@/components/faultLogs/DebugDataDisplay";
+
+/**
+ * Build-time flag, not a runtime toggle: the debug panel exposes internal tag
+ * names, record keys and value types, so it must not ship in the production
+ * bundle at all (F-04).
+ */
+const SHOW_DEBUG_PANEL = process.env.NEXT_PUBLIC_DEBUG === "true";
 
 import {
   PAGE_SIZE,
@@ -29,7 +37,13 @@ export default function FaultLogsPaginated({ machineName }: Props) {
   const [tagData, setTagData] = useState<TagData[]>([]);
   const [allTagData, setAllTagData] = useState<TagData[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  /**
+   * One terminal state, never two at once. The page used to report totals of
+   * zero while it was still loading, which read as "no alarms" on a machine
+   * that had them (F-04).
+   */
+  const [phase, setPhase] = useState<"loading" | "ready" | "error">("loading");
+  const loading = phase === "loading";
   const [error, setError] = useState<string | null>(null);
   const [rawData, setRawData] = useState<any[]>([]);
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
@@ -47,7 +61,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
   });
 
   const fetchLogs = async (pageNum: number, search = "") => {
-    setLoading(true);
+    setPhase("loading");
     setError(null);
 
     try {
@@ -82,7 +96,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       if (search && search.trim()) {
         firstUrl.searchParams.append("search", search.trim());
       }
-      const firstRes = await fetch(firstUrl.toString());
+      const firstRes = await siteApi(firstUrl.toString());
       if (!firstRes.ok)
         throw new Error(
           `API Error: ${firstRes.status} - ${await firstRes.text()}`
@@ -113,7 +127,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
           url.searchParams.append("search", search.trim());
         }
 
-        const res = await fetch(url.toString());
+        const res = await siteApi(url.toString());
         if (!res.ok)
           throw new Error(`API Error: ${res.status} - ${await res.text()}`);
         const result = await res.json();
@@ -144,21 +158,25 @@ export default function FaultLogsPaginated({ machineName }: Props) {
 
       setAllTagData(accumulated);
       setTagData(pageSlice);
+      // Every counter is derived from this one result, so they cannot
+      // contradict each other. An empty result reads 0 of 0, not 1 of 0.
+      const emptyResult = totalTrue === 0;
       setStats({
         total: totalTrue,
         activeTags: pageSlice.length,
         faultTags: totalTrue,
-        currentPage: safePage,
-        totalPages: totalPagesTrue,
+        currentPage: emptyResult ? 0 : safePage,
+        totalPages: emptyResult ? 0 : totalPagesTrue,
       });
       setPaginationInfo({
         total: totalTrue,
-        totalPages: totalPagesTrue,
+        totalPages: emptyResult ? 0 : totalPagesTrue,
         limit: PAGE_SIZE,
-        page: safePage,
+        page: emptyResult ? 0 : safePage,
       });
     } catch (err: any) {
       console.error("Fetch error:", err);
+      setPhase("error");
       setError(`Failed to fetch logs: ${err.message}`);
       setTagData([]);
       setRawData([]);
@@ -166,17 +184,19 @@ export default function FaultLogsPaginated({ machineName }: Props) {
         total: 0,
         activeTags: 0,
         faultTags: 0,
-        currentPage: pageNum,
-        totalPages: 1,
+        currentPage: 0,
+        totalPages: 0,
       });
       setPaginationInfo({
         total: 0,
-        totalPages: 1,
+        totalPages: 0,
         limit: PAGE_SIZE,
-        page: pageNum,
+        page: 0,
       });
     } finally {
-      setLoading(false);
+      // `phase` is only moved to "ready" on the success path; an error leaves
+      // it at "error" so counters are never rendered from a failed load.
+      setPhase((prev) => (prev === "error" ? prev : "ready"));
     }
   };
 
@@ -213,40 +233,63 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       limit: PAGE_SIZE,
       page: safePage,
     });
+    // A successful client-side re-slice is a resolved state too.
+    setPhase((prev) => (prev === "loading" ? "ready" : prev));
   }, [currentPage, allTagData]);
+
+  const isEmpty = phase === "ready" && stats.total === 0;
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
       <div className="bg-white rounded-lg shadow-lg">
         <div className="p-6 border-b border-gray-200">
-          <StatisticsCards stats={stats} />
+          {/* Counters are shown only once the load has resolved — a total of
+              zero must never be rendered while the answer is still unknown. */}
+          {phase === "ready" && <StatisticsCards stats={stats} />}
+
           <SearchBar
             searchTerm={searchTerm}
             onSearchChange={setSearchTerm}
             loading={loading}
           />
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+          {phase === "error" && error && (
+            <div
+              role="alert"
+              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm"
+            >
               {error}
             </div>
           )}
 
-          <DebugDataDisplay data={rawData} machineName={machineName} />
+          {SHOW_DEBUG_PANEL && (
+            <DebugDataDisplay data={rawData} machineName={machineName} />
+          )}
         </div>
 
         <div className="p-6">
           <div className="mb-4">
             <h3 className="text-lg font-semibold text-gray-700">
-              Tag Data ({tagData.length} found on this page)
+              {phase === "ready"
+                ? `Tag data — ${stats.currentPage} of ${stats.totalPages} page(s), ${stats.total} entr${stats.total === 1 ? "y" : "ies"}`
+                : "Tag data"}
             </h3>
             <p className="text-sm text-gray-500">
               Filtered by: <strong>{debouncedSearch || "None"}</strong>
             </p>
           </div>
 
-          {loading ? (
+          {/* Exactly one of: loading, error, empty, results. */}
+          {phase === "loading" ? (
             <LoadingIndicator />
+          ) : phase === "error" ? (
+            <div className="border border-gray-200 rounded-lg p-8 text-center text-sm text-gray-500">
+              The alarm history could not be loaded.
+            </div>
+          ) : isEmpty ? (
+            <div className="border border-gray-200 rounded-lg p-8 text-center text-sm text-gray-500">
+              No alarms recorded in the selected period.
+            </div>
           ) : (
             <>
               <div className="border border-gray-200 rounded-lg">

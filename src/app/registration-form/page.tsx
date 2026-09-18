@@ -22,6 +22,8 @@ import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/layout/dashboard-layout";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDataStore } from "@/lib/store";
+import { api } from "@/lib/apiClient";
+import { UserPlus } from "lucide-react";
 import { getDeviceLocations } from "@/lib/devices";
 
 // Zod Schema
@@ -51,9 +53,12 @@ const formSchema = z
     locations: z.array(z.string()).min(1, {
       message: "Please select at least one location.",
     }),
-    password: z.string().min(8, {
-      message: "Password must be at least 8 characters.",
-    }),
+    // Matches the server policy in lib/passwordPolicy.ts.
+    password: z
+      .string()
+      .min(12, { message: "Password must be at least 12 characters." })
+      .regex(/[a-z]/i, { message: "Password must contain a letter." })
+      .regex(/\d/, { message: "Password must contain a number." }),
     confirmPassword: z.string(),
     monitorAccess: z.array(z.string()).min(1, {
       message: "Please select at least one monitor access option.",
@@ -206,7 +211,8 @@ export default function RegistrationForm() {
         process.env.NEXT_PUBLIC_BACKEND_URL ||
         "https://www.primeosys.com/backend";
 
-      const response = await fetch(`${BACKEND_URL}/api/register`, {
+      const response = await api("/api/register", {
+        skipAuthRedirect: true,
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -340,16 +346,25 @@ export default function RegistrationForm() {
 
   return (
     <DashboardLayout>
-      <div className="flex h-[52rem] bg-gray-50 dark:bg-black -mt-10">
-        <div className="flex-1 p-6 h-screen mb-10">
-          <div className="w-full max-w-md mx-auto p-6 space-y-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+      <div className="relative">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-64"
+          style={{
+            background:
+              "radial-gradient(38rem 16rem at 18% 0%, color-mix(in oklch, var(--primary) 13%, transparent), transparent 70%), radial-gradient(30rem 14rem at 85% 6%, color-mix(in oklch, var(--chart-3) 10%, transparent), transparent 70%)",
+          }}
+        />
+        <div className="relative mx-auto w-full max-w-2xl pt-4 pb-12">
+          <div className="surface animate-fade-in-up space-y-6 p-6 sm:p-8">
             <div className="text-center">
-              <h1 className="text-2xl font-bold text-black dark:text-white">
+              <p className="text-primary flex items-center justify-center gap-2 text-xs font-semibold tracking-[0.18em] uppercase">
+                <UserPlus className="h-3.5 w-3.5" />
                 {formatText(t("create_account"))}
-              </h1>
-              <p className="text-sm text-gray-500 dark:text-gray-300">
-                {formatText(t("fill_details_to_register"))}
               </p>
+              <h1 className="mt-2 text-2xl font-semibold tracking-tight">
+                {formatText(t("fill_details_to_register"))}
+              </h1>
             </div>
 
             {/* Account Type Tabs */}
@@ -397,8 +412,9 @@ export default function RegistrationForm() {
                         <FormLabel>{formatText(t("first_name"))}</FormLabel>
                         <FormControl>
                           <Input
+                            autoComplete="given-name"
                             {...field}
-                            className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                           
                           />
                         </FormControl>
                         <FormMessage />
@@ -413,8 +429,9 @@ export default function RegistrationForm() {
                         <FormLabel>{formatText(t("last_name"))}</FormLabel>
                         <FormControl>
                           <Input
+                            autoComplete="family-name"
                             {...field}
-                            className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                           
                           />
                         </FormControl>
                         <FormMessage />
@@ -432,8 +449,9 @@ export default function RegistrationForm() {
                       <FormLabel>{formatText(t("username"))}</FormLabel>
                       <FormControl>
                         <Input
+                          autoComplete="username"
                           {...field}
-                          className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                         
                         />
                       </FormControl>
                       <FormMessage />
@@ -451,8 +469,9 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="email"
+                          autoComplete="email"
                           {...field}
-                          className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                         
                         />
                       </FormControl>
                       <FormMessage />
@@ -470,8 +489,9 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="tel"
+                          autoComplete="tel"
                           {...field}
-                          className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                         
                         />
                       </FormControl>
                       <FormMessage />
@@ -566,14 +586,17 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="password"
-                          minLength={8}
-                          placeholder="Minimum 8 characters"
+                          autoComplete="new-password"
+                          minLength={12}
+                          placeholder="At least 12 characters"
                           {...field}
-                          className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                         
                         />
                       </FormControl>
                       <FormDescription>
-                        Password must be at least 8 characters.
+                        At least 12 characters, with one letter and one number.
+                        It must not contain your username or be a common
+                        password.
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -590,10 +613,11 @@ export default function RegistrationForm() {
                       <FormControl>
                         <Input
                           type="password"
-                          minLength={8}
+                          autoComplete="new-password"
+                          minLength={12}
                           placeholder="Re-enter password"
                           {...field}
-                          className="bg-gray-100 dark:bg-gray-700 text-black dark:text-white"
+                         
                         />
                       </FormControl>
                       <FormMessage />
@@ -602,7 +626,12 @@ export default function RegistrationForm() {
                 />
 
                 {/* Submit */}
-                <Button type="submit" className="w-full" disabled={isLoading || data?.user?.firstName === "Prosafe" }>
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="mt-2 w-full"
+                  disabled={isLoading || data?.user?.firstName === "Prosafe"}
+                >
                   {isLoading
                     ? formatText(t("registering"))
                     : formatText(t("register"))}

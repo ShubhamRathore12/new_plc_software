@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { siteApi } from "@/lib/apiClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -128,7 +129,7 @@ export default function DataViewer({ className }: DataViewerProps) {
       url.searchParams.append("page", page.toString());
       url.searchParams.append("limit", "100");
 
-      const response = await fetch(url.toString());
+      const response = await siteApi(url.toString());
 
       if (!response.ok) {
         throw new Error(`HTTP error! ${response.status}`);
@@ -163,7 +164,7 @@ export default function DataViewer({ className }: DataViewerProps) {
       url.searchParams.append("format", format);
       url.searchParams.append("limit", "1000");
 
-      const response = await fetch(url.toString());
+      const response = await siteApi(url.toString());
 
       if (!response.ok) {
         throw new Error(`Download failed: ${response.status}`);

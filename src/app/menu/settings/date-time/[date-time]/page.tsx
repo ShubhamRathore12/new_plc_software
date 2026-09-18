@@ -253,7 +253,7 @@
 //     <div className="flex flex-col min-h-screen">
 //       <main className="flex-1 container py-8">
 //         <div className="mb-8">
-//           <h1 className="text-3xl font-bold tracking-tight mb-2">
+//           <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">
 //             SET PLC DATE & TIME
 //           </h1>
 //           <p className="text-muted-foreground">
@@ -373,7 +373,7 @@
 //               <div className="flex justify-between">
 //                 <Button
 //                   variant="outline"
-//                   onClick={() => router.push(`/menu/${defaults}`)}
+//                   onClick={() => router.push(`/menu/settings/${defaults}`)}
 //                 >
 //                   BACK
 //                 </Button>
@@ -402,6 +402,9 @@ import { useAutoData } from "@/hooks/useAutoData";
 import { useLanguage } from "@/providers/language-provider";
 
 export default function DateTimePage() {
+  // Seeded from the browser only until the PLC reading arrives; the effect
+  // below replaces it, so the form opens on the machine's own clock rather
+  // than on blank fields or on this computer's time (F-13).
   const [date, setDate] = useState({
     year: new Date().getFullYear(),
     month: new Date().getMonth() + 1,
@@ -420,6 +423,59 @@ export default function DateTimePage() {
 
   const { data } = useAutoData(defaults as string);
   const router = useRouter();
+
+  // Current PLC clock, as the machine reports it.
+  const plcYear = data?.W_YY;
+  const plcMonth = data?.W_MM;
+  const plcDay = data?.W_DD;
+  const plcHour = data?.W_HR;
+  const plcMinute = data?.W_MIN;
+  const plcSecond = data?.W_SEC;
+
+  const hasPlcClock = [plcYear, plcMonth, plcDay].every(
+    (v) => v !== undefined && v !== null && v !== ""
+  );
+
+  const pad = (v: any) => String(v ?? "--").padStart(2, "0");
+  const plcClock = hasPlcClock
+    ? `${plcYear}-${pad(plcMonth)}-${pad(plcDay)} ${pad(plcHour)}:${pad(
+        plcMinute
+      )}:${pad(plcSecond)}`
+    : t("never");
+
+  // Load the machine's clock into the form once it is known. `seeded` keeps a
+  // later poll from overwriting what the operator is typing.
+  const [seeded, setSeeded] = useState(false);
+  useEffect(() => {
+    if (seeded || !hasPlcClock) return;
+    setDate({
+      year: Number(plcYear) || new Date().getFullYear(),
+      month: Number(plcMonth) || 1,
+      day: Number(plcDay) || 1,
+    });
+    setTime({
+      hours: Number(plcHour) || 0,
+      minutes: Number(plcMinute) || 0,
+      seconds: Number(plcSecond) || 0,
+    });
+    setSeeded(true);
+  }, [seeded, hasPlcClock, plcYear, plcMonth, plcDay, plcHour, plcMinute, plcSecond]);
+
+  /** Explicit action, never an implicit default: fills the form with this
+   *  computer's time so the operator can see exactly what would be written. */
+  const syncToBrowser = () => {
+    const now = new Date();
+    setDate({
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+      day: now.getDate(),
+    });
+    setTime({
+      hours: now.getHours(),
+      minutes: now.getMinutes(),
+      seconds: now.getSeconds(),
+    });
+  };
 
    const {
     AHT_PID_Config_OutputLowerLimit,
@@ -639,13 +695,30 @@ export default function DateTimePage() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1 container py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold tracking-tight mb-2">
+          <h1 className="gradient-text mb-2 text-3xl font-semibold tracking-tight">
             {t("SET_PLC_DATE_TIME")}
           </h1>
           <p className="text-muted-foreground">
             {t("CONFIGURE_SYSTEM_DATE_TIME")}
           </p>
         </div>
+
+        {/* The screen used to open blank, with no statement of what the machine
+            currently believes the time to be, or in which zone (F-13). */}
+        <Card className="max-w-md mx-auto mb-4">
+          <CardContent className="p-4 text-sm">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="text-muted-foreground">{t("plc_time")}</span>
+              <span className="font-mono">{plcClock}</span>
+            </div>
+            <div className="text-muted-foreground mt-1 flex items-baseline justify-between gap-3 text-xs">
+              <span>{t("timezone")}</span>
+              <span>
+                {"PLC local time - the machine does not report a zone"}
+              </span>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card className="max-w-md mx-auto">
           <CardContent className="p-6">
@@ -659,7 +732,10 @@ export default function DateTimePage() {
                     <Input
                       id="year"
                       type="number"
-                      value={data?.W_YY}
+                      required
+                      min={2000}
+                      max={2099}
+                      value={date.year}
                       onChange={(e) =>
                         setDate({
                           ...date,
@@ -673,15 +749,16 @@ export default function DateTimePage() {
                     <Input
                       id="month"
                       type="number"
-                      value={data?.W_MM}
+                      required
+                      min={1}
+                      max={12}
+                      value={date.month}
                       onChange={(e) =>
                         setDate({
                           ...date,
                           month: Number.parseInt(e.target.value) || 0,
                         })
                       }
-                      min={1}
-                      max={12}
                     />
                   </div>
                   <div>
@@ -689,15 +766,16 @@ export default function DateTimePage() {
                     <Input
                       id="day"
                       type="number"
-                      value={data?.W_DD}
+                      required
+                      min={1}
+                      max={31}
+                      value={date.day}
                       onChange={(e) =>
                         setDate({
                           ...date,
                           day: Number.parseInt(e.target.value) || 0,
                         })
                       }
-                      min={1}
-                      max={31}
                     />
                   </div>
                 </div>
@@ -712,15 +790,16 @@ export default function DateTimePage() {
                     <Input
                       id="hours"
                       type="number"
-                      value={data?.W_HR}
+                      required
+                      min={0}
+                      max={23}
+                      value={time.hours}
                       onChange={(e) =>
                         setTime({
                           ...time,
                           hours: Number.parseInt(e.target.value) || 0,
                         })
                       }
-                      min={0}
-                      max={23}
                     />
                   </div>
                   <div>
@@ -728,15 +807,16 @@ export default function DateTimePage() {
                     <Input
                       id="minutes"
                       type="number"
-                      value={data?.W_MIN}
+                      required
+                      min={0}
+                      max={59}
+                      value={time.minutes}
                       onChange={(e) =>
                         setTime({
                           ...time,
                           minutes: Number.parseInt(e.target.value) || 0,
                         })
                       }
-                      min={0}
-                      max={59}
                     />
                   </div>
                   <div>
@@ -744,15 +824,16 @@ export default function DateTimePage() {
                     <Input
                       id="seconds"
                       type="number"
-                      value={data?.W_SEC}
+                      required
+                      min={0}
+                      max={59}
+                      value={time.seconds}
                       onChange={(e) =>
                         setTime({
                           ...time,
                           seconds: Number.parseInt(e.target.value) || 0,
                         })
                       }
-                      min={0}
-                      max={59}
                     />
                   </div>
                 </div>
@@ -762,15 +843,24 @@ export default function DateTimePage() {
               <div className="flex justify-between">
                 <Button
                   variant="outline"
-                  onClick={() => router.push(`/menu/${defaults}`)}
+                  onClick={() => router.push(`/menu/settings/${defaults}`)}
                 >
                   {t("BACK")}
                 </Button>
-                <Button>
-                  <Check className="mr-2 h-4 w-4" />
-                  {t("SET")}
-                </Button>
+                <div className="flex gap-2">
+                  <Button variant="outline" type="button" onClick={syncToBrowser}>
+                    {t("sync_to_browser_time")}
+                  </Button>
+                  <Button disabled aria-describedby="set-hint">
+                    <Check className="mr-2 h-4 w-4" aria-hidden="true" />
+                    {t("SET")}
+                  </Button>
+                </div>
               </div>
+              <p id="set-hint" className="text-muted-foreground text-xs">
+                Writing the clock to the PLC is not enabled from the dashboard -
+                set it at the machine.
+              </p>
             </div>
           </CardContent>
         </Card>

@@ -32,10 +32,9 @@ export async function GET(req: Request) {
 
     if (!ALLOWED_TABLES.includes(table)) {
       return new Response(
-        JSON.stringify({
-          error: "Invalid table name",
-          allowedTables: ALLOWED_TABLES,
-        }),
+        // The list of valid tables is not echoed back: an invalid identifier
+        // must not enumerate the fleet to the caller.
+        JSON.stringify({ error: "Invalid table name" }),
         {
           status: 400,
           headers: { "Content-Type": "application/json" },
