@@ -270,7 +270,7 @@ export default function DefaultsPage() {
   "GTPL-115-gT-180E-S7-1200",
   "GTPL-119-gT-180E-S7-1200",
   "GTPL-120-gT-180E-S7-1200",
-  'GTPL-30-gT-180E-S7-1200',
+  'GTPL-030-gT-180E-S7-1200',
   'GTPL-116-gT-240E-S7-1200',
   'GTPL-117-gT-320E-S7-1200'
 

@@ -57,7 +57,7 @@ const allDevices = [
   "GTPL-111-gT-80E-P-S7-200",
   "GTPL-112-gT-80E-P-S7-200",
   "GTPL-113-gT-80E-P-S7-200",
-  "GTPL-30-gT-180E-S7-1200",
+  "GTPL-030-gT-180E-S7-1200",
   "GTPL-115-gT-180E-S7-1200",
   "GTPL-116-gT-240E-S7-1200",
   "GTPL-117-gT-320E-S7-1200",
@@ -103,7 +103,7 @@ const DEVICE_TO_TABLE_MAP: Record<string, string> = {
   "GTPL-111-gT-80E-P-S7-200": "GTPL_111_gT_80E_P_S7_200_Germany",
   "GTPL-112-gT-80E-P-S7-200": "GTPL_112_gT_80E_P_S7_200_Germany",
   "GTPL-113-gT-80E-P-S7-200": "GTPL_113_gT_80E_P_S7_200_Germany",
-  "GTPL-30-gT-180E-S7-1200": "GTPL_114_GT_140E_S7_1200",
+  "GTPL-030-gT-180E-S7-1200": "GTPL_114_GT_140E_S7_1200",
   "GTPL-115-gT-180E-S7-1200": "GTPL_115_GT_180E_S7_1200",
   "GTPL-116-gT-240E-S7-1200": "GTPL_116_GT_240E_S7_1200",
   "GTPL-117-gT-320E-S7-1200": "GTPL_117_GT_320E_S7_1200",
@@ -517,7 +517,7 @@ export default function TableWithDownload() {
   // Machines that physically have a heater (reference: auto screen HTR config).
   // Heater column hidden for every other device, and for any S7-200 device.
   const HEATER_DEVICES = [
-    "GTPL-30-gT-180E-S7-1200",
+    "GTPL-030-gT-180E-S7-1200",
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-116-gT-240E-S7-1200",
     "GTPL-117-gT-320E-S7-1200",

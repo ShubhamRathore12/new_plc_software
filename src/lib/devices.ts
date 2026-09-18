@@ -13,7 +13,7 @@ export interface Device {
 
 export const ALL_DEVICES: Device[] = [
     {
-      name: "GTPL-30-gT-180E-S7-1200",
+      name: "GTPL-030-gT-180E-S7-1200",
       location: "Germany",
       image: "/images/1200.jpg",
       plc: "S7-1200",

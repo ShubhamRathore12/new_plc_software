@@ -361,7 +361,7 @@ export default function AnalogPage() {
     }
   > = {
     "GTPL-115-gT-180E-S7-1200": GTPL_30_config,
-    "GTPL-30-gT-180E-S7-1200": GTPL_30_config,
+    "GTPL-030-gT-180E-S7-1200": GTPL_30_config,
     "GTPL-044-GT-140E-S7-1200": GTPL_30_config,
     "GTPL-119-gT-180E-S7-1200": GTPL_30_config,
     "GTPL-120-gT-180E-S7-1200": GTPL_30_config,
@@ -456,7 +456,7 @@ export default function AnalogPage() {
 
   // Debug logging for GTPL-136 and GTPL-30
   useEffect(() => {
-    if ((device === "GTPL-136-gT-450AP" || device === "GTPL-30-gT-180E-S7-1200") && data) {
+    if ((device === "GTPL-136-gT-450AP" || device === "GTPL-030-gT-180E-S7-1200") && data) {
       console.log("Device detected:", device);
       console.log("Current config:", currentMachineConfig);
       console.log("Raw data received:", data);

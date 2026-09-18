@@ -478,7 +478,7 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     faultCodeColumn: "FAULT_CODE",
     activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
-  "GTPL-30-gT-180E-S7-1200": {
+  "GTPL-030-gT-180E-S7-1200": {
     table: "GTPL_114_GT_140E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
@@ -709,7 +709,7 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
-  "GPL-30": "GTPL-30-gT-180E-S7-1200",
+  "GPL-030": "GTPL-030-gT-180E-S7-1200",
   "GPL-132": "GTPL-132-300-AP-S7-1200",
   "GPL-142": "GTPL-142-gT-450AP-S7-1200",
   "GPL-143": "GTPL-143-gT-450AP-S7-1200",
@@ -1218,7 +1218,7 @@ export function getFaultCodesForMachine(machineName: string) {
   // Determine fault code type based on machine configuration
   if (
     resolvedName === "GTPL-115-gT-180E-S7-1200" ||
-    resolvedName === "GTPL-30-gT-180E-S7-1200" ||
+    resolvedName === "GTPL-030-gT-180E-S7-1200" ||
     resolvedName === "GTPL-119-gT-180E-S7-1200" ||
     resolvedName === "GTPL-120-gT-180E-S7-1200" ||
     resolvedName === "GTPL-044-GT-140E-S7-1200"
@@ -1297,7 +1297,7 @@ export function getMachineType(machineName: string): string {
 
   if (!config) return "Unknown";
 
-  if (resolvedName.includes("GPL-115") || resolvedName.includes("GTPL-30") || resolvedName.includes("GTPL-044")) {
+  if (resolvedName.includes("GPL-115") || resolvedName.includes("GTPL-030") || resolvedName.includes("GTPL-044")) {
     return "GPL-115";
   } else if (
     resolvedName.includes("GPL-117") ||

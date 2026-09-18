@@ -1060,13 +1060,13 @@ export default function AutoDiagram1({
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
     "GTPL-044-GT-140E-S7-1200",
-    "GTPL-30-gT-180E-S7-1200",
+    "GTPL-030-gT-180E-S7-1200",
     "GTPL-118-gT-60T-S7-1200",
   ].some((name) => machineName.includes(name));
 
   // Machines with no T0 (Air Outlet) sensor — hide T0 thermometer, show only TH/T1/T2
   const isNoT0Machine = [
-    "GTPL-30-gT-180E-S7-1200",
+    "GTPL-030-gT-180E-S7-1200",
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-116-gT-240E-S7-1200",
     "GTPL-117-gT-320E-S7-1200",

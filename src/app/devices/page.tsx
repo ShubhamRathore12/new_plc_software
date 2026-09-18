@@ -98,7 +98,7 @@
 
 //   const allDevices: Device[] = [
 //     {
-//       name: "GTPL-30-gT-180E-S7-1200",
+//       name: "GTPL-030-gT-180E-S7-1200",
 //       location: "Germany",
 //       image: "/images/1200.jpg",
 //       plc: "S7-1200",
@@ -386,7 +386,7 @@
 //     "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
 //     "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
 //     "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
-//     "GTPL-30-gT-180E-S7-1200": "GTPL_114",
+//     "GTPL-030-gT-180E-S7-1200": "GTPL_114",
 //     "GTPL-115-gT-180E-S7-1200": "GTPL_115",
 //     "GTPL-116-gT-240E-S7-1200": "GTPL_116",
 //     "GTPL-117-gT-320E-S7-1200": "GTPL_117",
@@ -752,6 +752,51 @@ export default function DevicesPage() {
     return true;
   };
 
+  const deviceNameToStatusKey: Record<string, string> = {
+    "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
+    "GTPL-118-gT-60T-S7-200": "GTPL_118",
+    "GTPL-149-gT-60T-S7-1200": "GTPL_149",
+    "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
+    "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
+    "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
+    "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
+    "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
+    "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
+    "GTPL-030-gT-180E-S7-1200": "GTPL_114",
+    "GTPL-044-GT-140E-S7-1200": "GTPL_044",
+    "GTPL-115-gT-180E-S7-1200": "GTPL_115",
+    "GTPL-116-gT-240E-S7-1200": "GTPL_116",
+    "GTPL-117-gT-320E-S7-1200": "GTPL_117",
+    "GTPL-119-gT-180E-S7-1200": "GTPL_119",
+    "GTPL-120-gT-180E-S7-1200": "GTPL_120",
+    "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
+    "GTPL-124-gT-450T-S7-1200": "GTPL_124",
+    "GTPL-081-gT-650T-S7-1200": "GTPL_081",
+    "GTPL-105-gT-650T-S7-1200": "GTPL_105",
+    "GTPL-068-gT-650T-S7-1200": "GTPL_068",
+    "GTPL-104-gT-650T-S7-1200": "GTPL_104",
+    "GTPL-133-gT-650T-S7-1200": "GTPL_133",
+    "GTPL-154-gT-650T-S7-1200": "GTPL_154",
+    "GTPL-155-gT-650T-S7-1200": "GTPL_155",
+    "GTPL-131-gT-650T-S7-1200": "GTPL_131",
+    "GTPL-132-300-AP-S7-1200": "GTPL_132",
+    "GTPL-136-gT-450AP": "GTPL_136",
+    "GTPL-137-gT-450T-S7-1200": "GTPL_137",
+    "GTPL-138-gT-450T-S7-1200": "GTPL_138",
+    "GTPL-134-gT-450T-S7-1200": "GTPL_134",
+    "GTPL-135-gT-450T-S7-1200": "GTPL_135",
+    "GTPL-145-gT-450T-S7-1200": "GTPL_145",
+    "GTPL-148-gT-450T-S7-1200": "GTPL_148",
+    "GTPL-061-gT-450T-S7-1200": "GTPL_061",
+    "GTPL-139-gT-300AP-S7-1200": "GTPL_139",
+    "GTPL-144-gT-300AP-S7-1200": "GTPL_144",
+    "GTPL-142-gT-450AP-S7-1200": "GTPL_142",
+    "GTPL-123-gT-450AP": "GTPL_123",
+    "GTPL-143-gT-450AP-S7-1200": "GTPL_143",
+    "GTPL-156-gT-450T-S7-1200": "GTPL_156",
+    "GTPL-157-gT-450T-S7-1200": "GTPL_157",
+  };
+
   // ─── Devices that the user is allowed to see (ignoring location dropdown) ──
   // Used BOTH for the device grid AND to derive which locations appear in the
   // dropdown.
@@ -761,10 +806,15 @@ export default function DevicesPage() {
       // catalogue does not know about is still shown, not hidden.
       sessionMachines.map((m) => {
         const wanted = normalizeMachineId(m.machineName);
+        // Build a reverse map: status key → device name (e.g. "GTPL_114" → "GTPL-030-…")
+        const reverseKey = Object.entries(deviceNameToStatusKey).find(
+          ([, v]) => normalizeMachineId(v) === wanted
+        );
         const known = allDevices.find(
           (d) =>
             normalizeMachineId(d.name) === wanted ||
-            normalizeMachineId(d.name) === normalizeMachineId(m.table)
+            normalizeMachineId(d.name) === normalizeMachineId(m.table) ||
+            (reverseKey && d.name === reverseKey[0])
         );
         return (
           known ?? {
@@ -804,51 +854,6 @@ export default function DevicesPage() {
       return false;
     return true;
   });
-
-  const deviceNameToStatusKey: Record<string, string> = {
-    "GTPL-122-gT-1000T-S7-1200": "GTPL_122",
-    "GTPL-118-gT-60T-S7-200": "GTPL_118",
-    "GTPL-149-gT-60T-S7-1200": "GTPL_149",
-    "GTPL-108-gT-40E-P-S7-200": "GTPL_108",
-    "GTPL-109-gT-40E-P-S7-200": "GTPL_109",
-    "GTPL-110-gT-40E-P-S7-200": "GTPL_110",
-    "GTPL-111-gT-80E-P-S7-200": "GTPL_111",
-    "GTPL-112-gT-80E-P-S7-200": "GTPL_112",
-    "GTPL-113-gT-80E-P-S7-200": "GTPL_113",
-    "GTPL-30-gT-180E-S7-1200": "GTPL_114",
-    "GTPL-044-GT-140E-S7-1200": "GTPL_044",
-    "GTPL-115-gT-180E-S7-1200": "GTPL_115",
-    "GTPL-116-gT-240E-S7-1200": "GTPL_116",
-    "GTPL-117-gT-320E-S7-1200": "GTPL_117",
-    "GTPL-119-gT-180E-S7-1200": "GTPL_119",
-    "GTPL-120-gT-180E-S7-1200": "GTPL_120",
-    "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
-    "GTPL-124-gT-450T-S7-1200": "GTPL_124",
-    "GTPL-081-gT-650T-S7-1200": "GTPL_081",
-    "GTPL-105-gT-650T-S7-1200": "GTPL_105",
-    "GTPL-068-gT-650T-S7-1200": "GTPL_068",
-    "GTPL-104-gT-650T-S7-1200": "GTPL_104",
-    "GTPL-133-gT-650T-S7-1200": "GTPL_133",
-    "GTPL-154-gT-650T-S7-1200": "GTPL_154",
-    "GTPL-155-gT-650T-S7-1200": "GTPL_155",
-    "GTPL-131-gT-650T-S7-1200": "GTPL_131",
-    "GTPL-132-300-AP-S7-1200": "GTPL_132",
-    "GTPL-136-gT-450AP": "GTPL_136",
-    "GTPL-137-gT-450T-S7-1200": "GTPL_137",
-    "GTPL-138-gT-450T-S7-1200": "GTPL_138",
-    "GTPL-134-gT-450T-S7-1200": "GTPL_134",
-    "GTPL-135-gT-450T-S7-1200": "GTPL_135",
-    "GTPL-145-gT-450T-S7-1200": "GTPL_145",
-    "GTPL-148-gT-450T-S7-1200": "GTPL_148",
-    "GTPL-061-gT-450T-S7-1200": "GTPL_061",
-    "GTPL-139-gT-300AP-S7-1200": "GTPL_139",
-    "GTPL-144-gT-300AP-S7-1200": "GTPL_144",
-    "GTPL-142-gT-450AP-S7-1200": "GTPL_142",
-    "GTPL-123-gT-450AP": "GTPL_123",
-    "GTPL-143-gT-450AP-S7-1200": "GTPL_143",
-    "GTPL-156-gT-450T-S7-1200": "GTPL_156",
-    "GTPL-157-gT-450T-S7-1200": "GTPL_157",
-  };
 
   const handleViewMore = (deviceName: string) => {
     const key = deviceNameToStatusKey[deviceName];

@@ -90,7 +90,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       firstUrl.searchParams.append("limit", PAGE_SIZE.toString());
       firstUrl.searchParams.append("fromDate", fromDate);
       firstUrl.searchParams.append("toDate", toDate);
-      if (machineName === "GTPL-30-gT-180E-S7-1200") {
+      if (machineName === "GTPL-030-gT-180E-S7-1200") {
         firstUrl.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
       }
       if (search && search.trim()) {
@@ -120,7 +120,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
         url.searchParams.append("limit", PAGE_SIZE.toString());
         url.searchParams.append("fromDate", fromDate);
         url.searchParams.append("toDate", toDate);
-        if (machineName === "GTPL-30-gT-180E-S7-1200") {
+        if (machineName === "GTPL-030-gT-180E-S7-1200") {
           url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
         }
         if (search && search.trim()) {

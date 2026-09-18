@@ -105,7 +105,7 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
-    "GTPL-30-gT-180E-S7-1200": {
+    "GTPL-030-gT-180E-S7-1200": {
  serialNumber: "GTPL_114",
       temperatureSensors: {
         TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
@@ -875,7 +875,7 @@ export default function AutoPage() {
     "GTPL-120-gT-180E-S7-1200",
     "GTPL-116-gT-240E-S7-1200",
     "GTPL-115-gT-180E-S7-1200",
-    "GTPL-30-gT-180E-S7-1200",
+    "GTPL-030-gT-180E-S7-1200",
     "GTPL-117-gT-320E-S7-1200",
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-044-GT-140E-S7-1200",
