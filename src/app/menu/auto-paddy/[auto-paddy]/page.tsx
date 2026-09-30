@@ -16,6 +16,7 @@ import { useLanguage } from "@/providers/language-provider";
 import AutoTelemetryPanel from "@/components/AutoTelemetryPanel";
 import DiagramFrame from "@/components/DiagramFrame";
 import { ArrowLeft, Hash, Snowflake } from "lucide-react";
+import { readColumn } from "@/lib/faultConfig";
 
 export default function AutoPaddyPage() {
   const router = useRouter();
@@ -49,21 +50,17 @@ export default function AutoPaddyPage() {
   const cr75 = resolveCR(["CR_valve_75_percent_ON_Q2_2", "CR_valve_75_percent_on_Q2_2", "CR_75_percent_ON_Q2_2", "CR valve 75% on_Q2_2", "CR_valve_75_on_Q2_2"]);
   const cr100 = resolveCR(["CR_valve_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_7", "CR_100_percent_ON_Q2_7", "CR_valve_100_percent_on_Q2_5", "CR_100%_ON_Q2_7", "CR_valve_100_on_Q2_7"]);
 
-  // Check if Paddy_ageing_mode is active (handles various boolean representations)
-  const isPaddyAgeingMode = (() => {
-    const value = data?.Paddy_ageing_mode;
-    if (value === true || value === 1 || value === "1") return true;
-    if (String(value)?.toLowerCase() === "true") return true;
-    return false;
-  })();
+  const isModeOn = (...columns: string[]) =>
+    columns.some((column) => {
+      const value = readColumn(data, column);
+      if (value === true || value === 1 || value === "1") return true;
+      return String(value)?.toLowerCase() === "true";
+    });
 
-  // Check if Paddy_aeging_mode is active (handles various boolean representations)
-  const isGrainChillingMode = (() => {
-    const value = data?.Paddy_aeging_mode;
-    if (value === true || value === 1 || value === "1") return true;
-    if (String(value)?.toLowerCase() === "true") return true;
-    return false;
-  })();
+  // The PLC column is misspelled "aeging"; the corrected spelling is accepted
+  // too in case a machine ever reports it.
+  const isPaddyAgeingMode = isModeOn("Paddy_aeging_mode", "Paddy_ageing_mode");
+  const isGrainChillingMode = isModeOn("Grain_chilling_mode");
 
   // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
   const isBarMachine = autoPaddy === "GTPL-137-gT-450T-S7-1200" || autoPaddy === "GTPL-138-gT-450T-S7-1200";

@@ -951,6 +951,7 @@ export default function AutoDiagram1({
     "GTPL-142-gT-450AP-S7-1200",
     "GTPL-123-gT-450AP",
     "GTPL-143-gT-450AP-S7-1200",
+    "GTPL-139-gT-300AP-S7-1200",
     "GTPL-134-gT-450T-S7-1200",
     "GTPL-135-gT-450T-S7-1200",
     "GTPL-145-gT-450T-S7-1200",
