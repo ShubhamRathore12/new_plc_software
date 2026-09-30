@@ -1435,13 +1435,15 @@ export default function AutoDiagram1({
     : machineName.includes("GTPL-061-gT-450T-S7-1200")
     ? pickVal(data?.T0_T1_set_point)
     : pickVal(
+        // The per-mode setpoints are the authoritative ones when the machine
+        // reports them, so they win over the generic Delta_T_set_point.
+        isGrainChilling
+          ? data?.Delta_T_set_point_in_grain_chilling_mode
+          : data?.Delta_T_set_point_paddy_aeging_mode,
         data?.TS_TC1_set_point,
         data?.Delta_T_set_point,
         data?.TH_T1_set_point,
         data?.Th_T1,
-        isGrainChilling
-          ? data?.Delta_T_set_point_in_grain_chilling_mode
-          : data?.Delta_T_set_point_paddy_aeging_mode,
         data?.Delta_T_set_point_in_grain_chilling_mode,
         data?.Delta_T_set_point_paddy_aeging_mode,
         data?.AI_TH_Act,

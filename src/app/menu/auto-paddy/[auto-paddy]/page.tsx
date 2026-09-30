@@ -60,7 +60,6 @@ export default function AutoPaddyPage() {
   // The PLC column is misspelled "aeging"; the corrected spelling is accepted
   // too in case a machine ever reports it.
   const isPaddyAgeingMode = isModeOn("Paddy_aeging_mode", "Paddy_ageing_mode");
-  const isGrainChillingMode = isModeOn("Grain_chilling_mode");
 
   // Check if current machine is GTPL-137 or GTPL-138 (bar machines)
   const isBarMachine = autoPaddy === "GTPL-137-gT-450T-S7-1200" || autoPaddy === "GTPL-138-gT-450T-S7-1200";
@@ -772,21 +771,6 @@ export default function AutoPaddyPage() {
                     }`}
                   />
                   {isPaddyAgeingMode ? "ACTIVE" : "INACTIVE"} {"AGEING"}
-                </span>
-                {}
-                <span
-                  className={`inline-flex items-center gap-2 rounded-xl border px-3.5 py-2 text-xs font-semibold ${
-                    isGrainChillingMode
-                      ? "border-success/35 bg-success/10 text-success"
-                      : "text-muted-foreground bg-muted/50"
-                  }`}
-                >
-                  <span
-                    className={`h-1.5 w-1.5 rounded-full ${
-                      isGrainChillingMode ? "pulse-dot bg-success" : "bg-muted-foreground/50"
-                    }`}
-                  />
-                  {isGrainChillingMode ? "ACTIVE" : "INACTIVE"} {"CHILLING"}
                 </span>
               </div>
             </div>
