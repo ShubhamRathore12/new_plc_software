@@ -1,4 +1,4 @@
-export const S7_200_TAGS = [
+﻿export const S7_200_TAGS = [
   "AFTER_HEAT_TEMP_MORE_THAN_50",
   "AFTER_HEAT_TEMP_SENSOR_TH_OPEN",
   "AFTER_HEAT_TEMP_SENSOR_TH_SHORT_CIRCUIT",
@@ -217,12 +217,12 @@ export const GPL_132_TAGS = [
   "Three_phase_monitor_fault",
   "High_pressure_fault",
   "Ambient_temp_lower_than_set_temp.",
-  "Ambient_temp_over_45°C",
+  "Ambient_temp_over_45Â°C",
   "Compressor_module_feedback_error",
   "Low_pressure_1_fault",
   "Compressor_feedback_error",
   "Low_pressure_2_fault",
-  "Ambient_temp_over_43°C",
+  "Ambient_temp_over_43Â°C",
   "Condenser_fan_2_TOP_fault",
   "Condenser_fan_2_circuit_breaker_fault",
   "Condenser_fan_1_circuit_breaker_fault",
@@ -483,21 +483,21 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_115_TAGS,
     type: "S7-1200",
     faultCodeColumn: "FAULT_CODE",
-    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
+    activeFaultColumns: GPL_115_TAGS,
   },
   "GTPL-115-gT-180E-S7-1200": {
     table: "GTPL_115_GT_180E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
     faultCodeColumn: "FAULT_CODE",
-    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
+    activeFaultColumns: GPL_115_TAGS,
   },
   "GTPL-044-GT-140E-S7-1200": {
     table: "GTPL_044_GT_140E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
     faultCodeColumn: "FAULT_CODE",
-    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
+    activeFaultColumns: GPL_115_TAGS,
   },
   "GTPL-116-gT-240E-S7-1200": {
     table: "GTPL_116_GT_240E_S7_1200",
@@ -518,14 +518,14 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     tags: GPL_115_TAGS,
     type: "S7-1200",
     faultCodeColumn: "FAULT_CODE",
-    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
+    activeFaultColumns: GPL_115_TAGS,
   },
   "GTPL-120-gT-180E-S7-1200": {
     table: "GTPL_120_GT_180E_S7_1200",
     tags: GPL_115_TAGS,
     type: "S7-1200",
     faultCodeColumn: "FAULT_CODE",
-    activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
+    activeFaultColumns: GPL_115_TAGS,
   },
   "GTPL-121-gT-1000T-S7-1200": {
     table: "GTPL_121_GT1000T",
@@ -688,7 +688,7 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     faultCodeColumn: "FAULT_CODE",
     activeFaultColumns: MACHINE_FAULT_COLUMNS["GTPL_068_GT_650T_S7_1200"],
   },
-  // Philippines silo chillers — tags/faults come from the SILO I/O list
+  // Philippines silo chillers â€” tags/faults come from the SILO I/O list
   "GTPL-156-gT-450T-S7-1200": {
     table: "GTPL_156_GT_450T_S7_1200",
     tags: GTPL_156_157_FAULT_COLUMNS,
@@ -705,7 +705,7 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
   },
 };
 
-// Optional alias mapping (e.g. "GPL-115" → "GTPL-115-gT-180E-S7-1200")
+// Optional alias mapping (e.g. "GPL-115" â†’ "GTPL-115-gT-180E-S7-1200")
 export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GPL-115": "GTPL-115-gT-180E-S7-1200",
   "GPL-117": "GTPL-117-gT-320E-S7-1200",
@@ -735,14 +735,14 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 7, description: "Three phase monitor fault" },
     { code: 8, description: "Low Pressure Fault" },
     { code: 9, description: "Ambient temp lower than set temp" },
-    { code: 10, description: "Ambient temp. Over 43°C" },
+    { code: 10, description: "Ambient temp. Over 43Â°C" },
     { code: 12, description: "Heater RCCB fault" },
     { code: 13, description: "Cond Fan circuit breaker fault" },
     { code: 14, description: "Low pressure fault : Locked" },
     { code: 15, description: "Anti Freeze Protection" },
     { code: 16, description: "High pressure fault : Locked" },
-    { code: 17, description: "Ambient temp. Over 40°C" },
-    { code: 18, description: "Ambient temp. Less than 4°C" },
+    { code: 17, description: "Ambient temp. Over 40Â°C" },
+    { code: 18, description: "Ambient temp. Less than 4Â°C" },
     { code: 19, description: "Cond Fan TOP" },
     { code: 23, description: "Ambient Temp Sensor T2 Open" },
     { code: 24, description: "Ambient Temp Sensor T2 Short Circuit" },
@@ -754,7 +754,7 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 36, description: "Air After Heater Temp Sensor TH short circuit" },
     { code: 39, description: "High Pressure Fault" },
     { code: 41, description: "Heater TOP fault" },
-    { code: 44, description: "TH Air After Heater Temp more than 50 °C" },
+    { code: 44, description: "TH Air After Heater Temp more than 50 Â°C" },
     {
       code: 45,
       description: "Warning : Delta value not achieved in aeration mode",
@@ -772,12 +772,12 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 7, description: "Three_phase_monitor_fault" },
     { code: 8, description: "High_pressure_fault" },
     { code: 9, description: "Ambient_temp._lower_than_set_temp." },
-    { code: 10, description: "Ambient_temp._over_50°C" },
+    { code: 10, description: "Ambient_temp._over_50Â°C" },
     { code: 11, description: "COMP._MODULE_FEEDBACK_ERROR_(Si-I1)" },
     { code: 14, description: "Low_pressure_1_fault" },
     { code: 15, description: "COMP_FBK_ERROR" },
     { code: 16, description: "Low_pressure_2_fault" },
-    { code: 17, description: "Ambient_temp._over_47°C" },
+    { code: 17, description: "Ambient_temp._over_47Â°C" },
     { code: 18, description: "Condenser_fan_2_TOP_fault" },
     { code: 19, description: "Condenser_fan_3_TOP_fault" },
     { code: 20, description: "Condenser_fan_4_TOP_fault" },
@@ -949,12 +949,12 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 5, description: "Three phase monitor fault" },
     { code: 6, description: "High pressure fault" },
     { code: 7, description: "Ambient temp. lower than set temp." },
-    { code: 8, description: "Ambient temp. over 45°C" },
+    { code: 8, description: "Ambient temp. over 45Â°C" },
     { code: 9, description: "Compressor module feedback error" },
     { code: 10, description: "Low pressure 1 fault" },
     { code: 11, description: "Compressor feedback error" },
     { code: 12, description: "Low pressure 2 fault" },
-    { code: 13, description: "Ambient temp. over 43°C" },
+    { code: 13, description: "Ambient temp. over 43Â°C" },
     { code: 14, description: "Condenser fan 2 TOP fault" },
     { code: 15, description: "Condenser fan 2 circuit breaker fault" },
     { code: 16, description: "Condenser fan 1 circuit breaker fault" },
@@ -980,13 +980,13 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 7, description: "Three phase monitor fault" },
     { code: 8, description: "High pressure fault" },
     { code: 9, description: "Ambient temp lower than set temp" },
-    { code: 10, description: "Ambient temp over 45°C" },
+    { code: 10, description: "Ambient temp over 45Â°C" },
     { code: 11, description: "Compressor motor overheat" },
     { code: 12, description: "Condenser fan door open" },
     { code: 14, description: "Low pressure 1 fault" },
     { code: 15, description: "Compressor running status fault" },
     { code: 16, description: "Low pressure 2 fault" },
-    { code: 17, description: "Ambient temp over 43°C" },
+    { code: 17, description: "Ambient temp over 43Â°C" },
     { code: 28, description: "Discharge pressure high, please clean the filter" },
     { code: 30, description: "Condenser fan circuit breaker fault" },
     { code: 31, description: "Condenser fan TOP fault" },
@@ -1050,12 +1050,12 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 5, description: "Three phase monitor fault" },
     { code: 6, description: "High pressure fault" },
     { code: 7, description: "Ambient temp lower than set temp" },
-    { code: 8, description: "Ambient temp over 43°C" },
+    { code: 8, description: "Ambient temp over 43Â°C" },
     { code: 9, description: "Compressor motor winding temp high" },
     { code: 10, description: "Low pressure 1 fault" },
     { code: 11, description: "Compressor feedback error" },
     { code: 12, description: "Low pressure 2 fault" },
-    { code: 13, description: "Ambient temp over 40°C" },
+    { code: 13, description: "Ambient temp over 40Â°C" },
     { code: 14, description: "Condenser fan2 TOP fault" },
     { code: 15, description: "Condenser fan3 TOP fault" },
     { code: 16, description: "Condenser fan4 TOP fault" },
@@ -1086,12 +1086,12 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 7, description: "Three phase monitor fault" },
     { code: 8, description: "High pressure fault" },
     { code: 9, description: "Ambient temp. lower than set temp." },
-    { code: 10, description: "Ambient temp. over 43°C" },
+    { code: 10, description: "Ambient temp. over 43Â°C" },
     { code: 11, description: "Compressor motor winding temp. high" },
     { code: 14, description: "Low pressure 1 fault" },
     { code: 15, description: "Compressor feedback error" },
     { code: 16, description: "Low pressure 2 fault" },
-    { code: 17, description: "Ambient temp. over 40°C" },
+    { code: 17, description: "Ambient temp. over 40Â°C" },
     { code: 18, description: "Condenser fan 2 TOP fault" },
     { code: 19, description: "Condenser fan 3 TOP fault" },
     { code: 20, description: "Condenser fan 4 TOP fault" },
@@ -1121,12 +1121,12 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 7, description: "Three phase monitor fault" },
     { code: 8, description: "High pressure fault" },
     { code: 9, description: "Ambient temp. lower than set temp." },
-    { code: 10, description: "Ambient temp. over 43°C" },
+    { code: 10, description: "Ambient temp. over 43Â°C" },
     { code: 11, description: "Compressor motor winding temp. high" },
     { code: 14, description: "Low pressure 1 fault" },
     { code: 15, description: "Compressor feedback error" },
     { code: 16, description: "Low pressure 2 fault" },
-    { code: 17, description: "Ambient temp. over 40°C" },
+    { code: 17, description: "Ambient temp. over 40Â°C" },
     { code: 18, description: "Condenser fan 2 TOP fault" },
     { code: 19, description: "Condenser fan 3 TOP fault" },
     { code: 20, description: "Condenser fan 4 TOP fault" },
@@ -1156,12 +1156,12 @@ export const FAULT_CODES: Record<string, FaultCode[]> = {
     { code: 5, description: "Three phase monitor fault" },
     { code: 7, description: "High pressure fault" },
     { code: 8, description: "Ambient temp. lower than set temp." },
-    { code: 9, description: "Ambient temp. over 45°C" },
+    { code: 9, description: "Ambient temp. over 45Â°C" },
     { code: 10, description: "Compressor module feedback error" },
     { code: 11, description: "Low pressure 1 fault" },
     { code: 14, description: "Compressor feedback error" },
     { code: 15, description: "Low pressure 2 fault" },
-    { code: 16, description: "Ambient temp. over 43°C" },
+    { code: 16, description: "Ambient temp. over 43Â°C" },
     { code: 17, description: "Condenser fan 2 TOP fault" },
     { code: 18, description: "Condenser fan 2 circuit breaker fault" },
     { code: 21, description: "Condenser fan 1 circuit breaker fault" },
@@ -1197,15 +1197,26 @@ export function getActiveFaultColumns(machineName: string): string[] {
   return config?.activeFaultColumns || [];
 }
 
+/**
+ * Column names drift in case between PLC exports (e.g. FAULT_CODE vs Fault_code),
+ * so fall back to a case-insensitive lookup before giving up on a column.
+ */
+export function readColumn(data: any, column: string): any {
+  if (!data || !column) return undefined;
+  if (column in data) return data[column];
+  const target = column.toLowerCase();
+  const match = Object.keys(data).find((key) => key.toLowerCase() === target);
+  return match ? data[match] : undefined;
+}
+
 export function getActiveFaults(machineName: string, data: any): Array<{column: string; value: any; isActive: boolean}> {
   const faultColumns = getActiveFaultColumns(machineName);
-  
+
   return faultColumns
-    .map((column) => ({
-      column,
-      value: data?.[column],
-      isActive: isActiveTag(data?.[column]),
-    }))
+    .map((column) => {
+      const value = readColumn(data, column);
+      return { column, value, isActive: isActiveTag(value) };
+    })
     .filter((fault) => fault.isActive);
 }
 
@@ -1248,7 +1259,7 @@ export function getFaultCodesForMachine(machineName: string) {
   } else if (resolvedName === "GTPL-139-gT-300AP-S7-1200") {
     return FAULT_CODES["GTPL_139"];
   } else if (resolvedName === "GTPL-144-gT-300AP-S7-1200") {
-    // 144 is a 300AP machine — reuse 132's fault-code table
+    // 144 is a 300AP machine â€” reuse 132's fault-code table
     return FAULT_CODES["GTPL_132"];
   } else if (
     resolvedName.includes("GPL-117") ||
@@ -1285,10 +1296,64 @@ export function getTagsForMachine(machineName: string, data: any) {
     .concat([{ tag: "created_at", value: data?.created_at }]);
 }
 
+// Values that mean "no fault" even though they are non-empty strings.
+const INACTIVE_TAG_VALUES = new Set([
+  "false",
+  "fa",
+  "f",
+  "0",
+  "no",
+  "off",
+  "null",
+  "undefined",
+  "none",
+  "nil",
+  "-",
+  "ok",
+  "normal",
+  "healthy",
+  "no fault",
+  "no faults",
+  "nofault",
+  "no_fault",
+  "no alarm",
+  "no alarms",
+]);
+
 export function isActiveTag(value: any): boolean {
-  if (!value) return false;
-  const normalized = value.toString().toLowerCase();
-  return normalized === "true" || normalized === "tr" || normalized === "True";
+  if (value === undefined || value === null) return false;
+  if (typeof value === "boolean") return value;
+  if (typeof value === "number") return value !== 0;
+
+  const normalized = value.toString().trim().toLowerCase();
+  if (normalized === "") return false;
+  if (INACTIVE_TAG_VALUES.has(normalized)) return false;
+
+  // Boolean-ish truthy markers the PLCs send.
+  if (normalized === "true" || normalized === "tr" || normalized === "t" || normalized === "1") {
+    return true;
+  }
+
+  // Some machines report the fault as free text instead of a flag
+  // (e.g. "Faults", "Fualts", "High pressure fault"). Any other
+  // non-empty text is a live fault, so surface it instead of dropping it.
+  return true;
+}
+
+/**
+ * Text shown in the "Value" column. Boolean-ish flags stay TRUE/FALSE;
+ * text fault values are shown verbatim so the operator sees what the PLC sent.
+ */
+export function formatTagValue(value: any): string {
+  if (!isActiveTag(value)) return "FALSE";
+  if (typeof value === "string") {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === "true" || normalized === "tr" || normalized === "t" || normalized === "1") {
+      return "TRUE";
+    }
+    return value.trim();
+  }
+  return "TRUE";
 }
 
 export function getMachineType(machineName: string): string {

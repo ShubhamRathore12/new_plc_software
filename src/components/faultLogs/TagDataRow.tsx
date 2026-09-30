@@ -1,5 +1,6 @@
 import { TagData, formatTagName, getTagCategory } from "@/utils/faultLogs";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { isActiveTag } from "@/lib/faultConfig";
 
 export default function TagDataRow({ tagData }: { tagData: TagData }) {
   const { tFault, tUI } = useLanguage();
@@ -14,14 +15,9 @@ export default function TagDataRow({ tagData }: { tagData: TagData }) {
     }
   };
 
-  const isTruthyValue =
-    tagData.value === "True" || tagData.value === "true" || tagData.value === "tr";
+  // Covers boolean flags and text fault values (e.g. "Faults") alike.
+  if (!isActiveTag(tagData.value)) return null;
 
-  if (!isTruthyValue) return null; // ❌ Don't render anything if not truthy
-
-
-  console.log(tagData,"tag");
-  
   return (
     <tr className="border-b border-gray-200 hover:bg-gray-50">
       <td className="px-4 py-3 text-sm font-medium">{tagData.tag}</td>

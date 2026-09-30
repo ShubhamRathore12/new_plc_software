@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { isActiveTag } from "@/lib/faultConfig";
+import { formatTagValue, isActiveTag } from "@/lib/faultConfig";
 import { describeFaultTag } from "@/lib/faultDescriptions";
 import { AlertTriangle, CheckCircle2 } from "lucide-react";
 
@@ -22,8 +22,6 @@ interface ActiveTagsTableProps {
 
 export function ActiveTagsTable({ tags }: ActiveTagsTableProps) {
   const activeTags = tags.filter((tag) => isActiveTag(tag.value));
-  const createdAtTag = tags.find((t) => t.tag === "created_at");
-
 
   return (
     <ScrollArea className="h-[500px] pr-4 w-full">
@@ -33,7 +31,6 @@ export function ActiveTagsTable({ tags }: ActiveTagsTableProps) {
             <TableHead className="text-left">Fault</TableHead>
             <TableHead className="w-32 text-center">Status</TableHead>
             <TableHead className="w-24 text-center">Value</TableHead>
-            <TableHead className="w-40 text-right">Timestamp</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -49,17 +46,7 @@ export function ActiveTagsTable({ tags }: ActiveTagsTableProps) {
                       className="mt-0.5 w-4 h-4 shrink-0 text-red-500"
                       aria-hidden="true"
                     />
-                    <div>
-                      {/* Readable description first; the PLC tag stays visible
-                          underneath for service (F-12). */}
-                      <span>{describeFaultTag(tag.tag).title}</span>
-                      <span className="text-muted-foreground block text-xs font-normal">
-                        {describeFaultTag(tag.tag).response}
-                      </span>
-                      <span className="text-muted-foreground block font-mono text-[11px] font-normal">
-                        {tag.tag}
-                      </span>
-                    </div>
+                    <span>{describeFaultTag(tag.tag).title}</span>
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
@@ -68,19 +55,14 @@ export function ActiveTagsTable({ tags }: ActiveTagsTableProps) {
                     ACTIVE ALARM
                   </span>
                 </TableCell>
-                <TableCell className="text-center font-bold text-red-600">
-                  {isActiveTag(tag.value) ? "TRUE" : "FALSE"}
-                </TableCell>
-                <TableCell className="text-right text-sm text-muted-foreground">
-                  {createdAtTag?.value
-                    ? new Date(createdAtTag.value).toLocaleString()
-                    : "No time recorded"}
+                <TableCell className="break-words text-center font-bold text-red-600">
+                  {formatTagValue(tag.value)}
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} className="text-center py-12">
+              <TableCell colSpan={3} className="text-center py-12">
                 <div className="flex flex-col items-center justify-center gap-2">
                   <CheckCircle2 className="w-8 h-8 text-green-500" />
                   <p className="text-muted-foreground font-medium">
