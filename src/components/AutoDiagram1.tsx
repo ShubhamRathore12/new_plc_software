@@ -804,6 +804,24 @@ export default function AutoDiagram1({
   );
   // GTPL-149 (60T) — reports Condenser_fan_speed / T1_set_point / T0_T1_set_point / Static_pressure
   const isGTPL149Machine = normalizedMachineName.includes("GTPL-149");
+  // GTPL-159 … GTPL-172 (650T) — report an analog Condenser_fan_speed (%) and a
+  // Static_pressure (Pa) tag, so show a fan-speed % label and a static-pressure badge.
+  const is159to172Machine = [
+    "GTPL-159",
+    "GTPL-160",
+    "GTPL-161",
+    "GTPL-162",
+    "GTPL-163",
+    "GTPL-164",
+    "GTPL-165",
+    "GTPL-166",
+    "GTPL-167",
+    "GTPL-168",
+    "GTPL-169",
+    "GTPL-170",
+    "GTPL-171",
+    "GTPL-172",
+  ].some((n) => normalizedMachineName.includes(n));
   const pathname = usePathname();
   const isGrainChilling = pathname.includes("auto-grain");
   const isPaddyChilling = pathname.includes("auto-paddy");
@@ -1191,7 +1209,7 @@ export default function AutoDiagram1({
     data?.BLOWER_RPM,
     data?.Value_to_Display_BLOWER,
   );
-  const condPct = isGTPL149Machine
+  const condPct = isGTPL149Machine || is159to172Machine
     ? pickNum(data?.Condenser_fan_speed, data?.Cond_fan_speed)
     : pickNum(
         data?.Cond_fan_speed,
@@ -1978,6 +1996,19 @@ export default function AutoDiagram1({
           </div>
         )}
 
+        {/* GTPL-159..172 — report an analog static pressure (Pa) */}
+        {is159to172Machine && staticPressureVal !== undefined && (
+          <div className="absolute z-10" style={{ left: 70, top: 556 }}>
+            <SensorBadge
+              label="Static Pr."
+              value={`${fmt(staticPressureVal)} Pa`}
+              color="#1f2937"
+              bg="#e0f2fe"
+              border="#38bdf8"
+            />
+          </div>
+        )}
+
         {/* ---------- Coils row: heater (HTR machines only) + evaporator coils.
              HTR / AHT / HGS % boxes sit under their own coil, per reference image ---------- */}
         <div
@@ -2105,12 +2136,13 @@ export default function AutoDiagram1({
             ))}
           </div>
         </div>
-        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 + AP machines + GTPL-149 + silo 156/157 */}
+        {/* condenser fan speed — GTPL-108..113 + 115/116/117/119/120 + AP machines + GTPL-149 + silo 156/157 + GTPL-159..172 */}
         {(isPaddy200Machine ||
           isHeaterCoilMachine ||
           isAPMachine ||
           isGTPL149Machine ||
-          isSiloPressureMachine) && (
+          isSiloPressureMachine ||
+          is159to172Machine) && (
           <div
             className="absolute z-10 bg-white border border-gray-400 rounded-sm px-3 py-0.5 text-sm font-bold text-gray-900 text-center"
             style={{ left: 1290, top: 393 }}

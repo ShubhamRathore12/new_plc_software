@@ -26,6 +26,27 @@ export default function AnalogPage() {
   // GTPL-156 / 157 (Philippines silo) — extra silo static-pressure input, no TH probes
   const isSiloMachine = isGTPL156157(device)
 
+  // GTPL-159 … GTPL-172 (650T) — unlike the earlier 650T machines these PLCs
+  // report an analog Condenser_fan_speed (%) and a Static_pressure (Pa) tag, so
+  // they get the condenser-fan-speed output and a static-pressure input.
+  const GTPL_159_172_DEVICES = [
+    "GTPL-159-gT-650T-S7-1200",
+    "GTPL-160-gT-650T-S7-1200",
+    "GTPL-161-gT-650T-S7-1200",
+    "GTPL-162-gT-650T-S7-1200",
+    "GTPL-163-gT-650T-S7-1200",
+    "GTPL-164-gT-650T-S7-1200",
+    "GTPL-165-gT-650T-S7-1200",
+    "GTPL-166-gT-650T-S7-1200",
+    "GTPL-167-gT-650T-S7-1200",
+    "GTPL-168-gT-650T-S7-1200",
+    "GTPL-169-gT-650T-S7-1200",
+    "GTPL-170-gT-650T-S7-1200",
+    "GTPL-171-gT-650T-S7-1200",
+    "GTPL-172-gT-650T-S7-1200",
+  ]
+  const is159to172 = GTPL_159_172_DEVICES.includes(device || "")
+
   const analogInputs = [
     {
       section: "ANALOG INPUTS (4-20mA)",
@@ -54,7 +75,7 @@ export default function AnalogPage() {
               value: isBarMachine ? "16.5" : "240",
               unit: isBarMachine ? "bar" : "psi",
             },
-            ...(isSiloMachine
+            ...(isSiloMachine || is159to172
               ? [
                   {
                     description: "Static Pressure",
@@ -191,6 +212,19 @@ export default function AnalogPage() {
     outputs: {
       ...sharedS7_1200_config.outputs,
       "Afterheat Valve": "AHT_vale_speed",
+    },
+  }
+  // GTPL-159 … GTPL-172 are 650T machines whose PLCs additionally report an
+  // analog Condenser_fan_speed (%) and a Static_pressure (Pa) reading.
+  const shared650T_withFanSpeed_config = {
+    ...shared650T_config,
+    inputs: {
+      ...shared650T_config.inputs,
+      "Static Pressure": "Static_pressure",
+    },
+    outputs: {
+      ...shared650T_config.outputs,
+      "Condenser fan speed": "Condenser_fan_speed",
     },
   }
   const GTPL_132_config = {
@@ -373,20 +407,20 @@ export default function AnalogPage() {
     "GTPL-133-gT-650T-S7-1200": shared650T_config,
     "GTPL-154-gT-650T-S7-1200": shared650T_config,
     "GTPL-155-gT-650T-S7-1200": shared650T_config,
-    "GTPL-159-gT-650T-S7-1200": shared650T_config,
-    "GTPL-160-gT-650T-S7-1200": shared650T_config,
-    "GTPL-161-gT-650T-S7-1200": shared650T_config,
-    "GTPL-162-gT-650T-S7-1200": shared650T_config,
-    "GTPL-163-gT-650T-S7-1200": shared650T_config,
-    "GTPL-164-gT-650T-S7-1200": shared650T_config,
-    "GTPL-165-gT-650T-S7-1200": shared650T_config,
-    "GTPL-166-gT-650T-S7-1200": shared650T_config,
-    "GTPL-167-gT-650T-S7-1200": shared650T_config,
-    "GTPL-168-gT-650T-S7-1200": shared650T_config,
-    "GTPL-169-gT-650T-S7-1200": shared650T_config,
-    "GTPL-170-gT-650T-S7-1200": shared650T_config,
-    "GTPL-171-gT-650T-S7-1200": shared650T_config,
-    "GTPL-172-gT-650T-S7-1200": shared650T_config,
+    "GTPL-159-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-160-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-161-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-162-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-163-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-164-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-165-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-166-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-167-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-168-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-169-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-170-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-171-gT-650T-S7-1200": shared650T_withFanSpeed_config,
+    "GTPL-172-gT-650T-S7-1200": shared650T_withFanSpeed_config,
     "GTPL-081-gT-650T-S7-1200": shared650T_config,
     "GTPL-105-gT-650T-S7-1200": shared650T_config,
     "GTPL-131-gT-650T-S7-1200": shared650T_config,
@@ -670,6 +704,11 @@ export default function AnalogPage() {
                         // Check if this output exists in the current machine config
                         const liveKey = analogOutputValueMap[item.description];
                         if (!liveKey) return false;
+
+                        // GTPL-159 … GTPL-172 report an analog Condenser_fan_speed,
+                        // so show every output their config defines (no Heater key
+                        // exists for them) and skip the 650T exclusions below.
+                        if (is159to172) return true;
                         
                         // For GTPL-123 - show only Blower, Condenser fan, AHT, Hot Gas (exclude Heater)
                         if (device === "GTPL-123-gT-450AP") {
