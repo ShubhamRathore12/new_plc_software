@@ -139,6 +139,26 @@ const deviceNameToStatusKey: Record<string, string> = {
   "GTPL-157-gT-450T-S7-1200":"GTPL_157"
 };
 
+// These 650T machines' table rows must render even when the status feed reports
+// them off or omits them (idle/Manual mode, or a per-user monitorAccess grant
+// that excludes them), because /api/table still returns their stored row.
+const ALWAYS_FETCH_DEVICES = new Set<string>([
+  "GTPL-159-gT-650T-S7-1200",
+  "GTPL-160-gT-650T-S7-1200",
+  "GTPL-161-gT-650T-S7-1200",
+  "GTPL-162-gT-650T-S7-1200",
+  "GTPL-163-gT-650T-S7-1200",
+  "GTPL-164-gT-650T-S7-1200",
+  "GTPL-165-gT-650T-S7-1200",
+  "GTPL-166-gT-650T-S7-1200",
+  "GTPL-167-gT-650T-S7-1200",
+  "GTPL-168-gT-650T-S7-1200",
+  "GTPL-169-gT-650T-S7-1200",
+  "GTPL-170-gT-650T-S7-1200",
+  "GTPL-171-gT-650T-S7-1200",
+  "GTPL-172-gT-650T-S7-1200",
+]);
+
 export const useAutoData = (autoType: string) => {
   const { status } = useMachineStatus();
 
@@ -165,6 +185,12 @@ export const useAutoData = (autoType: string) => {
     const table = autoTypeToTableMap[autoType];
     const statusKey = deviceNameToStatusKey[autoType];
 
+    // Scoped 650T machines (GTPL-159…172) must fetch their table row even when
+    // the status feed reports them off or omits them entirely — the row exists
+    // regardless of the streaming flag. Behavior is unchanged for every other
+    // device, so 154/155 and all other machines keep machine-off blanking.
+    const alwaysFetch = ALWAYS_FETCH_DEVICES.has(autoType);
+
     // Read the machine list from a ref: the poll interval must not be torn down
     // and rebuilt every time the status provider refreshes (every 18s).
     const deviceStatus = machinesRef.current.find(
@@ -175,7 +201,7 @@ export const useAutoData = (autoType: string) => {
 
     // Machine stopped: stop polling it, but keep the last readings on screen.
     // Blanking them to zeros would be indistinguishable from a real 0 °C (F-16).
-    if (!isMachineRunning) {
+    if (!isMachineRunning && !alwaysFetch) {
       setIsConnected(false);
       setTelemetryState("machine-off");
       setError(null);
