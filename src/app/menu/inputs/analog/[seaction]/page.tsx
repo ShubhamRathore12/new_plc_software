@@ -373,6 +373,20 @@ export default function AnalogPage() {
     "GTPL-133-gT-650T-S7-1200": shared650T_config,
     "GTPL-154-gT-650T-S7-1200": shared650T_config,
     "GTPL-155-gT-650T-S7-1200": shared650T_config,
+    "GTPL-159-gT-650T-S7-1200": shared650T_config,
+    "GTPL-160-gT-650T-S7-1200": shared650T_config,
+    "GTPL-161-gT-650T-S7-1200": shared650T_config,
+    "GTPL-162-gT-650T-S7-1200": shared650T_config,
+    "GTPL-163-gT-650T-S7-1200": shared650T_config,
+    "GTPL-164-gT-650T-S7-1200": shared650T_config,
+    "GTPL-165-gT-650T-S7-1200": shared650T_config,
+    "GTPL-166-gT-650T-S7-1200": shared650T_config,
+    "GTPL-167-gT-650T-S7-1200": shared650T_config,
+    "GTPL-168-gT-650T-S7-1200": shared650T_config,
+    "GTPL-169-gT-650T-S7-1200": shared650T_config,
+    "GTPL-170-gT-650T-S7-1200": shared650T_config,
+    "GTPL-171-gT-650T-S7-1200": shared650T_config,
+    "GTPL-172-gT-650T-S7-1200": shared650T_config,
     "GTPL-081-gT-650T-S7-1200": shared650T_config,
     "GTPL-105-gT-650T-S7-1200": shared650T_config,
     "GTPL-131-gT-650T-S7-1200": shared650T_config,
@@ -592,7 +606,7 @@ export default function AnalogPage() {
                           if (device === "GTPL-124-gT-450T-S7-1200" || device === "GTPL-132-300-AP-S7-1200" || device === "GTPL-136-gT-450AP" || device === "GTPL-139-gT-300AP-S7-1200" || device === "GTPL-144-gT-300AP-S7-1200" || device === "GTPL-142-gT-450AP-S7-1200" || device === "GTPL-123-gT-450AP" || device === "GTPL-143-gT-450AP-S7-1200") {
                             return !item.description.startsWith("TH probe")
                           }
-                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-gT-650T-S7-1200" || device === "GTPL-154-gT-650T-S7-1200" || device === "GTPL-155-gT-650T-S7-1200" || device === "GTPL-081-gT-650T-S7-1200" || device === "GTPL-105-gT-650T-S7-1200" || device === "GTPL-131-gT-650T-S7-1200" || device === "GTPL-068-gT-650T-S7-1200" || device === "GTPL-104-gT-650T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200") {
+                          if (device === "GTPL-121-gT-1000T-S7-1200" || device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-gT-650T-S7-1200" || device === "GTPL-154-gT-650T-S7-1200" || device === "GTPL-155-gT-650T-S7-1200" || device === "GTPL-159-gT-650T-S7-1200" || device === "GTPL-160-gT-650T-S7-1200" || device === "GTPL-161-gT-650T-S7-1200" || device === "GTPL-162-gT-650T-S7-1200" || device === "GTPL-163-gT-650T-S7-1200" || device === "GTPL-164-gT-650T-S7-1200" || device === "GTPL-165-gT-650T-S7-1200" || device === "GTPL-166-gT-650T-S7-1200" || device === "GTPL-167-gT-650T-S7-1200" || device === "GTPL-168-gT-650T-S7-1200" || device === "GTPL-169-gT-650T-S7-1200" || device === "GTPL-170-gT-650T-S7-1200" || device === "GTPL-171-gT-650T-S7-1200" || device === "GTPL-172-gT-650T-S7-1200" || device === "GTPL-081-gT-650T-S7-1200" || device === "GTPL-105-gT-650T-S7-1200" || device === "GTPL-131-gT-650T-S7-1200" || device === "GTPL-068-gT-650T-S7-1200" || device === "GTPL-104-gT-650T-S7-1200" || device === "GTPL-061-gT-450T-S7-1200") {
                             return !item.description.startsWith("TH probe") && !item.description.startsWith("TH.")
                           }
                           if ([ '108', '109', '110', '111', '112', '113'].some(id => device?.includes(id))) {
@@ -680,6 +694,20 @@ export default function AnalogPage() {
                           device === 'GTPL-133-gT-650T-S7-1200' ||
                           device === 'GTPL-154-gT-650T-S7-1200' ||
                           device === 'GTPL-155-gT-650T-S7-1200' ||
+                          device === 'GTPL-159-gT-650T-S7-1200' ||
+                          device === 'GTPL-160-gT-650T-S7-1200' ||
+                          device === 'GTPL-161-gT-650T-S7-1200' ||
+                          device === 'GTPL-162-gT-650T-S7-1200' ||
+                          device === 'GTPL-163-gT-650T-S7-1200' ||
+                          device === 'GTPL-164-gT-650T-S7-1200' ||
+                          device === 'GTPL-165-gT-650T-S7-1200' ||
+                          device === 'GTPL-166-gT-650T-S7-1200' ||
+                          device === 'GTPL-167-gT-650T-S7-1200' ||
+                          device === 'GTPL-168-gT-650T-S7-1200' ||
+                          device === 'GTPL-169-gT-650T-S7-1200' ||
+                          device === 'GTPL-170-gT-650T-S7-1200' ||
+                          device === 'GTPL-171-gT-650T-S7-1200' ||
+                          device === 'GTPL-172-gT-650T-S7-1200' ||
                           device === 'GTPL-081-gT-650T-S7-1200' ||
                           device === 'GTPL-105-gT-650T-S7-1200' ||
                           device === 'GTPL-131-gT-650T-S7-1200' ||
@@ -695,6 +723,20 @@ export default function AnalogPage() {
                           device === 'GTPL-133-gT-650T-S7-1200' ||
                           device === 'GTPL-154-gT-650T-S7-1200' ||
                           device === 'GTPL-155-gT-650T-S7-1200' ||
+                          device === 'GTPL-159-gT-650T-S7-1200' ||
+                          device === 'GTPL-160-gT-650T-S7-1200' ||
+                          device === 'GTPL-161-gT-650T-S7-1200' ||
+                          device === 'GTPL-162-gT-650T-S7-1200' ||
+                          device === 'GTPL-163-gT-650T-S7-1200' ||
+                          device === 'GTPL-164-gT-650T-S7-1200' ||
+                          device === 'GTPL-165-gT-650T-S7-1200' ||
+                          device === 'GTPL-166-gT-650T-S7-1200' ||
+                          device === 'GTPL-167-gT-650T-S7-1200' ||
+                          device === 'GTPL-168-gT-650T-S7-1200' ||
+                          device === 'GTPL-169-gT-650T-S7-1200' ||
+                          device === 'GTPL-170-gT-650T-S7-1200' ||
+                          device === 'GTPL-171-gT-650T-S7-1200' ||
+                          device === 'GTPL-172-gT-650T-S7-1200' ||
                           device === 'GTPL-081-gT-650T-S7-1200' ||
                           device === 'GTPL-105-gT-650T-S7-1200' ||
                           device === 'GTPL-131-gT-650T-S7-1200' ||

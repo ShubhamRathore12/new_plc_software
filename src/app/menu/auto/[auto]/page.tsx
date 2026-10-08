@@ -433,6 +433,272 @@ export default function AutoPage() {
         lp: "LP_value",
       },
     },
+      "GTPL-159-gT-650T-S7-1200": {
+      serialNumber: "GTPL_159",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-160-gT-650T-S7-1200": {
+      serialNumber: "GTPL_160",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-161-gT-650T-S7-1200": {
+      serialNumber: "GTPL_161",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-162-gT-650T-S7-1200": {
+      serialNumber: "GTPL_162",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-163-gT-650T-S7-1200": {
+      serialNumber: "GTPL_163",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-164-gT-650T-S7-1200": {
+      serialNumber: "GTPL_164",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-165-gT-650T-S7-1200": {
+      serialNumber: "GTPL_165",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-166-gT-650T-S7-1200": {
+      serialNumber: "GTPL_166",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-167-gT-650T-S7-1200": {
+      serialNumber: "GTPL_167",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-168-gT-650T-S7-1200": {
+      serialNumber: "GTPL_168",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-169-gT-650T-S7-1200": {
+      serialNumber: "GTPL_169",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-170-gT-650T-S7-1200": {
+      serialNumber: "GTPL_170",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-171-gT-650T-S7-1200": {
+      serialNumber: "GTPL_171",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+      "GTPL-172-gT-650T-S7-1200": {
+      serialNumber: "GTPL_172",
+      temperatureSensors: {
+        T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // Note: TH (Supply Air) is intentionally excluded for this machine
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
       "GTPL-081-gT-650T-S7-1200": {
       serialNumber: "GTPL_081",
       temperatureSensors: {
@@ -852,6 +1118,20 @@ export default function AutoPage() {
     "GTPL-133-gT-650T-S7-1200",
     "GTPL-154-gT-650T-S7-1200",
     "GTPL-155-gT-650T-S7-1200",
+    "GTPL-159-gT-650T-S7-1200",
+    "GTPL-160-gT-650T-S7-1200",
+    "GTPL-161-gT-650T-S7-1200",
+    "GTPL-162-gT-650T-S7-1200",
+    "GTPL-163-gT-650T-S7-1200",
+    "GTPL-164-gT-650T-S7-1200",
+    "GTPL-165-gT-650T-S7-1200",
+    "GTPL-166-gT-650T-S7-1200",
+    "GTPL-167-gT-650T-S7-1200",
+    "GTPL-168-gT-650T-S7-1200",
+    "GTPL-169-gT-650T-S7-1200",
+    "GTPL-170-gT-650T-S7-1200",
+    "GTPL-171-gT-650T-S7-1200",
+    "GTPL-172-gT-650T-S7-1200",
     "GTPL-081-gT-650T-S7-1200",
     "GTPL-105-gT-650T-S7-1200",
     "GTPL-131-gT-650T-S7-1200",

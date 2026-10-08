@@ -57,7 +57,7 @@ export default function OutputsPage() {
 
   // Define outputs configuration based on device type
   const getOutputsConfig = (deviceType: string) => {
-    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-133-gT-650T-S7-1200" || deviceType === "GTPL-154-gT-650T-S7-1200" || deviceType === "GTPL-155-gT-650T-S7-1200" || deviceType === "GTPL-131-gT-650T-S7-1200" || deviceType === "GTPL-081-gT-650T-S7-1200" || deviceType === "GTPL-105-gT-650T-S7-1200" || deviceType === "GTPL-068-gT-650T-S7-1200" || deviceType === "GTPL-104-gT-650T-S7-1200") {
+    if (deviceType === "GTPL-122-gT-1000T-S7-1200" || deviceType === "GTPL-121-gT-1000T-S7-1200" || deviceType === "GTPL-133-gT-650T-S7-1200" || deviceType === "GTPL-154-gT-650T-S7-1200" || deviceType === "GTPL-155-gT-650T-S7-1200" || deviceType === "GTPL-159-gT-650T-S7-1200" || deviceType === "GTPL-160-gT-650T-S7-1200" || deviceType === "GTPL-161-gT-650T-S7-1200" || deviceType === "GTPL-162-gT-650T-S7-1200" || deviceType === "GTPL-163-gT-650T-S7-1200" || deviceType === "GTPL-164-gT-650T-S7-1200" || deviceType === "GTPL-165-gT-650T-S7-1200" || deviceType === "GTPL-166-gT-650T-S7-1200" || deviceType === "GTPL-167-gT-650T-S7-1200" || deviceType === "GTPL-168-gT-650T-S7-1200" || deviceType === "GTPL-169-gT-650T-S7-1200" || deviceType === "GTPL-170-gT-650T-S7-1200" || deviceType === "GTPL-171-gT-650T-S7-1200" || deviceType === "GTPL-172-gT-650T-S7-1200" || deviceType === "GTPL-131-gT-650T-S7-1200" || deviceType === "GTPL-081-gT-650T-S7-1200" || deviceType === "GTPL-105-gT-650T-S7-1200" || deviceType === "GTPL-068-gT-650T-S7-1200" || deviceType === "GTPL-104-gT-650T-S7-1200") {
       return [
         { id: "Q0.0", description: "Compressor Start", dataKey: "Compressor_start_Q0_0" },
         { id: "Q0.1", description: "Compressor Module Reset", dataKey: "Compressor_module_reset_Q0_1" },
@@ -370,7 +370,7 @@ export default function OutputsPage() {
       return value === "tr";
     }
 
-    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-gT-650T-S7-1200" || device === "GTPL-154-gT-650T-S7-1200" || device === "GTPL-155-gT-650T-S7-1200" || device === "GTPL-131-gT-650T-S7-1200" || device === "GTPL-081-gT-650T-S7-1200" || device === "GTPL-105-gT-650T-S7-1200" || device === "GTPL-068-gT-650T-S7-1200" || device === "GTPL-104-gT-650T-S7-1200") {
+    if (device === "GTPL-122-gT-1000T-S7-1200" || device === "GTPL-133-gT-650T-S7-1200" || device === "GTPL-154-gT-650T-S7-1200" || device === "GTPL-155-gT-650T-S7-1200" || device === "GTPL-159-gT-650T-S7-1200" || device === "GTPL-160-gT-650T-S7-1200" || device === "GTPL-161-gT-650T-S7-1200" || device === "GTPL-162-gT-650T-S7-1200" || device === "GTPL-163-gT-650T-S7-1200" || device === "GTPL-164-gT-650T-S7-1200" || device === "GTPL-165-gT-650T-S7-1200" || device === "GTPL-166-gT-650T-S7-1200" || device === "GTPL-167-gT-650T-S7-1200" || device === "GTPL-168-gT-650T-S7-1200" || device === "GTPL-169-gT-650T-S7-1200" || device === "GTPL-170-gT-650T-S7-1200" || device === "GTPL-171-gT-650T-S7-1200" || device === "GTPL-172-gT-650T-S7-1200" || device === "GTPL-131-gT-650T-S7-1200" || device === "GTPL-081-gT-650T-S7-1200" || device === "GTPL-105-gT-650T-S7-1200" || device === "GTPL-068-gT-650T-S7-1200" || device === "GTPL-104-gT-650T-S7-1200") {
       return value === "true" || value === 1 || value === "1" || value === true || value === "True";
     }
 

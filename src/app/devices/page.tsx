@@ -778,6 +778,20 @@ export default function DevicesPage() {
     "GTPL-133-gT-650T-S7-1200": "GTPL_133",
     "GTPL-154-gT-650T-S7-1200": "GTPL_154",
     "GTPL-155-gT-650T-S7-1200": "GTPL_155",
+    "GTPL-159-gT-650T-S7-1200": "GTPL_159",
+    "GTPL-160-gT-650T-S7-1200": "GTPL_160",
+    "GTPL-161-gT-650T-S7-1200": "GTPL_161",
+    "GTPL-162-gT-650T-S7-1200": "GTPL_162",
+    "GTPL-163-gT-650T-S7-1200": "GTPL_163",
+    "GTPL-164-gT-650T-S7-1200": "GTPL_164",
+    "GTPL-165-gT-650T-S7-1200": "GTPL_165",
+    "GTPL-166-gT-650T-S7-1200": "GTPL_166",
+    "GTPL-167-gT-650T-S7-1200": "GTPL_167",
+    "GTPL-168-gT-650T-S7-1200": "GTPL_168",
+    "GTPL-169-gT-650T-S7-1200": "GTPL_169",
+    "GTPL-170-gT-650T-S7-1200": "GTPL_170",
+    "GTPL-171-gT-650T-S7-1200": "GTPL_171",
+    "GTPL-172-gT-650T-S7-1200": "GTPL_172",
     "GTPL-131-gT-650T-S7-1200": "GTPL_131",
     "GTPL-132-300-AP-S7-1200": "GTPL_132",
     "GTPL-136-gT-450AP": "GTPL_136",
@@ -795,6 +809,7 @@ export default function DevicesPage() {
     "GTPL-143-gT-450AP-S7-1200": "GTPL_143",
     "GTPL-156-gT-450T-S7-1200": "GTPL_156",
     "GTPL-157-gT-450T-S7-1200": "GTPL_157",
+    
   };
 
   // ─── Devices that the user is allowed to see (ignoring location dropdown) ──

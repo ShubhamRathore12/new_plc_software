@@ -382,6 +382,20 @@ export function getTagsForMachine(machineName: string): string[] {
   if (
     machineName === "GTPL-154-gT-650T-S7-1200" ||
     machineName === "GTPL-155-gT-650T-S7-1200" ||
+    machineName === "GTPL-159-gT-650T-S7-1200" ||
+    machineName === "GTPL-160-gT-650T-S7-1200" ||
+    machineName === "GTPL-161-gT-650T-S7-1200" ||
+    machineName === "GTPL-162-gT-650T-S7-1200" ||
+    machineName === "GTPL-163-gT-650T-S7-1200" ||
+    machineName === "GTPL-164-gT-650T-S7-1200" ||
+    machineName === "GTPL-165-gT-650T-S7-1200" ||
+    machineName === "GTPL-166-gT-650T-S7-1200" ||
+    machineName === "GTPL-167-gT-650T-S7-1200" ||
+    machineName === "GTPL-168-gT-650T-S7-1200" ||
+    machineName === "GTPL-169-gT-650T-S7-1200" ||
+    machineName === "GTPL-170-gT-650T-S7-1200" ||
+    machineName === "GTPL-171-gT-650T-S7-1200" ||
+    machineName === "GTPL-172-gT-650T-S7-1200" ||
     machineName === "GTPL-133-gT-650T-S7-1200" ||
     machineName === "GTPL-131-gT-650T-S7-1200" ||
     machineName === "GTPL-081-gT-650T-S7-1200" ||
