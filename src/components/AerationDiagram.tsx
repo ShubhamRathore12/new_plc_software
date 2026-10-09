@@ -95,17 +95,28 @@ export default function AerationDiagram({
   // Air only moves through the duct while the blower turns.
   const flowing = blowerOn;
 
-  // ── duct routing: intake -> blower -> heater -> silo -> exhaust ─────────
+  // ── duct routing: intake -> blower -> (heater) -> silo -> exhaust ───────
+  // The heater bank occupies x 620–760. When it isn't drawn, the duct runs
+  // straight from the blower to the silo instead of leaving an empty gap.
   const PIPES = [
     // ambient intake into blower
     "M 120 300 L 300 300",
-    // blower to heater bank
-    "M 430 300 L 620 300",
-    // heater to silo inlet
-    "M 760 300 L 1010 300",
+    ...(heated
+      ? [
+          // blower to heater bank
+          "M 430 300 L 620 300",
+          // heater to silo inlet
+          "M 760 300 L 1010 300",
+        ]
+      : [
+          // blower straight to silo inlet
+          "M 430 300 L 1010 300",
+        ]),
     // silo outlet back up to exhaust stack
     "M 1240 300 L 1360 300 L 1360 140",
   ];
+  // Index of the first duct segment downstream of the heater (tinted when hot).
+  const heatedFromIndex = heated ? 2 : Infinity;
 
   const Chip = ({
     label,
@@ -168,7 +179,7 @@ export default function AerationDiagram({
               className="aer-flow"
               d={d}
               fill="none"
-              stroke={heaterOn && i >= 2 ? "#E8785F" : "#F19E8B"}
+              stroke={heaterOn && i >= heatedFromIndex ? "#E8785F" : "#F19E8B"}
               strokeWidth="3.5"
               strokeLinejoin="round"
               strokeLinecap="round"

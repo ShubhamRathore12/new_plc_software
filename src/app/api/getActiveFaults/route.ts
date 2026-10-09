@@ -14,7 +14,7 @@ export async function GET(req: Request) {
 
   const page = pageParam ? Math.max(1, parseInt(pageParam, 10)) : 1;
   const limit = limitParam
-    ? Math.min(Math.max(1, parseInt(limitParam, 10)), 2000)
+    ? Math.min(Math.max(1, parseInt(limitParam, 10)), 10000)
     : 200;
 
   // Ensure page and limit are valid numbers

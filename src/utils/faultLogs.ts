@@ -2,7 +2,10 @@ import { machine } from "os";
 import { getFaultColumnsFromSchema } from "@/lib/dbSchema";
 import { getActiveFaultColumns, isActiveTag as isActiveFault } from "@/lib/faultConfig";
 
-export const PAGE_SIZE = 10000;
+/** Alarm rows shown per page in the alarm-history table. */
+export const PAGE_SIZE = 200;
+/** Raw records requested per /api/getActiveFaults call (route caps at the same value). */
+export const FETCH_LIMIT = 10000;
 
 export interface TagData {
   tag: string;

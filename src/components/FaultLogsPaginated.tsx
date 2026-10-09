@@ -19,6 +19,7 @@ const SHOW_DEBUG_PANEL = process.env.NEXT_PUBLIC_DEBUG === "true";
 
 import {
   PAGE_SIZE,
+  FETCH_LIMIT,
   TagData,
   Stats,
   PaginationInfo,
@@ -83,41 +84,23 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       let accumulated: TagData[] = [];
       let collectedRaw: any[] = [];
 
-      // First fetch page 1 to get totalPages
-      const firstUrl = new URL("/api/getActiveFaults", window.location.origin);
-      firstUrl.searchParams.append("machineName", machineName);
-      firstUrl.searchParams.append("page", "1");
-      firstUrl.searchParams.append("limit", PAGE_SIZE.toString());
-      firstUrl.searchParams.append("fromDate", fromDate);
-      firstUrl.searchParams.append("toDate", toDate);
-      if (machineName === "GTPL-030-gT-180E-S7-1200") {
-        firstUrl.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
-      }
-      if (search && search.trim()) {
-        firstUrl.searchParams.append("search", search.trim());
-      }
-      const firstRes = await siteApi(firstUrl.toString());
-      if (!firstRes.ok)
-        throw new Error(
-          `API Error: ${firstRes.status} - ${await firstRes.text()}`
-        );
-      const firstResult = await firstRes.json();
-      const totalPages = Number(firstResult?.totalPages || 1);
-
-      // Determine how many tag entries we need to cover the requested tag page
+      // Alarm entries needed to fill the requested table page. PAGE_SIZE is the
+      // table page size; FETCH_LIMIT is the raw-record batch per API call — they
+      // used to be one constant, so a large batch collapsed the table to one page
+      // and page 2 of the API was never requested.
       const endIdxNeeded = pageNum * PAGE_SIZE;
 
       // Safety cap: never scan more than MAX_API_PAGES data pages in one fetch.
       // Prevents endless API calls when few/no active faults exist in the data.
       const MAX_API_PAGES = 25;
-      const scanPages = Math.min(totalPages, MAX_API_PAGES);
+      let totalPages = 1;
 
-      // Iterate through API pages until we have enough tag entries or exhaust pages
-      for (let apiPage = 1; apiPage <= scanPages; apiPage++) {
+      // Walk API pages until we have enough entries or the API has no next page.
+      for (let apiPage = 1; apiPage <= Math.min(totalPages, MAX_API_PAGES); apiPage++) {
         const url = new URL("/api/getActiveFaults", window.location.origin);
         url.searchParams.append("machineName", machineName);
         url.searchParams.append("page", apiPage.toString());
-        url.searchParams.append("limit", PAGE_SIZE.toString());
+        url.searchParams.append("limit", FETCH_LIMIT.toString());
         url.searchParams.append("fromDate", fromDate);
         url.searchParams.append("toDate", toDate);
         if (machineName === "GTPL-030-gT-180E-S7-1200") {
@@ -131,6 +114,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
         if (!res.ok)
           throw new Error(`API Error: ${res.status} - ${await res.text()}`);
         const result = await res.json();
+        totalPages = Number(result?.totalPages || 1);
 
         const batchRows: any[] = Array.isArray(result?.data) ? result.data : [];
         if (apiPage === 1) setRawData(batchRows);
