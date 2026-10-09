@@ -229,6 +229,7 @@ const MACHINE_CONFIG = {
   "GTPL-117-gT-320E-S7-1200": { table: "GTPL_117_GT_320E_S7_1200", tags: GPL_117_TAGS, type: "S7-1200" },
   "GTPL-119-gT-180E-S7-1200": { table: "GTPL_119_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
   "GTPL-120-gT-180E-S7-1200": { table: "GTPL_120_GT_180E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
+  "GTPL-141-gT-140E-S7-1200": { table: "GTPL_141_GT_140E_S7_1200", tags: GPL_115_TAGS, type: "S7-1200" },
   "GTPL-121-gT-1000T-S7-1200": { table: "GTPL_121_GT1000T", tags: S7_1200_TAGS, type: "S7-1200" },
 };
 

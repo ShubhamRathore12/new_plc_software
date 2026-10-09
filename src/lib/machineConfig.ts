@@ -622,6 +622,11 @@ export const MACHINE_CONFIG = {
     tags: S7_1200_TAGS,
     type: "S7-1200",
   },
+  "GTPL-141-gT-140E-S7-1200": {
+    table: "GTPL_141_GT_140E_S7_1200",
+    tags: S7_1200_TAGS,
+    type: "S7-1200",
+  },
   "GTPL-121-gT-1000T-S7-1200": {
     table: "GTPL_121_GT1000T",
     tags: S7_1200_TAGS,

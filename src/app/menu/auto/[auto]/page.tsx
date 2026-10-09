@@ -256,6 +256,29 @@ export default function AutoPage() {
       },
     },
 
+    "GTPL-141-gT-140E-S7-1200": {
+      serialNumber: "GTPL_141",
+      temperatureSensors: {
+        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
+        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
+        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        // T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
+      },
+      controls: {
+        AHT: { key: "AHT_vale_speed", label: "After Heat(AHT)" },
+        HGS: { key: "Hot_valve_speed", label: "Hot Gas(HGS)" },
+        BLOWER: { key: "Blower_speed", label: "Blower" },
+        // COND: { key: "Condenser_fan_speed", label: "Condenser" },
+        CONDENSORFANSPEED: { key: "Cond_fan_speed", label: "Cond. Fan Speed" },
+        HTR: { key: "Heater_speed", label: "Heater" },
+      },
+      compressor: {
+        time: "Compressor_timer",
+        hp: "HP_value",
+        lp: "LP_value",
+      },
+    },
+
     "GTPL-124-gT-450T-S7-1200": {
       serialNumber: "GTPL_124",
       temperatureSensors: {
@@ -1153,6 +1176,7 @@ export default function AutoPage() {
 
   const HEATER_SPEED_MACHINES = [
     "GTPL-120-gT-180E-S7-1200",
+    "GTPL-141-gT-140E-S7-1200",
     "GTPL-116-gT-240E-S7-1200",
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-030-gT-180E-S7-1200",

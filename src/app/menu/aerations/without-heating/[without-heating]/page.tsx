@@ -79,6 +79,13 @@ export default function AerationWithoutHeatingPage() {
   const supplyLabel =
     devices === "GTPL-121-gT-1000T-S7-1200" ? t("T0") : t("TH");
 
+  // Machines without an RH sensor (e.g. 650T) have no humidity reading, so the
+  // RH row is omitted rather than rendered as a blank "--".
+  const hasRh =
+    humidityRaw !== null &&
+    humidityRaw !== undefined &&
+    String(humidityRaw) !== "";
+
   const temperatureRows = [
     {
       key: "supply",
@@ -90,11 +97,15 @@ export default function AerationWithoutHeatingPage() {
       label: t("Ambient(T2)"),
       value: formatValue(ambientRaw, "\u00b0C"),
     },
-    {
-      key: "humidity",
-      label: t("RH"),
-      value: formatValue(humidityRaw, "%"),
-    },
+    ...(hasRh
+      ? [
+          {
+            key: "humidity",
+            label: t("RH"),
+            value: formatValue(humidityRaw, "%"),
+          },
+        ]
+      : []),
   ];
 
   const meterRows = [

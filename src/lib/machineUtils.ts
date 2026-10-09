@@ -13,6 +13,7 @@ export type MachineType =
   | "GTPL_117"
   | "GTPL_119"
   | "GTPL_120"
+  | "GTPL_141"
   | "GTPL_121"
   | "GTPL_122_S7_1200"
   | "GTPL_134"

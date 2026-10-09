@@ -262,6 +262,7 @@ export default function RegistrationForm() {
     { value: "GTPL-118-gT-60T-S7-200", label: "GTPL-118-gT-60T-S7-200" },
     { value: "GTPL-119-gT-180E-S7-1200", label: "GTPL-119-gT-180E-S7-1200" },
     { value: "GTPL-120-gT-180E-S7-1200", label: "GTPL-120-gT-180E-S7-1200" },
+    { value: "GTPL-141-gT-140E-S7-1200", label: "GTPL-141-gT-140E-S7-1200" },
     { value: "GTPL-121-gT-1000T-S7-1200", label: "GTPL-121-gT-1000T-S7-1200" },
     { value: "GTPL-122-gT-1000T-S7-1200", label: "GTPL-122-gT-1000T-S7-1200" },
     { value: "GTPL-123-gT-450AP", label: "GTPL-123-gT-450AP" },

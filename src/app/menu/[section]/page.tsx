@@ -102,6 +102,7 @@ export default function Home() {
       "GTPL-117-",
       "GTPL-119-",
       "GTPL-120-",
+      "GTPL-141-",
     ].some((code) => device?.includes(code));
 
   const getMenuItems = (): MenuItem[] => {

@@ -59,6 +59,11 @@ export default function AerationDiagram({
   const blowerRaw = readings.blower;
   const heaterRaw = readings.heater;
 
+  // Some machines (e.g. 650T) have no RH sensor, so humidity resolves to
+  // undefined. In that case the RH readout is hidden rather than showing "--".
+  const hasRh =
+    humidity !== null && humidity !== undefined && String(humidity) !== "";
+
   const blowerPct = num(blowerRaw);
   const heaterPct = num(heaterRaw);
   const blowerOn = blowerPct > 0;
@@ -343,9 +348,11 @@ export default function AerationDiagram({
           <Chip label="T2 ambient" value={formatValue(ambient, "°C")} tone="cool" />
         </div>
 
-        <div className="absolute z-10" style={{ left: 40, top: 452 }}>
-          <Chip label="RH" value={formatValue(humidity, "%")} tone="cool" />
-        </div>
+        {hasRh && (
+          <div className="absolute z-10" style={{ left: 40, top: 452 }}>
+            <Chip label="RH" value={formatValue(humidity, "%")} tone="cool" />
+          </div>
+        )}
 
         <div className="absolute z-10" style={{ left: 300, top: 400 }}>
           <Chip label="Blower" value={formatValue(blowerRaw, "%")} />
@@ -379,7 +386,7 @@ export default function AerationDiagram({
         >
           <div>T2 = Ambient Air Temperature</div>
           <div>{heated ? "TH = Air Temperature After Heater" : "T0 = Air Outlet Temperature"}</div>
-          <div>RH = Relative Humidity</div>
+          {hasRh && <div>RH = Relative Humidity</div>}
         </div>
 
         {/* ---------- status strip ---------- */}

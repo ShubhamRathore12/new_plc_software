@@ -769,6 +769,7 @@ export default function DevicesPage() {
     "GTPL-117-gT-320E-S7-1200": "GTPL_117",
     "GTPL-119-gT-180E-S7-1200": "GTPL_119",
     "GTPL-120-gT-180E-S7-1200": "GTPL_120",
+    "GTPL-141-gT-140E-S7-1200": "GTPL_141",
     "GTPL-121-gT-1000T-S7-1200": "GTPL_121",
     "GTPL-124-gT-450T-S7-1200": "GTPL_124",
     "GTPL-081-gT-650T-S7-1200": "GTPL_081",

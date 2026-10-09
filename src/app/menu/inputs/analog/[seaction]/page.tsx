@@ -399,6 +399,7 @@ export default function AnalogPage() {
     "GTPL-044-GT-140E-S7-1200": GTPL_30_config,
     "GTPL-119-gT-180E-S7-1200": GTPL_30_config,
     "GTPL-120-gT-180E-S7-1200": GTPL_30_config,
+    "GTPL-141-gT-140E-S7-1200": GTPL_30_config,
     "GTPL-116-gT-240E-S7-1200": GTPL_30_config,
     "GTPL-117-gT-320E-S7-1200": GTPL_30_config,
     "GTPL-124-gT-450T-S7-1200": sharedS7_1200_config,

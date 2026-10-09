@@ -357,7 +357,8 @@ export function getTagsForMachine(machineName: string): string[] {
     machineName === "GTPL-115-gT-180E-P-S7-1200" ||
     machineName === "GTPL-114-gT-140E-P-S7-1200" ||
     machineName === "GTPL-119-gT-180E-S7-1200 " ||
-    machineName === "GTPL-120-gT-180E-P-S7-1200"
+    machineName === "GTPL-120-gT-180E-P-S7-1200" ||
+    machineName === "GTPL-141-gT-140E-S7-1200"
   )
     return GPL_115_TAGS;
   if (

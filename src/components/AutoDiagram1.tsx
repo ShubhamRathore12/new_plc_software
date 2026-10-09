@@ -1120,6 +1120,7 @@ export default function AutoDiagram1({
     "GTPL-115-gT-180E-S7-1200",
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
+    "GTPL-141-gT-140E-S7-1200",
     "GTPL-044-GT-140E-S7-1200",
     "GTPL-030-gT-180E-S7-1200",
     "GTPL-118-gT-60T-S7-1200",
@@ -1133,6 +1134,7 @@ export default function AutoDiagram1({
     "GTPL-117-gT-320E-S7-1200",
     "GTPL-119-gT-180E-S7-1200",
     "GTPL-120-gT-180E-S7-1200",
+    "GTPL-141-gT-140E-S7-1200",
     "GTPL-044-GT-140E-S7-1200",
   ].some((name) => machineName.includes(name));
 
@@ -1562,6 +1564,7 @@ export default function AutoDiagram1({
     "GTPL-117",
     "GTPL-119",
     "GTPL-120",
+    "GTPL-141",
     "GTPL-044",
     "GTPL-030"
   ].some((n) => String(machineName).includes(n));

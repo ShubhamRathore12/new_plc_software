@@ -527,6 +527,13 @@ export const MACHINE_CONFIG: Record<string, MachineConfig> = {
     faultCodeColumn: "FAULT_CODE",
     activeFaultColumns: GPL_115_TAGS,
   },
+  "GTPL-141-gT-140E-S7-1200": {
+    table: "GTPL_141_GT_140E_S7_1200",
+    tags: GPL_115_TAGS,
+    type: "S7-1200",
+    faultCodeColumn: "FAULT_CODE",
+    activeFaultColumns: GPL_115_TAGS,
+  },
   "GTPL-121-gT-1000T-S7-1200": {
     table: "GTPL_121_GT1000T",
     tags: GPL_124_TAGS,
@@ -1330,6 +1337,7 @@ export function getFaultCodesForMachine(machineName: string) {
     resolvedName === "GTPL-030-gT-180E-S7-1200" ||
     resolvedName === "GTPL-119-gT-180E-S7-1200" ||
     resolvedName === "GTPL-120-gT-180E-S7-1200" ||
+    resolvedName === "GTPL-141-gT-140E-S7-1200" ||
     resolvedName === "GTPL-044-GT-140E-S7-1200"
   ) {
     return FAULT_CODES["GPL-115"];

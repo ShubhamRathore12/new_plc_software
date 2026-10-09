@@ -152,6 +152,7 @@ class MachineRegistry:
             'GTPL_118_GT_60T_S7_1200',
             'GTPL_119_GT_180E_S7_1200',
             'GTPL_120_GT_180E_S7_1200',
+            'GTPL_141_GT_140E_S7_1200',
             'GTPL_121_GT1000T',
             'gtpl_122_s7_1200_01',
             'GTPL_123_GT_450AP_S7_1200',

@@ -153,6 +153,13 @@ export const ALL_DEVICES: Device[] = [
       chillerModel: "gT-180E",
     },
     {
+      name: "GTPL-141-gT-140E-S7-1200",
+      location: "Noida",
+      image: "/images/1200.jpg",
+      plc: "S7-1200",
+      chillerModel: "gT-140E",
+    },
+    {
       name: "GTPL-121-gT-1000T-S7-1200",
       location: "kanpur",
       image: "/images/1200.jpg",
