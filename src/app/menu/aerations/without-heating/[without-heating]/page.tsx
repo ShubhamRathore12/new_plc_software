@@ -20,7 +20,7 @@ import AerationDiagram from "@/components/AerationDiagram";
 import DiagramFrame from "@/components/DiagramFrame";
 import AutoTelemetryPanel from "@/components/AutoTelemetryPanel";
 import { ArrowLeft, Hash, Play, Square, Wind } from "lucide-react";
-import { canStartAeration, readAeration } from "@/lib/aerationReadings";
+import { canStartAeration, machineHasHeater, readAeration } from "@/lib/aerationReadings";
 
 
 export default function AerationWithoutHeatingPage() {
@@ -76,8 +76,11 @@ export default function AerationWithoutHeatingPage() {
   const humidityRaw = readings.humidity;
   const blowerRaw = readings.blower;
 
-  const supplyLabel =
-    devices === "GTPL-121-gT-1000T-S7-1200" ? t("T0") : t("TH");
+  // Supply-air sensor only sits "after the heater" on machines that have one.
+  // Machines without a heater (e.g. 650T) read the air outlet (T0), so labelling
+  // their supply row "TH (After Heat)" is wrong and disagrees with the diagram.
+  const hasHeater = machineHasHeater(devices as string);
+  const supplyLabel = hasHeater ? t("TH") : t("T0");
 
   // Machines without an RH sensor (e.g. 650T) have no humidity reading, so the
   // RH row is omitted rather than rendered as a blank "--".
@@ -89,7 +92,9 @@ export default function AerationWithoutHeatingPage() {
   const temperatureRows = [
     {
       key: "supply",
-      label: `${supplyLabel} (${t("After Heat")})`,
+      label: hasHeater
+        ? `${supplyLabel} (${t("After Heat")})`
+        : `${supplyLabel} (${t("Air Outlet")})`,
       value: formatValue(supplyRaw, "\u00b0C"),
     },
     {

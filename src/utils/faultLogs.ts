@@ -2,7 +2,7 @@ import { machine } from "os";
 import { getFaultColumnsFromSchema } from "@/lib/dbSchema";
 import { getActiveFaultColumns, isActiveTag as isActiveFault } from "@/lib/faultConfig";
 
-export const PAGE_SIZE = 200;
+export const PAGE_SIZE = 10000;
 
 export interface TagData {
   tag: string;

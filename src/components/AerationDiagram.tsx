@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { pickReading, readAeration } from "@/lib/aerationReadings";
+import { machineHasHeater, pickReading, readAeration } from "@/lib/aerationReadings";
 
 interface AerationDiagramProps {
   data: any;
@@ -63,6 +63,11 @@ export default function AerationDiagram({
   // undefined. In that case the RH readout is hidden rather than showing "--".
   const hasRh =
     humidity !== null && humidity !== undefined && String(humidity) !== "";
+
+  // The supply sensor reads "after the heater" (TH) only on machines that have
+  // a heater; machines without one read the air outlet (T0). This is a property
+  // of the machine, not of the screen, so it is independent of `heated`.
+  const hasHeater = machineHasHeater(machineName);
 
   const blowerPct = num(blowerRaw);
   const heaterPct = num(heaterRaw);
@@ -366,7 +371,7 @@ export default function AerationDiagram({
 
         <div className="absolute z-10" style={{ left: 800, top: 232 }}>
           <Chip
-            label={heated ? "TH supply air" : "T0 supply air"}
+            label={hasHeater ? "TH supply air" : "T0 supply air"}
             value={formatValue(supply, "°C")}
             tone="warm"
           />
@@ -385,7 +390,7 @@ export default function AerationDiagram({
           style={{ left: 60, top: 530 }}
         >
           <div>T2 = Ambient Air Temperature</div>
-          <div>{heated ? "TH = Air Temperature After Heater" : "T0 = Air Outlet Temperature"}</div>
+          <div>{hasHeater ? "TH = Air Temperature After Heater" : "T0 = Air Outlet Temperature"}</div>
           {hasRh && <div>RH = Relative Humidity</div>}
         </div>
 

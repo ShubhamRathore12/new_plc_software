@@ -71,6 +71,29 @@ export function readAeration(data: any): AerationReadings {
 }
 
 /**
+ * Machines that physically carry a heater coil (reference: AutoDiagram heater
+ * list / reports HEATER_DEVICES). On these the supply-air sensor sits after the
+ * heater, so it reads "TH (After Heat)". Every other machine has no heater, so
+ * the supply reading is just the air outlet, "T0 (Air Outlet)" — showing
+ * "After Heat" there is wrong and disagrees with the process diagram.
+ */
+const HEATER_MACHINE_PREFIXES = [
+  "GTPL-030",
+  "GTPL-044",
+  "GTPL-115",
+  "GTPL-116",
+  "GTPL-117",
+  "GTPL-119",
+  "GTPL-120",
+  "GTPL-141",
+];
+
+export function machineHasHeater(machineName?: string): boolean {
+  if (!machineName) return false;
+  return HEATER_MACHINE_PREFIXES.some((prefix) => machineName.includes(prefix));
+}
+
+/**
  * A finite run needs a non-zero duration. Validated before the control is
  * enabled, rather than after the operator has submitted it.
  */
