@@ -19,13 +19,13 @@ const LOCATION_COORDS: Record<string, [number, number]> = {
   vietnam: [14.0583, 108.2772],
   srilanka: [7.8731, 80.7718],
   kanpur: [26.4499, 80.3319],
-  "noida---kanpur": [28.5708, 77.321],
-  noida: [28.5708, 77.321],
-  dharuhera: [28.2044, 76.7981],
+  "noida---kanpur": [28.5355, 77.391],
+  noida: [28.5355, 77.391],
+  dharuhera: [28.205, 76.797],
   rajasthan: [27.0238, 74.2179],
-  "ganga nagar": [29.9038, 73.8772],
-  "ganganagar, rajasthan": [29.9038, 73.8772],
-  "keshwana, rajasthan": [27.6094, 76.3376],
+  "ganga nagar": [29.9094, 73.88],
+  "ganganagar, rajasthan": [29.9094, 73.88],
+  "keshwana, rajasthan": [27.988, 76.38],
   "tamil nadu": [11.1271, 78.6569],
   "salem (tamil nadu)": [11.6643, 78.146],
   pondicherry: [11.9416, 79.8083],
@@ -37,18 +37,38 @@ const LOCATION_COORDS: Record<string, [number, number]> = {
   india: [22.9734, 78.6569],
 };
 
-type SiteStatus = "running" | "idle" | "offline";
+type MachineStatus = "running" | "idle" | "offline";
 
-interface Site {
-  key: string;
-  label: string;
+interface MachineMarker {
+  name: string;
+  location: string;
+  locationKey: string;
   position: [number, number];
-  total: number;
-  running: number;
-  offline: number;
-  machines: { name: string; running: boolean; online: boolean }[];
-  status: SiteStatus;
+  running: boolean;
+  online: boolean;
+  status: MachineStatus;
 }
+
+/**
+ * Visual de-clustering only — NOT real GPS. Devices carry just a city/region
+ * string, so machines sharing a location are fanned out in a small ring around
+ * that city's coordinate so each one gets its own clickable pin.
+ */
+const spreadPosition = (
+  [lat, lng]: [number, number],
+  index: number,
+  count: number
+): [number, number] => {
+  if (count <= 1) return [lat, lng];
+  const radius = Math.min(0.15 + count * 0.015, 0.4); // degrees
+  const angle = (2 * Math.PI * index) / count;
+  // Longitude degrees shrink with latitude; compensate so the ring stays round.
+  const lngScale = Math.cos((lat * Math.PI) / 180) || 1;
+  return [
+    lat + radius * Math.sin(angle),
+    lng + (radius * Math.cos(angle)) / lngScale,
+  ];
+};
 
 /** device name (GTPL-157-gT-450T-S7-1200) -> status feed key (GTPL_157) */
 const toStatusKey = (deviceName: string): string => {
@@ -57,12 +77,12 @@ const toStatusKey = (deviceName: string): string => {
   return `GTPL_${match[1].padStart(3, "0")}`;
 };
 
-/** Pin with a soft halo — colour follows the site's live state. */
-const buildIcon = (status: SiteStatus, count: number) =>
+/** Pin with a soft halo — colour follows the machine's live state. */
+const buildIcon = (status: MachineStatus) =>
   L.divIcon({
     className: "gt-marker",
     html: `<span class="gt-marker__halo" data-status="${status}"></span>
-           <span class="gt-marker__pin" data-status="${status}">${count}</span>`,
+           <span class="gt-marker__pin" data-status="${status}"></span>`,
     iconSize: [34, 34],
     iconAnchor: [17, 17],
     popupAnchor: [0, -16],
@@ -86,62 +106,47 @@ export default function MapView() {
     return () => observer.disconnect();
   }, [theme]);
 
-  const sites = useMemo<Site[]>(() => {
-    const byLocation = new Map<string, Site>();
-
+  const markers = useMemo<MachineMarker[]>(() => {
+    // Group by location first so machines at the same city can be fanned out.
+    const byLocation = new Map<string, typeof ALL_DEVICES>();
     for (const device of ALL_DEVICES) {
       const key = device.location.trim().toLowerCase();
-      const position = LOCATION_COORDS[key];
-      if (!position) continue;
-
-      const feed = status.machines.find(
-        (m) => m.machineName === toStatusKey(device.name)
-      );
-      const running = feed?.machineStatus ?? false;
-      const online = feed?.internetStatus ?? false;
-
-      const existing = byLocation.get(key);
-      if (existing) {
-        existing.total += 1;
-        existing.running += running ? 1 : 0;
-        existing.offline += online ? 0 : 1;
-        existing.machines.push({ name: device.name, running, online });
-      } else {
-        byLocation.set(key, {
-          key,
-          label: device.location,
-          position,
-          total: 1,
-          running: running ? 1 : 0,
-          offline: online ? 0 : 1,
-          machines: [{ name: device.name, running, online }],
-          status: "idle",
-        });
-      }
+      if (!LOCATION_COORDS[key]) continue;
+      const group = byLocation.get(key);
+      if (group) group.push(device);
+      else byLocation.set(key, [device]);
     }
 
-    return Array.from(byLocation.values()).map((site) => ({
-      ...site,
-      status:
-        site.running > 0
-          ? "running"
-          : site.offline === site.total
-            ? "offline"
-            : "idle",
-    }));
+    const result: MachineMarker[] = [];
+    for (const [key, devices] of byLocation) {
+      const base = LOCATION_COORDS[key];
+      devices.forEach((device, i) => {
+        const feed = status.machines.find(
+          (m) => m.machineName === toStatusKey(device.name)
+        );
+        const running = feed?.machineStatus ?? false;
+        const online = feed?.internetStatus ?? false;
+        result.push({
+          name: device.name,
+          location: device.location,
+          locationKey: key,
+          position: spreadPosition(base, i, devices.length),
+          running,
+          online,
+          status: running ? "running" : !online ? "offline" : "idle",
+        });
+      });
+    }
+    return result;
   }, [status.machines]);
 
   const totals = useMemo(
-    () =>
-      sites.reduce(
-        (acc, s) => ({
-          sites: acc.sites + 1,
-          machines: acc.machines + s.total,
-          running: acc.running + s.running,
-        }),
-        { sites: 0, machines: 0, running: 0 }
-      ),
-    [sites]
+    () => ({
+      machines: markers.length,
+      running: markers.filter((m) => m.status === "running").length,
+      sites: new Set(markers.map((m) => m.locationKey)).size,
+    }),
+    [markers]
   );
 
   // Esri's canvas basemaps are free and keyless, unlike CARTO's current
@@ -156,7 +161,7 @@ export default function MapView() {
     : `${ESRI}/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`;
 
   return (
-    <div className="border-border/70 bg-card relative overflow-hidden rounded-xl border">
+    <div className="border-border/70 bg-card relative flex flex-col overflow-hidden rounded-xl border xl:h-full">
       {/* Overlay: live fleet summary */}
       <div className="pointer-events-none absolute top-3 left-3 z-[500] flex flex-wrap items-center gap-2">
         <span className="bg-background/85 border-border text-foreground flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-semibold shadow-[var(--shadow-sm)] backdrop-blur">
@@ -189,7 +194,7 @@ export default function MapView() {
         scrollWheelZoom
         zoomControl={false}
         worldCopyJump
-        className="h-[22rem] w-full md:h-[30rem]"
+        className="h-[22rem] w-full md:h-[30rem] xl:h-full xl:min-h-0 xl:flex-1"
       >
         <TileLayer
           key={isDark ? "dark" : "light"}
@@ -204,31 +209,24 @@ export default function MapView() {
         />
         <ZoomControl position="bottomright" />
 
-        {sites.map((site) => (
-          <Marker
-            key={site.key}
-            position={site.position}
-            icon={buildIcon(site.status, site.total)}
-          >
+        {markers.map((m) => (
+          <Marker key={m.name} position={m.position} icon={buildIcon(m.status)}>
             <Popup className="gt-popup">
-              <span className="block text-sm font-semibold">{site.label}</span>
+              <span className="block text-sm font-semibold">{m.name}</span>
               <span className="mt-0.5 block text-xs opacity-70">
-                {site.running} of {site.total} running
+                {m.location}
               </span>
-              <span className="mt-2 block max-h-32 space-y-1 overflow-y-auto">
-                {site.machines.map((m) => (
-                  <span key={m.name} className="flex items-center gap-1.5 text-xs">
-                    <span
-                      className="h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{
-                        background: m.running
-                          ? "var(--success)"
-                          : "var(--muted-foreground)",
-                      }}
-                    />
-                    {m.name}
-                  </span>
-                ))}
+              <span className="mt-2 flex items-center gap-1.5 text-xs">
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{
+                    background: m.running
+                      ? "var(--success)"
+                      : "var(--muted-foreground)",
+                  }}
+                />
+                {m.running ? "Running" : "Stopped"} ·{" "}
+                {m.online ? "Online" : "Offline"}
               </span>
             </Popup>
           </Marker>
