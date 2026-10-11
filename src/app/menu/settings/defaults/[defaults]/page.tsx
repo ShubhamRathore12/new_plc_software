@@ -473,10 +473,8 @@ export default function DefaultsPage() {
             <AnimatedContainer delay={2} className="mx-auto mt-6 max-w-2xl">
               <Gtpl141Controls
                 title="Editable settings (GTPL-141)"
-                settings={[
-                  "T1_ref_from_T0", "Delta_T", "Duration_set_aeration", "Auto_aeration_enable", "Auto_EN",
-                  "Set_TH_for_heating_mode", "Continuous_mode", "Set_Run_Duration", "HP_set_from_HMI",
-                ]}
+                settings={["Duration_set_aeration", "HP_set_from_HMI"]}
+                telemetry={data}
               />
             </AnimatedContainer>
           )}

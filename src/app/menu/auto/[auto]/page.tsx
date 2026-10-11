@@ -261,10 +261,12 @@ export default function AutoPage() {
 
     "GTPL-141-gT-140E-S7-1200": {
       serialNumber: "GTPL_141",
+      // GTPL-141 publishes the *_temp_mean columns as 0; the live readings are
+      // in the sensor-1 columns.
       temperatureSensors: {
-        TH: { key: "TH_temp_mean", label: "Supply Air(TH)" },
-        T1: { key: "T1_temp_mean", label: "Cold Air(T1)" },
-        T2: { key: "T2_temp_mean", label: "Ambient(T2)" },
+        TH: { key: "TH_1_supply_air_temp", label: "Supply Air(TH)" },
+        T1: { key: "T1_1_cold_air_temp", label: "Cold Air(T1)" },
+        T2: { key: "T2_1_ambient_temp", label: "Ambient(T2)" },
         // T0: { key: "T0_temp_mean", label: "Air Outlet(T0)" },
       },
       controls: {
@@ -1374,7 +1376,9 @@ export default function AutoPage() {
                 <Gtpl141Controls
                   title="Auto controls (GTPL-141)"
                   pulses={["auto"]}
-                  settings={["Auto_EN", "Auto_aeration_enable", "Delta_T", "T1_ref_from_T0", "HP_set_from_HMI"]}
+                  settings={["T1_ref_from_T0", "Delta_T", "Auto_aeration_enable", "Auto_EN"]}
+                  telemetry={data}
+                  compact={!isMobile}
                 />
               )}
 

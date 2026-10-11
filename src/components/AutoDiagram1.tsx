@@ -1,3 +1,5 @@
+import { Pencil, Play, Square } from "lucide-react";
+import { isGtpl141, requestGtpl141Edit, requestGtpl141Pulse } from "@/lib/gtpl141Control";
 // import Image from "next/image";
 // import Fan1200 from "../../public/images/fan.jpg";
 // import Fan from "../../public/images/fan.png";
@@ -1511,8 +1513,12 @@ export default function AutoDiagram1({
         data?.AI_TH_Act,
       );
   const isGTPL061 = machineName.includes("GTPL-061-gT-450T-S7-1200");
-  const setPoint1Label = isGTPL149Machine ? "T1" : isGTPL061 ? "T0" : isSpecialMachine ? "T0" : "T1";
-  const setPoint2Label = isGTPL149Machine ? "T0-T1" : isGTPL061 ? "T1-T0" : isSpecialMachine ? "Delta T" : "TH-T1";
+  // GTPL-141 reports its setpoints only as PLC readback columns.
+  const isG141 = isGtpl141(machineName);
+  const sp1 = isG141 ? pickVal(data?.RB_T1_ref_from_T0) : defTC1;
+  const sp2 = isG141 ? pickVal(data?.RB_Delta_T) : defTsTc1;
+  const setPoint1Label = isG141 ? "T1 ref (T0)" : isGTPL149Machine ? "T1" : isGTPL061 ? "T0" : isSpecialMachine ? "T0" : "T1";
+  const setPoint2Label = isG141 ? "Delta T" : isGTPL149Machine ? "T0-T1" : isGTPL061 ? "T1-T0" : isSpecialMachine ? "Delta T" : "TH-T1";
   const defHP = pickVal(data?.HP_set_point, data?.HP_set, data?.HP_default);
   const defLP = pickVal(data?.LP_set_point, data?.LP_set, data?.LP_default);
   const defBlower = pickVal(
@@ -1916,12 +1922,48 @@ export default function AutoDiagram1({
         <div className="absolute z-10" style={{ left: 340, top: 30 }}>
           <div className="text-sm font-bold text-gray-800 mb-2">Set points</div>
           <div className="flex flex-col gap-2">
-            <div className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm min-w-[120px]">
-              {setPoint1Label} = {fmtTemp(defTC1)} °C
-            </div>
-            <div className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm min-w-[120px]">
-              {setPoint2Label} = {fmtTemp(defTsTc1)} °C
-            </div>
+            {[
+              { label: setPoint1Label, value: sp1, tag: "T1_ref_from_T0" },
+              { label: setPoint2Label, value: sp2, tag: "Delta_T" },
+            ].map((sp) => (
+              <div
+                key={sp.tag}
+                className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm min-w-[120px] flex items-center justify-between gap-2"
+              >
+                <span>
+                  {sp.label} = {fmtTemp(sp.value)} °C
+                </span>
+                {isG141 && (
+                  <button
+                    type="button"
+                    aria-label={`Edit ${sp.label}`}
+                    title={`Edit ${sp.label}`}
+                    onClick={() => requestGtpl141Edit(sp.tag)}
+                    className="rounded border border-gray-300 p-1 text-gray-600 hover:bg-gray-100"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+            ))}
+            {isG141 && (
+              <div className="mt-1 flex gap-2 [&>button]:flex-1">
+                <button
+                  type="button"
+                  onClick={() => requestGtpl141Pulse("Auto_start", "Auto: Start")}
+                  className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-green-700"
+                >
+                  <Play className="h-3.5 w-3.5" /> Start
+                </button>
+                <button
+                  type="button"
+                  onClick={() => requestGtpl141Pulse("Auto_stop", "Auto: Stop")}
+                  className="flex items-center justify-center gap-1.5 rounded bg-red-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-red-700"
+                >
+                  <Square className="h-3.5 w-3.5" /> Stop
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

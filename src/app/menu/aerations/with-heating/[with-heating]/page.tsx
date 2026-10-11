@@ -401,7 +401,10 @@ export default function AerationWithHeatingPage() {
             </AnimatedContainer>
             {isGtpl141(devices) && (
               <AnimatedContainer delay={3}>
-                <Gtpl141Controls title="Aeration with heating (GTPL-141)" pulses={["wh"]} settings={["Set_TH_for_heating_mode", "Set_Run_Duration", "Continuous_mode", "Duration_set_aeration"]} />
+                <Gtpl141Controls title="Aeration with heating (GTPL-141)" pulses={["wh"]} settings={["Set_TH_for_heating_mode", "Continuous_mode", "Set_Run_Duration"]}
+                  telemetry={data}
+                  compact={!isMobile}
+                />
               </AnimatedContainer>
             )}
           </div>

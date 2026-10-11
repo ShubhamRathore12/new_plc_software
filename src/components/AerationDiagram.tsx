@@ -1,7 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Pencil, Play, Square } from "lucide-react";
 import { machineHasHeater, pickReading, readAeration } from "@/lib/aerationReadings";
+import {
+  isGtpl141,
+  requestGtpl141Edit,
+  requestGtpl141Pulse,
+  telemetryValue,
+} from "@/lib/gtpl141Control";
 
 interface AerationDiagramProps {
   data: any;
@@ -346,6 +353,9 @@ export default function AerationDiagram({
         </div>
 
         {/* ---------- set points ---------- */}
+        {isGtpl141(machineName) ? (
+          <Gtpl141AerationSetpoints data={data} heated={heated} />
+        ) : (
         <div className="absolute z-10 flex flex-col gap-2" style={{ left: 940, top: 40 }}>
           <div className="text-sm font-bold text-gray-800">Set points</div>
           <div className="min-w-[150px] rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm">
@@ -358,6 +368,7 @@ export default function AerationDiagram({
             Mode = {continuous ? "CONTINUOUS" : "TIMED"}
           </div>
         </div>
+        )}
 
         {/* ---------- readouts pinned to their equipment ---------- */}
         <div className="absolute z-10" style={{ left: 40, top: 380 }}>
@@ -427,6 +438,78 @@ export default function AerationDiagram({
             </span>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/** GTPL-141 only: actual setpoints from the RB_* readback columns, each with an
+ *  edit button, plus this screen's Start/Stop. Both open the controls panel's
+ *  confirmation dialogs, so every safety check still applies. */
+function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean }) {
+  const boolText = (v: unknown) => (v === null ? "--" : v ? "ON" : "OFF");
+  const numText = (v: unknown, unit: string) => (v === null ? "--" : `${v} ${unit}`);
+  const rows = [
+    ...(heated
+      ? [
+          {
+            tag: "Set_TH_for_heating_mode",
+            label: "Heating TH",
+            text: numText(telemetryValue(data, "Set_TH_for_heating_mode"), "°C"),
+          },
+        ]
+      : []),
+    {
+      tag: "Continuous_mode",
+      label: "Continuous mode",
+      text: boolText(telemetryValue(data, "Continuous_mode")),
+    },
+    {
+      tag: "Set_Run_Duration",
+      label: "Run duration",
+      text: numText(telemetryValue(data, "Set_Run_Duration"), "h"),
+    },
+  ];
+  const start = heated ? "Aeration_start_with_WH" : "Aeration_start_with_WOH";
+  const stop = heated ? "Aeration_stop_with_WH" : "Aeration_stop_with_WOH";
+  const group = heated ? "Aeration with heating" : "Aeration without heating";
+  return (
+    <div className="absolute z-10 flex flex-col gap-2" style={{ left: 940, top: 40 }}>
+      <div className="text-sm font-bold text-gray-800">Set points</div>
+      {rows.map((r) => (
+        <div
+          key={r.tag}
+          className="flex min-w-[210px] items-center justify-between gap-2 rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm"
+        >
+          <span>
+            {r.label} = {r.text}
+          </span>
+          <button
+            type="button"
+            aria-label={`Edit ${r.label}`}
+            title={`Edit ${r.label}`}
+            onClick={() => requestGtpl141Edit(r.tag)}
+            className="rounded border border-gray-300 p-1 text-gray-600 hover:bg-gray-100"
+          >
+            <Pencil className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      ))}
+      <div className="mt-1 flex gap-2 [&>button]:flex-1">
+        <button
+          type="button"
+          onClick={() => requestGtpl141Pulse(start, `${group}: Start`)}
+          className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-green-700"
+        >
+          <Play className="h-3.5 w-3.5" /> Start
+        </button>
+        <button
+          type="button"
+          onClick={() => requestGtpl141Pulse(stop, `${group}: Stop`)}
+          className="flex items-center justify-center gap-1.5 rounded bg-red-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-red-700"
+        >
+          <Square className="h-3.5 w-3.5" /> Stop
+        </button>
       </div>
     </div>
   );

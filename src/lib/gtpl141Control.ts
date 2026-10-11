@@ -81,11 +81,14 @@ export type Command = {
 export type ReadbackValue = { tag: string; label?: string; value: unknown; data_type?: string };
 
 export type Latest = {
+  /** Browser time when this response arrived (added client-side). */
+  _fetchedAt?: number;
   machine?: { status?: string; connected?: boolean };
   plc_readback?: {
     status?: string;
     sampled_at?: string;
     received_at?: string;
+    evaluated_at?: string;
     values?: ReadbackValue[];
   };
 };
@@ -159,7 +162,8 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
 export const controlApi = {
   access: () => request<{ can_control: boolean; configured: boolean }>("/access"),
-  latest: () => request<Latest>("/latest"),
+  latest: () =>
+    request<Latest>("/latest").then((l) => ({ ...l, _fetchedAt: Date.now() })),
   capabilities: () => request<Capabilities>("/capabilities"),
   commands: () => request<Command[]>("/commands"),
   /** `body` is the frozen serialized intent; retries must resend it unchanged. */
@@ -188,6 +192,28 @@ export function readbackValue(latest: Latest | null, tag: string): unknown {
   return v === undefined ? null : v.value;
 }
 
+/**
+ * Actual value from the machine telemetry row (the RB_* readback columns the
+ * gateway uploads with every sample). Strings like "1", "0", "True", "3" are
+ * normalized to the setting's type. Missing/empty stays null, never 0/false.
+ */
+export function telemetryValue(
+  data: Record<string, unknown> | null | undefined,
+  tag: string
+): unknown {
+  const raw = data?.[`RB_${tag}`];
+  if (raw === null || raw === undefined || String(raw).trim() === "") return null;
+  const kind = GTPL141_SETTINGS[tag]?.kind;
+  const s = String(raw).trim();
+  if (kind === "BOOL") {
+    if (s === "1" || s.toLowerCase() === "true") return true;
+    if (s === "0" || s.toLowerCase() === "false") return false;
+    return null;
+  }
+  const n = Number(s);
+  return Number.isFinite(n) ? n : null;
+}
+
 /** Global lock reason, or null when writes may be offered. */
 export function globalBlockReason(args: {
   latest: Latest | null;
@@ -208,8 +234,16 @@ export function globalBlockReason(args: {
   const rb = latest.plc_readback;
   if (latest.machine?.status !== "online") return "Machine is not online.";
   if (rb?.status !== "fresh") return `PLC readback is ${rb?.status ?? "unavailable"}.`;
-  if (!inRange(ageSeconds(rb.sampled_at, now), 15) || !inRange(ageSeconds(rb.received_at, now), 15))
-    return "PLC readback is too old.";
+  // Ages are measured on the server's clock (evaluated_at) plus the time since
+  // this response arrived, so a skewed PC clock cannot fake staleness or
+  // freshness. Falls back to the browser clock if evaluated_at is missing.
+  const evalMs = rb.evaluated_at ? Date.parse(rb.evaluated_at) : NaN;
+  const ref =
+    Number.isFinite(evalMs) && latest._fetchedAt ? evalMs + (now - latest._fetchedAt) : now;
+  const sampleAge = ageSeconds(rb.sampled_at, ref);
+  const receivedAge = ageSeconds(rb.received_at, ref);
+  if (!inRange(sampleAge, 15) || !inRange(receivedAge, 15))
+    return `PLC readback is too old (${Math.round(Math.max(sampleAge ?? 99, receivedAge ?? 99))} s).`;
 
   if (caps.mode !== "live") return `Control mode is ${caps.mode ?? "unknown"}, not live.`;
   const gw = caps.gateway;
@@ -267,3 +301,20 @@ export function newRequestId(): string {
   const h = Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
   return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
 }
+
+/**
+ * Lets other views (e.g. the Auto process diagram) open the controls panel's
+ * edit dialog, so every edit still goes through the same confirmation and
+ * freshness checks.
+ */
+export const GTPL141_EDIT_EVENT = "gtpl141:edit";
+export function requestGtpl141Edit(tag: string) {
+  window.dispatchEvent(new CustomEvent(GTPL141_EDIT_EVENT, { detail: { tag } }));
+}
+
+export const GTPL141_PULSE_EVENT = "gtpl141:pulse";
+/** Ask the controls panel to open its Start/Stop confirmation for `tag`. */
+export function requestGtpl141Pulse(tag: string, label: string) {
+  window.dispatchEvent(new CustomEvent(GTPL141_PULSE_EVENT, { detail: { tag, label } }));
+}
+

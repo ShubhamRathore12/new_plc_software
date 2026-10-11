@@ -36,6 +36,9 @@ import {
   pulseBlockReason,
   readbackValue,
   settingBlockReason,
+  telemetryValue,
+  GTPL141_EDIT_EVENT,
+  GTPL141_PULSE_EVENT,
 } from "@/lib/gtpl141Control";
 
 const PENDING_KEY = "gtpl141.pendingIntent";
@@ -98,10 +101,18 @@ export default function Gtpl141Controls({
   pulses = [],
   settings = [],
   title = "Remote controls (GTPL-141)",
+  telemetry,
+  compact = false,
 }: {
   pulses?: PulseGroup[];
   settings?: string[];
   title?: string;
+  /** The page's live machine row; its RB_* columns are shown when the control
+   *  service readback is not available. */
+  telemetry?: Record<string, unknown> | null;
+  /** Hide the Start/Stop and setpoint lists (the diagram shows them and opens
+   *  this panel's dialogs); keep status, messages and recent commands. */
+  compact?: boolean;
 }) {
   const latestQ = usePoll(controlApi.latest, 6000);
   const capsQ = usePoll(controlApi.capabilities, 5000);
@@ -128,6 +139,10 @@ export default function Gtpl141Controls({
   }, []);
 
   const latest = latestQ.data as Latest | null;
+  const actualValue = (tag: string) => {
+    const v = readbackValue(latest, tag);
+    return v !== null && v !== undefined ? v : telemetryValue(telemetry, tag);
+  };
   const caps = capsQ.data as Capabilities | null;
   const commands = (cmdsQ.data as Command[] | null) ?? null;
 
@@ -212,7 +227,42 @@ export default function Gtpl141Controls({
 
   const editMeta = edit ? GTPL141_SETTINGS[edit.tag] : null;
   const editParsed = edit && editMeta ? parseDraft(editMeta.kind, edit.draft) : null;
-  const editCurrent = edit ? readbackValue(latest, edit.tag) : null;
+  const openEdit = (tag: string) => {
+    const meta = GTPL141_SETTINGS[tag];
+    const actual = actualValue(tag);
+    if (!meta || !settings.includes(tag)) return;
+    if (canControl === false) {
+      setMessage({ tone: "err", text: "Your account is not permitted to control GTPL-141." });
+      return;
+    }
+    if (actual === null) {
+      setMessage({ tone: "err", text: `${meta.label}: no actual PLC value yet, cannot edit.` });
+      return;
+    }
+    setEdit({ tag, expected: actual, draft: meta.kind === "BOOL" ? "" : String(actual) });
+  };
+  const pulsesRef = useRef(pulses);
+  pulsesRef.current = pulses;
+  const openEditRef = useRef(openEdit);
+  openEditRef.current = openEdit;
+  useEffect(() => {
+    const onEdit = (e: Event) => openEditRef.current((e as CustomEvent<{ tag: string }>).detail.tag);
+    const onPulse = (e: Event) => {
+      const { tag, label } = (e as CustomEvent<{ tag: string; label: string }>).detail;
+      const allowed = pulsesRef.current.some(
+        (g) => GTPL141_PULSE_GROUPS[g].start === tag || GTPL141_PULSE_GROUPS[g].stop === tag
+      );
+      if (allowed) setPulse({ tag, label });
+    };
+    window.addEventListener(GTPL141_EDIT_EVENT, onEdit);
+    window.addEventListener(GTPL141_PULSE_EVENT, onPulse);
+    return () => {
+      window.removeEventListener(GTPL141_EDIT_EVENT, onEdit);
+      window.removeEventListener(GTPL141_PULSE_EVENT, onPulse);
+    };
+  }, []);
+
+  const editCurrent = edit ? actualValue(edit.tag) : null;
   const editConflict = edit ? editCurrent !== edit.expected : false;
   const editRowBlock =
     edit && latest && caps ? settingBlockReason(latest, caps, edit.tag) : null;
@@ -294,7 +344,7 @@ export default function Gtpl141Controls({
         </div>
       )}
 
-      {pulses.length > 0 && (
+      {!compact && pulses.length > 0 && (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {pulses.map((g) => {
             const grp = GTPL141_PULSE_GROUPS[g];
@@ -303,7 +353,7 @@ export default function Gtpl141Controls({
                 <div className="text-muted-foreground text-[11px] font-bold tracking-[0.18em] uppercase">
                   {grp.title}
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="flex gap-2 [&>*]:flex-1">
                   {[
                     { tag: grp.start, label: "Start", icon: Play, variant: "default" as const },
                     { tag: grp.stop, label: "Stop", icon: Square, variant: "destructive" as const },
@@ -333,12 +383,12 @@ export default function Gtpl141Controls({
         </div>
       )}
 
-      {settings.length > 0 && (
+      {!compact && settings.length > 0 && (
         <ul className="divide-border divide-y rounded-xl border">
           {settings.map((tag) => {
             const meta = GTPL141_SETTINGS[tag];
             if (!meta) return null;
-            const actual = readbackValue(latest, tag);
+            const actual = actualValue(tag);
             const reason = blocked ?? (latest && caps ? settingBlockReason(latest, caps, tag) : "Loading…");
             return (
               <li key={tag} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
@@ -355,15 +405,11 @@ export default function Gtpl141Controls({
                     variant="outline"
                     className="h-8 w-8"
                     aria-label={`Edit ${meta.label}`}
-                    title={reason ?? `Edit ${meta.label}`}
-                    disabled={!!reason || submitting}
-                    onClick={() =>
-                      setEdit({
-                        tag,
-                        expected: actual,
-                        draft: meta.kind === "BOOL" ? "" : String(actual ?? ""),
-                      })
-                    }
+                    title={`Edit ${meta.label}`}
+                    // Opens even while locked: the dialog explains why it cannot
+                    // be submitted yet instead of a silently disabled icon.
+                    disabled={canControl === false || actual === null || submitting}
+                    onClick={() => openEdit(tag)}
                   >
                     <Pencil className="h-3.5 w-3.5" />
                   </Button>
