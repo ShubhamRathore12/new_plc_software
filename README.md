@@ -6,6 +6,10 @@ We added a fast, streaming AI chat at `/chat`. Type in any language; the assista
 
 ### Setup
 
+
+
+
+
 Set one of the following API keys in your environment (prefer OpenRouter if available):
 
 ```bash
