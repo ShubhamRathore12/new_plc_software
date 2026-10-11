@@ -1,9 +1,6 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   // Tree-shake barrel imports: without this a single `import { X } from "lucide-react"`
   // pulls the whole icon set into the client bundle.
   experimental: {
