@@ -1,9 +1,17 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, ZoomControl } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
-import L from "leaflet";
+import { useEffect, useMemo, useRef, useState } from "react";
+// Aliased to MapGL so it does not shadow the built-in `Map` constructor used
+// below (new Map<...>()); importing it as `Map` broke marker grouping.
+import {
+  Map as MapGL,
+  Marker,
+  Popup,
+  NavigationControl,
+  type MapRef,
+} from "@vis.gl/react-maplibre";
+import type { StyleSpecification } from "maplibre-gl";
+import "maplibre-gl/dist/maplibre-gl.css";
 import { ALL_DEVICES } from "@/lib/devices";
 import { useMachineStatus } from "@/providers/machine-status-provider";
 import { useTheme } from "@/providers/theme-provider";
@@ -43,6 +51,7 @@ interface MachineMarker {
   name: string;
   location: string;
   locationKey: string;
+  /** [lat, lng] — note MapLibre expects [lng, lat] when passed to the API. */
   position: [number, number];
   running: boolean;
   online: boolean;
@@ -77,21 +86,48 @@ const toStatusKey = (deviceName: string): string => {
   return `GTPL_${match[1].padStart(3, "0")}`;
 };
 
-/** Pin with a soft halo — colour follows the machine's live state. */
-const buildIcon = (status: MachineStatus) =>
-  L.divIcon({
-    className: "gt-marker",
-    html: `<span class="gt-marker__halo" data-status="${status}"></span>
-           <span class="gt-marker__pin" data-status="${status}"></span>`,
-    iconSize: [34, 34],
-    iconAnchor: [17, 17],
-    popupAnchor: [0, -16],
-  });
+/**
+ * Keyless raster basemap style for MapLibre. CARTO's raster basemaps need no
+ * token, unlike most vector styles, and render fine when the map is pitched
+ * into 3D. A separate style per theme keeps the base clean under the pins.
+ */
+const buildStyle = (dark: boolean): StyleSpecification => {
+  // Esri's canvas basemaps are free and keyless. CARTO's raster endpoint now
+  // stamps "API KEY REQUIRED" across every tile, so we use Esri here just like
+  // the previous Leaflet map did. The base is drawn clean and a separate
+  // reference layer adds place labels on top.
+  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas";
+  const base = dark ? "World_Dark_Gray_Base" : "World_Light_Gray_Base";
+  const labels = dark ? "World_Dark_Gray_Reference" : "World_Light_Gray_Reference";
+  const attribution = 'Tiles &copy; <a href="https://www.esri.com/">Esri</a>';
+  return {
+    version: 8,
+    sources: {
+      "esri-base": {
+        type: "raster",
+        tiles: [`${ESRI}/${base}/MapServer/tile/{z}/{y}/{x}`],
+        tileSize: 256,
+        attribution,
+      },
+      "esri-labels": {
+        type: "raster",
+        tiles: [`${ESRI}/${labels}/MapServer/tile/{z}/{y}/{x}`],
+        tileSize: 256,
+      },
+    },
+    layers: [
+      { id: "esri-base", type: "raster", source: "esri-base" },
+      { id: "esri-labels", type: "raster", source: "esri-labels" },
+    ],
+  };
+};
 
 export default function MapView() {
   const { status } = useMachineStatus();
   const { theme } = useTheme();
   const [isDark, setIsDark] = useState(false);
+  const [active, setActive] = useState<MachineMarker | null>(null);
+  const mapRef = useRef<MapRef | null>(null);
 
   // `theme` can be "system"; read what the document actually resolved to
   useEffect(() => {
@@ -140,25 +176,34 @@ export default function MapView() {
     return result;
   }, [status.machines]);
 
+  // Summary counts come from the live feed — the same source the dashboard KPI
+  // uses — so the overlay never disagrees with the "machines running" tile.
+  // (The map can only *draw* devices that resolve to a coordinate, but the
+  // headline numbers must reflect the whole fleet, not just the mappable
+  // subset, otherwise a running machine without coords makes 11 read as 10.)
   const totals = useMemo(
     () => ({
-      machines: markers.length,
-      running: markers.filter((m) => m.status === "running").length,
+      machines: status.machines.length || markers.length,
+      running: status.machines.filter((m) => m.machineStatus).length,
       sites: new Set(markers.map((m) => m.locationKey)).size,
     }),
-    [markers]
+    [status.machines, markers]
   );
 
-  // Esri's canvas basemaps are free and keyless, unlike CARTO's current
-  // endpoint which stamps "API KEY REQUIRED" across every tile. Labels ship as
-  // a separate reference layer, so the base stays clean under the markers.
-  const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/Canvas";
-  const tileUrl = isDark
-    ? `${ESRI}/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}`
-    : `${ESRI}/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}`;
-  const labelUrl = isDark
-    ? `${ESRI}/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}`
-    : `${ESRI}/World_Light_Gray_Reference/MapServer/tile/{z}/{y}/{x}`;
+  // Open framed on the fleet's centre of mass rather than a fixed ocean point,
+  // so the India-heavy fleet isn't pushed off to the edge. Computed once for
+  // the initial view; the user can then pan/rotate/pitch freely.
+  const fleetCenter = useMemo<[number, number]>(() => {
+    if (markers.length === 0) return [20, 78];
+    const sum = markers.reduce(
+      (acc, m) => [acc[0] + m.position[0], acc[1] + m.position[1]],
+      [0, 0]
+    );
+    return [sum[0] / markers.length, sum[1] / markers.length];
+  }, [markers]);
+
+  // Swap the basemap when the theme flips without tearing down the map.
+  const mapStyle = useMemo(() => buildStyle(isDark), [isDark]);
 
   return (
     <div className="border-border/70 bg-card relative flex flex-col overflow-hidden rounded-xl border xl:h-full">
@@ -187,67 +232,106 @@ export default function MapView() {
         ))}
       </div>
 
-      <MapContainer
-        center={[22, 60]}
-        zoom={3}
-        minZoom={2}
-        scrollWheelZoom
-        zoomControl={false}
-        worldCopyJump
-        className="h-[22rem] w-full md:h-[30rem] xl:h-full xl:min-h-0 xl:flex-1"
-      >
-        <TileLayer
-          key={isDark ? "dark" : "light"}
-          attribution='Tiles &copy; <a href="https://www.esri.com/">Esri</a>'
-          url={tileUrl}
-          maxZoom={16}
-        />
-        <TileLayer
-          key={isDark ? "dark-labels" : "light-labels"}
-          url={labelUrl}
-          maxZoom={16}
-        />
-        <ZoomControl position="bottomright" />
+      <div className="h-[22rem] w-full md:h-[30rem] xl:h-full xl:min-h-0 xl:flex-1">
+        <MapGL
+          ref={mapRef}
+          reuseMaps
+          mapStyle={mapStyle}
+          // 3D: open pitched and let the user tilt/rotate. dragRotate +
+          // pitchWithRotate make it a true 3D-navigable map, not a flat raster.
+          initialViewState={{
+            // MapLibre uses [lng, lat]; our coords are stored [lat, lng].
+            longitude: fleetCenter[1],
+            latitude: fleetCenter[0],
+            zoom: 3.5,
+            pitch: 55,
+            bearing: -17,
+          }}
+          minZoom={2}
+          maxPitch={75}
+          dragRotate
+          pitchWithRotate
+          attributionControl={{ compact: true }}
+          style={{ width: "100%", height: "100%" }}
+        >
+          <NavigationControl
+            position="bottom-right"
+            showCompass
+            visualizePitch
+          />
 
-        {markers.map((m) => (
-          <Marker key={m.name} position={m.position} icon={buildIcon(m.status)}>
-            <Popup className="gt-popup">
-              <span className="block text-sm font-semibold">{m.name}</span>
+          {markers.map((m) => (
+            <Marker
+              key={m.name}
+              longitude={m.position[1]}
+              latitude={m.position[0]}
+              anchor="center"
+              onClick={(e) => {
+                // Keep the click from falling through to the map (which would
+                // close the popup we are about to open).
+                e.originalEvent.stopPropagation();
+                setActive(m);
+              }}
+            >
+              <span className="gt-marker" role="button" aria-label={m.name}>
+                <span className="gt-marker__halo" data-status={m.status} />
+                <span className="gt-marker__pin" data-status={m.status} />
+              </span>
+            </Marker>
+          ))}
+
+          {active && (
+            <Popup
+              longitude={active.position[1]}
+              latitude={active.position[0]}
+              anchor="bottom"
+              offset={16}
+              closeButton={false}
+              onClose={() => setActive(null)}
+              className="gt-popup"
+            >
+              <span className="block text-sm font-semibold">{active.name}</span>
               <span className="mt-0.5 block text-xs opacity-70">
-                {m.location}
+                {active.location}
               </span>
               <span className="mt-2 flex items-center gap-1.5 text-xs">
                 <span
                   className="h-1.5 w-1.5 shrink-0 rounded-full"
                   style={{
-                    background: m.running
+                    background: active.running
                       ? "var(--success)"
                       : "var(--muted-foreground)",
                   }}
                 />
-                {m.running ? "Running" : "Stopped"} ·{" "}
-                {m.online ? "Online" : "Offline"}
+                {active.running ? "Running" : "Stopped"} ·{" "}
+                {active.online ? "Online" : "Offline"}
               </span>
             </Popup>
-          </Marker>
-        ))}
-      </MapContainer>
+          )}
+        </MapGL>
+      </div>
 
       <style jsx global>{`
+        /* The marker element is placed by MapLibre (translate on the wrapping
+           .maplibregl-marker); we only lay out the pin/halo inside a fixed
+           34×34 box so they stay glued to the anchor through pan/zoom/pitch. */
         .gt-marker {
           position: relative;
-          display: grid;
-          place-items: center;
+          display: block;
+          width: 34px;
+          height: 34px;
         }
         .gt-marker__pin {
-          position: relative;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
           z-index: 2;
           display: grid;
           place-items: center;
           width: 26px;
           height: 26px;
           border-radius: 9999px;
-          font: 600 11px/1 var(--font-geist-sans), system-ui, sans-serif;
           color: #fff;
           border: 2px solid rgba(255, 255, 255, 0.9);
           box-shadow: 0 2px 8px rgb(0 0 0 / 0.35);
@@ -263,7 +347,11 @@ export default function MapView() {
         }
         .gt-marker__halo {
           position: absolute;
-          inset: -6px;
+          top: 50%;
+          left: 50%;
+          width: 34px;
+          height: 34px;
+          transform: translate(-50%, -50%);
           border-radius: 9999px;
           opacity: 0.35;
         }
@@ -279,42 +367,49 @@ export default function MapView() {
         }
         @keyframes gtPing {
           0% {
-            transform: scale(0.85);
+            transform: translate(-50%, -50%) scale(0.85);
             opacity: 0.45;
           }
           70%,
           100% {
-            transform: scale(1.7);
+            transform: translate(-50%, -50%) scale(1.7);
             opacity: 0;
           }
         }
-        /* Match Leaflet chrome to the app theme */
-        .leaflet-container {
+        /* Match MapLibre chrome to the app theme */
+        .maplibregl-map {
           background: var(--muted);
           font-family: var(--font-geist-sans), system-ui, sans-serif;
         }
-        .leaflet-popup-content-wrapper,
-        .leaflet-popup-tip {
+        .maplibregl-popup-content {
           background: var(--popover);
           color: var(--popover-foreground);
           border-radius: var(--radius);
           box-shadow: var(--shadow-lg);
+          padding: 0.75rem 0.9rem;
         }
-        .leaflet-popup-content {
-          margin: 0.75rem 0.9rem;
+        .maplibregl-popup-anchor-bottom .maplibregl-popup-tip {
+          border-top-color: var(--popover);
         }
-        .leaflet-bar a,
-        .leaflet-bar a:hover {
+        .maplibregl-popup-anchor-top .maplibregl-popup-tip {
+          border-bottom-color: var(--popover);
+        }
+        .maplibregl-ctrl-group {
           background: var(--card);
-          color: var(--foreground);
-          border-color: var(--border);
+          border: 1px solid var(--border);
         }
-        .leaflet-control-attribution {
+        .maplibregl-ctrl-group button + button {
+          border-top: 1px solid var(--border);
+        }
+        .maplibregl-ctrl-group button span {
+          filter: var(--maplibre-ctrl-filter, none);
+        }
+        .maplibregl-ctrl-attrib {
           background: color-mix(in oklch, var(--background) 75%, transparent);
           color: var(--muted-foreground);
           font-size: 10px;
         }
-        .leaflet-control-attribution a {
+        .maplibregl-ctrl-attrib a {
           color: var(--primary);
         }
         @media (prefers-reduced-motion: reduce) {

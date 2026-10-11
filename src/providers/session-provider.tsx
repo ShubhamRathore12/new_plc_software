@@ -38,6 +38,15 @@ export const CHANGE_PASSWORD_ROUTE = "/profile/change-password";
 
 export function isPublicRoute(pathname: string): boolean {
   if (pathname === "/") return true;
+  // Playwright harness (/test-harness/*) renders without a session, but only
+  // off production — the harness page itself returns null in prod, so this
+  // never widens the real auth surface.
+  if (
+    process.env.NODE_ENV !== "production" &&
+    (pathname === "/test-harness" || pathname.startsWith("/test-harness/"))
+  ) {
+    return true;
+  }
   return PUBLIC_PREFIXES.some(
     (p) => pathname === p || pathname.startsWith(`${p}/`)
   );

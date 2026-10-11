@@ -1,5 +1,8 @@
 "use client";
 
+import Gtpl141Controls from "@/components/gtpl141/Gtpl141Controls";
+import { isGtpl141 } from "@/lib/gtpl141Control";
+
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -1366,6 +1369,14 @@ export default function AutoPage() {
                 valves={valveRows}
                 t={t}
               />
+
+              {isGtpl141(auto) && (
+                <Gtpl141Controls
+                  title="Auto controls (GTPL-141)"
+                  pulses={["auto"]}
+                  settings={["Auto_EN", "Auto_aeration_enable", "Delta_T", "T1_ref_from_T0", "HP_set_from_HMI"]}
+                />
+              )}
 
               {auto === "Gtpl-S7-1200-02" && (
                 <div className="surface flex items-center justify-between gap-3 px-4 py-3.5">

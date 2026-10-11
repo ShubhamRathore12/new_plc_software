@@ -1,5 +1,8 @@
 "use client";
 
+import Gtpl141Controls from "@/components/gtpl141/Gtpl141Controls";
+import { isGtpl141 } from "@/lib/gtpl141Control";
+
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -313,7 +316,7 @@ export default function AerationWithoutHeatingPage() {
                   </div>
 
                   <div className="flex flex-col justify-end gap-3">
-                    {isRunning ? (
+                    {!isGtpl141(devices) && (isRunning ? (
                       <Button
                         variant="destructive"
                         className="h-11 w-full gap-2 text-sm font-semibold"
@@ -332,9 +335,9 @@ export default function AerationWithoutHeatingPage() {
                         <Play className="h-4 w-4" aria-hidden="true" />
                         {t("aeration_start")}
                       </Button>
-                    )}
+                    ))}
 
-                    {!startAllowed && (
+                    {!startAllowed && !isGtpl141(devices) && (
                       <p
                         id="aeration-start-hint"
                         className="text-muted-foreground text-xs"
@@ -355,6 +358,11 @@ export default function AerationWithoutHeatingPage() {
                 </div>
               </div>
             </AnimatedContainer>
+            {isGtpl141(devices) && (
+              <AnimatedContainer delay={3}>
+                <Gtpl141Controls title="Aeration without heating (GTPL-141)" pulses={["woh"]} settings={["Set_Run_Duration", "Continuous_mode", "Duration_set_aeration"]} />
+              </AnimatedContainer>
+            )}
           </div>
         </main>
       </div>

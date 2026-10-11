@@ -417,10 +417,23 @@ export function extractTagDataFromRecords(
   machineName: string
 ): TagData[] {
   if (!Array.isArray(dataArray) || dataArray.length === 0) return [];
-  
-  // Use fault columns from the machine configuration (from database schema)
-  const faultColumns = getActiveFaultColumns(machineName);
-  const tags = faultColumns.length > 0 ? faultColumns : getTagsForMachine(machineName);
+
+  // Column resolution order matters. The DB schema (getFaultColumnsFromSchema)
+  // is keyed to the real table layout, so its names actually match the record
+  // keys. The config's activeFaultColumns are generic per-model labels that for
+  // several families (e.g. 650T: "High_pressure_fault" vs the real
+  // "High_pressure_fault_I1_3") have ZERO overlap with the stored columns —
+  // matching against those alone returned nothing, which is why the alarm
+  // history looked empty. Prefer the schema; fall back to config, then the
+  // static per-machine tag list.
+  const schemaColumns = getFaultColumnsFromSchema(machineName);
+  const configColumns = getActiveFaultColumns(machineName);
+  const tags =
+    schemaColumns && schemaColumns.length > 0
+      ? schemaColumns
+      : configColumns.length > 0
+        ? configColumns
+        : getTagsForMachine(machineName);
   
   const tagData: TagData[] = [];
 

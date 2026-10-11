@@ -836,3 +836,18 @@ export const MACHINE_NAME_ALIASES: Record<string, string> = {
   "GTPL-157": "GTPL-157-gT-450T-S7-1200",
   // "GPL-132":'GTPL-132-300-AP-S7-1200'
 };
+
+/**
+ * Resolve the backend data table for a machine, applying the same alias map
+ * and the GTPL-030 → GTPL_114 table override the Next.js route used. Returns
+ * null for an unknown machine so callers can surface an error instead of
+ * querying a wrong/empty table. Shared so the alarm-history view can hit the
+ * primeosys backend directly rather than going through the local API route.
+ */
+export function resolveFaultTable(machineName: string): string | null {
+  const raw = (machineName ?? "").trim();
+  const resolved = MACHINE_NAME_ALIASES[raw] || raw;
+  const config = MACHINE_CONFIG[resolved as keyof typeof MACHINE_CONFIG];
+  if (!config) return null;
+  return config.table;
+}

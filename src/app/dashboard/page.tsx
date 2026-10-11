@@ -9,11 +9,11 @@ import { ALL_DEVICES } from "@/lib/devices";
 // Dynamically imported: leaflet and these panels are browser-only
 const MapView = dynamic(() => import("@/components/layout/mapview"), {
   ssr: false,
-  loading: () => <div className="skeleton h-[22rem] w-full md:h-[30rem]" />,
+  loading: () => <div className="skeleton h-[22rem] w-full md:h-[30rem] xl:h-full" />,
 });
 const ActivityPanel = dynamic(
   () => import("@/components/layout/activity-panel"),
-  { ssr: false, loading: () => <div className="skeleton h-96 w-full" /> }
+  { ssr: false, loading: () => <div className="skeleton h-96 w-full xl:h-full" /> }
 );
 
 type Tone = "primary" | "success" | "warning" | "muted";
@@ -105,12 +105,12 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Map + activity */}
-      <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
-        <div className="animate-fade-in">
+      {/* Map + activity — both cards share one height on xl screens */}
+      <div className="grid grid-cols-1 gap-5 xl:h-[32rem] xl:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)]">
+        <div className="animate-fade-in min-h-0">
           <MapView />
         </div>
-        <div className="animate-fade-in">
+        <div className="animate-fade-in min-h-0">
           <ActivityPanel />
         </div>
       </div>

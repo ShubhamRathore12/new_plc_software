@@ -1,5 +1,8 @@
 "use client";
 
+import Gtpl141Controls from "@/components/gtpl141/Gtpl141Controls";
+import { isGtpl141 } from "@/lib/gtpl141Control";
+
 import React, { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
@@ -354,7 +357,7 @@ export default function AerationWithHeatingPage() {
                   </div>
 
                   <div className="flex flex-col justify-end gap-3">
-                    {!isRunning ? (
+                    {!isGtpl141(devices) && (!isRunning ? (
                       <Button
                         className="sheen h-11 w-full gap-2 text-sm font-semibold"
                         disabled={!startAllowed}
@@ -373,9 +376,9 @@ export default function AerationWithHeatingPage() {
                         <Square className="h-4 w-4" aria-hidden="true" />
                         {t("Stop")}
                       </Button>
-                    )}
+                    ))}
 
-                    {!startAllowed && !isRunning && (
+                    {!startAllowed && !isRunning && !isGtpl141(devices) && (
                       <p
                         id="aeration-start-hint"
                         className="text-muted-foreground text-xs"
@@ -396,6 +399,11 @@ export default function AerationWithHeatingPage() {
                 </div>
               </div>
             </AnimatedContainer>
+            {isGtpl141(devices) && (
+              <AnimatedContainer delay={3}>
+                <Gtpl141Controls title="Aeration with heating (GTPL-141)" pulses={["wh"]} settings={["Set_TH_for_heating_mode", "Set_Run_Duration", "Continuous_mode", "Duration_set_aeration"]} />
+              </AnimatedContainer>
+            )}
           </div>
         </main>
       </div>

@@ -23,7 +23,7 @@ export default function TagDataTable({ tagData }: { tagData: TagData[] }) {
     <ScrollArea className="h-[500px] pr-4 w-full">
       <Table className="w-full">
         <TableHeader>
-          <TableRow className="bg-slate-50">
+          <TableRow className="bg-muted/50">
             <TableHead className="text-left">Fault Column</TableHead>
             <TableHead className="w-32 text-center">Status</TableHead>
             <TableHead className="w-24 text-center">Value</TableHead>
@@ -49,7 +49,7 @@ export default function TagDataTable({ tagData }: { tagData: TagData[] }) {
             tagData.map((row, idx) => (
               <TableRow
                 key={`${row.tag}-${row.createdAt}-${idx}`}
-                className="border-b hover:bg-red-50 transition-colors"
+                className="border-b hover:bg-destructive/10 transition-colors"
               >
                 <TableCell className="font-mono text-sm font-semibold">
                   <div className="flex items-center gap-2">
@@ -58,12 +58,12 @@ export default function TagDataTable({ tagData }: { tagData: TagData[] }) {
                   </div>
                 </TableCell>
                 <TableCell className="text-center">
-                  <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700 dark:bg-red-500/15 dark:text-red-400">
                     <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
                     ACTIVE ALARM
                   </span>
                 </TableCell>
-                <TableCell className="text-center font-bold text-red-600">
+                <TableCell className="text-center font-bold text-red-600 dark:text-red-400">
                   {String(row.value).toUpperCase()}
                 </TableCell>
                 <TableCell className="text-right text-sm text-muted-foreground">

@@ -214,7 +214,7 @@ export default function ActivityPanel() {
       </div>
 
       {/* List */}
-      <div className="max-h-[26rem] flex-1 overflow-y-auto p-2">
+      <div className="max-h-[26rem] min-h-0 flex-1 overflow-y-auto p-2 xl:max-h-none">
         {rows.length > 0 ? (
           <ul className="space-y-1">
             {rows.map((device: any, index: number) => (

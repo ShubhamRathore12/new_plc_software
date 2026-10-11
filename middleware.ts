@@ -26,6 +26,10 @@ const PUBLIC_ROUTES = [
   "/api/logout",
   "/api/session",
   "/api/register",
+  // Playwright harness. The page itself refuses to render in production
+  // (see src/app/test-harness/alarm-history/page.tsx), so leaving it unguarded
+  // only exposes an empty page off-prod and keeps e2e runs from hitting /login.
+  "/test-harness",
 ];
 
 /** Paths that are never guarded (static assets, framework internals). */

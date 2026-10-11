@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
-import { siteApi } from "@/lib/apiClient";
+import { api } from "@/lib/apiClient";
+import { resolveFaultTable } from "@/lib/machineConfig";
 
 import LanguageSelector from "@/components/faultLogs/LanguageSelector";
 import SearchBar from "@/components/faultLogs/SearchBar";
@@ -61,23 +62,23 @@ export default function FaultLogsPaginated({ machineName }: Props) {
     totalPages: 0,
   });
 
-  const fetchLogs = async (pageNum: number, search = "") => {
+  const fetchLogs = async (
+    pageNum: number,
+    search = "",
+    signal?: AbortSignal
+  ) => {
     setPhase("loading");
     setError(null);
 
     try {
-      // Calculate 2-month date range (60 days ago to today)
-      const today = new Date();
-      const twoMonthsAgo = new Date(today);
-      twoMonthsAgo.setDate(twoMonthsAgo.getDate() - 60);
-
-      // Format dates as YYYY-MM-DD
-      const formatDate = (date: Date) => {
-        return date.toISOString().split('T')[0];
-      };
-
-      const fromDate = formatDate(twoMonthsAgo);
-      const toDate = formatDate(today);
+      // Alarm history is read straight from the primeosys backend now, not the
+      // local /api/getActiveFaults proxy. The data table is resolved from the
+      // same server-side config the proxy used, so an unknown machine fails
+      // loudly instead of silently querying nothing.
+      const table = resolveFaultTable(machineName);
+      if (!table) {
+        throw new Error(`No data table configured for ${machineName}`);
+      }
 
       // We need enough true-like tag entries to cover the requested page of tag results.
       // Accumulate tag entries across API pages until we have enough to slice the requested page.
@@ -97,20 +98,14 @@ export default function FaultLogsPaginated({ machineName }: Props) {
 
       // Walk API pages until we have enough entries or the API has no next page.
       for (let apiPage = 1; apiPage <= Math.min(totalPages, MAX_API_PAGES); apiPage++) {
-        const url = new URL("/api/getActiveFaults", window.location.origin);
-        url.searchParams.append("machineName", machineName);
-        url.searchParams.append("page", apiPage.toString());
-        url.searchParams.append("limit", FETCH_LIMIT.toString());
-        url.searchParams.append("fromDate", fromDate);
-        url.searchParams.append("toDate", toDate);
-        if (machineName === "GTPL-030-gT-180E-S7-1200") {
-          url.searchParams.append("tableName", "GTPL_114_GT_140E_S7_1200");
-        }
-        if (search && search.trim()) {
-          url.searchParams.append("search", search.trim());
-        }
+        // primeosys backend endpoint: paginated raw records for the table.
+        const path =
+          `/api/all700data/paginatedSmart200` +
+          `?table=${encodeURIComponent(table)}` +
+          `&page=${apiPage}` +
+          `&limit=${FETCH_LIMIT}`;
 
-        const res = await siteApi(url.toString());
+        const res = await api(path, { signal });
         if (!res.ok)
           throw new Error(`API Error: ${res.status} - ${await res.text()}`);
         const result = await res.json();
@@ -159,6 +154,9 @@ export default function FaultLogsPaginated({ machineName }: Props) {
         page: emptyResult ? 0 : safePage,
       });
     } catch (err: any) {
+      // A superseded/unmounted fetch aborts itself; that is not a load failure,
+      // so leave the current state alone and let the live request win.
+      if (err?.name === "AbortError" || signal?.aborted) return;
       console.error("Fetch error:", err);
       setPhase("error");
       setError(`Failed to fetch logs: ${err.message}`);
@@ -179,18 +177,30 @@ export default function FaultLogsPaginated({ machineName }: Props) {
       });
     } finally {
       // `phase` is only moved to "ready" on the success path; an error leaves
-      // it at "error" so counters are never rendered from a failed load.
-      setPhase((prev) => (prev === "error" ? prev : "ready"));
+      // it at "error" so counters are never rendered from a failed load. An
+      // aborted request must not flip to "ready" either — the superseding
+      // fetch owns the phase now.
+      if (!signal?.aborted) {
+        setPhase((prev) => (prev === "error" ? prev : "ready"));
+      }
     }
   };
 
   useEffect(() => {
-    fetchLogs(currentPage, debouncedSearch);
+    // One controller per effect run. React StrictMode (dev) mounts effects
+    // twice; aborting on cleanup cancels the throwaway first request so the
+    // backend is hit once, not twice, and a stale response can't overwrite a
+    // newer one.
+    const controller = new AbortController();
+    fetchLogs(currentPage, debouncedSearch, controller.signal);
     const intervalId = setInterval(
-      () => fetchLogs(currentPage, debouncedSearch),
+      () => fetchLogs(currentPage, debouncedSearch, controller.signal),
       60 * 1000
     );
-    return () => clearInterval(intervalId);
+    return () => {
+      controller.abort();
+      clearInterval(intervalId);
+    };
   }, [currentPage, machineName, debouncedSearch]);
 
   // Recompute page slice client-side when page changes without waiting for API
@@ -225,8 +235,8 @@ export default function FaultLogsPaginated({ machineName }: Props) {
 
   return (
     <div className="w-full max-w-7xl mx-auto p-6">
-      <div className="bg-white rounded-lg shadow-lg">
-        <div className="p-6 border-b border-gray-200">
+      <div className="bg-card text-card-foreground rounded-lg shadow-lg">
+        <div className="p-6 border-b border-border">
           {/* Counters are shown only once the load has resolved — a total of
               zero must never be rendered while the answer is still unknown. */}
           {phase === "ready" && <StatisticsCards stats={stats} />}
@@ -240,7 +250,7 @@ export default function FaultLogsPaginated({ machineName }: Props) {
           {phase === "error" && error && (
             <div
               role="alert"
-              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm"
+              className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-md text-destructive text-sm"
             >
               {error}
             </div>
@@ -253,12 +263,12 @@ export default function FaultLogsPaginated({ machineName }: Props) {
 
         <div className="p-6">
           <div className="mb-4">
-            <h3 className="text-lg font-semibold text-gray-700">
+            <h3 className="text-lg font-semibold text-foreground">
               {phase === "ready"
                 ? `Tag data — ${stats.currentPage} of ${stats.totalPages} page(s), ${stats.total} entr${stats.total === 1 ? "y" : "ies"}`
                 : "Tag data"}
             </h3>
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-muted-foreground">
               Filtered by: <strong>{debouncedSearch || "None"}</strong>
             </p>
           </div>
@@ -267,16 +277,16 @@ export default function FaultLogsPaginated({ machineName }: Props) {
           {phase === "loading" ? (
             <LoadingIndicator />
           ) : phase === "error" ? (
-            <div className="border border-gray-200 rounded-lg p-8 text-center text-sm text-gray-500">
+            <div className="border border-border rounded-lg p-8 text-center text-sm text-muted-foreground">
               The alarm history could not be loaded.
             </div>
           ) : isEmpty ? (
-            <div className="border border-gray-200 rounded-lg p-8 text-center text-sm text-gray-500">
+            <div className="border border-border rounded-lg p-8 text-center text-sm text-muted-foreground">
               No alarms recorded in the selected period.
             </div>
           ) : (
             <>
-              <div className="border border-gray-200 rounded-lg">
+              <div className="border border-border rounded-lg">
                 <TagDataTable tagData={tagData} />
               </div>
               {paginationInfo.totalPages > 1 && (
