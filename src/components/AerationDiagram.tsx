@@ -474,12 +474,15 @@ function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean
   const stop = heated ? "Aeration_stop_with_WH" : "Aeration_stop_with_WOH";
   const group = heated ? "Aeration with heating" : "Aeration without heating";
   return (
-    <div className="absolute z-10 flex flex-col gap-2" style={{ left: 940, top: 40 }}>
-      <div className="text-sm font-bold text-gray-800">Set points</div>
+    // Sits in the free band above the silo (silo top is at y≈150; tower lamp
+    // ends near x=800, exhaust stack starts at x=1330).
+    <div className="absolute z-10 flex w-[490px] flex-col gap-1.5" style={{ left: 830, top: 10 }}>
+      <div className="text-xs font-bold text-gray-800">Set points</div>
+      <div className="flex flex-wrap gap-1.5">
       {rows.map((r) => (
         <div
           key={r.tag}
-          className="flex min-w-[210px] items-center justify-between gap-2 rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm"
+          className="flex items-center gap-1.5 rounded border border-gray-300 bg-white px-2 py-1 text-xs font-bold text-gray-900 shadow-sm"
         >
           <span>
             {r.label} = {r.text}
@@ -489,24 +492,25 @@ function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean
             aria-label={`Edit ${r.label}`}
             title={`Edit ${r.label}`}
             onClick={() => requestGtpl141Edit(r.tag)}
-            className="rounded border border-gray-300 p-1 text-gray-600 hover:bg-gray-100"
+            className="rounded border border-gray-300 p-0.5 text-gray-600 hover:bg-gray-100"
           >
             <Pencil className="h-3.5 w-3.5" />
           </button>
         </div>
       ))}
-      <div className="mt-1 flex gap-2 [&>button]:flex-1">
+      </div>
+      <div className="flex gap-2">
         <button
           type="button"
           onClick={() => requestGtpl141Pulse(start, `${group}: Start`)}
-          className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-green-700"
+          className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-4 py-1 text-xs font-bold text-white shadow-sm hover:bg-green-700"
         >
           <Play className="h-3.5 w-3.5" /> Start
         </button>
         <button
           type="button"
           onClick={() => requestGtpl141Pulse(stop, `${group}: Stop`)}
-          className="flex items-center justify-center gap-1.5 rounded bg-red-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-red-700"
+          className="flex items-center justify-center gap-1.5 rounded bg-red-600 px-4 py-1 text-xs font-bold text-white shadow-sm hover:bg-red-700"
         >
           <Square className="h-3.5 w-3.5" /> Stop
         </button>

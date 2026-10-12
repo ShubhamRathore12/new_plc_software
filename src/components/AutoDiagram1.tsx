@@ -1,5 +1,5 @@
 import { Pencil, Play, Square } from "lucide-react";
-import { isGtpl141, requestGtpl141Edit, telemetryValue } from "@/lib/gtpl141Control";
+import { isGtpl141, requestGtpl141Edit, requestGtpl141Pulse, telemetryValue } from "@/lib/gtpl141Control";
 // import Image from "next/image";
 // import Fan1200 from "../../public/images/fan.jpg";
 // import Fan from "../../public/images/fan.png";
@@ -1991,6 +1991,29 @@ export default function AutoDiagram1({
         </div>
         {/* GTPL-141: Auto EN / Auto aeration enable Start/Stop below the silo */}
         {isG141 && <Gtpl141SiloControls data={data} />}
+        {/* GTPL-141: Auto Start/Stop above the silo */}
+        {isG141 && (
+          <div
+            className="absolute z-10 flex items-center gap-1.5 rounded-md border border-gray-200 bg-gray-50 p-1.5"
+            style={{ left: 40, top: 280 }}
+          >
+            <span className="px-1 text-xs font-bold text-gray-800">Auto</span>
+            <button
+              type="button"
+              className="flex items-center gap-1 rounded bg-green-600 px-2.5 py-1 text-xs font-bold text-white shadow-sm hover:bg-green-700"
+              onClick={() => requestGtpl141Pulse("Auto_start", "Auto: Start")}
+            >
+              <Play className="h-3 w-3" /> Start
+            </button>
+            <button
+              type="button"
+              className="flex items-center gap-1 rounded bg-red-600 px-2.5 py-1 text-xs font-bold text-white shadow-sm hover:bg-red-700"
+              onClick={() => requestGtpl141Pulse("Auto_stop", "Auto: Stop")}
+            >
+              <Square className="h-3 w-3" /> Stop
+            </button>
+          </div>
+        )}
         {/* Silo static pressure (GTPL-156/157 HMI shows this above the silo) */}
         {isSiloPressureMachine && (
           <div
