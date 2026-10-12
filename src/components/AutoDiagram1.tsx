@@ -2114,7 +2114,8 @@ export default function AutoDiagram1({
         {/* ---------- Legend (bottom, per reference image) ---------- */}
         <div
           className="absolute z-10 flex gap-10 text-sm font-bold text-gray-900"
-          style={{ left: 280, top: 645 }}
+          // GTPL-141 keeps the left side free for its controls below the silo.
+          style={{ left: isG141 ? 820 : 280, top: 645 }}
         >
           <div className="space-y-1">
             <div>T2 = Ambient Air Temperature</div>
@@ -2318,17 +2319,6 @@ function Gtpl141SiloControls({ data }: { data: any }) {
                 onClick={() => requestGtpl141Edit(r.tag, true)}
               >
                 <Play className="h-3 w-3" /> {r.startLabel}
-              </button>
-              <button
-                type="button"
-                className={`${btn} ${
-                  on === false
-                    ? "bg-red-600 text-white ring-2 ring-red-300"
-                    : "border border-red-600 bg-white text-red-700 hover:bg-red-50"
-                }`}
-                onClick={() => requestGtpl141Edit(r.tag, false)}
-              >
-                <Square className="h-3 w-3" /> Stop
               </button>
             </div>
           </div>
