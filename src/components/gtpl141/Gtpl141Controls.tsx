@@ -227,7 +227,7 @@ export default function Gtpl141Controls({
 
   const editMeta = edit ? GTPL141_SETTINGS[edit.tag] : null;
   const editParsed = edit && editMeta ? parseDraft(editMeta.kind, edit.draft) : null;
-  const openEdit = (tag: string) => {
+  const openEdit = (tag: string, preset?: unknown) => {
     const meta = GTPL141_SETTINGS[tag];
     const actual = actualValue(tag);
     if (!meta || !settings.includes(tag)) return;
@@ -239,14 +239,21 @@ export default function Gtpl141Controls({
       setMessage({ tone: "err", text: `${meta.label}: no actual PLC value yet, cannot edit.` });
       return;
     }
-    setEdit({ tag, expected: actual, draft: meta.kind === "BOOL" ? "" : String(actual) });
+    // A preset (e.g. a diagram ON/OFF button) only pre-fills the dialog; the
+    // operator still has to confirm.
+    const draft =
+      preset !== undefined ? String(preset) : meta.kind === "BOOL" ? "" : String(actual);
+    setEdit({ tag, expected: actual, draft });
   };
   const pulsesRef = useRef(pulses);
   pulsesRef.current = pulses;
   const openEditRef = useRef(openEdit);
   openEditRef.current = openEdit;
   useEffect(() => {
-    const onEdit = (e: Event) => openEditRef.current((e as CustomEvent<{ tag: string }>).detail.tag);
+    const onEdit = (e: Event) => {
+      const { tag, value } = (e as CustomEvent<{ tag: string; value?: unknown }>).detail;
+      openEditRef.current(tag, value);
+    };
     const onPulse = (e: Event) => {
       const { tag, label } = (e as CustomEvent<{ tag: string; label: string }>).detail;
       const allowed = pulsesRef.current.some(

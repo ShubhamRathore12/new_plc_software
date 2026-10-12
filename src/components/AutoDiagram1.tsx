@@ -1,5 +1,5 @@
 import { Pencil, Play, Square } from "lucide-react";
-import { isGtpl141, requestGtpl141Edit, requestGtpl141Pulse } from "@/lib/gtpl141Control";
+import { isGtpl141, requestGtpl141Edit, telemetryValue } from "@/lib/gtpl141Control";
 // import Image from "next/image";
 // import Fan1200 from "../../public/images/fan.jpg";
 // import Fan from "../../public/images/fan.png";
@@ -1946,24 +1946,6 @@ export default function AutoDiagram1({
                 )}
               </div>
             ))}
-            {isG141 && (
-              <div className="mt-1 flex gap-2 [&>button]:flex-1">
-                <button
-                  type="button"
-                  onClick={() => requestGtpl141Pulse("Auto_start", "Auto: Start")}
-                  className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-green-700"
-                >
-                  <Play className="h-3.5 w-3.5" /> Start
-                </button>
-                <button
-                  type="button"
-                  onClick={() => requestGtpl141Pulse("Auto_stop", "Auto: Stop")}
-                  className="flex items-center justify-center gap-1.5 rounded bg-red-600 px-3 py-1.5 text-sm font-bold text-white shadow-sm hover:bg-red-700"
-                >
-                  <Square className="h-3.5 w-3.5" /> Stop
-                </button>
-              </div>
-            )}
           </div>
         </div>
 
@@ -2007,6 +1989,8 @@ export default function AutoDiagram1({
         >
           SILO
         </div>
+        {/* GTPL-141: Auto EN / Auto aeration enable Start/Stop below the silo */}
+        {isG141 && <Gtpl141SiloControls data={data} />}
         {/* Silo static pressure (GTPL-156/157 HMI shows this above the silo) */}
         {isSiloPressureMachine && (
           <div
@@ -2272,6 +2256,61 @@ export default function AutoDiagram1({
         )}
 
       </div>
+    </div>
+  );
+}
+
+/** GTPL-141 only. Every button opens the controls panel's confirm dialog. */
+function Gtpl141SiloControls({ data }: { data: any }) {
+  const btn =
+    "flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-bold shadow-sm";
+  const settingRows = [
+    { tag: "Auto_EN", label: "Auto EN" },
+    { tag: "Auto_aeration_enable", label: "Auto aeration" },
+  ];
+  return (
+    <div
+      className="absolute z-10 flex w-[255px] flex-col gap-1.5 rounded-md border border-gray-200 bg-gray-50 p-2"
+      // Ends before the legend, which starts at left 280.
+      style={{ left: 15, top: 650 }}
+    >
+      {settingRows.map((r) => {
+        const on = telemetryValue(data, r.tag);
+        return (
+          <div key={r.tag} className="flex items-center justify-between gap-2">
+            <span className="text-xs font-bold text-gray-800">
+              {r.label}{" "}
+              <span className={on === true ? "text-green-700" : on === false ? "text-gray-500" : "text-gray-400"}>
+                ({on === null ? "--" : on ? "ON" : "OFF"})
+              </span>
+            </span>
+            <div className="flex gap-1.5">
+              <button
+                type="button"
+                className={`${btn} ${
+                  on === true
+                    ? "bg-green-600 text-white ring-2 ring-green-300"
+                    : "border border-green-600 bg-white text-green-700 hover:bg-green-50"
+                }`}
+                onClick={() => requestGtpl141Edit(r.tag, true)}
+              >
+                <Play className="h-3 w-3" /> Start
+              </button>
+              <button
+                type="button"
+                className={`${btn} ${
+                  on === false
+                    ? "bg-red-600 text-white ring-2 ring-red-300"
+                    : "border border-red-600 bg-white text-red-700 hover:bg-red-50"
+                }`}
+                onClick={() => requestGtpl141Edit(r.tag, false)}
+              >
+                <Square className="h-3 w-3" /> Stop
+              </button>
+            </div>
+          </div>
+        );
+      })}
     </div>
   );
 }

@@ -308,8 +308,8 @@ export function newRequestId(): string {
  * freshness checks.
  */
 export const GTPL141_EDIT_EVENT = "gtpl141:edit";
-export function requestGtpl141Edit(tag: string) {
-  window.dispatchEvent(new CustomEvent(GTPL141_EDIT_EVENT, { detail: { tag } }));
+export function requestGtpl141Edit(tag: string, value?: unknown) {
+  window.dispatchEvent(new CustomEvent(GTPL141_EDIT_EVENT, { detail: { tag, value } }));
 }
 
 export const GTPL141_PULSE_EVENT = "gtpl141:pulse";
