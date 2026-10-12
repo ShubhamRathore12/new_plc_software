@@ -2,9 +2,12 @@ This is a [Next.js](https://nextjs.org) project.
 
 ## AI Chat
 
-We added a fast, streaming AI chat at `/chat`. Type in any language; the assistant auto-detects your language and responds in the same language.
+We added a fast, streaming AI chat at `/chat`. Type in any language; the assistant auto-detects your language and responds in the 
+same language.
 
 ### Setup
+
+
 
 
 
