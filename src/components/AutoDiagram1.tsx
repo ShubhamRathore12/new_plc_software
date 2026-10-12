@@ -2288,26 +2288,26 @@ function Gtpl141SiloControls({ data }: { data: any }) {
   const btn =
     "flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-bold shadow-sm";
   const settingRows = [
-    { tag: "Auto_EN", label: "Auto EN" },
-    { tag: "Auto_aeration_enable", label: "Auto aeration" },
+    { tag: "Auto_EN", label: "Auto Enable", startLabel: "Auto Enable" },
+    { tag: "Auto_aeration_enable", label: "Auto Aeration", startLabel: "Start Auto Aeration" },
   ];
   return (
     <div
       className="absolute z-10 flex w-[255px] flex-col gap-1.5 rounded-md border border-gray-200 bg-gray-50 p-2"
       // Ends before the legend, which starts at left 280.
-      style={{ left: 15, top: 650 }}
+      style={{ left: 15, top: 642 }}
     >
       {settingRows.map((r) => {
         const on = telemetryValue(data, r.tag);
         return (
-          <div key={r.tag} className="flex items-center justify-between gap-2">
+          <div key={r.tag} className="flex flex-col gap-1">
             <span className="text-xs font-bold text-gray-800">
               {r.label}{" "}
               <span className={on === true ? "text-green-700" : on === false ? "text-gray-500" : "text-gray-400"}>
                 ({on === null ? "--" : on ? "ON" : "OFF"})
               </span>
             </span>
-            <div className="flex gap-1.5">
+            <div className="flex gap-1.5 [&>button]:flex-1">
               <button
                 type="button"
                 className={`${btn} ${
@@ -2317,7 +2317,7 @@ function Gtpl141SiloControls({ data }: { data: any }) {
                 }`}
                 onClick={() => requestGtpl141Edit(r.tag, true)}
               >
-                <Play className="h-3 w-3" /> Start
+                <Play className="h-3 w-3" /> {r.startLabel}
               </button>
               <button
                 type="button"
