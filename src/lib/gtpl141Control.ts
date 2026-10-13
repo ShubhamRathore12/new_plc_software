@@ -318,3 +318,27 @@ export function requestGtpl141Pulse(tag: string, label: string) {
   window.dispatchEvent(new CustomEvent(GTPL141_PULSE_EVENT, { detail: { tag, label } }));
 }
 
+
+/**
+ * Snapshot the controls panel broadcasts so diagram buttons can show lock
+ * reasons and live command progress without polling the API a second time.
+ */
+export type Gtpl141PanelState = {
+  /** Global lock (offline, stale readback, busy gateway, API error…), or null. */
+  blocked: string | null;
+  /** Per-pulse-tag lock reason, or null when that button may be offered. */
+  pulseBlock: Record<string, string | null>;
+  /** Newest command per tag from upstream history. */
+  latestByTag: Record<string, Command>;
+  /** Tag whose submit HTTP call is in flight, or whose delivery is unresolved. */
+  sendingTag: string | null;
+};
+export const GTPL141_STATE_EVENT = "gtpl141:state";
+let lastPanelState: Gtpl141PanelState | null = null;
+export function publishGtpl141State(s: Gtpl141PanelState) {
+  lastPanelState = s;
+  window.dispatchEvent(new CustomEvent(GTPL141_STATE_EVENT, { detail: s }));
+}
+export function getGtpl141State() {
+  return lastPanelState;
+}

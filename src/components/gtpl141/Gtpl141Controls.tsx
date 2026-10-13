@@ -39,6 +39,7 @@ import {
   telemetryValue,
   GTPL141_EDIT_EVENT,
   GTPL141_PULSE_EVENT,
+  publishGtpl141State,
 } from "@/lib/gtpl141Control";
 
 const PENDING_KEY = "gtpl141.pendingIntent";
@@ -308,6 +309,23 @@ export default function Gtpl141Controls({
       cmdsQ.refresh();
     }
   };
+
+  // Share lock/progress with the diagram's Start/Stop buttons.
+  const allPulseTags = pulses.flatMap((g) => [
+    GTPL141_PULSE_GROUPS[g].start,
+    GTPL141_PULSE_GROUPS[g].stop,
+  ]);
+  const pulseBlockMap: Record<string, string | null> = {};
+  for (const t of allPulseTags) pulseBlockMap[t] = caps ? pulseBlockReason(caps, t) : null;
+  const latestByTag: Record<string, Command> = {};
+  // History is newest first, so the first hit per tag wins.
+  for (const c of commands ?? []) if (!latestByTag[c.tag]) latestByTag[c.tag] = c;
+  const sendingTag = submitting || pending ? (pending?.tag ?? null) : null;
+  const stateKey = JSON.stringify([blocked, pulseBlockMap, latestByTag, sendingTag]);
+  useEffect(() => {
+    publishGtpl141State({ blocked, pulseBlock: pulseBlockMap, latestByTag, sendingTag });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stateKey]);
 
   const rb = latest?.plc_readback;
 

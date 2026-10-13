@@ -1,12 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Pencil, Play, Square } from "lucide-react";
+import { Pencil } from "lucide-react";
+import Gtpl141PulseCard from "@/components/gtpl141/Gtpl141PulseCard";
 import { machineHasHeater, pickReading, readAeration } from "@/lib/aerationReadings";
 import {
   isGtpl141,
   requestGtpl141Edit,
-  requestGtpl141Pulse,
   telemetryValue,
 } from "@/lib/gtpl141Control";
 
@@ -35,7 +35,7 @@ const num = (value: any) => {
 
 // Fixed design canvas, scaled to whatever width the container offers.
 const DESIGN_W = 1500;
-const DESIGN_H = 640;
+const DESIGN_H = 720;
 
 export default function AerationDiagram({
   data,
@@ -97,56 +97,199 @@ export default function AerationDiagram({
     pick(data, ["YELLOW_LIGHT", "System_warning_Q1_0", "Collective_Trouble_Signal"])
   );
 
-  const lamp = (on: boolean, color: string) => (on ? color : "#d1d5db");
-
   // Air only moves through the duct while the blower turns.
   const flowing = blowerOn;
 
-  // ── duct routing: intake -> blower -> (heater) -> silo -> exhaust ───────
-  // The heater bank occupies x 620–760. When it isn't drawn, the duct runs
-  // straight from the blower to the silo instead of leaving an empty gap.
+  const fmtNum = (v: unknown) => {
+    const n = parseFloat(String(v));
+    return isNaN(n) ? "--" : String(Math.round(n * 10) / 10);
+  };
+  const spinDur = (pct: number) => {
+    const clamped = Math.min(Math.max(pct, 1), 100);
+    return `${(2 - (clamped / 100) * 1.6).toFixed(2)}s`;
+  };
+
+  // ── duct routing (same layout language as AutoDiagram1) ─────────────────
+  // ambient intake (right) -> blower -> up and over -> (heater) -> silo (left)
+  const HEATER_X = 530; // heater coil left edge; its nubs sit at x 560
   const PIPES = [
-    // ambient intake into blower
-    "M 120 300 L 300 300",
+    // ambient intake louvre into blower side
+    "M 1150 467 H 963",
     ...(heated
       ? [
-          // blower to heater bank
-          "M 430 300 L 620 300",
-          // heater to silo inlet
-          "M 760 300 L 1010 300",
+          // blower top outlet over to heater top
+          "M 848 380 V 252 H 560 V 278",
+          // heater bottom back to silo lower port
+          "M 560 563 V 572 H 280 V 508 H 223",
         ]
       : [
-          // blower straight to silo inlet
-          "M 430 300 L 1010 300",
+          // blower straight over to silo upper port
+          "M 848 380 V 252 H 310 L 268 470 H 223",
         ]),
-    // silo outlet back up to exhaust stack
-    "M 1240 300 L 1360 300 L 1360 140",
   ];
-  // Index of the first duct segment downstream of the heater (tinted when hot).
-  const heatedFromIndex = heated ? 2 : Infinity;
 
-  const Chip = ({
+  const SensorBadge = ({
     label,
     value,
-    tone = "default",
+    color,
+    bg,
+    border,
   }: {
     label: string;
     value: string;
-    tone?: "default" | "warm" | "cool";
+    color: string;
+    bg: string;
+    border: string;
   }) => (
     <div
-      className="rounded border bg-white px-3 py-1.5 shadow-sm"
-      style={{
-        borderColor:
-          tone === "warm" ? "#f0a68f" : tone === "cool" ? "#8ec5e8" : "#d1d5db",
-      }}
+      className="px-2.5 py-1 rounded text-sm font-bold whitespace-nowrap"
+      style={{ backgroundColor: bg, border: `1.5px dashed ${border}`, color }}
     >
-      <div className="text-[11px] font-semibold tracking-wide text-gray-500 uppercase">
-        {label}
-      </div>
-      <div className="text-sm font-bold text-gray-900 tabular-nums">{value}</div>
+      {label} :&nbsp;<span>{value}</span>
     </div>
   );
+
+  // Centrifugal blower, same drawing as AutoDiagram1.
+  const BlowerSVG = ({ spinning }: { spinning: boolean }) => (
+    <svg width="170" height="175" viewBox="0 0 170 175">
+      <defs>
+        <radialGradient id="aerBlwCasing" cx="38%" cy="34%" r="72%">
+          <stop offset="0%" stopColor="#eef0f3" />
+          <stop offset="60%" stopColor="#cfd4da" />
+          <stop offset="100%" stopColor="#9aa2ad" />
+        </radialGradient>
+        <radialGradient id="aerBlwInner" cx="45%" cy="42%" r="65%">
+          <stop offset="0%" stopColor="#f6f7f9" />
+          <stop offset="100%" stopColor="#d7dbe0" />
+        </radialGradient>
+      </defs>
+      <rect x="24" y="0" width="42" height="10" rx="2" fill="#b6bcc6" stroke="#9aa2ad" />
+      <rect x="33" y="8" width="24" height="46" fill="#cfd4da" stroke="#9aa2ad" />
+      <rect x="34" y="148" width="18" height="12" fill="#b6bcc6" stroke="#9aa2ad" />
+      <rect x="118" y="148" width="18" height="12" fill="#b6bcc6" stroke="#9aa2ad" />
+      <rect x="22" y="158" width="140" height="11" rx="2" fill="#8d99a6" />
+      <path
+        d="M 100 37 L 48 48 Q 30 52 30 68 L 30 126 Q 30 142 48 146 L 100 153 Z"
+        fill="url(#aerBlwCasing)"
+        stroke="#9aa2ad"
+        strokeWidth="2"
+      />
+      <circle cx="100" cy="95" r="58" fill="url(#aerBlwCasing)" stroke="#9aa2ad" strokeWidth="2.5" />
+      <circle cx="100" cy="95" r="44" fill="url(#aerBlwInner)" stroke="#b6bcc6" strokeWidth="1.5" />
+      <g
+        className="aer-spin"
+        style={{
+          transformOrigin: "100px 95px",
+          animation: spinning
+            ? `aerSpin ${spinDur(blowerPct > 0 ? blowerPct : 50)} linear infinite`
+            : "none",
+        }}
+      >
+        {[0, 45, 90, 135, 180, 225, 270, 315].map((a) => (
+          <path
+            key={a}
+            d="M100 95 Q 111 74 99 58 Q 85 73 93 91 Z"
+            fill={spinning ? "#3b5b8f" : "#5b6470"}
+            stroke="#454c56"
+            strokeWidth="0.8"
+            transform={`rotate(${a} 100 95)`}
+          />
+        ))}
+        <circle cx="100" cy="95" r="9" fill="#454c56" />
+        <circle cx="97" cy="92" r="2.5" fill="#b6bcc6" opacity="0.8" />
+      </g>
+    </svg>
+  );
+
+  // Duct heater coil, same drawing as AutoDiagram1; greyed out while off.
+  const HeaterCoilSVG = ({ w, h, on }: { w: number; h: number; on: boolean }) => {
+    const bars = 7;
+    const innerTop = 16;
+    const innerH = h - 32;
+    const step = innerH / bars;
+    const xl = 22;
+    const xr = w - 22;
+    const r = step / 2;
+    let d = `M ${xl} ${innerTop}`;
+    for (let i = 0; i < bars; i++) {
+      d +=
+        i % 2 === 0
+          ? ` H ${xr} A ${r} ${r} 0 0 1 ${xr} ${innerTop + (i + 1) * step}`
+          : ` H ${xl} A ${r} ${r} 0 0 0 ${xl} ${innerTop + (i + 1) * step}`;
+    }
+    d += bars % 2 === 0 ? ` H ${xr}` : ` H ${xl}`;
+    return (
+      <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
+        <defs>
+          <linearGradient id="aerHtrGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#fde047" />
+            <stop offset="45%" stopColor="#f97316" />
+            <stop offset="100%" stopColor="#dc2626" />
+          </linearGradient>
+        </defs>
+        <rect
+          x="2"
+          y="10"
+          width={w - 4}
+          height={h - 20}
+          fill="url(#aerHtrGrad)"
+          stroke="#111827"
+          strokeWidth="2.5"
+          style={{ filter: on ? "none" : "grayscale(0.85) brightness(1.1)" }}
+        />
+        <path
+          className="aer-glow"
+          d={d}
+          fill="none"
+          stroke="#6b7280"
+          strokeWidth="9"
+          strokeLinecap="round"
+          opacity="0.85"
+          style={{ animation: on ? "aerGlow 1.8s ease-in-out infinite" : "none" }}
+        />
+        <rect x={w / 2 - 4} y="0" width="8" height="11" fill="#374151" />
+        <rect x={w / 2 - 4} y={h - 11} width="8" height="11" fill="#374151" />
+      </svg>
+    );
+  };
+
+  // Corrugated flat-bottom grain silo, same drawing as AutoDiagram1.
+  const SiloSVG = () => (
+    <svg width="180" height="270" viewBox="0 0 180 270">
+      <defs>
+        <linearGradient id="aerSiloBody" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor="#9aa5b1" />
+          <stop offset="30%" stopColor="#e8ecf0" />
+          <stop offset="55%" stopColor="#f4f6f8" />
+          <stop offset="100%" stopColor="#8d99a6" />
+        </linearGradient>
+      </defs>
+      <polygon points="90,6 12,58 168,58" fill="#6b7280" stroke="#4b5563" strokeWidth="1.5" />
+      {[-64, -50, -36, -22, -10, 10, 22, 36, 50, 64].map((dx) => (
+        <line key={dx} x1="90" y1="8" x2={90 + dx} y2="57" stroke="#9ca3af" strokeWidth="0.8" opacity="0.8" />
+      ))}
+      <rect x="85" y="0" width="10" height="8" rx="1.5" fill="#d1d5db" stroke="#6b7280" strokeWidth="0.8" />
+      <rect x="20" y="58" width="140" height="190" fill="url(#aerSiloBody)" stroke="#6b7280" strokeWidth="1.8" />
+      {Array.from({ length: 23 }).map((_, i) => (
+        <line key={i} x1="20" y1={64 + i * 8} x2="160" y2={64 + i * 8} stroke="#8d99a6" strokeWidth="1" opacity="0.7" />
+      ))}
+      <rect x="158" y="134" width="20" height="13" rx="1.5" fill="#9ca3af" stroke="#6b7280" strokeWidth="1" />
+      <rect x="158" y="172" width="20" height="13" rx="1.5" fill="#9ca3af" stroke="#6b7280" strokeWidth="1" />
+      <rect x="14" y="246" width="152" height="6" rx="1" fill="#6b7280" />
+    </svg>
+  );
+
+  // Ambient air intake louvre.
+  const IntakeSVG = () => (
+    <svg width="70" height="120" viewBox="0 0 70 120">
+      <rect x="2" y="2" width="66" height="116" rx="4" fill="#eef2f6" stroke="#6b7280" strokeWidth="2" />
+      {[20, 38, 56, 74, 92].map((y) => (
+        <line key={y} x1="10" y1={y} x2="60" y2={y + 6} stroke="#9aa5b1" strokeWidth="4" strokeLinecap="round" />
+      ))}
+    </svg>
+  );
+
+  const g141 = isGtpl141(machineName);
 
   return (
     <div
@@ -172,7 +315,7 @@ export default function AerationDiagram({
           transformOrigin: "top left",
         }}
       >
-        {/* ---------- ducting behind everything ---------- */}
+        {/* ---------- ducting (behind everything) ---------- */}
         <svg
           className="absolute inset-0"
           width={DESIGN_W}
@@ -186,7 +329,7 @@ export default function AerationDiagram({
               className="aer-flow"
               d={d}
               fill="none"
-              stroke={heaterOn && i >= heatedFromIndex ? "#E8785F" : "#F19E8B"}
+              stroke={heaterOn && i === 2 ? "#E8785F" : "#F19E8B"}
               strokeWidth="3.5"
               strokeLinejoin="round"
               strokeLinecap="round"
@@ -194,131 +337,10 @@ export default function AerationDiagram({
               style={{ animation: flowing ? "aerFlow 1.2s linear infinite" : "none" }}
             />
           ))}
-
-          {/* flow direction arrows */}
-          {[
-            [250, 300],
-            [575, 300],
-            [950, 300],
-          ].map(([x, y]) => (
-            <path
-              key={`${x}-${y}`}
-              d={`M ${x} ${y - 7} L ${x + 12} ${y} L ${x} ${y + 7} Z`}
-              fill={flowing ? "#E8785F" : "#cbd5e1"}
-            />
-          ))}
-
-          {/* ---------- silo ---------- */}
-          <g>
-            <ellipse cx="1125" cy="185" rx="115" ry="34" fill="#cfd6dd" stroke="#6b7280" strokeWidth="2" />
-            <rect x="1010" y="185" width="230" height="230" fill="#dde3e9" stroke="#6b7280" strokeWidth="2" />
-            <ellipse cx="1125" cy="415" rx="115" ry="34" fill="#cfd6dd" stroke="#6b7280" strokeWidth="2" />
-            {/* grain fill */}
-            <path d="M 1010 250 L 1240 250 L 1240 415 A 115 34 0 0 1 1010 415 Z" fill="#e8c887" opacity="0.85" />
-            <ellipse cx="1125" cy="250" rx="115" ry="34" fill="#f0d59b" />
-            {/* corrugation */}
-            {[215, 245, 275, 305, 335, 365, 395].map((y) => (
-              <line key={y} x1="1010" y1={y} x2="1240" y2={y} stroke="#9aa5b1" strokeWidth="1" opacity="0.5" />
-            ))}
-            {/* legs */}
-            <rect x="1030" y="440" width="10" height="34" fill="#6b7280" />
-            <rect x="1210" y="440" width="10" height="34" fill="#6b7280" />
-            {/* inlet / outlet ports */}
-            <rect x="995" y="288" width="18" height="24" rx="2" fill="#9ca3af" stroke="#6b7280" strokeWidth="1" />
-            <rect x="1237" y="288" width="18" height="24" rx="2" fill="#9ca3af" stroke="#6b7280" strokeWidth="1" />
-          </g>
-
-          {/* ---------- exhaust stack ---------- */}
-          <g>
-            <rect x="1336" y="96" width="48" height="52" rx="4" fill="#cbd5e1" stroke="#6b7280" strokeWidth="2" />
-            <path d="M 1330 96 L 1390 96 L 1360 68 Z" fill="#9ca3af" stroke="#6b7280" strokeWidth="2" />
-            {flowing &&
-              [0, 1, 2].map((i) => (
-                <circle
-                  key={i}
-                  className="aer-glow"
-                  cx={1352 + i * 8}
-                  cy={54 - i * 10}
-                  r={5 + i}
-                  fill="#cbd5e1"
-                  opacity="0.6"
-                  style={{ animation: `aerGlow 2s ease-in-out ${i * 0.3}s infinite` }}
-                />
-              ))}
-          </g>
-
-          {/* ---------- ambient intake louvre ---------- */}
-          <g>
-            <rect x="60" y="250" width="60" height="100" rx="4" fill="#eef2f6" stroke="#6b7280" strokeWidth="2" />
-            {[268, 286, 304, 322].map((y) => (
-              <line key={y} x1="66" y1={y} x2="114" y2={y} stroke="#9aa5b1" strokeWidth="3" strokeLinecap="round" />
-            ))}
-          </g>
-
-          {/* ---------- blower housing ---------- */}
-          <g>
-            <circle cx="365" cy="300" r="62" fill="#eef2f6" stroke="#6b7280" strokeWidth="2" />
-            <circle cx="365" cy="300" r="46" fill="#f8fafc" stroke="#9aa5b1" strokeWidth="1.5" />
-            <g
-              className="aer-spin"
-              style={{
-                transformOrigin: "365px 300px",
-                animation: blowerOn
-                  ? `aerSpin ${Math.max(0.5, 2.4 - blowerPct / 60)}s linear infinite`
-                  : "none",
-              }}
-            >
-              {[0, 60, 120, 180, 240, 300].map((deg) => (
-                <ellipse
-                  key={deg}
-                  cx="365"
-                  cy="272"
-                  rx="9"
-                  ry="26"
-                  fill={blowerOn ? "#5b8def" : "#b6c2cf"}
-                  transform={`rotate(${deg} 365 300)`}
-                />
-              ))}
-              <circle cx="365" cy="300" r="10" fill="#475569" />
-            </g>
-            <rect x="330" y="362" width="70" height="12" rx="2" fill="#6b7280" />
-          </g>
-
-          {/* ---------- heater bank (with-heating only) ---------- */}
-          {heated && (
-            <g>
-              <rect
-                x="620"
-                y="238"
-                width="140"
-                height="124"
-                rx="6"
-                fill="#fdf3ef"
-                stroke={heaterOn ? "#E8785F" : "#9aa5b1"}
-                strokeWidth="2"
-              />
-              {[262, 286, 310, 334].map((y, i) => (
-                <path
-                  key={y}
-                  className="aer-glow"
-                  d={`M 634 ${y} q 12 -12 24 0 q 12 12 24 0 q 12 -12 24 0 q 12 12 24 0`}
-                  fill="none"
-                  stroke={heaterOn ? "#E8785F" : "#c7d0d9"}
-                  strokeWidth="4"
-                  strokeLinecap="round"
-                  style={{
-                    animation: heaterOn
-                      ? `aerGlow 1.8s ease-in-out ${i * 0.2}s infinite`
-                      : "none",
-                  }}
-                />
-              ))}
-            </g>
-          )}
         </svg>
 
-        {/* ---------- title + tower lamp ---------- */}
-        <div className="absolute z-10" style={{ left: 60, top: 40 }}>
+        {/* ---------- title ---------- */}
+        <div className="absolute z-10" style={{ left: 45, top: 30 }}>
           <div className="text-xs font-bold tracking-[0.2em] text-gray-500 uppercase">
             {title ?? (heated ? "Aeration with heating" : "Aeration without heating")}
           </div>
@@ -329,114 +351,173 @@ export default function AerationDiagram({
           )}
         </div>
 
-        <div className="absolute z-10" style={{ left: 620, top: 40 }}>
-          <div className="mb-2 text-xs font-bold text-gray-700">TOWER LAMP STATUS</div>
-          <div className="flex gap-2 rounded border border-gray-300 bg-gray-50 p-2">
-            {[
-              lamp(redOn, "#ef4444"),
-              lamp(yellowOn, "#f59e0b"),
-              lamp(greenOn, "#22c55e"),
-            ].map((color, i) => (
-              <span
-                key={i}
-                className="h-7 w-9 rounded"
-                style={{
-                  background: color,
-                  boxShadow:
-                    color === "#d1d5db"
-                      ? "none"
-                      : `0 0 10px ${color}aa, inset 0 1px 0 rgba(255,255,255,.5)`,
-                }}
-              />
-            ))}
-          </div>
-        </div>
-
         {/* ---------- set points ---------- */}
-        {isGtpl141(machineName) ? (
+        {g141 ? (
           <Gtpl141AerationSetpoints data={data} heated={heated} />
         ) : (
-        <div className="absolute z-10 flex flex-col gap-2" style={{ left: 940, top: 40 }}>
-          <div className="text-sm font-bold text-gray-800">Set points</div>
-          <div className="min-w-[150px] rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm">
-            Duration = {durationSet ?? "--"} h
-          </div>
-          <div className="min-w-[150px] rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm">
-            Delta = {deltaSet ?? "--"} °C
-          </div>
-          <div className="min-w-[150px] rounded border border-gray-300 bg-white px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm">
-            Mode = {continuous ? "CONTINUOUS" : "TIMED"}
-          </div>
-        </div>
-        )}
-
-        {/* ---------- readouts pinned to their equipment ---------- */}
-        <div className="absolute z-10" style={{ left: 40, top: 380 }}>
-          <Chip label="T2 ambient" value={formatValue(ambient, "°C")} tone="cool" />
-        </div>
-
-        {hasRh && (
-          <div className="absolute z-10" style={{ left: 40, top: 452 }}>
-            <Chip label="RH" value={formatValue(humidity, "%")} tone="cool" />
+          <div className="absolute z-10" style={{ left: 340, top: 30 }}>
+            <div className="text-sm font-bold text-gray-800 mb-2">Set points</div>
+            <div className="flex flex-col gap-2">
+              {[
+                `Duration = ${durationSet ?? "--"} h`,
+                `Delta = ${deltaSet ?? "--"} °C`,
+                `Mode = ${continuous ? "CONTINUOUS" : "TIMED"}`,
+              ].map((t) => (
+                <div
+                  key={t}
+                  className="bg-white border border-gray-300 rounded px-3 py-1.5 text-sm font-bold text-gray-900 shadow-sm min-w-[150px]"
+                >
+                  {t}
+                </div>
+              ))}
+            </div>
           </div>
         )}
 
-        <div className="absolute z-10" style={{ left: 300, top: 400 }}>
-          <Chip label="Blower" value={formatValue(blowerRaw, "%")} />
+        {/* ---------- tower lamp status ---------- */}
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-4 py-2 text-sm font-bold text-gray-800"
+          style={{ left: 600, top: 30 }}
+        >
+          TOWER LAMP STATUS
+        </div>
+        <div
+          className="absolute z-10 rounded-md p-2 flex flex-row gap-1.5"
+          style={{ left: 628, top: 76, backgroundColor: "#eceef1", border: "1px solid #d7dade" }}
+        >
+          <div className="w-10 h-10 rounded-sm" style={{ backgroundColor: redOn ? "#ef4444" : "#dcdfe4" }} />
+          <div className="w-10 h-10 rounded-sm" style={{ backgroundColor: yellowOn ? "#eab308" : "#dcdfe4" }} />
+          <div className="w-10 h-10 rounded-sm" style={{ backgroundColor: greenOn ? "#16a34a" : "#dcdfe4" }} />
         </div>
 
-        {heated && (
-          <div className="absolute z-10" style={{ left: 618, top: 388 }}>
-            <Chip label="Heater" value={formatValue(heaterRaw, "%")} tone="warm" />
-          </div>
-        )}
+        {/* ---------- silo ---------- */}
+        <div className="absolute z-10" style={{ left: 45, top: 330 }}>
+          <SiloSVG />
+        </div>
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-4 py-1 text-sm font-bold text-gray-800"
+          style={{ left: 100, top: 606 }}
+        >
+          SILO
+        </div>
 
-        <div className="absolute z-10" style={{ left: 800, top: 232 }}>
-          <Chip
-            label={hasHeater ? "TH supply air" : "T0 supply air"}
+        {/* ---------- supply air temperature into the silo ---------- */}
+        <div className="absolute z-10" style={{ left: heated ? 300 : 330, top: heated ? 584 : 210 }}>
+          <SensorBadge
+            label={hasHeater ? "TH" : "T0"}
             value={formatValue(supply, "°C")}
-            tone="warm"
+            color="#c2410c"
+            bg="#fdece4"
+            border="#f5a274"
           />
         </div>
 
-        <div className="absolute z-10" style={{ left: 1040, top: 470 }}>
-          <Chip
-            label="Running time"
-            value={`${runHours ?? "--"} h ${runMinutes ?? "--"} min`}
+        {/* ---------- heater coil (with-heating only) ---------- */}
+        {heated && (
+          <>
+            <div className="absolute z-10" style={{ left: HEATER_X, top: 278 }}>
+              <HeaterCoilSVG w={60} h={285} on={heaterOn} />
+            </div>
+            <div
+              className="absolute z-10 flex flex-col items-center gap-2"
+              style={{ left: 430, top: 380 }}
+            >
+              <span className="text-base font-bold text-gray-800">HEATER</span>
+              <div className="bg-white border border-gray-400 rounded-sm px-3 py-1 text-base font-bold text-gray-900 flex items-center gap-2">
+                <span>HTR</span>
+                <span>{fmtNum(heaterRaw)} %</span>
+              </div>
+              <span
+                className={`text-white text-xs font-bold px-2.5 py-0.5 rounded ${
+                  heaterOn ? "bg-green-600" : "bg-red-500"
+                }`}
+              >
+                {heaterOn ? "ON" : "OFF"}
+              </span>
+            </div>
+          </>
+        )}
+
+        {/* ---------- blower ---------- */}
+        <div className="absolute z-10" style={{ left: 803, top: 382 }}>
+          <BlowerSVG spinning={blowerOn} />
+        </div>
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-3 py-1.5 text-gray-800 flex items-center justify-center gap-4"
+          style={{ left: 803, top: 578, width: 170 }}
+        >
+          <span className="text-base font-bold">Blower</span>
+          <span className="text-base font-bold">{fmtNum(blowerRaw)} %</span>
+        </div>
+
+        {/* ---------- ambient intake + readings ---------- */}
+        <div className="absolute z-10" style={{ left: 1150, top: 407 }}>
+          <IntakeSVG />
+        </div>
+        <div
+          className="absolute z-10 bg-gray-50 border border-gray-200 rounded-md px-3 py-1 text-sm font-bold text-gray-800"
+          style={{ left: 1128, top: 540 }}
+        >
+          AMBIENT AIR
+        </div>
+        <div className="absolute z-10 flex flex-col gap-2" style={{ left: 1250, top: 420 }}>
+          <SensorBadge
+            label="T2"
+            value={formatValue(ambient, "°C")}
+            color="#1d4ed8"
+            bg="#e0f2fe"
+            border="#38bdf8"
           />
+          {hasRh && (
+            <SensorBadge
+              label="RH"
+              value={formatValue(humidity, "%")}
+              color="#1d4ed8"
+              bg="#e0f2fe"
+              border="#38bdf8"
+            />
+          )}
+        </div>
+
+        {/* ---------- run status panel ---------- */}
+        <div
+          className="absolute z-10 bg-white border border-gray-200 rounded-lg shadow-sm p-3 flex flex-col gap-2"
+          style={{ left: 1078, top: 160, width: 305 }}
+        >
+          <div className="text-sm font-bold text-gray-800">AERATION STATUS</div>
+          <div className="flex items-center justify-between bg-white border border-gray-300 rounded px-3 py-1.5">
+            <span className="text-sm font-bold text-gray-700">Blower</span>
+            <span
+              className={`text-xs font-bold px-2 py-0.5 rounded ${
+                blowerOn ? "bg-green-600 text-white" : "bg-gray-100 text-gray-500"
+              }`}
+            >
+              {blowerOn ? "RUNNING" : "IDLE"}
+            </span>
+          </div>
+          <div className="flex items-center justify-between bg-white border border-gray-300 rounded px-3 py-1.5">
+            <span className="text-sm font-bold text-gray-700">Running time</span>
+            <span className="text-sm font-bold text-gray-900">
+              {runHours ?? "--"} h {runMinutes ?? "--"} min
+            </span>
+          </div>
         </div>
 
         {/* ---------- legend ---------- */}
         <div
-          className="absolute z-10 text-[11px] leading-relaxed text-gray-500"
-          style={{ left: 60, top: 530 }}
+          className="absolute z-10 flex gap-10 text-sm font-bold text-gray-900"
+          style={{ left: 280, top: 645 }}
         >
-          <div>T2 = Ambient Air Temperature</div>
-          <div>{hasHeater ? "TH = Air Temperature After Heater" : "T0 = Air Outlet Temperature"}</div>
-          {hasRh && <div>RH = Relative Humidity</div>}
-        </div>
-
-        {/* ---------- status strip ---------- */}
-        <div
-          className="absolute z-10 flex items-center gap-4"
-          style={{ left: 620, top: 530 }}
-        >
-          <span className="flex items-center gap-2 text-xs font-semibold text-gray-600">
-            <span
-              className="h-2 w-2 rounded-full"
-              style={{ background: blowerOn ? "#22c55e" : "#cbd5e1" }}
-            />
-            BLOWER {blowerOn ? "RUNNING" : "IDLE"}
-          </span>
-          {heated && (
-            <span className="flex items-center gap-2 text-xs font-semibold text-gray-600">
-              <span
-                className="h-2 w-2 rounded-full"
-                style={{ background: heaterOn ? "#E8785F" : "#cbd5e1" }}
-              />
-              HEATER {heaterOn ? "ON" : "OFF"}
-            </span>
-          )}
+          <div className="space-y-1">
+            <div>T2 = Ambient Air Temperature</div>
+            <div>
+              {hasHeater ? "TH = Air Temperature After Heater" : "T0 = Air Outlet Temperature"}
+            </div>
+          </div>
+          <div className="space-y-1">
+            {hasRh && <div>RH = Relative Humidity</div>}
+            {heated && <div>HTR = Heater Output</div>}
+          </div>
         </div>
       </div>
     </div>
@@ -474,11 +555,11 @@ function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean
   const stop = heated ? "Aeration_stop_with_WH" : "Aeration_stop_with_WOH";
   const group = heated ? "Aeration with heating" : "Aeration without heating";
   return (
-    // Sits in the free band above the silo (silo top is at y≈150; tower lamp
-    // ends near x=800, exhaust stack starts at x=1330).
-    <div className="absolute z-10 flex w-[490px] flex-col gap-1.5" style={{ left: 830, top: 10 }}>
-      <div className="text-xs font-bold text-gray-800">Set points</div>
-      <div className="flex flex-wrap gap-1.5">
+    // Same slot as the Auto diagram's set points (between title and tower lamp).
+    <>
+    <div className="absolute z-10 flex w-[250px] flex-col gap-1.5" style={{ left: 340, top: 30 }}>
+      <div className="text-sm font-bold text-gray-800">Set points</div>
+      <div className="flex flex-col gap-1.5">
       {rows.map((r) => (
         <div
           key={r.tag}
@@ -499,22 +580,18 @@ function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean
         </div>
       ))}
       </div>
-      <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={() => requestGtpl141Pulse(start, `${group}: Start`)}
-          className="flex items-center justify-center gap-1.5 rounded bg-green-600 px-4 py-1 text-xs font-bold text-white shadow-sm hover:bg-green-700"
-        >
-          <Play className="h-3.5 w-3.5" /> Start
-        </button>
-        <button
-          type="button"
-          onClick={() => requestGtpl141Pulse(stop, `${group}: Stop`)}
-          className="flex items-center justify-center gap-1.5 rounded bg-red-600 px-4 py-1 text-xs font-bold text-white shadow-sm hover:bg-red-700"
-        >
-          <Square className="h-3.5 w-3.5" /> Stop
-        </button>
-      </div>
     </div>
+      <Gtpl141PulseCard
+        title={group}
+        label={group}
+        start={start}
+        stop={stop}
+        // No running feedback: the heated/unheated aeration running tag is not
+        // confirmed (handoff §8), so none is inferred from the command bits.
+        // Above the silo, like the Auto diagram's card.
+        className="absolute z-10 w-[220px]"
+        style={{ left: 30, top: 110 }}
+      />
+    </>
   );
 }
