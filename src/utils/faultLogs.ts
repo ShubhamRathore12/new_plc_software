@@ -413,12 +413,15 @@ export function getTagsForMachine(machineName: string): string[] {
 }
 
 // PLC input bits (e.g. "Low_pressure_fault_I1_1") are already shown on the
-// Inputs page for these machines, so alarm history must not repeat them.
-const INPUT_BIT_TAG = /_I\d+_\d+$/;
-const INPUT_PAGE_MACHINES = new Set(["GTPL-159-gT-650T-S7-1200"]);
+// Inputs page, so alarm history must not repeat them — for every machine.
+const INPUT_BIT_TAG = /_I\d+_\d+$/i;
+// Response keys that are never alarms even when "True": PLC outputs, run
+// modes/commands and running-status flags.
+const NON_ALARM_KEY =
+  /(_Q\d+_\d+$|_mode$|^Auto_(start|stop)|^Aeration_(start|stop)|in_operation|healthy|_ON$|^id$|^created_at$|^created_on$|^updated_at$|^timestamp$)/i;
 
-function hidesInputBitsInAlarmHistory(machineName: string): boolean {
-  return INPUT_PAGE_MACHINES.has(machineName);
+function isAlarmKey(key: string): boolean {
+  return !INPUT_BIT_TAG.test(key) && !NON_ALARM_KEY.test(key);
 }
 
 export function extractTagDataFromRecords(
@@ -443,9 +446,7 @@ export function extractTagDataFromRecords(
       : configColumns.length > 0
         ? configColumns
         : getTagsForMachine(machineName);
-  const tags = hidesInputBitsInAlarmHistory(machineName)
-    ? resolvedTags.filter((t) => !INPUT_BIT_TAG.test(t))
-    : resolvedTags;
+  const tags = resolvedTags.filter(isAlarmKey);
 
   const tagData: TagData[] = [];
 
@@ -462,6 +463,7 @@ export function extractTagDataFromRecords(
     // Normalized index of this record's real keys -> lets us match tags
     // regardless of case, punctuation, degree symbols, etc.
     const normIndex = buildNormalizedIndex(record as Record<string, any>);
+    const seen = new Set<string>();
 
     for (const tag of tags) {
       const value = getRecordValueForTag(record as any, tag, normIndex);
@@ -472,6 +474,20 @@ export function extractTagDataFromRecords(
         isTrueLike(value)
       ) {
         tagData.push({ tag, value, createdAt: timestamp });
+        seen.add(normalizeKey(tag));
+      }
+    }
+
+    // Any other key in the response that is "True" and is not an input,
+    // output or status bit is an alarm too — the configured lists don't cover
+    // every machine's columns (650T tables have no non-input fault columns).
+    for (const [key, value] of Object.entries(record)) {
+      if (seen.has(normalizeKey(key)) || !isAlarmKey(key)) continue;
+      // Only True/False flags; numeric columns (temps, FAULT_CODE, timers)
+      // can be 1 without meaning an alarm.
+      if (typeof value !== "boolean" && typeof value !== "string") continue;
+      if (isTrueLike(value)) {
+        tagData.push({ tag: key, value, createdAt: timestamp });
       }
     }
   }
