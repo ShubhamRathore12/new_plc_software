@@ -412,6 +412,15 @@ export function getTagsForMachine(machineName: string): string[] {
   return S7_1200_TAGS;
 }
 
+// PLC input bits (e.g. "Low_pressure_fault_I1_1") are already shown on the
+// Inputs page for these machines, so alarm history must not repeat them.
+const INPUT_BIT_TAG = /_I\d+_\d+$/;
+const INPUT_PAGE_MACHINES = new Set(["GTPL-159-gT-650T-S7-1200"]);
+
+function hidesInputBitsInAlarmHistory(machineName: string): boolean {
+  return INPUT_PAGE_MACHINES.has(machineName);
+}
+
 export function extractTagDataFromRecords(
   dataArray: any[],
   machineName: string
@@ -428,13 +437,16 @@ export function extractTagDataFromRecords(
   // static per-machine tag list.
   const schemaColumns = getFaultColumnsFromSchema(machineName);
   const configColumns = getActiveFaultColumns(machineName);
-  const tags =
+  const resolvedTags =
     schemaColumns && schemaColumns.length > 0
       ? schemaColumns
       : configColumns.length > 0
         ? configColumns
         : getTagsForMachine(machineName);
-  
+  const tags = hidesInputBitsInAlarmHistory(machineName)
+    ? resolvedTags.filter((t) => !INPUT_BIT_TAG.test(t))
+    : resolvedTags;
+
   const tagData: TagData[] = [];
 
   for (const record of dataArray) {
