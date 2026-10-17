@@ -57,7 +57,6 @@ export default function Gtpl141PulseCard({
   stop,
   running,
   startConflict,
-  offline,
   className = "",
   style,
 }: {
@@ -70,8 +69,6 @@ export default function Gtpl141PulseCard({
   running?: boolean | null;
   /** Another active mode that must be stopped before Start, e.g. "Auto mode". */
   startConflict?: string | null;
-  /** Machine has no live data; shows an OFFLINE pill instead of RUNNING. */
-  offline?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -89,13 +86,7 @@ export default function Gtpl141PulseCard({
     if (!startConflict) setConflictMsg(null);
   }, [startConflict]);
 
-  const status = offline
-    ? {
-        text: "OFFLINE",
-        dot: "bg-red-400",
-        pill: "bg-red-500/15 text-red-300 ring-1 ring-red-400/40",
-      }
-    : running
+  const status = running
     ? {
         text: "RUNNING",
         dot: "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.8)] animate-pulse",

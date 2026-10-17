@@ -2276,8 +2276,8 @@ function Gtpl141AutoControl({ data, online }: { data: any; online?: boolean }) {
       label="Auto"
       start="Auto_start"
       stop="Auto_stop"
-      running={running}
-      offline={online === false}
+      // Only RUNNING is ever shown; an offline machine shows nothing.
+      running={online !== false && running}
       // Above the silo roof (y 330), below the title band; set points start at x 340.
       className="absolute z-10 w-[220px]"
       style={{ left: 30, top: 175 }}
