@@ -796,6 +796,7 @@ export default function AutoDiagram1({
   formatValue,
   machineName,
   config,
+  online,
 }: any) {
   const normalizedMachineName = (machineName || "").toUpperCase();
   // AP machines (300AP / 450AP) — show condenser fan speed
@@ -1993,7 +1994,7 @@ export default function AutoDiagram1({
         {/* GTPL-141: Auto EN / Auto aeration enable Start/Stop below the silo */}
         {isG141 && <Gtpl141SiloControls data={data} />}
         {/* GTPL-141: Auto Start/Stop above the silo */}
-        {isG141 && <Gtpl141AutoControl data={data} />}
+        {isG141 && <Gtpl141AutoControl data={data} online={online} />}
         {/* Silo static pressure (GTPL-156/157 HMI shows this above the silo) */}
         {isSiloPressureMachine && (
           <div
@@ -2265,7 +2266,7 @@ export default function AutoDiagram1({
 }
 
 /** GTPL-141 only. Auto Start/Stop card above the silo. */
-function Gtpl141AutoControl({ data }: { data: any }) {
+function Gtpl141AutoControl({ data, online }: { data: any; online?: boolean }) {
   // Auto_mode is a plain status column (no RB_ readback), so read it raw.
   const raw = String(data?.Auto_mode ?? "").trim().toLowerCase();
   const running = raw === "true" || raw === "1" ? true : raw === "false" || raw === "0" ? false : null;
@@ -2276,6 +2277,7 @@ function Gtpl141AutoControl({ data }: { data: any }) {
       start="Auto_start"
       stop="Auto_stop"
       running={running}
+      offline={online === false}
       // Above the silo roof (y 330), below the title band; set points start at x 340.
       className="absolute z-10 w-[220px]"
       style={{ left: 30, top: 175 }}
@@ -2288,8 +2290,8 @@ function Gtpl141SiloControls({ data }: { data: any }) {
   const btn =
     "flex items-center justify-center gap-1 rounded px-2.5 py-1 text-xs font-bold shadow-sm";
   const settingRows = [
-    { tag: "Auto_EN", label: "Auto Enable", startLabel: "Auto Enable" },
-    { tag: "Auto_aeration_enable", label: "Auto Aeration", startLabel: "Start Auto Aeration" },
+    { tag: "Auto_EN", startLabel: "Auto Enable" },
+    { tag: "Auto_aeration_enable", startLabel: "Start Auto Aeration" },
   ];
   return (
     <div
@@ -2301,12 +2303,6 @@ function Gtpl141SiloControls({ data }: { data: any }) {
         const on = telemetryValue(data, r.tag);
         return (
           <div key={r.tag} className="flex flex-col gap-1">
-            <span className="text-xs font-bold text-gray-800">
-              {r.label}{" "}
-              <span className={on === true ? "text-green-700" : on === false ? "text-gray-500" : "text-gray-400"}>
-                ({on === null ? "--" : on ? "ON" : "OFF"})
-              </span>
-            </span>
             <div className="flex gap-1.5 [&>button]:flex-1">
               <button
                 type="button"

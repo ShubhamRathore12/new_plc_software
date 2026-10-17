@@ -332,6 +332,8 @@ export type Gtpl141PanelState = {
   latestByTag: Record<string, Command>;
   /** Tag whose submit HTTP call is in flight, or whose delivery is unresolved. */
   sendingTag: string | null;
+  /** Control API's machine status: false = "Machine is not online", null = unknown. */
+  machineOnline: boolean | null;
 };
 export const GTPL141_STATE_EVENT = "gtpl141:state";
 let lastPanelState: Gtpl141PanelState | null = null;

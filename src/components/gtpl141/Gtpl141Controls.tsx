@@ -321,9 +321,16 @@ export default function Gtpl141Controls({
   // History is newest first, so the first hit per tag wins.
   for (const c of commands ?? []) if (!latestByTag[c.tag]) latestByTag[c.tag] = c;
   const sendingTag = submitting || pending ? (pending?.tag ?? null) : null;
-  const stateKey = JSON.stringify([blocked, pulseBlockMap, latestByTag, sendingTag]);
+  const machineOnline = latest ? latest.machine?.status === "online" : null;
+  const stateKey = JSON.stringify([blocked, pulseBlockMap, latestByTag, sendingTag, machineOnline]);
   useEffect(() => {
-    publishGtpl141State({ blocked, pulseBlock: pulseBlockMap, latestByTag, sendingTag });
+    publishGtpl141State({
+      blocked,
+      pulseBlock: pulseBlockMap,
+      latestByTag,
+      sendingTag,
+      machineOnline,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stateKey]);
 

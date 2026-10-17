@@ -2,6 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { format } from "@/lib/utils";
 import { useMachineStatus } from "@/providers/machine-status-provider";
 import { api, SessionExpiredError } from "@/lib/apiClient";
+import {
+  GTPL141_STATE_EVENT,
+  getGtpl141State,
+  type Gtpl141PanelState,
+} from "@/lib/gtpl141Control";
 
 /** Telemetry older than this is shown as stale rather than as a live reading. */
 export const TELEMETRY_STALE_AFTER_MS = 60 * 1000;
@@ -265,6 +270,22 @@ export const useAutoData = (autoType: string) => {
     };
   }, [autoType, isThisMachineRunning]);
 
+  // GTPL-141: the control API knows when the machine itself is offline even
+  // while its table row still answers, so honour that over the table fetch.
+  const isG141 = autoType?.toUpperCase().includes("GTPL-141");
+  const [controlOffline, setControlOffline] = useState(false);
+  useEffect(() => {
+    if (!isG141) {
+      setControlOffline(false);
+      return;
+    }
+    const apply = (s: Gtpl141PanelState | null) => setControlOffline(s?.machineOnline === false);
+    apply(getGtpl141State());
+    const on = (e: Event) => apply((e as CustomEvent<Gtpl141PanelState>).detail);
+    window.addEventListener(GTPL141_STATE_EVENT, on);
+    return () => window.removeEventListener(GTPL141_STATE_EVENT, on);
+  }, [isG141]);
+
   // Drives the "last update" label and the stale threshold.
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 10 * 1000);
@@ -306,8 +327,8 @@ export const useAutoData = (autoType: string) => {
 
   return {
     data: data[0] || {},
-    isConnected,
-    telemetryState,
+    isConnected: isConnected && !controlOffline,
+    telemetryState: controlOffline ? ("machine-off" as TelemetryState) : telemetryState,
     /** When the values on screen were read; null before the first response. */
     lastUpdatedAt,
     isStale,

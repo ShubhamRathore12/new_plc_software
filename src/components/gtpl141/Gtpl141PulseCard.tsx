@@ -56,6 +56,8 @@ export default function Gtpl141PulseCard({
   start,
   stop,
   running,
+  startConflict,
+  offline,
   className = "",
   style,
 }: {
@@ -66,6 +68,10 @@ export default function Gtpl141PulseCard({
   stop: string;
   /** Machine running feedback. Omit when no confirmed feedback tag exists. */
   running?: boolean | null;
+  /** Another active mode that must be stopped before Start, e.g. "Auto mode". */
+  startConflict?: string | null;
+  /** Machine has no live data; shows an OFFLINE pill instead of RUNNING. */
+  offline?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -77,22 +83,25 @@ export default function Gtpl141PulseCard({
     return () => clearInterval(id);
   }, []);
 
-  const status =
-    running === undefined
-      ? null
-      : running === null
-        ? { text: "--", dot: "bg-gray-400", pill: "bg-slate-700/60 text-slate-300" }
-        : running
-          ? {
-              text: "RUNNING",
-              dot: "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.8)] animate-pulse",
-              pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/40",
-            }
-          : {
-              text: "STOPPED",
-              dot: "bg-slate-400",
-              pill: "bg-slate-700/60 text-slate-300 ring-1 ring-slate-500/40",
-            };
+  // Only show the pill while the machine is confirmed running.
+  const [conflictMsg, setConflictMsg] = useState<string | null>(null);
+  useEffect(() => {
+    if (!startConflict) setConflictMsg(null);
+  }, [startConflict]);
+
+  const status = offline
+    ? {
+        text: "OFFLINE",
+        dot: "bg-red-400",
+        pill: "bg-red-500/15 text-red-300 ring-1 ring-red-400/40",
+      }
+    : running
+    ? {
+        text: "RUNNING",
+        dot: "bg-emerald-400 shadow-[0_0_8px_2px_rgba(52,211,153,0.8)] animate-pulse",
+        pill: "bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/40",
+      }
+    : null;
 
   const cmd = [start, stop]
     .map((t) => panel?.latestByTag[t])
@@ -114,7 +123,9 @@ export default function Gtpl141PulseCard({
   const lock = panel ? panel.blocked : "Connecting to control service…";
   const startLock = lock ?? panel?.pulseBlock[start] ?? null;
   const stopLock = lock ?? panel?.pulseBlock[stop] ?? null;
-  const note = step
+  const note = conflictMsg
+    ? { text: conflictMsg, tone: "err" as const }
+    : step
     ? { text: `${stepTag === stop ? "Stop" : "Start"}: ${step.text}`, tone: step.tone }
     : startLock && startLock === stopLock
       ? { text: startLock, tone: "err" as const }
@@ -163,7 +174,13 @@ export default function Gtpl141PulseCard({
             disabled={!!startLock}
             title={startLock ?? `${label}: Start`}
             className={`${btn} ${startCls}`}
-            onClick={() => requestGtpl141Pulse(start, `${label}: Start`)}
+            onClick={() => {
+              if (startConflict) {
+                setConflictMsg(`${startConflict} is active. Kindly stop it first.`);
+                return;
+              }
+              requestGtpl141Pulse(start, `${label}: Start`);
+            }}
           >
             <span className={icon}>
               {waiting(start) ? <Spinner /> : <Play className="h-2.5 w-2.5 fill-current" />}

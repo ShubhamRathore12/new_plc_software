@@ -1352,6 +1352,7 @@ export default function AutoPage() {
                     formatValue={formatValue}
                     machineName={auto}
                     config={currentConfig}
+                    online={isConnected}
                   />
                 )}
               </DiagramFrame>

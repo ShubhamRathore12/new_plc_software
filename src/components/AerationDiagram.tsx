@@ -554,6 +554,13 @@ function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean
   const start = heated ? "Aeration_start_with_WH" : "Aeration_start_with_WOH";
   const stop = heated ? "Aeration_stop_with_WH" : "Aeration_stop_with_WOH";
   const group = heated ? "Aeration with heating" : "Aeration without heating";
+  // Auto_mode / Manual_mode are plain status columns (no RB_ readback).
+  const isOn = (v: unknown) => ["true", "1"].includes(String(v ?? "").trim().toLowerCase());
+  const startConflict = isOn(data?.Auto_mode)
+    ? "Auto mode"
+    : isOn(data?.Manual_mode)
+      ? "Manual mode"
+      : null;
   return (
     // Same slot as the Auto diagram's set points (between title and tower lamp).
     <>
@@ -586,6 +593,7 @@ function Gtpl141AerationSetpoints({ data, heated }: { data: any; heated: boolean
         label={group}
         start={start}
         stop={stop}
+        startConflict={startConflict}
         // No running feedback: the heated/unheated aeration running tag is not
         // confirmed (handoff §8), so none is inferred from the command bits.
         // Above the silo, like the Auto diagram's card.
