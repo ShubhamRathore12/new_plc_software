@@ -246,8 +246,9 @@ export default function RegistrationForm() {
     { value: "Registration", label: formatText(t("Registration")) },
 
     // ✅ Devices from allDevices array (all machines from devices page)
-    { value: "GTPL-030-gT-180E-S7-1200", label: "GTPL-030-gT-180E-S7-1200" },
+    { value: "GTPL-030-gT-180E-S7-1200", label: "GTPL_114_GT_140E_S7_1200" },
     { value: "GTPL-044-GT-140E-S7-1200", label: "GTPL-044-GT-140E-S7-1200" },
+    { value: "GTPL_114_GT_140E_S7_1200", label: "GTPL_114_GT_140E_S7_1200 (GTPL-030)" },
     { value: "GTPL-061-gT-450T-S7-1200", label: "GTPL-061-gT-450T-S7-1200" },
     { value: "GTPL-081-gT-650T-S7-1200", label: "GTPL-081-gT-650T-S7-1200" },
     { value: "GTPL-105-gT-650T-S7-1200", label: "GTPL-105-gT-650T-S7-1200" },
