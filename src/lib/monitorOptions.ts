@@ -6,6 +6,7 @@ export const MONITOR_ACCESS_OPTIONS = [
   "reports",
   "registration",
   "GTPL-030-gT-180E-S7-1200",
+  "GTPL-044-GT-140E-S7-1200",
   "GTPL-061-gT-450T-S7-1200",
   "GTPL-068-gT-650T-S7-1200",
   "GTPL-081-gT-650T-S7-1200",
