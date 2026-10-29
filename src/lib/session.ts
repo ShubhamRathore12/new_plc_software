@@ -134,7 +134,10 @@ export async function fetchSession(
 export function normalizeMachineId(value: string | null | undefined): string {
   if (!value) return "";
   const match = String(value).match(/gtpl[-_ ]?(\d{2,4})/i);
-  return match ? `gtpl_${match[1]}` : String(value).trim().toLowerCase();
+  if (!match) return String(value).trim().toLowerCase();
+  // GTPL-030 is stored in the GTPL_114 table, so the server reports it as GTPL_114.
+  const id = match[1] === "114" ? "030" : match[1];
+  return `gtpl_${id}`;
 }
 
 /** True when the session entitles the user to the given machine. */
