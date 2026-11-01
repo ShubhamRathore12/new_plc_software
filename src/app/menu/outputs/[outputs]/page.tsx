@@ -149,7 +149,24 @@ export default function OutputsPage() {
         { id: "14", description: "Condenser fan2 on", dataKey: "Condenser_fan2_on_Q2_3" },
       ];
     }
-    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === 'GTPL-030-gT-180E-S7-1200' || deviceType === "GTPL-119-gT-180E-S7-1200" || deviceType === "GTPL-120-gT-180E-S7-1200" || deviceType === "GTPL-141-gT-140E-S7-1200" || deviceType === "GTPL-044-GT-140E-S7-1200") {
+    else if (deviceType === "GTPL-141-gT-140E-S7-1200") {
+      // GTPL-141 publishes the Q2.x outputs with lowercase column names.
+      return [
+        { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
+        { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },
+        { id: "3", description: "Condenser fan drive", dataKey: "Condenser_fan_drive_on_Q0_3" },
+        { id: "4", description: "Compressor", dataKey: "Compressor_on_Q0_4" },
+        { id: "5", description: "Compressor reset", dataKey: "Compressor_reset_on_Q0_5" },
+        { id: "6", description: "Solenoid valve", dataKey: "Solenoid_valve_on_Q0_6" },
+        { id: "7", description: "Hot gas valve", dataKey: "Hot_gas_valve_on_Q0_7" },
+        { id: "8", description: "After heat motor valve", dataKey: "After_heat_motor_valve_on_Q1_0" },
+        { id: "9", description: "Chiller healthy", dataKey: "Chiller_healthy_on_Q1_1" },
+        { id: "10", description: "Chiller Fault", dataKey: "Chiller_fault_on_Q2_0" },
+        { id: "11", description: "Collective Trouble Signal", dataKey: "Collective_trouble_signal_on_Q2_1" },
+        { id: "12", description: "Buzzer on", dataKey: "Buzzer_on_Q2_2" },
+      ];
+    }
+    else if (deviceType === "GTPL-115-gT-180E-S7-1200" || deviceType === 'GTPL-030-gT-180E-S7-1200' || deviceType === "GTPL-119-gT-180E-S7-1200" || deviceType === "GTPL-120-gT-180E-S7-1200" || deviceType === "GTPL-044-GT-140E-S7-1200") {
       return [
         { id: "1", description: "Blower drive", dataKey: "Blower_drive_on_Q0_0" },
         { id: "2", description: "Heater drive", dataKey: "Heater_drive_on_Q0_2" },

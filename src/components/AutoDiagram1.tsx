@@ -909,6 +909,7 @@ export default function AutoDiagram1({
     "RED_LIGHT",
     "Chiller_fault_(Q2.3)",
     "Chiller_Fault_on_Q2_0",
+    "Chiller_fault_on_Q2_0", // GTPL-141
     "Chiller_Fault_on",
     "Chiller_Fault",
     "Chiller_fault_Q2_3",
@@ -923,6 +924,7 @@ export default function AutoDiagram1({
     "System_warnning_(Q1.0)",
     "System_warning_Q1_0",
     "Collective_Trouble_Signal_on_Q2_1",
+    "Collective_trouble_signal_on_Q2_1", // GTPL-141
     "Collective_Trouble_Signal_on",
     "Collective_Trouble_Signal",
     "Collective_trouble_signal_Q1_0",
