@@ -224,7 +224,7 @@ export const ALL_DEVICES: Device[] = [
     },
     {
       name: "GTPL-159-gT-650T-S7-1200",
-      location: "Noida",
+      location: "Madhya Pradesh",
       image: "/images/650.jpeg",
       plc: "S7-1200",
       chillerModel: "GT-650T",
